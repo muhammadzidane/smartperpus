@@ -18,26 +18,31 @@ class BookSeeder extends Seeder
             array(
                 'name'      => 'Jujutsu Kaisen 01',
                 'price'     => 40000,
+                'image'     => 'jujutsu-kaisen-01.jpg',
                 'author_id' => 1,
             ),
             array(
                 'name'      => 'Demon Slayer: Kimetsu No Yaiba 01',
                 'price'     => 40000,
+                'image'     => 'kemetsu-no-yaiba.jpg',
                 'author_id' => 2,
             ),
             array(
                 'name'      => 'Detektif Conan 96',
                 'price'     => 25000,
+                'image'     => 'detektif-conan-96.jpg',
                 'author_id' => 3,
             ),
             array(
                 'name'      => 'Fairy Tail 100 Years Quest 01',
                 'price'     => 28000,
+                'image'     => 'fairy-tail-100-years-quest-01.jpg',
                 'author_id' => 4
             ),
             array(
-                'name' => 'Haikyu!!: Fly High! Volleyball! 21',
-                'price' => 35000,
+                'name'      => 'Haikyu!!: Fly High! Volleyball! 21',
+                'image'     => 'haikyuu-fly-high-volleybal-21',
+                'price'     => 35000,
                 'author_id' => 5,
             ),
         );
@@ -47,6 +52,7 @@ class BookSeeder extends Seeder
                 array(
                     'name'        => $book['name'],
                     'price'       => $book['price'],
+                    'image'       => $book['image'],
                     'author_id'   => $book['author_id'],
                     'category_id' => 1,
                 )

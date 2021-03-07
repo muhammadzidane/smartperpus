@@ -8,7 +8,9 @@ use App\Models\{Author, Book, BookCategorys};
 
 // TEST
 
-Route::get('/test', array(TestController::class, 'test'))->middleware('auth');
+Route::get('/test', function() {
+    return view('test');
+});
 Route::resource('/books', BookController::class);
 
 Auth::routes();

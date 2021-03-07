@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BookController extends Controller
 {
@@ -12,9 +13,9 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Book $book)
     {
-        $this->authorize('viewAny', Book::class);
+        // $this->authorize('viewAny', Book::class);
         return view('book.index', array('books' => Book::get()));
     }
 
@@ -71,7 +72,7 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+
     }
 
     /**
@@ -83,5 +84,10 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         //
+    }
+
+    // TEST
+    public function boot() {
+        // Gate::define()
     }
 }
