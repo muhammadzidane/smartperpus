@@ -44,15 +44,25 @@
                             <button type="submit">
                                 <i class="fas fa-search search-icon"></i>
                             </button>
-                            <input type="text" name="" id="" class="search-text"
+                            <input type="text" name="search" id="search" class="search-text"
                                 placeholder="Judul Buku, Author, Gendre, ...">
                         </form>
                     </div>
 
                     <ul class="navbar-nav mr-auto nav-left">
-                        <li class="nav-item">
+                        <li id="categories" class="nav-item">
                             <a class="nav-link text-body" href="#">Kategori <i class="fas fa-caret-down ml-1"></i></a>
+                            <div>
+                                <div>
+                                    @foreach(\App\Models\Category::orderBy('name')->get() as $category)
+                                        <span class="category">
+                                            <a href="#">{{ $category->name }}</a>
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-body" href="#">Genre</a>
                         </li>

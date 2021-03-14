@@ -14,8 +14,13 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = array(
-            'Komik',
+        $categories = collect(
+            array(
+                'Komik', 'Aksi', 'Romantis', 'Petualangan', 'Drama',
+                'Komedi', 'Horror', 'Tentara', 'Kriminal', 'Fiksi Ilmiah',
+                'Fantasi', 'Misteri', 'Biografi', 'Ensiklopedia', 'Kamus',
+                'Jurnal', 'Filsafat',
+            )
         );
 
         foreach ($categories as $category) {

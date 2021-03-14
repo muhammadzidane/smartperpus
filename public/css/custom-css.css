@@ -15,7 +15,7 @@ body {
     border: 2px solid #ea5455;
     background-color: #ece8d9;
     margin-left: -33px;
-    width: 300px;
+    width: 89%;
     height: 95%;
     border-radius: 10px 25px 25px 10px;
     text-indent: 30px;
@@ -74,9 +74,12 @@ body {
     margin-left: 58px;
 }
 
+.nav-left .nav-link {
+    box-sizing: border-box;
+}
+
 
 .nav-left .nav-link:hover {
-    box-sizing: border-box;
     border-bottom: 2px solid black;
 }
 
@@ -84,9 +87,237 @@ body {
     color:#ece8d9;
 }
 
+#categories > div {
+    display: none;
+    position: absolute;
+    top: 81%;
+    border-top: 2px solid black;
+    width: 35%;
+    height: 200px;
+    box-shadow: 0px 0px 1.2px black;
+    z-index: 1;
+    background-color: #f8fafc;
+    opacity: 0.95;
+    cursor: pointer;
+}
+
+#categories:hover > div {
+    display: block;
+}
+
+#categories > div > div {
+    margin: 12px;
+}
+
+.category {
+    display: inline-block;
+    padding: 5px 8px;
+    font-size: 18px;
+}
+
+.category a {
+    color: black !important;
+}
+
+
+/* Caraousel IMG */
+.bg-carousel {
+    position: relative;
+    height: 250px;
+}
+
+.bg-carousel > :last-child img {
+    height: 250px;
+    top: 0;
+    bottom: 0;
+    background-color: red;
+}
+
+.carousel-item img {
+    height: 250px;
+}
+
+/* Login Form */
+.login-form {
+    background-color: red;
+}
+
 /* Footer */
 footer {
     background-color: red;
     height:20vh;
+}
+
+/* Book Cards */
+.books {
+    margin: auto;
+    width: 98% !important;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book {
+    width: 19.08%;
+    margin: 15px 5px;
+    box-shadow: 0 0 1.2px black;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    border-top: 3px solid #ea5455;
+    text-decoration: none;
+}
+
+/* .book:hover { */
+    /* zoom: 2; */
+/* } */
+
+.book-cover {
+    display: flex;
+    width: 100% !important;
+}
+
+.gambar-buku, .gambar-buku img {
+    width: 100%;
+    border-bottom: 0.2px solid #ea5455;
+}
+
+.rating {
+    background-color:#f6f5f5;
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.rating-star {
+    color: gold;
+    padding-top: 10px;
+}
+
+.rating div {
+    width: 100%;
+    height: 20%;
+    text-align: center;
+}
+
+.rating div:last-child {
+    flex: 1;
+}
+
+.desk-book {
+    background-color:transparent;
+    height: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+}
+
+.judul-buku::after {
+    color:#212529;
+    content: ' | ';
+}
+
+.author {
+    /* margin-top: auto; */
+}
+
+/* Book Show */
+.book-show {
+    /* height: 650px; */
+    margin: 10px 0;
+    /* border: 1px solid black; */
+    display: flex;
+}
+
+.book-show > :nth-child(1) {
+    background-color: #ea5455;
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-show > :nth-child(2) {
+    background-color:#fff600;
+    width: 70%;
+}
+
+.book-show-cover {
+    background-color: chocolate;
+}
+
+.book-show-cover > img {
+    max-width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 50px 0;
+}
+
+.book-show-desk {
+    background-color: darkgrey;
+    /* height: 100%; */
+    padding: 20px;
+}
+
+.book-show-sinopsis {
+    background-color: blanchedalmond;
+    padding: 25px;
+}
+
+.book-show-recomended {
+    padding: 25px;
+    display: flex;
+}
+
+.book-show-recomended div {
+    width: 50%;
+}
+
+.book-show-card > img {
+    width: 100%;
+}
+
+.book-show-all {
+    background-color: crimson;
+    width: 25%;
+}
+
+/* Rekomendasi Buku */
+.book-recommendations {
+    margin: 50px 0;
+    /* background-color: burlywood; */
+    /* height: 600px; */
+}
+
+.book-recommendations > h1 {
+
+}
+
+@media screen and (max-width: 767px) {
+    .carousel-item img {
+        height: 120px;
+    }
+
+    .col-3 .w-100 {
+        display: none;
+    }
+
+    .books {
+        width: 100%;
+    }
+
+    .book {
+        width: 31.33%;
+    }
+
+    /* Book Show */
+    .book-show-cover {
+        height: 35%;
+    }
+
+    .book-show-desk {
+        height: 65%;
+    }
 }
 

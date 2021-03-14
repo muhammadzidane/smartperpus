@@ -14,7 +14,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        //
+        return view('author.index', array('authors' => Author::get()));
     }
 
     /**
@@ -35,7 +35,37 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate_data = $request->validate(
+            array(
+                'name'      => array('required'),
+                'price'     => array('required', 'integer'),
+                'image'     => array('required', 'file', 'max:2000', 'mimes:jpg'),
+                'author_id' => array('required'),
+                'genre'     => array('required'),
+            )
+        );
+
+        $validate_data['image'] = $validate_data['image']->getClientOriginalName();
+
+        // Author::create(
+        //     array(
+        //         'name' => $validate_data['author_id']
+        //     )
+        // );
+
+        // $author = Author::where('name', $validate_data['author_id'])->first();
+
+        // $author->books->create(
+        //     array(
+        //         'name'      => $validate_data['name'],
+        //         'price'     => $validate_data['price'],
+        //         'image'     => $validate_data['image'],
+        //         'author_id' => $author->id,
+        //     )
+        // );
+
+        // return 'berhasil menambah buku ';
+        dump($validate_data);
     }
 
     /**
@@ -46,7 +76,7 @@ class AuthorController extends Controller
      */
     public function show(Author $author)
     {
-        //
+        return view('author.show', compact('author'));
     }
 
     /**
@@ -57,7 +87,7 @@ class AuthorController extends Controller
      */
     public function edit(Author $author)
     {
-        //
+        return view('author.edit', compact('author'));
     }
 
     /**
@@ -69,7 +99,23 @@ class AuthorController extends Controller
      */
     public function update(Request $request, Author $author)
     {
-        //
+
+
+        $validate_data = $request->validate(
+            array(
+                'name' => array('required', 'unique:authors,name,' . $author->id),
+            )
+        );
+
+        $author->update(
+            array(
+                'name' => $validate_data['name'],
+            )
+        );
+
+        $pesan = 'Berhasil edit author ' . $author->name;
+
+        return redirect()->route('authors.index')->with('pesan', $pesan);
     }
 
     /**

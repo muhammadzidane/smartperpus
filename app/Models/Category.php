@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Category extends Model
 {
     use HasFactory;
+
+    protected $guarded = array();
+
+    public function books() {
+        return $this->belongsToMany('App\Models\Book')->withTimestamps();
+    }
 }
