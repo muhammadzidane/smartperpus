@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class PrintedBookStock extends Model
 {
     use HasFactory;
+
+    public function book() {
+        return $this->belongsTo('App\Models\Book');
+    }
 }

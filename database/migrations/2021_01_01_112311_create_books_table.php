@@ -19,6 +19,8 @@ class CreateBooksTable extends Migration
             $table->integer('price');
             $table->string('image', 50);
             $table->foreignId('author_id')->constrained()->onDelete('cascade');
+            $table->float('rating', 2, 1);
+            $table->integer('discount')->nullable();
             $table->timestamps();
         });
     }

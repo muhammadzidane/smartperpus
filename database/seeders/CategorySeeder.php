@@ -16,10 +16,10 @@ class CategorySeeder extends Seeder
     {
         $categories = collect(
             array(
-                'Komik', 'Aksi', 'Romantis', 'Petualangan', 'Drama',
-                'Komedi', 'Horror', 'Tentara', 'Kriminal', 'Fiksi Ilmiah',
-                'Fantasi', 'Misteri', 'Biografi', 'Ensiklopedia', 'Kamus',
-                'Jurnal', 'Filsafat',
+                'Komik',  'Novel', 'Komedi',  'Fiksi Ilmiah',
+                'Fantasi', 'Sejarah', 'Biografi', 'Ensiklopedia', 'Kamus',
+                'Jurnal', 'Filsafat', 'Pendidikan', 'Buku Masak', 'Gaya Hidup', 'Seni Dan Desain', 'Sastra',
+                'Psikologi', 'Ilmu Sosial', 'Pengembangan Diri', 'Bisnis', 'Teknologi dan Komputer', 'Matematika',
             )
         );
 

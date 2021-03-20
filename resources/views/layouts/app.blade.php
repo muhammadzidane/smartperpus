@@ -25,7 +25,7 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-cus-navbar h-100 shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-cus-navbar h-100 shadow-sm sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand text-righteous" href="{{ url('/') }}">
                     <img class="logo" src="{{ asset('img/logo.png') }}" alt="">
@@ -45,9 +45,10 @@
                                 <i class="fas fa-search search-icon"></i>
                             </button>
                             <input type="text" name="search" id="search" class="search-text"
-                                placeholder="Judul Buku, Author, Gendre, ...">
+                            placeholder="Judul Buku, Author, Gendre, ...">
                         </form>
                     </div>
+                    <div class="wkwk">wkwk</div>
 
                     <ul class="navbar-nav mr-auto nav-left">
                         <li id="categories" class="nav-item">
@@ -135,4 +136,5 @@
     </div>
 </body>
 
+<script src="{{ url('js/layouts-app.js') }}"></script>
 </html>
