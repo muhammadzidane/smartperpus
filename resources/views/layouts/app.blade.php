@@ -48,7 +48,6 @@
                             placeholder="Judul Buku, Author, Gendre, ...">
                         </form>
                     </div>
-                    <div class="wkwk">wkwk</div>
 
                     <ul class="navbar-nav mr-auto nav-left">
                         <li id="categories" class="nav-item">

@@ -2,7 +2,7 @@
 @foreach($book_types as $title_book => $books)
 
     <div class="book-deals my-5">
-    <div>
+    <div class="position-relative">
         <h3 class="book-deals-title mr-3">{{ $title_book }}</h3>
             <a class="show-all" href="{{ route('categories', array('category' => $book_categories[$counter++])) }}">
                 Lihat Semua

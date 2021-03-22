@@ -47,6 +47,38 @@ class SynopsisSeeder extends Seeder
                 'Pertandingan melawan Shiratorizawa telah sampai pada set kelima. Cedera yang dialami Tsukishima menyebabkan kekosongan pada pilar pertahanan Karasuno, tapi mereka terus berjuang dengan tekad kuat untuk merebut angka! Pertarungan sengit yang menguras stamina ini akhirnya sampai pada babak terakhir.
                 Siapakah yang akan mendapatkan predikat wakil prefektur?',
             ),
+            array(
+                'book_id' => 6,
+                'text'    =>
+
+                'Ketika rahim terkutuk muncul di fasilitas penahanan, SMA Jujutsu mengirim Itadori dan murid kelas satu lainnya untuk menangani situasi tersebut. Namun, Kutukan yang mereka hadapi jauh lebih kuat dari yang mereka duga! Itadori dan kawan-kawan sekarang memiliki dua pilihan: lari dan mungkin hidup, atau bertarung dan mati. Sementara mereka terganggu, Kutukan kuat dengan desain misterius di SMA Jujutsu dan Satoru Gojo berkumpul ...',
+            ),
+            array(
+                'book_id' => 7,
+                'text'    =>
+
+                'Setelah berhasil melewati seleksi akhir ujian untuk menjadi anggota Kisatsutai,Tanjiro ditemani Nezuko yang telah sadarkan diri, pergi ke suatu kota di mana para gadis muda dikabarkan menghilang secara misterius...!! Apakah ini juga ulah iblis!?
+                ',
+            ),
+            array(
+                'book_id' => 8,
+                'text'    =>
+
+                'Conan, Kogoro Mori, Toru Amuro, dan Kanenori Wakita. Rombongan yang aneh itu sampai ke sebuah gereja tua di pedalaman Nagano. Apakah mereka berhasil memecahkan misteri sandi dan pembunuhan berantai yang terjadi di sana? Di tengah penyelesaian kasus, conan juga terus berusaha mendapatkan petunjuk tentang identitas “Rum” yang sebenarnya!',
+            ),
+            array(
+                'book_id' => 9,
+                'text'    =>
+
+                'Fairy Tail kedatangan anggota baru! Tepat di saat Natsu, Lucy, Happy dan kawan-kawan diminta untuk mengikuti quest yang sudah berlangsung selama 100 tahun dari benua seberang sana! Apakah Natsu dkk bisa memahami inti dari quest yang akan diberikan!? Bagaimana Natsu dkk akan menjalani quest-nya!? Di sisi lain, sepertinya anggota baru Fairy Tail ada yang mencurigakan! Ikuti petulangan baru “Fairy Tail” yang seru!',
+            ),
+            array(
+                'book_id' => 10,
+                'text'    =>
+
+                'Natsu memulai petualangannya! Kali ini Natsu dan kawan-kawan harus berhadapan dengan “Dragon Eater” atau para pemakan naga. Mereka mengincar Dewa Naga Air yang merupakan target awal Natsu dan kawan-kawan dalam memulai quest! Di saat yang bersamaan, ternyata',
+            ),
+
         );
 
         foreach ($synopses as $synopsis) {

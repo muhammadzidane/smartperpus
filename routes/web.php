@@ -21,7 +21,9 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::fallback(function($wkwk) {
-    return view('not-found-route');
+    $faker = \Faker\Factory::create('id_ID');
+
+    dump($faker->lastName);
 });
 
 // Categories Route

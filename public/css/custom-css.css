@@ -1,3 +1,12 @@
+ul li {
+    list-style-type: none;
+    /* padding: 0; */
+}
+
+.tred, .tred-bold { color: #ee6f57; }
+.tred-bold { font-weight: 900; }
+.tbold { font-weight: 900; }
+
 .text-righteous, li a , .book-deals > h2{
     font-family: 'Righteous', cursive;
 }
@@ -15,16 +24,8 @@ body {
     background-color: #fffdf6;
 }
 
-.wkwk {
-    display: none;
-}
-
-#search:focus, .wkwk  {
-    /* display: none; */
-}
-
 .arrow-lihat-semua {
-    position: absolute !important;
+    position: absolute;
     right: -16px;
     top: 1.2px;
     background-color: #ea5455;
@@ -108,10 +109,6 @@ body {
 
 .logo-text {
     margin-left: 58px;
-}
-
-.nav-left .nav-link {
-    box-sizing: border-box;
 }
 
 .nav-left .nav-link:hover {
@@ -287,7 +284,7 @@ footer {
 
 /* Book Show */
 .book-show {
-    margin: 10px 0;
+    margin-top: 40px;
     display: flex;
 }
 
@@ -298,9 +295,13 @@ footer {
 }
 
 .book-show > :nth-child(2) {
-    background-color:#fff600;
+    /* background-color: #3B5998; */
+    padding-left: 50px;
     width: 70%;
+    display: flex;
+    flex-direction: column;
 }
+
 
 .book-show-link, .book-show-link:hover ,.desk-book a{
     text-decoration: none ;
@@ -315,36 +316,161 @@ footer {
     padding: 15px 0;
 }
 
-.book-show-desk {
-    background-color: darkgrey;
-    height: 100%;
-    padding: 20px;
-}
-
-.book-show-sinopsis {
-    background-color: blanchedalmond;
-    padding: 25px;
-}
-
-.book-show-recomended {
-    /* padding: 25px; */
+.book-show-images {
     display: flex;
-}
-
-.book-show-recomended div {
-    width: 50%;
-    padding: 10px;
-}
-
-.book-show-card > img {
+    margin: 20px 7px;
     width: 100%;
 }
 
-.book-show-all {
-    background-color: crimson;
+.book-show-images div {
+    padding: 0 5px;
     width: 25%;
+    transition: transform .2s;
+    cursor: pointer;
 }
 
+.book-show-images div:first-child {
+    transform: scale(1.1);
+    outline: 1.70px solid #ea5455;
+    /* margin-right: /s; */
+}
+
+.book-show-images div:hover, .book-show-images div:first-child{
+    transform: scale(1.1);
+}
+
+.book-show-buy {
+    padding: 20px;
+    width: 50%;
+}
+
+.white-content {
+    background-color: #fffdf6;
+    padding: 15px;
+    margin: 15px 0;
+    box-shadow: 0 0 0.7px #bbbbbb;
+}
+
+.book-show-sinopsis {
+    height: 50%;
+}
+
+.book-show-detail {
+    padding-left: 15px;
+    width: 50%;
+    border-bottom: 1px solid #e2d5d5;
+    border-end-end-radius: 6px;
+}
+.title-border-red {
+    border-bottom: 3px solid #cc435f;
+    width: max-content;
+}
+
+.book-payment {
+    border: 1px solid #f0a500;
+    background-color: #fffdf6;
+    width: 50%;
+    padding: 15px;
+    position: relative;
+    border-radius: 6px;
+}
+
+.book-payment div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-book {
+    cursor: pointer;
+    color: #94fc13;
+    position: absolute;
+    right: 3px;
+    top: 5px;
+    font-size: 22px;
+}
+
+.buy {
+    padding: 15px;
+    padding-bottom: 10px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+}
+
+.btn-red {
+    background-color: #ee6f57;
+    color: white;
+}
+
+.btn-red:hover {
+    background-color: #e84545;
+    color: white;
+}
+
+.btn-yellow {
+    background-color: #fff600;
+    color: white;
+}
+
+.btn-yellow:hover {
+    background-color: #cad315;
+    color: white;
+}
+
+.fa-heart {  font-size: 15px; }
+
+.share-sosmed span a i {
+    padding: 3px 5px;
+    color: white;
+}
+
+.home-and-anymore-show i {
+    color: #1b262c;
+    margin-left: 2px;
+}
+
+/* Wishlist */
+
+.btn-wishlist {
+    border: 0;
+    background-color: transparent;
+}
+
+.add-shop {
+    font-size: 15px;
+    color: #8e7f7f;
+}
+
+.btn-wishlist i { color: #ea5455; }
+.btn-wishlist .fa { display: none; }
+.btn-wishlist:hover .fa { display: inline-block; }
+.btn-wishlist:hover .far { display: none; }
+.fa-share-alt { color: #e4d3cf; }
+
+/* Ulasan Produk */
+.rating-product-reviews {
+    display: flex;
+    width: max-content;
+}
+
+.rating-product-reviews div:first-child div i{
+    color: gold;
+    font-size: 16px;
+}
+
+.rating-product-reviews > div:last-child h5 {
+    font-size: 45px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+}
+
+/* Share Sosmed */
+.fa-facebook-f { background: #3B5998; }
+.fa-twitter { background-color: #55ACEE; }
+.fa-instagram { background-color: #125688; }
 
 /* Rekomendasi Buku */
 .book-recommendations {
@@ -464,7 +590,7 @@ footer {
         height: 35%;
     }
 
-    .book-show-desk {
+    .book-show-buy {
         height: 65%;
     }
 
