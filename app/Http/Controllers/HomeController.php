@@ -26,12 +26,6 @@ class HomeController extends Controller
                     'Buku Diskon'               => $discount_books,
                     'Rekomendasi Komik / Manga' => $comic_books,
                 ),
-
-                'book_categories' =>
-                array(
-                    'discount_books',
-                    'komik',
-                ),
             )
         );
 

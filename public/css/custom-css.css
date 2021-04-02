@@ -3,6 +3,8 @@ ul li {
     /* padding: 0; */
 }
 
+.fa-star { color: gold; }
+.mt-c { margin-top: 75px !important; }
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
@@ -77,15 +79,12 @@ body {
 }
 
 #search-values {
-    /* display: none; */
     position: absolute;
-    background-color: aliceblue;
-    width: 50px;
-    text-align: center;
-}
-
-.circle-input:hover #search-values {
-    display: block;
+    width: 150%;
+    left: 8%;
+    background-color: #f6f5f5;
+    box-shadow: 0 0 1px black;
+    display: none;
 }
 
 .nav-left li a {
@@ -185,6 +184,8 @@ footer {
 /* Best Seller Book */
 .book-deals {
     background-color: #fffdf6;
+    width: 100% !important;
+    margin-top: 60px;
 }
 
 .book-deals > div:first-child, .kategori-pilihan > h3 {
@@ -204,7 +205,7 @@ footer {
 }
 
 .book {
-    width: 15.74%;
+    width: 171.31px;
     margin: 15px 5px;
     box-shadow: 0 0 1.2px black;
     display: flex;
@@ -216,7 +217,13 @@ footer {
 }
 
 .book:hover {
-    opacity: 0.95;
+    box-shadow: 0 0 4px black;
+}
+
+.book-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .book-persentage-discount {
@@ -227,7 +234,7 @@ footer {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     text-align: center;
-    color: #dfddc7;
+    color: white;
     font-weight: 600;
 }
 
@@ -277,14 +284,14 @@ footer {
 .desk-book {
     background-color:transparent;
     height: 100%;
-    padding: 12px 10px;
+    padding: 12px 10px 0 10px;
     font-size: 13px;
     overflow :hidden;
 }
 
 /* Book Show */
 .book-show {
-    margin-top: 40px;
+    margin-top: 21px;
     display: flex;
 }
 
@@ -351,16 +358,23 @@ footer {
     box-shadow: 0 0 0.7px #bbbbbb;
 }
 
-.book-show-sinopsis {
-    height: 50%;
+.detail-and-buy {
+    display: flex;
+    height: 100%;
 }
 
 .book-show-detail {
+    border-bottom: 1px solid #e2d5d5;
     padding-left: 15px;
     width: 50%;
-    border-bottom: 1px solid #e2d5d5;
-    border-end-end-radius: 6px;
+    border-end-end-radius: 12px;
 }
+
+.purchase-date {
+    color: #8e7f7f;
+    margin-left: 5px;
+}
+
 .title-border-red {
     border-bottom: 3px solid #cc435f;
     width: max-content;
@@ -370,6 +384,7 @@ footer {
     border: 1px solid #f0a500;
     background-color: #fffdf6;
     width: 50%;
+    height: 260px;
     padding: 15px;
     position: relative;
     border-radius: 6px;
@@ -420,6 +435,8 @@ footer {
 
 .fa-heart {  font-size: 15px; }
 
+.tsmall { font-size: 11px; }
+
 .share-sosmed span a i {
     padding: 3px 5px;
     color: white;
@@ -427,7 +444,7 @@ footer {
 
 .home-and-anymore-show i {
     color: #1b262c;
-    margin-left: 2px;
+    margin-left: 3px;
 }
 
 /* Wishlist */
@@ -440,6 +457,13 @@ footer {
 .add-shop {
     font-size: 15px;
     color: #8e7f7f;
+}
+
+.add-to-wishlist {
+    color: #ee6f57;
+    width: max-content;
+    margin-left: auto;
+    margin-right: 5px;
 }
 
 .btn-wishlist i { color: #ea5455; }
@@ -459,12 +483,46 @@ footer {
     font-size: 16px;
 }
 
-.rating-product-reviews > div:last-child h5 {
-    font-size: 45px;
+.rating-product-star {
     height: 100%;
     display: flex;
     align-items: center;
+    flex-direction: column;
     margin-left: 8px;
+}
+
+.filter-star { margin: 17px 17px 30px 17px }
+.filter-star button i { color: gold; }
+.rating-product-star h5 { font-size: 45px; }
+
+.border-yellow {
+    border: 1px solid #f9f871;
+    border-radius: 6px;
+}
+
+.borbot-gray {
+    border-bottom: 1px solid #e2d5d5;
+    margin-bottom: 40px;
+}
+
+.borbot-gray-0 { border-bottom: 1px solid #e2d5d5; }
+
+.borbot-gray-bold {
+    border-bottom: 3px solid #e2d5d5;
+}
+
+/* Customer Reviews */
+.customer-reviews {
+    display: flex;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #e2d5d5;
+}
+
+.customer-reviews-profile {
+    margin-right: 10px;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
 }
 
 /* Share Sosmed */
@@ -499,6 +557,7 @@ footer {
     color: white;
     width: 16.66%;
     text-align: center;
+    cursor: pointer;
 }
 
 .kp-2 > img, .kp-1 > img {
@@ -510,6 +569,7 @@ footer {
     background-color: #f6f5f5;
     width: 16.66%;
     text-align: center;
+    cursor: pointer;
 }
 
 .discount-time {
@@ -539,7 +599,7 @@ footer {
     position: absolute;
     left: 97.58%;
     bottom: 90%;
-    border: 5px solid #fffdf6;
+    border: 5px solid #fffdf6
 }
 
 /* Gambar gambar diskon */
@@ -555,6 +615,82 @@ footer {
 .discount-images div img {
     width: 100%;
     height: 120px;
+}
+
+/* Book Search */
+.right {
+    width: max-content;
+    margin: 0 0 20px auto;
+}
+.sort-books {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    padding: 5px;
+    border-left: 4px solid #ee6f57;
+}
+
+.filter-search {
+    height: max-content;
+}
+
+.active-search { border-bottom: 3px solid #e2d5d5; }
+
+.wkwk1 {display: flex;}
+.wkwk1 > div:first-child {
+    /* background-color: pink; */
+    width: 25%;
+}
+
+.wkwk1 > div:last-child {
+    /* background-color: #3B5998; */
+    width: 75%;
+}
+
+.btn-to-the-top {
+    background-color: transparent;
+    border: none;
+}
+
+.click-to-the-top {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+}
+
+.fa-caret-up {
+    background-color: #ea5455;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    border-radius: 100%;
+    padding-top: 6px;
+    font-size: 30px;
+    color: white;
+    border: 2px solid #f6f5f5;
+}
+
+/* Pagination */
+.pagination-custom {
+    display: flex;
+    width: max-content;
+}
+
+.pagination-custom div {
+    text-align: center;
+    padding-top: 6px;
+    margin-right: 3px;
+    border-radius: 100%;
+    width: 35px;
+    height: 35px;
+}
+
+.pagination-custom div:hover, .p-active {
+    cursor: pointer;
+    background-color: #ea5455;
+    width: 35px;
+    height: 35px;
+    color: white;
 }
 
 @media screen and (max-width: 767px) {

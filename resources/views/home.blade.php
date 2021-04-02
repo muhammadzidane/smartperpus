@@ -37,21 +37,34 @@
     </div>
 </div>
 
-@include('layouts/book-deals')
+@include('layouts.book-deals',
+    array(
+        'title' => 'Buku Diskon',
+        'books' => \App\Models\Book::where('discount', '!=', null)->get()
+    )
+)
 
+@include('layouts.book-deals',
+    array(
+        'title' => 'Rekomendasi Komik / Manga',
+        'books' => \App\Models\Category::where('name', 'komik')->first()->books
+    )
+)
 
-{{-- <div class="a">
-    <div class="a-1">
+<div class="container discount-images">
+    <div>
         <img src="{{ url('img/book/book-discount.jpg') }}">
     </div>
-    <div class="a-2">
+    <div>
         <img src="{{ url('img/book/book-discount.jpg') }}">
     </div>
-    <div class="a-3">
+    <div>
         <img src="{{ url('img/book/book-discount.jpg') }}">
     </div>
-</div> --}}
+</div>
 
-
+<div class="click-to-the-top">
+    <button class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up" aria-hidden="true"></i></button>
+</div>
 
 @endsection

@@ -2,10 +2,10 @@
 @section('content')
 
 <div class="home-and-anymore-show">
-    <a href="#">Home</a><i class="fas fa-caret-right"></i>
-    <a href="#">Categories</a><i class="fas fa-caret-right"></i>
-    <a href="#">Komik</a><i class="fas fa-caret-right"></i>
-    <a href="#">{{ $book->name }}</a>
+    <a class="tsmall" href="#">Home</a><i class="fas fa-caret-right tsmall"></i>
+    <a class="tsmall" href="#">Categories</a><i class="fas fa-caret-right tsmall"></i>
+    <a class="tsmall" href="#">Komik</a><i class="fas fa-caret-right tsmall"></i>
+    <span class="tsmall">{{ $book->name }}</span>
 </div>
 
 <div class="book-show">
@@ -28,13 +28,41 @@
             </div>
         </div>
     </div>
-    <div>
-        <div class="book-show-sinopsis white-content">
+    <div class="book-show-sinopsis">
+        <div class="white-content">
             <h4 class="tbold">{{ $book->name }}</h4>
+            <div class="d-flex my-1">
+                <div>
+                    <a href="#rating" class="text-decoration-none">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <span class="ml-1">{{ $book->rating }}</span>
+                    </a>
+                </div>
+                <div class="ml-2">
+                    <div>Terjual (103)</div>
+                </div>
+                <div class="ml-2">
+                    <div>Ulasan (103)</div>
+                </div>
+                <div class="ml-2">
+                    <div>Diskusi (20)</div>
+                </div>
+            </div>
             <h5><a href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a></h5>
-            <p>{{ $book->synopsis->text }}</p>
+            <div>
+                @if (strlen($book->synopsis->text) > 500)
+                    <p>{{ substr($book->synopsis->text, 0, 500) }} <a href="">Lihat Semua....</a></p>
+
+                    @else
+                    <p>{{ $book->synopsis->text }}</p>
+                @endif
+            </div>
         </div>
-        <div class="d-flex h-50">
+        <div class="detail-and-buy">
             <div class="book-show-detail">
                 <div>
                     <h5 class="title-border-red">Detail</h5>
@@ -64,7 +92,7 @@
             </div>
             <div class="book-payment">
                 <div class="d-flex justify-content-between">
-                    <h4>Stok Buku Cetak: <span class="tred-bold">{{ $book->printedStock->amount }}</span></h4>
+                    <h4 class="mb-3">Stok Buku Cetak: <span class="tred-bold">{{ $book->printedStock->amount }}</span></h4>
                     <i class="info-book fas fa-info-circle"></i>
                 </div>
                 <div>
@@ -87,7 +115,7 @@
                                 <i class="fa fa-heart"></i>
                                 <span>Wishlist</span>
                             </button>
-                            <div><i class="add-shop fas fa-shopping-cart"></i><i class="add-shop fa fa-plus mr-1" aria-hidden="true"></i>Keranjang</div>
+                            <div><i class="add-shop fas fa-shopping-cart"></i>Keranjang</div>
                             <div>
                                 <span class="share-sosmed">
                                     <span class="mr-1"><i class="fa fa-share-alt" aria-hidden="true"></i></span>
@@ -106,12 +134,12 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<div class="white-content p-4 mt-5">
-    <h4 class="tbold title-border-red">Ulasan Produk</h4>
+<div id="rating" class="white-content p-4 mt-c">
+    <h4 class="tbold title-border-red my-3">Ulasan Produk</h4>
+    <p class="tred-bold">{{ $book->name }}.</p>
     <div class="rating-product-reviews">
         <div>
             <div><i class="fa fa-star" aria-hidden="true"></i></div>
@@ -121,14 +149,160 @@
             <div><i class="fa fa-star" aria-hidden="true"></i></div>
         </div>
         <div>
-            <h5>5.0/5</h5>
+            <div class="rating-product-star">
+                <h5 class="mt-auto">{{ $book->rating }}/ 5</h5>
+                <div>(344)Total Ulasan</div>
+            </div>
         </div>
     </div>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque explicabo perspiciatis illo placeat totam, ipsam veniam vero porro nobis consequuntur enim tempore sapiente provident rem amet impedit sunt atque vel!</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque explicabo perspiciatis illo placeat totam, ipsam veniam vero porro nobis consequuntur enim tempore sapiente provident rem amet impedit sunt atque vel!</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque explicabo perspiciatis illo placeat totam, ipsam veniam vero porro nobis consequuntur enim tempore sapiente provident rem amet impedit sunt atque vel!</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque explicabo perspiciatis illo placeat totam, ipsam veniam vero porro nobis consequuntur enim tempore sapiente provident rem amet impedit sunt atque vel!</p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque explicabo perspiciatis illo placeat totam, ipsam veniam vero porro nobis consequuntur enim tempore sapiente provident rem amet impedit sunt atque vel!</p>
+    <div class="filter-star">
+        <span class="tbold mr-4">Filter</span>
+        <button class="btn">Lihat Semua</button>
+        <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 5 (32)</button>
+        <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 4 (40)</button>
+        <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 3 (0)</button>
+        <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 2 (2)</button>
+        <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 1 (0)</button>
+    </div>
+
+    @for($i = 0; $i < 3; $i++)
+        <div class="customer-reviews">
+            <div>
+                <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+            </div>
+            <div>
+                <div>
+                    <span>Muhammad Zidane</span>
+                    <span class="purchase-date">1 hari yang lalu</span>
+                </div>
+                <div>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                    <i class="fa fa-star" aria-hidden="true"></i>
+                </div>
+                <div class="mt-2">
+                    <p>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                    </p>
+                </div>
+            </div>
+        </div>
+    @endfor
 </div>
 
+
+
+<div class="mt-c">
+    <div class="product-discussion">
+        <div class="d-flex justify-content-between">
+            <h5 class="tbold title-border-red">Diskusi Terkait Produk (12)</h5>
+            <div class="d-flex">
+                <div class="mr-3 mt-2">Login untuk berdiskusi</div>
+                <div>
+                    <a class="btn btn-outline-primary" href="#">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <p class="tred-bold">{{ $book->name }}.</p>
+    </div>
+
+    <div>
+        <div class="white-content border-yellow p-4 mb-5">
+            <!-- Pertanyaan Customer -->
+            <div class="borbot-gray">
+                <div class="d-flex">
+                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>Muhammad Zidane</div>
+                        <div class="purchase-date">2 Minggu yang lalu</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mt-2">
+                        <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jawaban Admin -->
+            <div class="px-3">
+                <div class="d-flex">
+                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>Admin</div>
+                        <div class="purchase-date">6 Hari yang lalu</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mt-2">
+                        <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="white-content border-yellow p-4 mb-5">
+            <!-- Pertanyaan Customer -->
+            <div class="borbot-gray">
+                <div class="d-flex">
+                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>Muhammad Zidane</div>
+                        <div class="purchase-date">2 Minggu yang lalu</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mt-2">
+                        <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jawaban Admin -->
+            <div class="px-3">
+                <div class="d-flex">
+                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>Admin</div>
+                        <div class="purchase-date">6 Hari yang lalu</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="mt-2">
+                        <p>
+                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@include('layouts.book-deals',
+    array(
+        'title' => 'Rekomendasi Komik / Manga',
+        'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+    )
+)
+
+@include('layouts.book-deals',
+    array(
+        'title' => 'Buku Diskon',
+        'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+    )
+)
 @endsection

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -12,6 +13,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -45,8 +47,24 @@
                                 <i class="fas fa-search search-icon"></i>
                             </button>
                             <input type="text" name="search" id="search" class="search-text"
-                            placeholder="Judul Buku, Author, Gendre, ...">
+                            placeholder="Judul Buku, Nama Author">
                         </form>
+                        <div id="search-values">
+                            <div>
+                                <div>
+                                    <div>
+                                        <h6>Buku</h6>
+                                        <ul id="search-books">
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h6>Author</h6>
+                                        <ul id="search-authors">
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <ul class="navbar-nav mr-auto nav-left">
@@ -85,10 +103,7 @@
                         @guest
                         @if (Route::has('login'))
                         <li class="nav-item">
-                            <a class="nav-link text-body" href="{{ route('login') }}">
-                                Masuk
-                                <i class="fas fa-sign-in-alt ml-1"></i>
-                            </a>
+                            <a class="nav-link text-body" href="{{ route('login') }}">Login<i class="fas fa-sign-in-alt ml-1"></i></a>
                         </li>
                         @endif
 
@@ -128,12 +143,13 @@
         <footer class="">
             <div class="container">
                 <div class="row">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit
+                    Lorem ipsum dolor sit amet consectetur adipisicing elitaaaaaa
                 </div>
             </div>
         </footer>
     </div>
 </body>
 
-<script src="{{ url('js/layouts-app.js') }}"></script>
+<script src="{{ asset('js/my-app.js') }}"></script>
+
 </html>

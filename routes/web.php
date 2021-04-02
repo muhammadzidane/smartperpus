@@ -2,23 +2,31 @@
 
 use App\Http\Controllers\
 {
+    AjaxController,
     BookController, AuthorController, CategoryController, HomeController, TestController
 };
 
 use Illuminate\Support\Facades\{Route, Auth};
 use App\Models\{Author, Book, Category, BookCategorys};
 
-Route::get('/', array(HomeController::class, 'index'));
+Route::get('/', array(HomeController::class, 'index'))->name('home');
 
 // TEST
 Route::get('/test', array(TestController::class, 'test'));
+Route::get('/pagination', array(TestController::class, 'pagination'));
 
 Route::resource('/authors', AuthorController::class);
 Route::resource('/books', BookController::class);
 
-Auth::routes();
+// Test Ajax
+Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Ajax
+Route::post('ajax/request/store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
+
+
+
+Auth::routes();
 
 Route::fallback(function($wkwk) {
     $faker = \Faker\Factory::create('id_ID');

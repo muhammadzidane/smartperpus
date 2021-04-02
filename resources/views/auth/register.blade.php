@@ -42,12 +42,9 @@
                         <div class="form-group row">
                             <label for="email" class="col-md-4 col-form-label text-md-right">Role</label>
 
-                                <div class="col-md-6">
-                                    <select class="form-control" name="role" id="">
-                                        <option value="guest">Guest</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="superadmin">Superadmin</option>
-                                    </select>
+                                <div class="form-group">
+                                  <input type="text"
+                                    class="form-control" name="role" id="" aria-describedby="helpId" placeholder="">
                                 </div>
 
                                 @error('role')

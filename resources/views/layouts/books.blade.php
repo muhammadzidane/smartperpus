@@ -1,17 +1,4 @@
-<div class="book-deals">
-    <div class="position-relative">
-        <h3 class="book-deals-title mr-3">{{ $title }}</h3>
-            <a class="show-all" href="#">Lihat Semua</a>
-        <i class="arrow-lihat-semua far fa-arrow-alt-circle-right"></i>
-    </div>
-
-    @if(session('pesan'))
-        <div class="alert alert-primary" role="alert">
-            <strong>{{ session('pesan') }}</strong>
-        </div>
-    @endif
-
-    <div class="books">
+<div class="books">
         @foreach ($books as $book)
             <a class="book-show-link" href="{{ route('books.show', array('book' => $book->id)) }}">
                 <div class="book">
@@ -75,7 +62,9 @@
                     </div>
                     <div>
                         <div class="add-to-wishlist">
-                            <i class="far fa-heart"></i>
+                            <div>
+                                <i class="far fa-heart"></i>
+                            </div>
                         </div>
                     </div>
                     <div class="book-price">
@@ -90,5 +79,3 @@
             </a>
         @endforeach
     </div>
-</div>
-
