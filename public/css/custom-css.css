@@ -8,8 +8,10 @@ ul li {
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
+.text-grey { color: #686d76; }
+.synopsis { text-indent: 20px;}
 
-.text-righteous, li a , .book-deals > h2{
+.text-righteous, li a , .book-deals > h2, h4, h5, label{
     font-family: 'Righteous', cursive;
 }
 
@@ -22,9 +24,7 @@ body {
     background-color: #f6f5f5;
 }
 
-#search:focus {
-    background-color: #fffdf6;
-}
+#search:focus {  background-color: #fffdf6; }
 
 .arrow-lihat-semua {
     position: absolute;
@@ -82,8 +82,8 @@ body {
     position: absolute;
     width: 150%;
     left: 8%;
-    background-color: #f6f5f5;
-    box-shadow: 0 0 1px black;
+    background-color: #fffdf6;
+    box-shadow: 0 0 9px gray;
     display: none;
 }
 
@@ -414,7 +414,7 @@ footer {
 }
 
 .btn-red {
-    background-color: #ee6f57;
+    background-color: #ea5455;
     color: white;
 }
 
@@ -447,8 +447,37 @@ footer {
     margin-left: 3px;
 }
 
-/* Wishlist */
+/* User */
+.user {
+    display: flex;
+    position: relative;
+    border-radius: 25px;
+}
 
+.user-name {
+    color: #ee6f57;
+    padding: 8px 8px 0 6px;
+}
+
+.user-circle {
+    background-color: #e2d5d5;
+    border: 2px solid #fffdf6;
+    color: #fffdf6;
+    border-radius: 100%;
+    padding: 0 8px;
+    border-radius: 100%;
+    font-size: 22px;
+}
+
+.dropdown-user {
+    background-color: #fffdf6;
+    width: 380px;
+    position: absolute;
+    left: -220px;
+}
+
+
+/* Wishlist */
 .btn-wishlist {
     border: 0;
     background-color: transparent;
@@ -691,6 +720,72 @@ footer {
     width: 35px;
     height: 35px;
     color: white;
+}
+
+/* Login */
+#toggle-password { outline: none;}
+
+/* Modal Login */
+.modal-content {
+    border-radius: unset;
+    border: none;
+}
+
+#button-login {
+    background-color: #94fc13;
+    color: white;
+    width: 100%;
+    border: none;
+    height: 40px;
+    border-radius: 5px;
+}
+
+.form-control-login {
+    display: block;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #e2d5d5;
+    outline: none;
+}
+
+.login-header, .login-header-active {
+    cursor: pointer;
+    width: max-content;
+    border-bottom: 3px solid #e2d5d5;
+}
+
+.modal-content-login {
+    background-color: #fffdf6;
+    width: 100%;
+    padding: 20px 0;
+    border-radius: 4px;
+}
+
+#login-password::after {
+    content: 'wlwl';
+}
+
+.show-password {
+    background-color: transparent;
+    border: none;
+    text-align: right;
+    border-bottom: 1px solid #e2d5d5;
+}
+
+/* Register User */
+.register-user {
+    background-color: pink;
+    display: flex;
+}
+
+.form-register {
+    width: 40%;
+    background-color: #3B5998;
+}
+
+.register-user-pict {
+    width: 60%;
+    background-color: #94fc13;
 }
 
 @media screen and (max-width: 767px) {

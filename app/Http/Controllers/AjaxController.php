@@ -9,8 +9,11 @@ use Facade\FlareClient\Http\Response;
 class AjaxController extends Controller
 {
     public function ajaxRequestStore(Request $request) {
-        $authors = Author::where('name', 'like', '%' .$request->search_value . '%')->get(array('id', 'name'));
-        $books   = Book::where('name', 'like', '%' .$request->search_value . '%')->get(array('id', 'name'));
+        $authors = Author::where('name', 'like', '%' .$request->search_value . '%')
+        ->orderBy('name')->get(array('id', 'name'))->take(5);
+
+        $books   = Book::where('name', 'like', '%' .$request->search_value . '%')
+        ->orderBy('name')->get(array('id', 'name'))->take(5);
 
         return response()->json(
             array(

@@ -42,7 +42,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <div class="circle-input">
-                        <form class="search-form" action="" method="post">
+                        <form class="search-form" action="{{ route('login') }}" method="post">
                             <button type="submit">
                                 <i class="fas fa-search search-icon"></i>
                             </button>
@@ -51,14 +51,14 @@
                         </form>
                         <div id="search-values">
                             <div>
-                                <div>
+                                <div class="py-3">
                                     <div>
-                                        <h6>Buku</h6>
+                                        <h6 class="ml-3 tred-bold">Buku</h6>
                                         <ul id="search-books">
                                         </ul>
                                     </div>
                                     <div>
-                                        <h6>Author</h6>
+                                        <h6 class="ml-3 tred-bold">Author</h6>
                                         <ul id="search-authors">
                                         </ul>
                                     </div>
@@ -95,35 +95,44 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
 
-                        <li class="nav-item">
-                            <i class="fas fa-shopping-cart nav-link text-body"></i>
-                        </li>
-
                         <!-- Authentication Links -->
                         @guest
                         @if (Route::has('login'))
-                        <li class="nav-item">
-                            <a class="nav-link text-body" href="{{ route('login') }}">Login<i class="fas fa-sign-in-alt ml-1"></i></a>
+                        <li class="nav-item mr-2">
+                            <!-- Button trigger login modal -->
+                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modelId">Masuk</button>
                         </li>
                         @endif
 
                         @if (Route::has('register'))
-                        <!-- <li class="nav-item">
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li> -->
+                        </li>
                         @endif
                         @else
                         <li class="nav-item dropdown">
-                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
+                            <a id="navbarDropdown" class="nav-link" href="#" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Auth::user()->name }}
+                                <div class="user">
+                                    <div class="user-circle">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="user-name">
+                                        <div>{{ Auth::user()->first_name }}</div>
+                                    </div>
+                                </div>
                             </a>
 
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                    {{ __('Logout') }}
-                                </a>
+                            <div class="dropdown-user dropdown-menu" aria-labelledby="navbarDropdown">
+                                <div>
+                                    <div class="text-center">
+                                        <h5 class="tred-bold">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</h5>
+                                    </div>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                        document.getElementById('logout-form').submit();">
+                                        Logout
+                                    </a>
+                                </div>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
@@ -136,9 +145,61 @@
             </div>
         </nav>
 
+        @auth
+            <h1>sudah login0</h1>
+        @endauth
+
         <main class="py-4 container">
             @yield('content')
         </main>
+
+        <!-- Modal Login -->
+        <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered p-5" role="document">
+                <div class="modal-content modal-content-login">
+                    <div class="px-3 d-flex justify-content-between">
+                        <h5 class="modal-title tred login-header">Login</h5>
+                            <button id="login-exit" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('login') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="text" id="email" name="email" class="form-control-login"
+                                    aria-describedby="helpId">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="d-flex">
+                                    <input type="password" name="password" id="password" class="form-control-login"
+                                      aria-describedby="helpId" autocomplete="off">
+                                    <button id="toggle-password" type="button" class="show-password">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <div>
+                                    <div class="text-right">
+                                        <a href="#"><small>Lupa Kata Sandi ?</small></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button id="button-login" type="submit">Login</button>
+                            </div>
+                        </form>
+
+                        <div class="text-center">
+                            <h6 class="text-grey">Belum Memiliki Akun ?</h6>
+                            <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <footer class="">
             <div class="container">
@@ -149,6 +210,7 @@
         </footer>
     </div>
 </body>
+
 
 <script src="{{ asset('js/my-app.js') }}"></script>
 

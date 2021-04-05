@@ -1,13 +1,11 @@
+// JS untuk Navbar
 "use strict";
 
 $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    $(search).on('blur', function() {
-        $('#search-values').hide();
-    });
-
+    // Search Buku dan Author ( ada di Navbar )
     $('#search').on('keyup', function() {
         if ($(this).val() === '') {
             $('#search-values').hide();
@@ -31,17 +29,34 @@ $(document).ready(function () {
 
                     $('#search-books').html('');
                     data.books.forEach(element => {
-                        $('#search-books').append('<li>' + element.name +'</li>');
+                        $('#search-books').append(
+                            '<li><a href=\'#\' class="text-decoration-none text-body">' + element.name +'</a></li>'
+                        );
                     });
 
                     $('#search-authors').html('');
                     data.authors.forEach(element => {
-                        $('#search-authors').append('<li>' + element.name +'</li>');
+                        $('#search-authors').append('<li><a href=\'#\' class="text-decoration-none text-body">' + element.name +'</a></li>');
                     });
-
                 }
             });
         }
     });
 
+    // Modal Login
+    $('#toggle-password').on('click', function() {
+        if ($('#password').is('input[type=password]')) {
+            $(this).html('<i class="fas fa-low-vision"></i>');
+            $('#password').attr('type', 'text');
+        }
+        else {
+            $(this).html('<i class="fas fa-eye"></i>');
+            $('#password').attr('type', 'password');
+        }
+    });
+
+    $('#login-exit').on('click', function() {
+        $('#email').val('');
+        $('#password').val('');
+    });
 });

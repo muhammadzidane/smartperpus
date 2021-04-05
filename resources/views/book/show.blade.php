@@ -53,12 +53,12 @@
                 </div>
             </div>
             <h5><a href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a></h5>
-            <div>
+            <div class="mt-3">
                 @if (strlen($book->synopsis->text) > 500)
                     <p>{{ substr($book->synopsis->text, 0, 500) }} <a href="">Lihat Semua....</a></p>
 
                     @else
-                    <p>{{ $book->synopsis->text }}</p>
+                    <p class="synopsis">{{ $book->synopsis->text }}</p>
                 @endif
             </div>
         </div>
