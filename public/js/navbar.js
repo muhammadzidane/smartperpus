@@ -56,7 +56,11 @@ $(document).ready(function () {
     });
 
     $('#login-exit').on('click', function() {
-        $('#email').val('');
-        $('#password').val('');
+        // $('#email').val('');
+        // $('#password').val('');
+    });
+
+    $(document).on('scroll', function(e) {
+        console.log(e);
     });
 });

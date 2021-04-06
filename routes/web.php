@@ -24,8 +24,6 @@ Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 // Ajax
 Route::post('ajax/request/store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
 
-
-
 Auth::routes();
 
 Route::fallback(function($wkwk) {

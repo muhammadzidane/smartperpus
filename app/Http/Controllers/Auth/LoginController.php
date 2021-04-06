@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -23,7 +24,29 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-        /**
+    public function login(Request $request) {
+
+        $request->validate(
+            array(
+                'email'    => 'required|email',
+                'password' => 'required',
+            )
+        );
+
+        $user           = User::firstWhere('email', $request->email);
+        $check_password = $user !== null ? Hash::check($request->password, $user->password) : '';
+
+        if ($check_password && $user !== null) {
+            Auth::login($user);
+
+            return redirect('/');
+        }
+        else {
+            return redirect()->back()->with('errorLogin', 'Email / Password anda salah');
+        }
+    }
+
+    /**
      * Log the user out of the application.
      *
      * @param  \Illuminate\Http\Request $request

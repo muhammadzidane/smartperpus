@@ -119,7 +119,6 @@
                             <div>
                                 <span class="share-sosmed">
                                     <span class="mr-1"><i class="fa fa-share-alt" aria-hidden="true"></i></span>
-
                                     <span><a href="#"><i class="fab fa-facebook-f"></i></a></span>
                                     <span><a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a></span>
                                     <span><a href="#"><i class="fab fa-instagram"></i></a></span>

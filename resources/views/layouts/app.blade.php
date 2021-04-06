@@ -42,7 +42,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <div class="circle-input">
-                        <form class="search-form" action="{{ route('login') }}" method="post">
+                        <form class="search-form" action="#" method="post">
                             <button type="submit">
                                 <i class="fas fa-search search-icon"></i>
                             </button>
@@ -125,11 +125,13 @@
 
                             <div class="dropdown-user dropdown-menu" aria-labelledby="navbarDropdown">
                                 <div>
-                                    <div class="text-center">
-                                        <h5 class="tred-bold">{{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</h5>
+                                    <div class="p-3 ">
+                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Akun Saya</a></h6>
+                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Keranjang Saya</a></h6>
+                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Wishlist Saya</a></h6>
                                     </div>
-                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                        document.getElementById('logout-form').submit();">
+                                    <a class="dropdown-item text-right" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                        document.getElementById('logout-form').submit();">
                                         Logout
                                     </a>
                                 </div>
@@ -145,10 +147,6 @@
             </div>
         </nav>
 
-        @auth
-            <h1>sudah login0</h1>
-        @endauth
-
         <main class="py-4 container">
             @yield('content')
         </main>
@@ -159,17 +157,27 @@
                 <div class="modal-content modal-content-login">
                     <div class="px-3 d-flex justify-content-between">
                         <h5 class="modal-title tred login-header">Login</h5>
-                            <button id="login-exit" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                        <button id="login-exit" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
+                        @if (session('errorLogin'))
+                            <div class="tred small small mb-2" role="alert">
+                                <strong>{{ session('errorLogin') }}</strong>
+                            </div>
+                        @endif
                         <form action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="text" id="email" name="email" class="form-control-login"
-                                    aria-describedby="helpId">
+                                <input type="email" id="email" name="email" class="form-control-login"
+                                  aria-describedby="helpId" value="{{ old('email') }}">
+                                @error('email')
+                                    <span class="tred small small" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
@@ -180,6 +188,11 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
+                                    @error('password')
+                                        <span class="tred small small" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 <div>
                                     <div class="text-right">
                                         <a href="#"><small>Lupa Kata Sandi ?</small></a>
@@ -189,9 +202,18 @@
                             <div class="form-group">
                                 <button id="button-login" type="submit">Login</button>
                             </div>
+                            <div class="mb-3">
+                                <div class="login-atau">atau</div>
+                            </div>
+                            <div class="form-group">
+                                <div class="another-login text-center">
+                                    <span class="p-3"><a href="#"><i class="fab fa-facebook-f"></i></a></span>
+                                    <span class="p-3"><a href="#"><i class="fab fa-google"></i></a></span>
+                                </div>
+                            </div>
                         </form>
 
-                        <div class="text-center">
+                        <div class="text-center mt-5">
                             <h6 class="text-grey">Belum Memiliki Akun ?</h6>
                             <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
                         </div>
@@ -212,6 +234,6 @@
 </body>
 
 
-<script src="{{ asset('js/my-app.js') }}"></script>
+<script src="{{ asset('js/navbar.js') }}"></script>
 
 </html>
