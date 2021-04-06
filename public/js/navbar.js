@@ -65,6 +65,9 @@ $(document).ready(function () {
     });
 
     $('.click-to-the-top').on('click', function() {
-        $(document).scrollTop(0);
+        let scrollY        = $(document).scrollTop();
+        let scrollToTheTop = setInterval( function() {
+            $(document).scrollTop() == 0 ? clearInterval(scrollToTheTop) : $(document).scrollTop(scrollY-=14);
+        });
     });
 });

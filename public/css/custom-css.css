@@ -693,6 +693,7 @@ footer {
 }
 
 .click-to-the-top {
+    display: none;
     position: fixed;
     bottom: 50px;
     right: 50px;
