@@ -735,21 +735,6 @@ footer {
 
 /* Login */
 #toggle-password { outline: none;}
-/* .login-atau::after{
-    content: 'test';
-    width: 500px;
-    height: max-content;
-    background-color: red;
-    border-bottom: 1px solid black;
-} */
-
-.anjir12 {
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid #000;
-    line-height: 0.1em;
-    margin: 10px 0 20px;
-}
 
 .login-atau {
   overflow: hidden;

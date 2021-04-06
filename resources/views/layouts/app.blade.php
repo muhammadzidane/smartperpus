@@ -213,7 +213,7 @@
                             </div>
                         </form>
 
-                        <div class="text-center mt-5">
+                        <div class="text-center mt-4">
                             <h6 class="text-grey">Belum Memiliki Akun ?</h6>
                             <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
                         </div>

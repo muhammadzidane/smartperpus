@@ -60,7 +60,11 @@ $(document).ready(function () {
         // $('#password').val('');
     });
 
-    $(document).on('scroll', function(e) {
-        console.log(e);
+    $(document).on('scroll', function() {
+        $(this).scrollTop() >= 40 ? $('.click-to-the-top').show() : $('.click-to-the-top').hide();
+    });
+
+    $('.click-to-the-top').on('click', function() {
+        $(document).scrollTop(0);
     });
 });
