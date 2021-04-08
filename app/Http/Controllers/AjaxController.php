@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book};
+use App\Models\{Author, Book, User};
 use Facade\FlareClient\Http\Response;
+use Illuminate\Support\Facades\Hash;
 
 class AjaxController extends Controller
 {
@@ -21,5 +22,31 @@ class AjaxController extends Controller
                 'authors' => $authors,
             )
         );
+    }
+
+    public function checkLogin(Request $request) {
+        $user     = User::where(
+            array(
+                array('email', $request->email),
+            )
+        )->first( array('email', 'password'));
+
+        $check_password = $user !== null ? Hash::check($request->password, $user->password) : '';
+
+        if (!$check_password || $user == null) {
+            return response()->json(
+                array(
+                    'message' => 'Email / Password anda salah',
+                    'success' => false,
+                )
+            );
+        }
+        else {
+            return response()->json(
+                array(
+                    'success' => true,
+                )
+            );
+        }
     }
 }

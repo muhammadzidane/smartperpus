@@ -1,73 +1,89 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-@section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Login') }}</div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
+    <title>Smartperpus</title>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
 
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
 
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
+</head>
 
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-8 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Login') }}
-                                </button>
-
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </form>
+<body>
+    <div class="register-user container py-4">
+        <div class="form-register">
+            <form action="{{ route('login') }}" method="POST">
+                <h5 class="tred-bold mb-4">Login</h5>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control-login  ">
+                    @error('email')
+                    <span class="tred small small" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
                 </div>
-            </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="d-flex">
+                        <input type="password" name="password" id="password" class="form-control-login"
+                            aria-describedby="helpId" autocomplete="off">
+                        <button id="toggle-password" type="button" class="show-password">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    @error('password')
+                    <span class="tred small" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <button id="button-login" type="submit">Daftar</button>
+                </div>
+                <div class="mb-3">
+                    <div class="login-atau tred">Atau login dengan</div>
+                </div>
+                <div class="form-group">
+                    <div class="another-login text-center">
+                        <span class="p-3"><a href="#"><i class="fab fa-facebook-f login-hover"></i></a></span>
+                        <span class="dot-login"></span>
+                        <span class="p-3"><a href="#"><i class="fab fa-google login-hover"></i></a></span>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <h6 class="text-grey">Belum Memiliki Akun ?</h6>
+                    <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
+                </div>
+                @csrf
+            </form>
+        </div>
+        <div class="register-user-pict">
+            <img src="{{ asset('img/form-register.jpg') }}">
         </div>
     </div>
-</div>
-@endsection
+
+    <div class="text-center my-5">
+        <h6 class="tred-bold">Smartperpus - {{ date('Y', strtotime('now')) }}</h6>
+    </div>
+
+    <script src="{{ asset('js/navbar.js') }}"></script>
+</body>
+
+</html>

@@ -8,6 +8,7 @@ use App\Http\Controllers\
 
 use Illuminate\Support\Facades\{Route, Auth};
 use App\Models\{Author, Book, Category, BookCategorys};
+use Symfony\Component\HttpKernel\DataCollector\AjaxDataCollector;
 
 Route::get('/', array(HomeController::class, 'index'))->name('home');
 
@@ -22,7 +23,10 @@ Route::resource('/books', BookController::class);
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 
 // Ajax
-Route::post('ajax/request/store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
+Route::prefix('ajax')->group(function() {
+    Route::post('request/check-login', array(AjaxController::class, 'checkLogin'));
+    Route::post('request/store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
+});
 
 Auth::routes();
 

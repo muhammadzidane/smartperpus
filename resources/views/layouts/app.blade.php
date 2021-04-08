@@ -100,7 +100,7 @@
                         @if (Route::has('login'))
                         <li class="nav-item mr-2">
                             <!-- Button trigger login modal -->
-                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modelId">Masuk</button>
+                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
                         </li>
                         @endif
 
@@ -152,10 +152,10 @@
         </main>
 
         <!-- Modal Login -->
-        <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+        <div class="modal fade" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered p-5" role="document">
                 <div class="modal-content modal-content-login">
-                    <div class="px-3 d-flex justify-content-between">
+                    <div class="px-3 mb-4 d-flex justify-content-between">
                         <h5 class="modal-title tred login-header">Login</h5>
                         <button id="login-exit" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -163,36 +163,34 @@
                     </div>
                     <div class="modal-body">
                         @if (session('errorLogin'))
-                            <div class="tred small small mb-2" role="alert">
-                                <strong>{{ session('errorLogin') }}</strong>
-                            </div>
+                            <div class="error-backend" onclick="alertError(`{{ session('errorLogin') }}`)"></div>
                         @endif
-                        <form action="{{ route('login') }}" method="POST">
+
+                        <div id="error-login">
+                        </div>
+
+                        <form id="form-login" action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" id="email" name="email" class="form-control-login"
-                                  aria-describedby="helpId" value="{{ old('email') }}">
+                                 value="{{ old('email') }}" >
                                 @error('email')
-                                    <span class="tred small small" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <div class="error-backend" onclick="alertError(`Email {{ $message }}`)"></div>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <div class="d-flex">
                                     <input type="password" name="password" id="password" class="form-control-login"
-                                      aria-describedby="helpId" autocomplete="off">
+                                     autocomplete="off" >
                                     <button id="toggle-password" type="button" class="show-password">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                    @error('password')
-                                        <span class="tred small small" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                @error('password')
+                                    <div class="error-backend" onclick="alertError(`Password {{ $message }}`)"></div>
+                                @enderror
                                 <div>
                                     <div class="text-right">
                                         <a href="#"><small>Lupa Kata Sandi ?</small></a>
@@ -200,15 +198,16 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button id="button-login" type="submit">Login</button>
+                                <button id="button-login" class="button-login" type="submit">Login</button>
                             </div>
                             <div class="mb-3">
-                                <div class="login-atau">atau</div>
+                                <div class="login-atau tred">Atau login dengan</div>
                             </div>
                             <div class="form-group">
                                 <div class="another-login text-center">
-                                    <span class="p-3"><a href="#"><i class="fab fa-facebook-f"></i></a></span>
-                                    <span class="p-3"><a href="#"><i class="fab fa-google"></i></a></span>
+                                    <span class="p-3"><a href="#"><i class="fab fa-facebook-f login-hover"></i></a></span>
+                                    <span class="dot-login"></span>
+                                    <span class="p-3"><a href="#"><i class="fab fa-google login-hover"></i></a></span>
                                 </div>
                             </div>
                         </form>
