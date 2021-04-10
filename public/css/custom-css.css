@@ -10,6 +10,9 @@ ul li {
 .tbold { font-weight: 900; }
 .text-grey { color: #686d76; }
 .synopsis { text-indent: 20px;}
+.fa-long-arrow-alt-left {
+    font-size: 19px;
+}
 
 .text-righteous, li a , .book-deals > h2, h4, h5, label{
     font-family: 'Righteous', cursive;
@@ -779,7 +782,7 @@ footer {
     border: none;
 }
 
-.button-login {
+.button-submit {
     cursor: not-allowed;
     background-color: #e2d5d5;
     color: white;
@@ -794,7 +797,7 @@ footer {
     background-color: #fff600;
 }
 
-.form-control-login {
+.form-control-custom {
     display: block;
     width: 100%;
     border: none;
@@ -843,6 +846,24 @@ footer {
 .register-user-pict img {
     max-width: 100%;
     height: auto;
+}
+
+
+/* .error-login { display: flex; } */
+.error-register {
+    width: 100%;
+    border: 1px solid #94fc13;
+    margin: 20px 0;
+    padding: 5px 0 5px 10px;
+    color: #ee6f57;
+    border-radius: 4px;
+    font-size: 12.42px;
+}
+
+.fa-exclamation-triangle {
+    font-size: 15px;
+    margin-right: 8px;
+    color: #94fc13;
 }
 
 @media screen and (max-width: 767px) {

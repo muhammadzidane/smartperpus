@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\{Author, Book, User};
 use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AjaxController extends Controller
 {
@@ -46,6 +47,30 @@ class AjaxController extends Controller
                 array(
                     'success' => true,
                 )
+            );
+        }
+    }
+
+    public function register(Request $request) {
+        $validator = Validator::make($request->all(),
+            array(
+                'nama_awal'           => 'required|string',
+                'nama_akhir'          => 'required|string',
+                'email'               => 'required|email|unique:users,email',
+                'password'            => 'required|min:6',
+                'konfirmasi_password' => 'required|min:6|same:password',
+            )
+        );
+
+        if ($validator->fails()) {
+
+            return response()->json(
+                array('errors' => $validator->errors())
+            );
+        }
+        else {
+            return response()->json(
+                array('errors' => '')
             );
         }
     }

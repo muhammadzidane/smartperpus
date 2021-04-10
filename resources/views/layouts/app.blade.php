@@ -173,8 +173,8 @@
                             @csrf
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control-login"
-                                 value="{{ old('email') }}" >
+                                <input type="email" id="email" name="email" class="form-control-custom login-form"
+                                 value="{{ old('email') }}" required>
                                 @error('email')
                                     <div class="error-backend" onclick="alertError(`Email {{ $message }}`)"></div>
                                 @enderror
@@ -182,8 +182,8 @@
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <div class="d-flex">
-                                    <input type="password" name="password" id="password" class="form-control-login"
-                                     autocomplete="off" >
+                                    <input type="password" name="password" id="password" class="form-control-custom login-form"
+                                     autocomplete="off" required>
                                     <button id="toggle-password" type="button" class="show-password">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
@@ -193,12 +193,12 @@
                                 @enderror
                                 <div>
                                     <div class="text-right">
-                                        <a href="#"><small>Lupa Kata Sandi ?</small></a>
+                                        <a href="{{ route('forgot.password') }}"><small>Lupa Kata Sandi ?</small></a>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button id="button-login" class="button-login" type="submit">Login</button>
+                                <button id="button-submit" class="button-submit" type="submit">Login</button>
                             </div>
                             <div class="mb-3">
                                 <div class="login-atau tred">Atau login dengan</div>
@@ -234,5 +234,6 @@
 
 
 <script src="{{ asset('js/navbar.js') }}"></script>
+<script src="{{ asset('js/helper-functions.js') }}"></script>
 
 </html>

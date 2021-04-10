@@ -70,14 +70,17 @@ $(document).ready(function () {
         });
     });
 
+
+    keyUpToggleFormButton('.login-form');
+
     // Validasi Email & Password
-    $('#button-login').on('click', function (e) {
+    $('#button-submit').on('click', function (e) {
         e.preventDefault();
 
-        if ($(this).hasClass('active-login') && $('#email').val() != '' && $('#password').val() != '') {
+        if ($(this).hasClass('active-login') && checkFormRequiredInputs('.login-form')) {
             $.ajax({
                 type: "POST",
-                url: "/ajax/request/check-login",
+                url : "/ajax/request/check-login",
                 data: {
                     '_token'  : csrfToken,
                     'email'   : $('#email').val(),
@@ -99,24 +102,25 @@ $(document).ready(function () {
         }
     });
 
-
-    $('.form-control-login').on('keyup', function () {
-        if ($('input[type=email]').val() != '' && $('input[type=password]').val() != '') {
-            $('#button-login').addClass('active-login');
-        } else {
-            $('#button-login').removeClass('active-login');
-        }
-    });
-
     // Error Login
     if ($('.error').length) {
         $('#login').trigger('click');
     }
 
-    // Menghapus pesan error login, keluar dari modal login
+    // Menghapus pesan error dan input value login, saat men-click tombol exit pada modal login
     $('#login-exit').on('click', function () {
         $('.error').html('');
         $('#errorLogin').html('');
+        $('#email').val('');
+        $('#password').val('');
+    });
+
+    // Menghapus input value login, saat menekan tombol keyboard 'ESC'
+    $(document).on('keyup', function(e) {
+        if (e.code == 'Escape') {
+            $('#email').val('');
+            $('#password').val('');
+        }
     });
 
     // Jika validasi form login bagian backend mulai bekerja, maka munculkan alert
