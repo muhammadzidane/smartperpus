@@ -52,7 +52,8 @@ $(document).ready(function () {
         if ($('#password').is('input[type=password]')) {
             $(this).html('<i class="fas fa-low-vision"></i>');
             $('#password').attr('type', 'text');
-        } else {
+        }
+        else {
             $(this).html('<i class="fas fa-eye"></i>');
             $('#password').attr('type', 'password');
         }
@@ -129,28 +130,29 @@ $(document).ready(function () {
 
     // Modul ~ Search Book
     // Filter minimum / maksimum harga
+    let filter_html = function(text, value = null , filterName = null) {
+        let val  = `<div class="search-filter" id="${filterName}" data-filter-value="${value}">`;
+            val += `<span class="search-filter-value">${text}</span>`;
+            val += `<i class="exit-filter fa fa-times text-grey ml-2" aria-hidden="true"></i>`;
+            val += `</div>`;
+
+        return val;
+    };
+
+    let star_value    = 0;
+
     $('#min-max-value').on('click', function(e) {
         e.preventDefault();
-
-        $('.click-to-the-top').trigger('click');
 
         let min_price_val = $('#min_price').val();
         let max_price_val = $('#max_price').val();
         let filter_vals   = [];
 
-
-        let filter_html = function(text, value , filterName) {
-            let val  = `<div class="search-filter" id="${filterName}" data-filter-value="${value}">`;
-                val += `<span class="search-filter-value">${text}</span>`;
-                val += `<i class="exit-filter fa fa-times text-grey ml-2" aria-hidden="true"></i>`;
-                val += `</div>`;
-
-            return val;
-        };
+        $('.click-to-the-top').trigger('click');
 
         $.ajax({
             type: "POST",
-            url : "/ajax/request/min-max-price",
+            url : "/ajax/request/filter-search",
             data: {
                 '_token'   : csrfToken,
                 'min_price': min_price_val,
@@ -179,12 +181,13 @@ $(document).ready(function () {
 
                     $.ajax({
                         type: "POST",
-                        url : "/ajax/request/min-max-price",
+                        url : "/ajax/request/filter-search",
                         data: {
-                            '_token'   : csrfToken,
-                            'min_price': $('#filter_min_price').data('filter-value') ?? 0,
-                            'max_price': $('#filter_max_price').data('filter-value') ?? 999999999,
-                            'keywords' : getUrlParameter('keywords'),
+                            '_token'    : csrfToken,
+                            'min_price' : $('#filter_min_price').data('filter-value') ?? 0,
+                            'max_price' : $('#filter_max_price').data('filter-value') ?? 999999999,
+                            'star_value': star_value,
+                            'keywords'  : getUrlParameter('keywords'),
                         },
                         success: function (response) {
                             $('#book-search').html(response.books);
@@ -197,8 +200,43 @@ $(document).ready(function () {
         });
     });
 
-    // if ($('#filter_min_price').is(':empty')) {
-    // }
+    // Filter Rating
+    $('.filter-star-search').on('click', function() {
+        let min_price_val = $('#min_price').val();
+        let max_price_val = $('#max_price').val();
+
+        let filter_vals = [];
+
+        star_value += $(this).data('filter-star');
+
+        $.ajax({
+            type: "POST",
+            url : "/ajax/request/filter-search",
+            data: {
+                '_token'    : csrfToken,
+                'min_price' : min_price_val,
+                'max_price' : max_price_val,
+                'star_value': star_value,
+                'keywords'  : getUrlParameter('keywords'),
+            },
+            success : function (response) {
+                $('.click-to-the-top').trigger('click');
+                $('#book-search').html(response.books);
+
+                filter_vals.push(filter_html(`Bintang ${star_value}`));
+
+                filter_vals.forEach( function(value) {
+                    $('#search-filters').append(value);
+                });
+
+                $('.exit-filter').on('click', function() {
+                    $(this).parent().remove();
+
+                    // bagian ini belum di lanjut!
+                });
+            }
+        });
+    });
 
     // Book Search - Animasi transparan buku buku
     let count = 0;

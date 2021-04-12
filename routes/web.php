@@ -29,7 +29,10 @@ Route::prefix('/ajax/request/')->group(function() {
     Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
     Route::post('check-login', array(AjaxController::class, 'checkLogin'));
     Route::post('register', array(AjaxController::class, 'register'));
-    Route::post('min-max-price', array(AjaxController::class, 'minMaxPrice'));
+
+    // Filter
+    Route::post('filter-search', array(AjaxController::class, 'filterSearch'));
+    Route::post('filter-star', array(AjaxController::class, 'filterStar'));
 });
 
 Auth::routes();

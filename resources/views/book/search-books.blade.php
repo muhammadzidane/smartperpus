@@ -41,29 +41,29 @@
         <div class="white-content">
             <h6 class="tbold borbot-gray-0 pb-2">Rating</h6>
             <div class="p-2">
-                <div>
+                <div data-filter-star="5" class="filter-star-search c-p">
                     @for ($i = 0; $i < 5; $i++)
                         <i class="fa fa-star" aria-hidden="true"></i>
                     @endfor
                 </div>
-                <div>
+                <div data-filter-star="4" class="filter-star-search c-p">
                     @for ($i = 0; $i < 4; $i++)
                         <i class="fa fa-star" aria-hidden="true"></i>
                     @endfor
                     <span> - ke atas</span>
                 </div>
-                <div>
+                <div data-filter-star="3" class="filter-star-search c-p">
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <span> - ke atas</span>
                 </div>
-                <div>
+                <div data-filter-star="2" class="filter-star-search c-p">
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <span> - ke atas</span>
                 </div>
-                <div>
+                <div data-filter-star="1" class="filter-star-search c-p">
                     <i class="fa fa-star" aria-hidden="true"></i>
                     <span> - ke atas</span>
                 </div>

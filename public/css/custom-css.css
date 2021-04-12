@@ -3,6 +3,8 @@ ul li {
     /* padding: 0; */
 }
 
+
+.c-p { cursor: pointer; }
 .fa-star { color: gold; }
 .mt-c { margin-top: 75px !important; }
 .tred, .tred-bold { color: #ee6f57; }

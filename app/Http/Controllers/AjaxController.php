@@ -77,21 +77,43 @@ class AjaxController extends Controller
     }
 
     // Filter minimal dan maksimal harga
-    public function minMaxPrice(Request $request) {
+    public function filterSearch(Request $request) {
         $min_price = $request->min_price != '' ? $request->min_price : 0;
         $max_price = $request->max_price != '' ? $request->max_price : 9999999999;
+
+
+        $where_queries = array(
+            array('name', 'like', '%' . $request->keywords . '%'),
+        );
+
+        if ($request->star_value) {
+            array_push($where_queries, array('rating', '>=', $request->star_value));
+        };
 
         $view = view('layouts.books',
             array(
                 'books' =>
                 \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-                ->where('name', 'like', '%' . $request->keywords . '%')
-                ->get()
+                ->where($where_queries)->get()
+            )
+        )->render();
+
+
+        return response()->json(
+            array('books' => $view, 'min' => $min_price, 'max' => $max_price)
+        );
+    }
+
+    public function filterStar(Request $request) {
+        $view = view('layouts.books',
+            array(
+                'books' =>
+                \App\Models\Book::where('rating', '>=', (int) $request->star_value)->get()
             )
         )->render();
 
         return response()->json(
-            array('books' => $view, 'min' => $min_price, 'max' => $max_price)
+            array('books' => $view)
         );
     }
 }
