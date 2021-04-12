@@ -31,25 +31,29 @@
     <div class="book-show-sinopsis">
         <div class="white-content">
             <h4 class="tbold">{{ $book->name }}</h4>
-            <div class="d-flex my-1">
+            <div class="my-1 d-flex">
                 <div>
-                    <a href="#rating" class="text-decoration-none">
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                        <span class="ml-1">{{ $book->rating }}</span>
-                    </a>
+                    <div>
+                        <a href="#rating" class="text-decoration-none">
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <span class="ml-1">{{ $book->rating }}</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="ml-2">
-                    <div>Terjual (103)</div>
-                </div>
-                <div class="ml-2">
-                    <div>Ulasan (103)</div>
-                </div>
-                <div class="ml-2">
-                    <div>Diskusi (20)</div>
+                <div class="d-flex ml-2">
+                    <div class="ml-1">
+                        <div>Terjual (103) <span class="tbold">|</span></div>
+                    </div>
+                    <div class="ml-1">
+                        <div>Ulasan (103) <span class="tbold">|</span></div>
+                    </div>
+                    <div class="ml-1">
+                        <div>Diskusi (20)</div>
+                    </div>
                 </div>
             </div>
             <h5><a href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a></h5>

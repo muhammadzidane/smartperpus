@@ -1,7 +1,6 @@
 // JS untuk Navbar
 "use strict";
 
-
 $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -9,10 +8,11 @@ $(document).ready(function () {
     $('#login').trigger('click');
 
     // Search Buku dan Author ( ada di Navbar )
-    $('#search').on('keyup', function () {
+    $('#keywords').on('keyup', function () {
         if ($(this).val() === '') {
             $('#search-values').hide();
-        } else {
+        }
+        else {
             $('#search-values').show();
             $.ajax({
                 type: 'POST',
@@ -69,7 +69,6 @@ $(document).ready(function () {
             $(document).scrollTop() == 0 ? clearInterval(scrollToTheTop) : $(document).scrollTop(scrollY -= 25);
         });
     });
-
 
     keyUpToggleFormButton('.login-form');
 
@@ -128,6 +127,94 @@ $(document).ready(function () {
         $('.error-backend').trigger('click');
     }
 
+    // Modul ~ Search Book
+    // Filter minimum / maksimum harga
+    $('#min-max-value').on('click', function(e) {
+        e.preventDefault();
+
+        $('.click-to-the-top').trigger('click');
+
+        let min_price_val = $('#min_price').val();
+        let max_price_val = $('#max_price').val();
+        let filter_vals   = [];
+
+
+        let filter_html = function(text, value , filterName) {
+            let val  = `<div class="search-filter" id="${filterName}" data-filter-value="${value}">`;
+                val += `<span class="search-filter-value">${text}</span>`;
+                val += `<i class="exit-filter fa fa-times text-grey ml-2" aria-hidden="true"></i>`;
+                val += `</div>`;
+
+            return val;
+        };
+
+        $.ajax({
+            type: "POST",
+            url : "/ajax/request/min-max-price",
+            data: {
+                '_token'   : csrfToken,
+                'min_price': min_price_val,
+                'max_price': max_price_val,
+                'keywords' : getUrlParameter('keywords'),
+            },
+            success: function (response) {
+                $('#book-search').html(response.books);
+
+                if (min_price_val != '') {
+                    filter_vals.push(filter_html(`Min Rp ${(numberFormat(min_price_val, 0, 0, `.`))}`, min_price_val, 'filter_min_price'));
+                }
+
+                if (max_price_val != '') {
+                    filter_vals.push(filter_html(`Max Rp${(numberFormat(max_price_val, 0, 0, `.`))}`, max_price_val, 'filter_max_price'));
+                }
+
+                $('#search-filters').html('');
+
+                filter_vals.forEach( function(value) {
+                    $('#search-filters').append(value);
+                });
+
+                $('.exit-filter').on('click', function() {
+                    $(this).parent().remove();
+
+                    $.ajax({
+                        type: "POST",
+                        url : "/ajax/request/min-max-price",
+                        data: {
+                            '_token'   : csrfToken,
+                            'min_price': $('#filter_min_price').data('filter-value') ?? 0,
+                            'max_price': $('#filter_max_price').data('filter-value') ?? 999999999,
+                            'keywords' : getUrlParameter('keywords'),
+                        },
+                        success: function (response) {
+                            $('#book-search').html(response.books);
+                        }
+                    });
+
+                });
+
+            }
+        });
+    });
+
+    // if ($('#filter_min_price').is(':empty')) {
+    // }
+
+    // Book Search - Animasi transparan buku buku
+    let count = 0;
+    $('.book').css('opacity', '0');
+    let bookOpacityLoad = setInterval(function()  {
+        if (count >= 1) {
+            clearInterval(bookOpacityLoad);
+        }
+
+        $('.book').css('opacity', count+=0.1);
+    }, 60);
+
+
+    $('.exit-filter').on('click', function() {
+        console.log(true);
+    });
 });
 
 function alertError(message) {

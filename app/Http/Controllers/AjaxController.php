@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Author, Book, User};
-use Facade\FlareClient\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,6 +24,7 @@ class AjaxController extends Controller
         );
     }
 
+    // Validasi untuk mengecek user
     public function checkLogin(Request $request) {
         $user     = User::where(
             array(
@@ -51,6 +51,7 @@ class AjaxController extends Controller
         }
     }
 
+    // Validasi register user
     public function register(Request $request) {
         $validator = Validator::make($request->all(),
             array(
@@ -73,5 +74,24 @@ class AjaxController extends Controller
                 array('errors' => '')
             );
         }
+    }
+
+    // Filter minimal dan maksimal harga
+    public function minMaxPrice(Request $request) {
+        $min_price = $request->min_price != '' ? $request->min_price : 0;
+        $max_price = $request->max_price != '' ? $request->max_price : 9999999999;
+
+        $view = view('layouts.books',
+            array(
+                'books' =>
+                \App\Models\Book::whereBetween('price', array($min_price, $max_price))
+                ->where('name', 'like', '%' . $request->keywords . '%')
+                ->get()
+            )
+        )->render();
+
+        return response()->json(
+            array('books' => $view, 'min' => $min_price, 'max' => $max_price)
+        );
     }
 }

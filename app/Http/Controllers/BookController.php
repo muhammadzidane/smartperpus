@@ -46,6 +46,7 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+
         $validate_data = $request->validate(
             array(
                 'name'          => array('required', 'unique:books'),
@@ -209,6 +210,11 @@ class BookController extends Controller
         $book->authors()->delete();
 
         return redirect()->route('books.index')->with('pesan', $pesan);
+    }
+
+    // Search Book
+    public function searchBooks(Book $book) {
+        return view('book/search-books');
     }
 
     // TEST

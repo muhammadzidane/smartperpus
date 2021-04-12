@@ -40,14 +40,15 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
                     <!-- Left Side Of Navbar -->
                     <div class="circle-input">
-                        <form class="search-form" action="#" method="post">
+                        <form class="search-form" action="{{ route('search.books') }}" method="GET">
                             <button type="submit">
                                 <i class="fas fa-search search-icon"></i>
                             </button>
-                            <input type="text" name="search" id="search" class="search-text"
-                            placeholder="Judul Buku, Nama Author">
+                            <input type="text" name="keywords" id="keywords" class="search-text"
+                              placeholder="Judul Buku, Nama Author" autocomplete="off">
                         </form>
                         <div id="search-values">
                             <div>
@@ -94,7 +95,6 @@
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
-
                         <!-- Authentication Links -->
                         @guest
                         @if (Route::has('login'))
@@ -110,7 +110,7 @@
                         </li>
                         @endif
                         @else
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown position-relative">
                             <a id="navbarDropdown" class="nav-link" href="#" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 <div class="user">
@@ -123,22 +123,26 @@
                                 </div>
                             </a>
 
-                            <div class="dropdown-user dropdown-menu" aria-labelledby="navbarDropdown">
-                                <div>
-                                    <div class="p-3 ">
-                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Akun Saya</a></h6>
-                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Keranjang Saya</a></h6>
-                                        <h6 class="dropdown-item"><a class="text-body text-decoration-none" href="#">Wishlist Saya</a></h6>
+                            <div class="dropdown-user position-absolute dropdown-menu" aria-labelledby="navbarDropdown">
+                                <div class="mb-3">
+                                    <div>
+                                        <a class="dropdown-item" href="#"">Akun Saya</a>
                                     </div>
-                                    <a class="dropdown-item text-right" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit();">
-                                        Logout
-                                    </a>
+                                    <div>
+                                        <a class="dropdown-item" href="#"">Daftar Wishlist</a>
+                                    </div>
+                                    <div>
+                                        <a class="dropdown-item" href="#">Keranjang Saya</a>
+                                    </div>
                                 </div>
-
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
+                                <div>
+                                    <form action="{{ route('logout') }}" method="post">
+                                        @csrf
+                                        <button type="submit" class="btn dropdown-item text-right text-righteous">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </li>
                         @endguest

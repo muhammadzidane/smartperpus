@@ -15,6 +15,9 @@ Route::get('/', array(HomeController::class, 'index'))->name('home');
 Route::get('/test', array(TestController::class, 'test'));
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
+// Search
+Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
+
 Route::resource('/authors', AuthorController::class);
 Route::resource('/books', BookController::class);
 
@@ -22,10 +25,11 @@ Route::resource('/books', BookController::class);
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 
 // Ajax
-Route::prefix('ajax')->group(function() {
-    Route::post('request/check-login', array(AjaxController::class, 'checkLogin'));
-    Route::post('request/store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
-    Route::post('request/register', array(AjaxController::class, 'register'));
+Route::prefix('/ajax/request/')->group(function() {
+    Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
+    Route::post('check-login', array(AjaxController::class, 'checkLogin'));
+    Route::post('register', array(AjaxController::class, 'register'));
+    Route::post('min-max-price', array(AjaxController::class, 'minMaxPrice'));
 });
 
 Auth::routes();

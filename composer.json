@@ -42,7 +42,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "App/Helper/str.php"
+            "App/Helper/functions.php"
         ]
 
     },
