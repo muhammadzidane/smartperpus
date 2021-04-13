@@ -1,1 +1,1 @@
-<h1>hello worldel</h1>
+{{ dump($books) }}

@@ -104,6 +104,7 @@ class AjaxController extends Controller
         );
     }
 
+    // Filter rating 4 ke atas
     public function filterStar(Request $request) {
         $view = view('layouts.books',
             array(
@@ -114,6 +115,31 @@ class AjaxController extends Controller
 
         return response()->json(
             array('books' => $view)
+        );
+    }
+
+    public function search(Request $request) {
+        $books = Book::where('name', 'LIKE', '%' . $request->keywords . '%')->get();
+
+        $view = view('layouts.books',
+            array(
+                'books' => $books,
+            )
+        )->render();
+
+
+        $book_category = array();
+
+        foreach ($books as $book) {
+            foreach ($book->categories as $category) {
+                array_push($book_category, $category->name);
+            }
+        }
+
+        $book_category = array_count_values($book_category);
+
+        return response()->json(
+            array('books' => $view, 'bookCategory' => $book_category)
         );
     }
 }

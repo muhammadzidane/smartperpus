@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\{Route, Auth};
 Route::get('/', array(HomeController::class, 'index'))->name('home');
 
 // TEST
-Route::get('/test', array(TestController::class, 'test'));
+Route::get('/test', array(TestController::class, 'test'))->name('test');
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // Search
@@ -29,6 +29,7 @@ Route::prefix('/ajax/request/')->group(function() {
     Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
     Route::post('check-login', array(AjaxController::class, 'checkLogin'));
     Route::post('register', array(AjaxController::class, 'register'));
+    Route::post('search', array(AjaxController::class, 'search'));
 
     // Filter
     Route::post('filter-search', array(AjaxController::class, 'filterSearch'));

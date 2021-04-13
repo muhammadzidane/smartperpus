@@ -216,9 +216,4 @@ class BookController extends Controller
     public function searchBooks(Book $book) {
         return view('book/search-books');
     }
-
-    // TEST
-    public function boot() {
-        // Gate::define()
-    }
 }

@@ -17,7 +17,7 @@ class BookCategorySeeder extends Seeder
         $book_count = \App\Models\Book::count();
 
         for ($i=1; $i <= $book_count; $i++) {
-            Book::find($i)->categories()->attach(Category::find(array(1, 2, 5)));
+            Book::find($i)->categories()->attach(Category::firstWhere('name', 'Komik'));
         }
     }
 }

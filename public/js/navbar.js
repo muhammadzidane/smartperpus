@@ -19,7 +19,7 @@ $(document).ready(function () {
                 url: '/ajax/request/store',
                 data: {
                     '_token': csrfToken,
-                    'search_value': $('#search').val()
+                    'search_value': $('#keywords').val()
                 },
                 success: function (response) {
                     response.books.length == 0 ? $('#search-books').prev().hide() : $('#search-books').prev().show();
@@ -45,6 +45,41 @@ $(document).ready(function () {
                 }
             });
         }
+    });
+
+    $('.search-form button').on('click', function(e) {
+        if (window.location.pathname == '/search/books') {
+            e.preventDefault();
+
+            $.ajax({
+                type    : "POST",
+                url     : "/ajax/request/search",
+                data    : {
+                    '_token'       : csrfToken,
+                    'keywords'     : $('#keywords').val(),
+                },
+                success : function (response) {
+
+                    $('#book-search').html(response.books);
+                    $('#search-text').html($('#keywords').val());
+
+                    for (const key in response.bookCategory) {
+                        if (response.bookCategory.hasOwnProperty.call(response.bookCategory, key)) {
+                            const value = response.bookCategory[key];
+                            $('#book-categories').html(`<div class="c-p">${key} (${value})</div>`);
+                        }
+                    }
+
+                    // Merubah parameter URL tanpa reload
+                    history.pushState({}, null, `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}`);
+                }
+            });
+        }
+    })
+
+    // Hasil pencarian navbar di sembunyikan jika <input> tersebut
+    $('#keywords').on('blur', function() {
+        $('#search-values').hide();
     });
 
     // Modal Login
@@ -195,7 +230,6 @@ $(document).ready(function () {
                     });
 
                 });
-
             }
         });
     });
@@ -207,7 +241,7 @@ $(document).ready(function () {
 
         let filter_vals = [];
 
-        star_value += $(this).data('filter-star');
+        star_value = $(this).data('filter-star');
 
         $.ajax({
             type: "POST",
@@ -248,12 +282,10 @@ $(document).ready(function () {
 
         $('.book').css('opacity', count+=0.1);
     }, 60);
-
-
-    $('.exit-filter').on('click', function() {
-        console.log(true);
-    });
 });
+
+// window.location.search = '?keywords=wkwk';
+
 
 function alertError(message) {
     alert(message)

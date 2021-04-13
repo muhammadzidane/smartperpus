@@ -106,9 +106,9 @@
                             <div>E-Book</div>
                         </div>
                         <div>
-                            <div class="tred-bold">Rp{{ $book->price * 2 }}</div>
+                            <div class="tred-bold">{{ rupiah_format($book->price * 2) }}</div>
 
-                            <div class="tred-bold">Rp{{ $book->price }}</div>
+                            <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
                         </div>
                     </div>
 

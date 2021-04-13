@@ -17,7 +17,7 @@ ul li {
 }
 .fa-times { cursor: pointer;}
 
-.text-righteous, li a , .book-deals > h2, h4, h5, label{
+.text-righteous, li a , .book-deals > h2, h4, h5 {
     font-family: 'Righteous', cursive;
 }
 

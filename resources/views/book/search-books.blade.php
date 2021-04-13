@@ -9,10 +9,27 @@
         <div class="filter-search white-content p-0">
             <div class="p-3">
                 <h6 class="tbold borbot-gray-0 pb-2">Berdasarkan Kategori</h6>
-                <div class="p-2">
-                    @foreach (\App\Models\Category::orderBy('name')->get()->take(4) as $category)
-                    <div>{{ $category->name }}</div>
+                <div id="book-categories" class="p-2">
+                    @php
+                        $arr_categories = array();
+                    @endphp
+                    @foreach (\App\Models\Book::where('name', 'LIKE', '%' . $_GET['keywords'] . '%')->with('categories')->get() as $book)
+                        @foreach ($book->categories as $category)
+                            @php
+                            array_push($arr_categories, $category->name);
+                            @endphp
+                        @endforeach
                     @endforeach
+
+                    @php
+                        $count_categories = array_count_values($arr_categories);
+                    @endphp
+
+                    @forelse ($count_categories as $category_key => $category_val)
+                        <div class="c-p">{{ $category_key . ' (' . $category_val . ')' }}</div>
+                        @empty
+                        <div class="tred-bold">Kosong</div>
+                    @endforelse
                     <div><button class="btn p-0 tbold">lihat lainya</button></div>
                 </div>
             </div>
@@ -23,7 +40,8 @@
                 <div class="form-group">
                     <div class="d-flex">
                         <label class="tbold mt-2 mr-2" for="">Rp</label>
-                        <input type="number" class="form-control m-0" name="min_price" id="min_price" placeholder="Mininum">
+                        <input type="number" class="form-control m-0" name="min_price" id="min_price"
+                            placeholder="Mininum">
                     </div>
                 </div>
 
@@ -31,7 +49,8 @@
                 <div class="form-group">
                     <div class="d-flex">
                         <label class="tbold mt-2 mr-2" for="">Rp</label>
-                        <input type="number" class="form-control m-0" name="max_price" id="max_price" placeholder="Maksimal">
+                        <input type="number" class="form-control m-0" name="max_price" id="max_price"
+                            placeholder="Maksimal">
                     </div>
                 </div>
                 <button id="min-max-value" type="submit" class="d-flex btn btn-primary mt-2 ml-auto">Terapkan</button>
@@ -41,34 +60,14 @@
         <div class="white-content">
             <h6 class="tbold borbot-gray-0 pb-2">Rating</h6>
             <div class="p-2">
-                <div data-filter-star="5" class="filter-star-search c-p">
-                    @for ($i = 0; $i < 5; $i++)
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                    @endfor
-                </div>
                 <div data-filter-star="4" class="filter-star-search c-p">
-                    @for ($i = 0; $i < 4; $i++)
-                        <i class="fa fa-star" aria-hidden="true"></i>
-                    @endfor
-                    <span> - ke atas</span>
-                </div>
-                <div data-filter-star="3" class="filter-star-search c-p">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <span> - ke atas</span>
-                </div>
-                <div data-filter-star="2" class="filter-star-search c-p">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <span> - ke atas</span>
-                </div>
-                <div data-filter-star="1" class="filter-star-search c-p">
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <span> - ke atas</span>
+                    @for ($i = 0; $i < 4; $i++) <i class="fa fa-star" aria-hidden="true"></i>
+                        @endfor
+                        <span> - ke atas</span>
                 </div>
             </div>
         </div>
+
     </div>
     <div class="ml-5">
         <div class="d-flex justify-content-between borbot-gray-bold">
@@ -82,30 +81,24 @@
                     <span>({{ \App\Models\Author::where('name', 'like', '%' . $_GET['keywords'] . '%')->get()->count() }})</span>
                 </div>
             </div>
-            <div class="keyword-value">Hasil Pencarian
-                "<span class="tbold">
+            <div>Hasil Pencarian
+                "<span id="search-text" class="tbold">
                     {{ strlen($_GET['keywords']) <= 40 ? $_GET['keywords'] : substr($_GET['keywords'], -0 , 35) . '.....' }}
                 </span>"
             </div>
             <select class="sort-books" name="" id="">
-              <option>Paling Laris</option>
-              <option>Rating Tertinggi</option>
-              <option>Harga Tertinggi</option>
-              <option>Harga Terendah</option>
+                <option>Paling Laris</option>
+                <option>Rating Tertinggi</option>
+                <option>Harga Tertinggi</option>
+                <option>Harga Terendah</option>
             </select>
         </div>
         <div id="search-filters" class="d-flex">
-            <!-- <div class="search-filter">
-                <span>Min Rp40.000</span>
-                <span class="ml-1">
-                    <button class="btn p-0"><i class="fa fa-times text-grey aria-hidden="true"></i></button>
-                </span>
-            </div> -->
         </div>
         <div id="book-search">
-            @include('layouts.books', array('books' => \App\Models\Book::where('name', 'like', '%' . $_GET['keywords'] . '%')->get()))
+            @include('layouts.books', array('books' => \App\Models\Book::where('name', 'like', '%' . $_GET['keywords'] .
+            '%')->get()))
         </div>
-
         <div class="d-flex">
             <div class="ml-auto">
                 <div class="pagination-custom">
@@ -118,7 +111,7 @@
                 </div>
             </div>
         </div>
-   </div>
+    </div>
 </div>
 
 <div class="click-to-the-top">
