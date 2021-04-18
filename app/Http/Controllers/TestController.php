@@ -4,30 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Author, Book};
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 
 class TestController extends Controller
 {
     public function test() {
-        $books = \App\Models\Book::where('name', 'LIKE', '%' . 'jujutsu' . '%')->get();
+        $j = 1;
 
-        $arr_categories = array();
+        for ($i=0; $i < 10 ; $i+=5) {
+            dump($j);
+            dump($i);
 
-        foreach ($books as $book) {
-            foreach ($book->categories as $category) {
-                array_push($arr_categories, $category->name);
-            }
-
+            $j++;
         }
-
-        $tests = array_count_values($arr_categories);
-
-        foreach ($tests as $key => $test) {
-            dump($key);
-        }
-
-        dump(Route::has('test'));
     }
 
     public function pagination() {

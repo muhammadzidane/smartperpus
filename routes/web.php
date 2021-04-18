@@ -30,10 +30,13 @@ Route::prefix('/ajax/request/')->group(function() {
     Route::post('check-login', array(AjaxController::class, 'checkLogin'));
     Route::post('register', array(AjaxController::class, 'register'));
     Route::post('search', array(AjaxController::class, 'search'));
+    Route::post('pagination', array(AjaxController::class, 'pagination'));
+    Route::post('pagination-data', array(AjaxController::class, 'paginationData'));
 
     // Filter
     Route::post('filter-search', array(AjaxController::class, 'filterSearch'));
     Route::post('filter-star', array(AjaxController::class, 'filterStar'));
+    Route::post('sort-books', array(AjaxController::class, 'sortBooks'));
 });
 
 Auth::routes();

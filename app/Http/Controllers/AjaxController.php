@@ -78,7 +78,7 @@ class AjaxController extends Controller
 
     // Filter minimal dan maksimal harga
     public function filterSearch(Request $request) {
-        $min_price = $request->min_price != '' ? $request->min_price : 0;
+        $min_price = $request->min_price != 0 ? $request->min_price : 0;
         $max_price = $request->max_price != '' ? $request->max_price : 9999999999;
 
 
@@ -86,21 +86,46 @@ class AjaxController extends Controller
             array('name', 'like', '%' . $request->keywords . '%'),
         );
 
-        if ($request->star_value) {
-            array_push($where_queries, array('rating', '>=', $request->star_value));
+        if ($request->star_value !== null) {
+            array_push($where_queries, array('rating', '>=', (int) $request->star_value));
         };
 
-        $view = view('layouts.books',
-            array(
-                'books' =>
-                \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-                ->where($where_queries)->get()
-            )
-        )->render();
+        $books = array(
+            'books' =>
+            \App\Models\Book::whereBetween('price', array($min_price, $max_price))
+            ->where($where_queries)->get()
+        );
 
+        if ($request->sort_book_value) {
+            switch ($request->sort_book_value) {
+                case 'highest-rating':
+                    $books = array(
+                        'books' =>
+                        \App\Models\Book::whereBetween('price', array($min_price, $max_price))
+                        ->where($where_queries)->orderBy('rating', 'DESC')->get()
+                    );
+                break;
+                case 'highest-price':
+                    $books = array(
+                        'books' =>
+                        \App\Models\Book::whereBetween('price', array($min_price, $max_price))
+                        ->where($where_queries)->orderBy('price', 'DESC')->get()
+                    );
+                break;
+                case 'lowest-price':
+                    $books = array(
+                        'books' =>
+                        \App\Models\Book::whereBetween('price', array($min_price, $max_price))
+                        ->where($where_queries)->orderBy('price', 'ASC')->get()
+                    );
+                break;
+            }
+        }
+
+        $view = view('layouts.books', $books)->render();
 
         return response()->json(
-            array('books' => $view, 'min' => $min_price, 'max' => $max_price)
+            array('books' => $view)
         );
     }
 
@@ -140,6 +165,74 @@ class AjaxController extends Controller
 
         return response()->json(
             array('books' => $view, 'bookCategory' => $book_category)
+        );
+    }
+
+    public function sortBooks(Request $request) {
+        switch ($request->sort_book_value) {
+            case 'highest-rating':
+                $books = Book::orderBy('rating', 'DESC')->get();
+            break;
+            case 'highest-price':
+                $books = Book::orderBy('price', 'DESC')->get();
+            break;
+            case 'lowest-price':
+                $books = Book::orderBy('price', 'ASC')->get();
+            break;
+        }
+
+        $view = view('layouts.books',
+            array(
+                'books' => $books,
+            )
+        )->render();
+
+        return response()->json(
+            array('books' => $view)
+        );
+    }
+
+
+    // Pagination
+    public function paginationData() {
+        $book_count = Book::get()->count();
+
+        $pagination_html     = function($value) {
+            return '<div>' . $value .  '</div>';
+        };
+
+        $i                   = 1;
+        $arr_pagination_html = array();
+
+        for ($j=1; $j <= $book_count; $j+=5) {
+            array_push($arr_pagination_html, $pagination_html($i++));
+        }
+
+        return response()->json(
+            array('paginationHtml' => $arr_pagination_html)
+        );
+    }
+
+    public function pagination(Request $request) {
+        $book_count = Book::get()->count();
+
+        $i= 1;
+
+        for ($j=0; $j < $book_count; $j+=5) {
+            if ($request->page == $i) {
+                $view = view('layouts.books',
+                    array(
+                        'books' => Book::take(5)->skip($j)->get()
+                    )
+                )->render();
+            }
+
+            $i++;
+        }
+
+
+        return response()->json(
+            array('books' => $view)
         );
     }
 }

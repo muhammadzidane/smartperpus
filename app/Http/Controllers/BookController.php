@@ -213,7 +213,7 @@ class BookController extends Controller
     }
 
     // Search Book
-    public function searchBooks(Book $book) {
+    public function searchBooks() {
         return view('book/search-books');
     }
 }

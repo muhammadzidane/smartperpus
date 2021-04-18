@@ -668,7 +668,7 @@ footer {
     margin: 0 0 20px auto;
 }
 
-.sort-books {
+#sort-books {
     cursor: pointer;
     outline: none;
     border: none;
@@ -696,6 +696,7 @@ footer {
 .btn-to-the-top {
     background-color: transparent;
     border: none;
+    cursor: pointer;
 }
 
 .click-to-the-top {
@@ -723,20 +724,19 @@ footer {
     width: max-content;
 }
 
-.pagination-custom div {
+
+.pagination-custom div div, #pagination-next {
     text-align: center;
-    padding-top: 6px;
-    margin-right: 3px;
+    padding-top: 8px;
+    margin-right: 5px;
     border-radius: 100%;
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 38px;
 }
 
-.pagination-custom div:hover, .p-active {
+.pagination-custom div div:hover, #pagination-next:hover, .p-active {
     cursor: pointer;
     background-color: #ea5455;
-    width: 35px;
-    height: 35px;
     color: white;
 }
 

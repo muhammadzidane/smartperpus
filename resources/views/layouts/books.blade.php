@@ -3,7 +3,7 @@
         <a class="book-show-link" href="{{ route('books.show', array('book' => $book->id)) }}">
             <div class="book">
                 @isset($book->discount)
-                    <div class="book-persentage-discount">{{ round(($book->discount / $book->price) * 100) }}%</div>
+                    <div class="book-persentage-discount">{{ round(($book->discount / ($book->price + $book->discount)) * 100) }}%</div>
                 @endisset
                 <div class='book-cover'>
                     <div class="rating">
@@ -70,9 +70,9 @@
                 <div class="book-price">
                     <div>
                         @isset($book->discount)
-                            <small class="discount-line-through text-success">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
+                            <small class="discount-line-through text-success">{{ rupiah_format($book->price + $book->discount) }}</small>
                         @endisset
-                        <span>Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
+                        <span>{{ rupiah_format($book->price) }}</span>
                     </div>
                 </div>
             </div>
@@ -87,6 +87,8 @@
                 <div class="text-grey">Mohon untuk coba kata kunci lainnya</div>
             </div>
         </div>
+
+        <!-- Test -->
         <h4 class="mt-c">Yang mungkin anda suka</h4>
         <div class="books">
             @foreach (\App\Models\Book::get()->take(12) as $book)
@@ -162,7 +164,7 @@
                             @isset($book->discount)
                                 <small class="discount-line-through text-success">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
                             @endisset
-                            <span>Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
+                            <span>Rp{{ number_format(($book->price), 0, 0, '.') }}</span>
                         </div>
                     </div>
                 </div>

@@ -83,7 +83,7 @@
                             @isset($book->discount)
                                 <small class="discount-line-through text-success">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
                             @endisset
-                            <span>Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
+                            <span>Rp{{ number_format(($book->price), 0, 0, '.') }}</span>
                         </div>
                     </div>
                 </div>
