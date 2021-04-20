@@ -204,7 +204,7 @@ class AjaxController extends Controller
         $i                   = 1;
         $arr_pagination_html = array();
 
-        for ($j=1; $j <= $book_count; $j+=5) {
+        for ($j=1; $j <= $book_count; $j++) {
             array_push($arr_pagination_html, $pagination_html($i++));
         }
 
@@ -218,11 +218,11 @@ class AjaxController extends Controller
 
         $i= 1;
 
-        for ($j=0; $j < $book_count; $j+=5) {
+        for ($j=0; $j < $book_count; $j++) {
             if ($request->page == $i) {
                 $view = view('layouts.books',
                     array(
-                        'books' => Book::take(5)->skip($j)->get()
+                        'books' => Book::take(1)->skip($j)->get()
                     )
                 )->render();
             }

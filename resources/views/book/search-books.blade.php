@@ -97,14 +97,16 @@
         </div>
         <div id="book-search">
             @include('layouts.books', array('books' => \App\Models\Book::where('name', 'like', '%' . $_GET['keywords'] .
-              '%')->take(5)->skip(0)->get()))
+              '%')->take(1)->skip(0)->get()))
         </div>
         <div class="d-flex">
             <div class="ml-auto">
                 <div id="pagination" class="pagination-custom">
+                    <div id="pagination-prev"><i class="fa fa-caret-left"></i></div>
                     <div id="pagination-number" class="d-flex">
                     </div>
                     <div id="pagination-next"><i class="fa fa-caret-right"></i></div>
+                    <!-- <div id="pagination-prev"><i class="fa fa-caret-left"></div> -->
                 </div>
             </div>
         </div>

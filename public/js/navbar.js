@@ -250,16 +250,16 @@ $(document).ready(function () {
         success: function (response) {
             response.paginationHtml.forEach(element => {
                 $('#pagination-number').append(element);
-
             });
 
             if (response.paginationHtml.length > 5) {
-                $('#pagination-number').children().eq(3).text('...').css('pointer-events', 'none');
-                $('#pagination-number').children().eq(4).nextAll().remove();
+                $('#pagination-number').children().eq(5).text('...').css('pointer-events', 'none');
+                $('#pagination-number').children().eq(6).nextAll().remove();
                 $('#pagination-number').children().last().text(response.paginationHtml.length);
             }
 
             $('#pagination-number').children().first().addClass('p-active');
+            $('#pagination-prev').hide();
         }
     });
 
@@ -281,26 +281,83 @@ $(document).ready(function () {
             }
         });
 
+        if (pageNumber == 1) {
+            $('.p-hide').show();
+            $('#pagination-prev').hide();
+
+            for (let i = 2; i <= 5; i++) {
+                $(`#pagination-number div:nth-child(${i})`).text(i);
+            }
+        }
+        else if (pageNumber >= 2) {
+            $('#pagination-prev').show();
+        }
+
     });
 
-    $('#pagination-next').on('click', function(e) {
+    $('#pagination-next').on('click', function() {
         let activePage         = $('.p-active');
-        let lastPaginationText = parseInt($('#pagination-number').children().last().text()) - 1
+        let paginationNth1     = $('#pagination-number div:nth-child(1)');
+        let paginationNth2     = $('#pagination-number div:nth-child(2)');
+        let paginationNth3     = $('#pagination-number div:nth-child(3)');
+        let paginationNth4     = $('#pagination-number div:nth-child(4)');
+        let lastPagination     = $('#pagination-number').children().last();
 
-        activePage.next().trigger('click');
+        if (activePage.text() >= 5 && activePage.text() != lastPagination.text()) {
+            paginationNth2.text('...');
+            paginationNth1.text(1);
 
-        if (activePage.text() == lastPaginationText) {
-            e.preventDefault();
+            if ((paginationNth3.hasClass('p-active') || paginationNth4.hasClass('p-active')) && paginationNth2.text() == '...') {
+                activePage.next().trigger('click');
+            }
+            else {
+                activePage.text(parseInt(activePage.text()) + 1).trigger('click');
+                paginationNth4.text(activePage.text() - 1);
+                paginationNth3.text(activePage.text() - 2);
+            }
+
+            if (activePage.text() == lastPagination.text()) {
+                lastPagination.prev().addClass('p-hide').hide();
+                lastPagination.addClass('p-hide').hide();
+            }
         }
-        else if (activePage.text() >= 3) {
-            activePage.prev().text(parseInt(activePage.prev().text()) + 1);
-            activePage.prev().prev().text(parseInt(activePage.prev().text()) - 1);
-            activePage.text(parseInt(activePage.prev().text()) + 1).trigger('click');
+        else {
+            activePage.next().trigger('click');
         }
+
+    });
+
+    $('#pagination-prev').on('click', function() {
+        let activePage     = $('.p-active');
+        let paginationNth2 = $('#pagination-number div:nth-child(2)');
+        let paginationNth3 = $('#pagination-number div:nth-child(3)');
+        let paginationNth4 = $('#pagination-number div:nth-child(4)');
+        let paginationNth5 = $('#pagination-number div:nth-child(5)');
+
+        if (paginationNth4.hasClass('p-active') || paginationNth5.hasClass('p-active')) {
+            activePage.prev().trigger('click');
+        }
+
+        if (paginationNth3.hasClass('p-active') && paginationNth2.text() == '...') {
+            paginationNth3.text(parseInt(activePage.text() -  1)).trigger('click');
+            paginationNth4.text(parseInt(paginationNth4.text()) -  1);
+            paginationNth5.text(parseInt(paginationNth5.text()) -  1);
+        }
+
+        if (paginationNth3.text() == 2 && paginationNth2.text() == '...') {
+            paginationNth2.text(2);
+            paginationNth3.text(3);
+            paginationNth4.text(4);
+            paginationNth5.text(5);
+        }
+
+        if (activePage.text() <= 3) {
+            activePage.prev().trigger('click');
+        }
+
     });
 
 });
-
 
 function alertError(message) {
     alert(message)

@@ -724,8 +724,7 @@ footer {
     width: max-content;
 }
 
-
-.pagination-custom div div, #pagination-next {
+.pagination-custom div div, #pagination-next, #pagination-prev {
     text-align: center;
     padding-top: 8px;
     margin-right: 5px;
@@ -734,7 +733,7 @@ footer {
     height: 38px;
 }
 
-.pagination-custom div div:hover, #pagination-next:hover, .p-active {
+.pagination-custom div div:hover, #pagination-next:hover, #pagination-prev:hover, .p-active {
     cursor: pointer;
     background-color: #ea5455;
     color: white;

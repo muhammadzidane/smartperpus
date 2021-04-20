@@ -72,7 +72,7 @@
                         @isset($book->discount)
                             <small class="discount-line-through text-success">{{ rupiah_format($book->price + $book->discount) }}</small>
                         @endisset
-                        <span>{{ rupiah_format($book->price) }}</span>
+                        <sn>{{ rupiah_format($book->price) }}</sn>
                     </div>
                 </div>
             </div>
