@@ -216,4 +216,9 @@ class BookController extends Controller
     public function searchBooks() {
         return view('book/search-books');
     }
+
+    // Beli buku
+    public function booksBuy () {
+        return view('book/buy');
+    }
 }

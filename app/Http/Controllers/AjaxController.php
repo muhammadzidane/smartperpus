@@ -9,6 +9,24 @@ use Illuminate\Support\Facades\Validator;
 
 class AjaxController extends Controller
 {
+    public function firstLoad(Request $request) {
+        $j = 1;
+
+        for ($i=0; $i <= Book::get()->count(); $i+=5) {
+            if ($j == $request->page) {
+                $books = view('layouts.books',
+                    array(
+                        'books' => Book::take(5)->skip($i)->get()
+                    )
+                )->render();
+            }
+
+            $j++;
+        }
+
+        return response()->json(compact('books'));
+    }
+
     public function ajaxRequestStore(Request $request) {
         $authors = Author::where('name', 'like', '%' .$request->search_value . '%')
         ->orderBy('name')->get(array('id', 'name'))->take(5);
@@ -125,7 +143,7 @@ class AjaxController extends Controller
         $view = view('layouts.books', $books)->render();
 
         return response()->json(
-            array('books' => $view)
+            array('books' => $view , 'page' => $request->page)
         );
     }
 
@@ -198,13 +216,13 @@ class AjaxController extends Controller
         $book_count = Book::get()->count();
 
         $pagination_html     = function($value) {
-            return '<div>' . $value .  '</div>';
+            return '<div id=\'page-' . $value . '\'>'  . $value .  '</div>';
         };
 
         $i                   = 1;
         $arr_pagination_html = array();
 
-        for ($j=1; $j <= $book_count; $j++) {
+        for ($j=1; $j <= $book_count; $j+=5) {
             array_push($arr_pagination_html, $pagination_html($i++));
         }
 
@@ -218,11 +236,11 @@ class AjaxController extends Controller
 
         $i= 1;
 
-        for ($j=0; $j < $book_count; $j++) {
+        for ($j=0; $j < $book_count; $j+=5) {
             if ($request->page == $i) {
                 $view = view('layouts.books',
                     array(
-                        'books' => Book::take(1)->skip($j)->get()
+                        'books' => Book::take(5)->skip($j)->get()
                     )
                 )->render();
             }

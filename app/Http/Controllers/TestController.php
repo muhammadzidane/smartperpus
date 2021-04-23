@@ -12,13 +12,15 @@ class TestController extends Controller
 {
     public function test() {
         $j = 1;
-
-        for ($i=0; $i < 10 ; $i+=5) {
-            dump($j);
-            dump($i);
+        for ($i=0; $i <= 20; $i+=5) {
+            if ($j == 5) {
+                $books = $i;
+            }
 
             $j++;
         }
+
+        return $books;
     }
 
     public function pagination() {

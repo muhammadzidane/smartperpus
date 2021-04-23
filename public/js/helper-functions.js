@@ -129,8 +129,10 @@ function ajaxFilterDataBooks() {
             'star_value'     : $('.rating-4-plus').length == 0 ? null : $('.filter-star-search').data('filter-star'),
             'sort_book_value': $('.filter-sort').data('filter-value'),
             'keywords'       : getUrlParameter('keywords'),
+            'page'           : getUrlParameter('page'),
         },
         success: function (response) {
+            console.log(response.page)
             $('#book-search').html(response.books);
             exitFilters();
         }
@@ -152,7 +154,23 @@ function appendFilter(filter, appendText = []) {
         appendText[1], appendText[2]));
     }
     else {
-        $(filter).text(appendText).append(exitFilter);
+        $(filter).text(appendText).append(exitFilters());
     }
 }
 
+function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+
+    return false;
+};

@@ -97,7 +97,14 @@
             <div class="book-payment">
                 <div class="d-flex justify-content-between">
                     <h4 class="mb-3">Stok Buku Cetak: <span class="tred-bold">{{ $book->printedStock->amount }}</span></h4>
-                    <i class="info-book fas fa-info-circle"></i>
+                    <div class="info-book">
+                        <div>
+                            <i class="info-book-tooltips fas fa-info-circle"></i>
+                        </div>
+                        <div class="info-book-text">
+                            <div>Pembelian E-Book hanya bisa satu per akun</div>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <div class="d-flex justify-content-between">
@@ -130,7 +137,7 @@
                             </div>
                         </div>
                         <div>
-                            <button type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</button>
+                            <a href="{{ route('books.buy') }}" type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</a>
                             <button type="button" class="btn btn-yellow w-100">Beli E-Book</button>
                         </div>
                     </div>

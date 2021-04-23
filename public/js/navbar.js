@@ -5,6 +5,22 @@ $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+    // Modul Search Books - First Load
+    if (window.location.pathname == '/search/books') {
+        $.ajax({
+            type: "POST",
+            url : "/ajax/request/first-load",
+            data: {
+                '_token': csrfToken,
+                'page'  : getUrlParameter('page'),
+            },
+            success: function (response) {
+                $('#book-search').html(response.books);
+            },
+        });
+
+    }
+
     $('#login').trigger('click');
 
     // Search Buku dan Author ( ada di Navbar )
@@ -59,8 +75,6 @@ $(document).ready(function () {
                     'keywords'     : $('#keywords').val(),
                 },
                 success : function (response) {
-                    // Merubah parameter URL tanpa reload
-
                     $('#book-search').html(response.books);
                     $('#search-text').html($('#keywords').val());
 
@@ -72,9 +86,11 @@ $(document).ready(function () {
                     }
 
                     // Merubah parameter URL tanpa reload
-                    history.pushState({}, null, `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}`);
+                    history.pushState({}, null,
+                      `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${$('.p-active').text()}`);
                 },
             });
+
         }
     });
 
@@ -165,7 +181,6 @@ $(document).ready(function () {
 
     // Modul ~ Search Book
     // Filter minimum / maksimum harga
-
     $('#min-max-value').on('click', function(e) {
         e.preventDefault();
 
@@ -260,11 +275,24 @@ $(document).ready(function () {
 
             $('#pagination-number').children().first().addClass('p-active');
             $('#pagination-prev').hide();
+
+
+            let paginationLength = $('#pagination-number').children().length;
+
+            for (let i = 1; i <= paginationLength; i++) {
+                if (getUrlParameter('page') == i) {
+                    $('.p-active').removeClass();
+                    $(`#page-${i}`).addClass('p-active');
+                }
+
+            }
         }
     });
 
     $('#pagination-number').on('click', function(e) {
         let pageNumber = $(e.target).text();
+
+        ajaxFilterDataBooks();
 
         $.ajax({
             type: "POST",
@@ -288,10 +316,12 @@ $(document).ready(function () {
             for (let i = 2; i <= 5; i++) {
                 $(`#pagination-number div:nth-child(${i})`).text(i);
             }
+
         }
         else if (pageNumber >= 2) {
             $('#pagination-prev').show();
         }
+
 
     });
 
@@ -325,6 +355,9 @@ $(document).ready(function () {
             activePage.next().trigger('click');
         }
 
+        window.history.pushState({}, null,
+            `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${parseInt(activePage.text()) + 1}`
+        );
     });
 
     $('#pagination-prev').on('click', function() {
@@ -354,6 +387,10 @@ $(document).ready(function () {
         if (activePage.text() <= 3) {
             activePage.prev().trigger('click');
         }
+
+        window.history.pushState({}, null,
+            `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${parseInt(activePage.text()) - 1}`
+        );
 
     });
 

@@ -3,28 +3,28 @@ ul li {
     /* padding: 0; */
 }
 
-
 .c-p { cursor: pointer; }
 .fa-star { color: gold; }
 .mt-c { margin-top: 75px !important; }
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
-.text-grey { color: #686d76; }
+.text-grey { color: #6E7C7C; }
 .synopsis { text-indent: 20px;}
 .fa-long-arrow-alt-left {
     font-size: 19px;
 }
 .fa-times { cursor: pointer;}
+.bg-cus-navbar { background-color: #fff600; }
 
-.text-righteous, li a , .book-deals > h2, h4, h5 {
+.text-righteous, li a, .book-deals > h2, h4, h5 {
     font-family: 'Righteous', cursive;
 }
 
-.bg-cus-navbar {
-    background-color: #fff600;
-
+.hd-18 {
+    font-size: 18px;
 }
+
 
 body {
     background-color: #f6f5f5;
@@ -396,13 +396,35 @@ footer {
     flex-direction: column;
 }
 
-.info-book {
+.info-book-tooltips {
     cursor: pointer;
     color: #94fc13;
     position: absolute;
     right: 3px;
     top: 5px;
     font-size: 22px;
+}
+
+
+.info-book-text {
+    display: none !important;
+    color: #ee6f57;
+    position: absolute;
+    top: -36px;
+    left: 58px;
+    background-color: #fffdf6;
+    width: max-content;
+    padding: 5px 8px;
+    border-top: 1px solid #f0a500;
+    border-left: 1px solid #f0a500;
+    border-right: 1px solid #f0a500;
+    border-bottom: 2px solid #686d76;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.info-book:hover, .info-book:hover > div:last-child{
+    display: block !important;
 }
 
 .buy {
@@ -536,10 +558,15 @@ footer {
     margin-bottom: 40px;
 }
 
+.bordash-gray {
+    border-bottom: 2px dashed #e2d5d5;
+    margin-bottom: 40px;
+}
+
 .borbot-gray-0 { border-bottom: 1px solid #e2d5d5; }
 
 .borbot-gray-bold {
-    border-bottom: 3px solid #e2d5d5;
+    border-bottom: 5px solid #e2d5d5;
 }
 
 /* Customer Reviews */
@@ -881,6 +908,58 @@ footer {
     font-size: 15px;
     margin-right: 8px;
     color: #94fc13;
+}
+
+/* Purchase Records */
+.purchase-records {
+    width: 69%;
+}
+
+.pay-for-the-book {
+    width: 31%;
+}
+
+.w-95 {
+    width: 95%;
+}
+
+.white-content-header h4 {
+    background-color: #FBF7F7;
+    font-family: 'Righteous', cursive;
+    padding: 15px;
+    border-bottom: 1px solid #E7E7DE;
+}
+
+.white-content-header-2 {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border-bottom: 1px solid #E7E7DE;
+    background-color: transparent;
+}
+
+.fa-plus-circle, .fa-minus-circle {
+    font-size: 20px;
+    color: #fff600;
+    margin-left: 2px;
+}
+
+.courier-choise {
+    border: 2px solid #FFFAA4;
+    padding: 2px 8px;
+    border-radius: 7px;
+    margin-right: 7px;
+    width: 110px;
+    text-align: center;
+}
+
+.cc-active {
+    border: 3px solid #e8f044;
+}
+
+.circle-checked {
+    color: #FFF600;
+    font-size: 18px;
 }
 
 @media screen and (max-width: 767px) {

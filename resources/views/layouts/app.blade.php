@@ -12,8 +12,7 @@
     <title>Smartperpus</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -48,7 +47,8 @@
                                 <i class="fas fa-search search-icon"></i>
                             </button>
                             <input type="text" name="keywords" id="keywords" class="search-text"
-                              placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="hidden" name="page" value="1">
                         </form>
                         <div id="search-values">
                             <div>

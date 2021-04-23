@@ -96,8 +96,8 @@
         <div id="search-filters" class="d-flex">
         </div>
         <div id="book-search">
-            @include('layouts.books', array('books' => \App\Models\Book::where('name', 'like', '%' . $_GET['keywords'] .
-              '%')->take(1)->skip(0)->get()))
+            <!-- @include('layouts.books', array('books' => \App\Models\Book::where('name', 'like', '%' . $_GET['keywords'] .
+              '%')->take(5)->skip(0)->get())) -->
         </div>
         <div class="d-flex">
             <div class="ml-auto">
