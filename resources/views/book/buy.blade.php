@@ -2,43 +2,66 @@
 @section('content')
 
 
+
 <div class="home-and-anymore-show">
     <a class="tsmall" href="#">Home</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">Categories</a><i class="fas fa-caret-right tsmall"></i>
-    <a class="tsmall" href="#">Komik</a><i class="fas fa-caret-right tsmall"></i>
-    <span class="tsmall tred-bold">{{ 'Jujutsu Kaisen 01' }}</span>
+    <a class="tsmall" href="#">{{ $book->categories[0]->name }}</a><i class="fas fa-caret-right tsmall"></i>
+    <span class="tsmall tred-bold">{{ $book->name }}</>
 </div>
 <div class="d-flex">
     <div class="purchase-records">
         <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold">
             <div class="white-content-header">
-                <h4>Jujutsu Kaisen 01</h4>
+                <h4>{{ $book->name }}</h4>
             </div>
             <div class="container ml-3">
+            <div>
                 <div class="d-flex">
-                    <div class="text-righteous">
+                    <div class="text-righteous flex-grow-1">
                         <div class="hd-18">Harga</div>
-                        <div class="tred-bold">Rp35.000</div>
+                        <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
                     </div>
-                    <div class="text-righteous ml-5 pl-5">
+                    <div class="text-righteous flex-grow-1">
                         <div class="hd-18">Jumlah</div>
                         <div class="d-flex">
-                            <div>1 / 239</div>
+                            <div>
+                                <span id="book-needed">1</span>
+                                <span>/</span>
+                                <span id="total-book" data-total-book="{{ $book->printedStock->amount }}">{{ $book->printedStock->amount - 1 }}</span>
+                            </div>
                             <div class="ml-2">
-                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                                <button id="plus-one-book" class="btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                <button id="sub-one-book" class="btn-none p-0"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="text-righteous ml-5 pl-5">
+                    <div class="text-righteous flex-grow-1">
+                        <div class="hd-18">Berat Barang</div>
+                        <div id="weight" data-weight="300">300 gram</div>
+                    </div>
+                    <div class="text-righteous flex-grow-1">
                         <div class="hd-18">Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
-                        <div class="d-flex">
-                            <div>Rp1.000</div>
+                        <div>
+                            <label class="d-flex c-p">
+                                <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance" id="shipping-insurance">
+                                <div>Rp1.000</div>
+                            </label>
                         </div>
                     </div>
                 </div>
+            </div>
                 <div class="text-righteous mt-4 pl-3">
-                    <div><i class="fas fa-pencil-alt"></i> Tulis Catatan</div>
+                    <button id="btn-write-notes" class="btn-none"><i class="fas fa-pencil-alt"></i> Tulis Catatan</button>
+                    <div id="input-write-notes" class="d-none">
+                        <div class="d-flex">
+                            <input type="text" class="form-control w-25" name="write_note_val" id="write-note-val" aria-describedby="helpId"
+                              placeholder="Contoh : Ebook, Buku Cetak">
+                            <div class="d-flex align-items-center ml-2">
+                                <button id="write-notes-cancel" class="btn-none tred-bold">Batal</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,17 +69,19 @@
             <div class="white-content-header-2">
                 <h4 class="hd-18">Alamat Pengiriman</h4>
             </div>
-            <div class="container ml-3 mt-2">
+            <div class="container ml-3 mt-4">
                 <div class="d-flex">
                     <div>
                         <div class="mb-2">
                             <span class="tbold">Alamat Smartperpus</span> -
-                            <span class="text-grey">Jl Pahlawan No. 92, Cikadut,  Kota. Bandung, Jawa Barat</span>
+                            <span id="origin" class="text-grey" data-origin-id="22"
+                              data-subdistrict-id="337" data-origin-type="subdistrict">Jl Pahlawan No. 92, Cikadut,  Kota. Bandung, Jawa Barat</span>
                         </div>
                         <div>
                             <i class="fas fa-circle-notch text-grey mr-1"></i>
                             <span class="tbold">Rumah</span> -
-                            <span class="text-grey">Jl . Pasir Honje No. 221, Cimenyan, Kab. Bandung, Jawa Barat</span>
+                            <span id="destination" class="text-grey" data-destination-id="22"
+                              data-subdistrict-id="317" data-destination-type="subdistrict">Jl . Pasir Honje No. 221, Cimenyan, Kab. Bandung, Jawa Barat</span>
                             <a href="#" class="text-grey tbold ml-2">Ubah</a>
                         </div>
                         <div>
@@ -71,39 +96,59 @@
         <div class="white-content px-0 pt-0 pb-4 mt-5 borbot-gray-bold">
             <div class="white-content-header-2 d-block">
                 <h4 class="hd-18">Pilih Kurir</h4>
-                <div class="ml-3 mt-4 d-flex">
-                    <div class="courier-choise cc-active">
-                        <img src="{{ asset('img/couriers/jne.jpg') }}" alt="" srcset="">
+                <form>
+                    <div class="ml-3 mt-4 d-flex">
+                        <div class="courier-choise">
+                            <input type="radio" name="courier-choise" value="jne" class="d-none">
+                            <img src="{{ asset('img/couriers/jne.jpg') }}" alt="" srcset="">
+                        </div>
+                        <div class="courier-choise">
+                            <input type="radio" name="courier-choise" value="tiki" class="d-none">
+                            <img src="{{ asset('img/couriers/tiki.jpg') }}" alt="" srcset="">
+                        </div>
+                        <div class="courier-choise">
+                            <input type="radio" name="courier-choise" value="pos" class="d-none">
+                            <img src="{{ asset('img/couriers/pos.png') }}" alt="" srcset="">
+                        </div>
                     </div>
-                    <div class="courier-choise">
-                        <img src="{{ asset('img/couriers/tiki.jpg') }}" alt="" srcset="">
-                    </div>
-                    <div class="courier-choise">
-                        <img src="{{ asset('img/couriers/pos.png') }}" alt="" srcset="">
-                    </div>
+                </form>
+
+                <!-- <button id="cek-ongkir" type="submit">Cek Ongkir</button> -->
+            </div>
+            <div class="container ml-3 mt-4">
+                <h4 id="courier-choise-name" class="hd-18 mb-3"></h4>
+                <div id="courier-choise-result">
                 </div>
             </div>
-            <div class="container ml-3 mt-2">
+        </div>
+        <div class="white-content px-0 pt-0 pb-4 mt-5 borbot-gray-bold">
+            <div class="white-content-header-2 d-block">
+                <h4 class="hd-18">Metode Pembayaran</h4>
+            </div>
+            <div class="container ml-3 mt-4">
                 <div class="d-flex">
                     <div>
-                        <div>
-                            <span><i class="mr-1 fa fa-check-circle circle-checked" aria-hidden="true"></i></span>
-                            <span class="tbold">JNE Reguler</span>
-                            <span>-</span>
-                            <span class="text-grey">2 - 3 Hari</span>
-                            <div class="ml-4">
-                                <span>Rp20.000</span>
+                        <label class="c-p d-block">
+                            <div>
+                                <input type="radio" name="test-bri" class="test-bri" id="">
+                                <img src="{{ asset('img/transfer/bri.png') }}" class="img-transfer" alt="" srcset="">
+                                <span class="tbold">Transfer Bank BRI</span>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span><i class="mr-1 fa fa-check-circle hd-18 text-grey" aria-hidden="true"></i></span>
-                            <span class="tbold">JNE Reguler</span>
-                            <span>-</span>
-                            <span class="text-grey">2 - 3 Hari</span>
-                            <div class="ml-4">
-                                <span>Rp20.000</span>
+                        </label>
+                        <label class="c-p d-block">
+                            <div class="mt-3">
+                                <input type="radio" name="test-bri" class="test-bri" id="">
+                                <img src="{{ asset('img/transfer/bni.png') }}" style="width:47px;" class="img-transfer" alt="" srcset="">
+                                <span class="tbold">Transfer Bank BNI</span>
                             </div>
-                        </div>
+                        </label>
+                        <label class="c-p d-block">
+                            <div class="mt-3">
+                                <input type="radio" name="test-bri" class="test-bri" id="">
+                                <img src="{{ asset('img/transfer/gopay.png') }}" style="width:70px;" class="img-transfer" alt="" srcset="">
+                                <span class="tbold">Transfer Gopay</span>
+                            </div>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -113,33 +158,28 @@
         <div class="w-75 ml-auto">
             <div class="white-content pt-0">
                 <div>
-                    <img class="w-95 d-block mx-auto" src="{{ asset('img/book/jujutsu-kaisen-01.jpg') }}" alt="" srcset="">
+                    <img class="w-80 d-block mx-auto" src="{{ asset('img/book/' . $book->image) }}" alt="" srcset="">
                 </div>
-                <div class="text-grey mt-4 py-2 mb-0 bordash-gray">
+                <div id="book-payment" class="text-grey mt-4 py-2 mb-0 bordash-gray">
                     <div class="d-flex justify-content-between">
                         <div>Harga Buku</div>
-                        <div>Rp35.000</div>
+                        <div id="book-price" data-book-price="{{ $book->price }}">{{ rupiah_format($book->price) }}</div>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>
-                        <div>1</div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Ongkos Kirim</div>
-                        <div>Rp20.000</div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Asuransi Pengiriman</div>
-                        <div>Rp1.000</div>
+                        <div id="jumlah-barang">1</div>
                     </div>
                 </div>
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">
                         <div>Total Pembayaran</div>
-                        <div class="tred-bold text-righteous">Rp56.000</div>
+                        <div id="total-payment" data-total-payment="{{ $book->price }}"
+                          class="tred-bold text-righteous">{{ rupiah_format($book->price) }}</div>
                     </div>
                     <div class="mt-3">
-                        <button type="button" class="btn btn-red w-100"><i class="fas fa-money-check mr-2 text-success"></i>Bayar</button>
+                        <a id="payment-button" href="{{ route('books.payment', array('book' => $book->name)) }}" class="btn btn-red w-100">
+                            <i class="fas fa-shield-alt mr-2"></i>Bayar
+                        </a>
                     </div>
                 </div>
             </div>

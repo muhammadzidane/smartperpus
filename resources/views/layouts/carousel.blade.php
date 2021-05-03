@@ -1,5 +1,5 @@
-<div class="row my-4 bg-carousel">
-    <div class="col-md-9">
+<div class="pt-4 shadow-lg">
+    <div>
         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
             <ol class="carousel-indicators">
                 <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -7,11 +7,11 @@
             </ol>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="d-block w-100" src="{{ asset('img/carousel/car1.jpg') }}" alt="Second slide">
+                    <img class="d-block w-100" src="{{ asset('img/carousel/car1.png') }}" alt="Second slide">
                 </div>
 
                 <div class="carousel-item">
-                    <img class="d-block w-100" src="{{ asset('img/carousel/car2.2.jpg') }}" alt="Second slide">
+                    <img class="d-block w-100" src="{{ asset('img/carousel/car2.png') }}" alt="Second slide">
                 </div>
             </div>
             <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -23,9 +23,6 @@
                 <span class="sr-only">Next</span>
             </a>
         </div>
-    </div>
-    <div class="col-3">
-        <img class="w-100" src="{{ asset('img/diskon/dis1.jpg') }}" alt="">
     </div>
 </div>
 

@@ -21,7 +21,8 @@ Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('
 Route::resource('/authors', AuthorController::class);
 
 // Books
-Route::get('/books/buy', array(BookController::class, 'booksBuy'))->name('books.buy');
+Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
+Route::get('/books/payment/{book}', array(BookController::class, 'booksPayment'))->name('books.payment');
 Route::resource('/books', BookController::class);
 
 // Test Ajax
@@ -29,6 +30,7 @@ Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 
 // Ajax
 Route::prefix('/ajax/request/')->group(function() {
+    Route::post('cek-ongkir', array(AjaxController::class, 'cekOngkir'));
     Route::post('first-load', array(AjaxController::class, 'firstLoad'));
     Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
     Route::post('check-login', array(AjaxController::class, 'checkLogin'));

@@ -137,7 +137,7 @@
                             </div>
                         </div>
                         <div>
-                            <a href="{{ route('books.buy') }}" type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</a>
+                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</a>
                             <button type="button" class="btn btn-yellow w-100">Beli E-Book</button>
                         </div>
                     </div>

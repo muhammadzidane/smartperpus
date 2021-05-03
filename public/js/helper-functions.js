@@ -88,6 +88,10 @@ function numberFormat (number, decimals, decPoint, thousandsSep) {
     return s.join(dec)
 }
 
+function rupiahFormat(value) {
+    return 'Rp' + numberFormat(value, 0, 0, '.');
+}
+
 function exitFilters() {
     globalThis.csrfToken;
 
@@ -132,7 +136,6 @@ function ajaxFilterDataBooks() {
             'page'           : getUrlParameter('page'),
         },
         success: function (response) {
-            console.log(response.page)
             $('#book-search').html(response.books);
             exitFilters();
         }
@@ -140,7 +143,8 @@ function ajaxFilterDataBooks() {
 }
 
 function appendFilter(filter, appendText = []) {
-    let filter_html = function(text, value = null , filterName = null) {
+
+    let filter_html = function(text, value = null , filterName) {
         let val  = `<div class="search-filter ${filterName}" data-filter-value="${value}">`;
             val += `<span class="search-filter-value">${text}</span>`;
             val += `<i class="exit-filter fa fa-times text-grey ml-2" aria-hidden="true"></i>`;
@@ -152,9 +156,6 @@ function appendFilter(filter, appendText = []) {
     if ($(filter).length == 0) {
         $('#search-filters').append(filter_html(appendText[0],
         appendText[1], appendText[2]));
-    }
-    else {
-        $(filter).text(appendText).append(exitFilters());
     }
 }
 
@@ -174,3 +175,35 @@ function getUrlParameter(sParam) {
 
     return false;
 };
+
+function checkShippingInsurance() {
+    let shippingCost           = $('.inp-courier-choise-service:checked').val() ?? 0;
+    let totalPayment           = ($('#total-payment').data('total-payment') * parseInt($('#book-needed').text())) + parseInt(shippingCost);
+
+    let shippingInsuranceHtml  = `<div id="shipping-book" class="d-flex justify-content-between">`;
+        shippingInsuranceHtml += `<div>Asuransi Pengiriman</div>`;
+        shippingInsuranceHtml += `<div>Rp1.000</div>`;
+        shippingInsuranceHtml += `</div>`;
+
+    if ($('#shipping-insurance').is(':checked') && $('#shipping-book').length <= 0) {
+
+        $('#book-payment').append(shippingInsuranceHtml);
+        $('#total-payment').attr('data-total-payment', totalPayment + 1000);
+        $('#total-payment').text(`Rp${numberFormat(totalPayment + 1000, 0, 0, '.')}`);
+    }
+    else {
+        if (!$('#shipping-insurance').is(':checked')) {
+            $('#shipping-book').remove();
+            $('#total-payment').attr('data-total-payment', totalPayment);
+            $('#total-payment').text(`Rp${numberFormat(totalPayment, 0, 0, '.')}`);
+        }
+        else {
+            $('#total-payment').attr('data-total-payment', totalPayment + 1000);
+            $('#total-payment').text(`Rp${numberFormat(totalPayment + 1000, 0, 0, '.')}`);
+        }
+    }
+}
+
+function ucwords(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

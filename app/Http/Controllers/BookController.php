@@ -218,7 +218,15 @@ class BookController extends Controller
     }
 
     // Beli buku
-    public function booksBuy () {
-        return view('book/buy');
+    public function booksBuy($book) {
+        $book = Book::firstWhere('name', $book);
+
+        return view('book/buy', compact(('book')));
+    }
+
+    // Pembelian Buku
+    public function booksPayment() {
+        return view('book/book-payment');
     }
 }
+

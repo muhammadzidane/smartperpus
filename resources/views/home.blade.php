@@ -1,9 +1,10 @@
 @extends('layouts/app')
+@section('carousel')
+    @include('layouts/carousel')
+@endsection
+
 @section('content')
 
-<div class="container-fluid">
-    @include('layouts/carousel')
-</div>
 
 <div class="kategori-pilihan px-3">
 
@@ -19,16 +20,8 @@
             <img src="{{ url('img/kategori-pilihan/pendidikan.jpg') }}">
         </div>
         <div class="kp-1">
-            <h5>Biografi</h5>
-            <img src="{{ url('img/kategori-pilihan/biografi.jpg') }}">
-        </div>
-        <div class="kp-2">
             <h5>Sejarah</h5>
             <img src="{{ url('img/kategori-pilihan/sejarah.jpg') }}">
-        </div>
-        <div class="kp-1">
-            <h5>Fantasi</h5>
-            <img src="{{ url('img/kategori-pilihan/fantasi.jpg') }}">
         </div>
         <div class="kp-2">
             <h5>Novel</h5>
@@ -50,6 +43,7 @@
         'books' => \App\Models\Category::where('name', 'komik')->first()->books
     )
 )
+
 
 <div class="container discount-images">
     <div>

@@ -9,22 +9,36 @@ ul li {
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
-.text-grey { color: #6E7C7C; }
+.text-grey { color: #6E7C7C !important; }
 .synopsis { text-indent: 20px;}
 .fa-long-arrow-alt-left {
     font-size: 19px;
 }
 .fa-times { cursor: pointer;}
 .bg-cus-navbar { background-color: #fff600; }
+.w-maxc { width: max-content; }
+.bg-grey { background-color: #FBF7F7; }
 
 .text-righteous, li a, .book-deals > h2, h4, h5 {
     font-family: 'Righteous', cursive;
 }
+.w-40 { width: 40%; }
+.w-20 { width: 20%; }
 
 .hd-18 {
     font-size: 18px;
 }
 
+.btn-none {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    outline: none;
+}
+
+.btn-none:focus, .btn-none:active, .btn-none:hover{
+    box-shadow: none!important;
+}
 
 body {
     background-color: #f6f5f5;
@@ -158,20 +172,8 @@ body {
 
 
 /* Caraousel IMG */
-.bg-carousel {
-    position: relative;
-    height: 250px;
-}
-
-.bg-carousel > :last-child img {
-    height: 250px;
-    top: 0;
-    bottom: 0;
-    background-color: red;
-}
-
 .carousel-item img {
-    height: 250px;
+    height: 360px;
 }
 
 /* Footer */
@@ -206,8 +208,8 @@ footer {
 }
 
 .book {
-    width: 171.31px;
-    margin: 15px 5px;
+    width: 165.31px;
+    margin: 15px 8px;
     box-shadow: 0 0 1.2px black;
     display: flex;
     flex-direction: column;
@@ -261,27 +263,28 @@ footer {
 
 .rating {
     background-color: transparent;
-    width: 15%;
-    display: flex;
-    flex-direction: column;
+    width: 100%;
     text-align: center;
+    display: flex;
 }
 
 .rating-star {
     color: gold;
-    padding-top: 10px;
-}
-
-.rating div {
-    width: 100%;
-    height: 16.66%;
-    text-align: center;
+    font-size: 12px;
+    margin-right: 3px;
 }
 
 .rating-number {
-    flex: 1;
-    font-size: 12.7px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
 }
+
+.rating-and-author {
+    padding: 0 10px;
+    margin: 5px 0;
+}
+
 .desk-book {
     background-color:transparent;
     height: 100%;
@@ -365,10 +368,8 @@ footer {
 }
 
 .book-show-detail {
-    border-bottom: 1px solid #e2d5d5;
     padding-left: 15px;
     width: 50%;
-    border-end-end-radius: 12px;
 }
 
 .purchase-date {
@@ -456,11 +457,9 @@ footer {
     color: white;
 }
 
-.fa-heart {  font-size: 15px; }
+.fa-heart {  font-size: 14px; }
 
 .tsmall { font-size: 11px; }
-
-
 
 .home-and-anymore-show i {
     color: #1b262c;
@@ -503,10 +502,27 @@ footer {
 }
 
 .add-to-wishlist {
+    position: relative;
     color: #ee6f57;
     width: max-content;
     margin-left: auto;
     margin-right: 5px;
+}
+
+.wishlist-text {
+    display: none;
+    background-color: #625261;
+    color: white;
+    position: absolute;
+    top: -5%;
+    left: 213%;
+    width: max-content;
+    padding: 3px 10px;
+    z-index: 1;
+}
+
+.add-to-wishlist:hover > div {
+    display: block;
 }
 
 .btn-wishlist i { color: #ea5455; }
@@ -624,24 +640,25 @@ footer {
     margin: 27px 20px;
 }
 
-.kp-2 {
-    background-color: #ea5455;
-    color: white;
-    width: 16.66%;
+.kp-2, .kp-1 {
+    width: 25%;
     text-align: center;
     cursor: pointer;
-}
-
-.kp-2 > img, .kp-1 > img {
-    width: 160px;
-    height: 135px;
+    padding: 0 9px;
 }
 
 .kp-1 {
     background-color: #f6f5f5;
-    width: 16.66%;
-    text-align: center;
-    cursor: pointer;
+    color: black;
+}
+.kp-2 {
+    background-color: #ee6f57;
+    color: white;
+}
+
+.kp-2 > img, .kp-1 > img {
+    width: 95%;
+    height: 155px;
 }
 
 .discount-time {
@@ -658,8 +675,9 @@ footer {
 }
 
 .show-all {
-    font-size: 17px;
-    margin-right: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
 }
 
 .kategori-pilihan::before {
@@ -919,9 +937,12 @@ footer {
     width: 31%;
 }
 
-.w-95 {
-    width: 95%;
+.w-80 {
+    width: 80%;
 }
+
+.p-15 { padding: 15px; }
+.px-15 { padding: 0 15px; }
 
 .white-content-header h4 {
     background-color: #FBF7F7;
@@ -951,16 +972,52 @@ footer {
     margin-right: 7px;
     width: 110px;
     text-align: center;
+    cursor: pointer;
 }
 
 .cc-active {
-    border: 3px solid #e8f044;
+    border: 2px solid #e8f044;
 }
 
 .circle-checked {
     color: #FFF600;
     font-size: 18px;
 }
+
+.img-transfer {
+    width: 40px;
+    /* height: 50px; */
+}
+
+.courier-choise-service {
+    cursor: pointer;
+    width: max-content;
+}
+
+.inp-courier-choise-service {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: 1px solid #fff600;
+    outline: none;
+    margin-right: 5px;
+}
+
+.inp-courier-choise-service:checked {
+    background-color: #fff600;
+    border: 5px solid #f0a500;
+}
+
+/* Book Payment */
+.img-bri {
+    /* width: 140px; */
+    /* height: 140px; */
+}
+
+.f-28 { font-size: 28px; }
 
 @media screen and (max-width: 767px) {
     .carousel-item img {

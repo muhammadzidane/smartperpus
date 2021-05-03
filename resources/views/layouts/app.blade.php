@@ -151,6 +151,8 @@
             </div>
         </nav>
 
+        @yield('carousel')
+
         <main class="py-4 container">
             @yield('content')
         </main>
