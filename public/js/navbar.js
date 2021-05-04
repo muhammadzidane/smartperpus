@@ -593,9 +593,12 @@ $(document).ready(function () {
     $('.add-to-wishlist').on('click', function(e) {
         e.stopPropagation();
 
-        $(this).children('i').hasClass('far')
-        ? $(this).children('i').removeClass('far').addClass('fas')
-        : $(this).children('i').removeClass('fas').addClass('far');
+        if ($(this).children('i').hasClass('far')) {
+            $(this).children('i').removeClass('far').addClass('fas')
+        }
+        else {
+            $(this).children('i').removeClass('fas').addClass('far');
+        }
     });
 
 

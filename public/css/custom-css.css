@@ -21,13 +21,15 @@ ul li {
 
 .text-righteous, li a, .book-deals > h2, h4, h5 {
     font-family: 'Righteous', cursive;
-}
-.w-40 { width: 40%; }
-.w-20 { width: 20%; }
 
-.hd-18 {
-    font-size: 18px;
 }
+.w-12 { width: 12%; }
+.w-15 { width: 15%; }
+.w-20 { width: 20%; }
+.w-30 { width: 30%; }
+.w-40 { width: 40%; }
+.hd-14 { font-size: 14px; }
+.hd-18 { font-size: 18px; }
 
 .btn-none {
     border: none;
@@ -488,7 +490,7 @@ footer {
     font-size: 22px;
 }
 
-.dropdown-user { padding: 10px 5px;}
+.dropdown-user { padding: 10px 5px; }
 
 /* Wishlist */
 .btn-wishlist {
@@ -506,7 +508,6 @@ footer {
     color: #ee6f57;
     width: max-content;
     margin-left: auto;
-    margin-right: 5px;
 }
 
 .wishlist-text {
@@ -515,7 +516,7 @@ footer {
     color: white;
     position: absolute;
     top: -5%;
-    left: 213%;
+    left: 186%;
     width: max-content;
     padding: 3px 10px;
     z-index: 1;
@@ -1018,6 +1019,8 @@ footer {
 }
 
 .f-28 { font-size: 28px; }
+
+/* Keranjang Belanja */
 
 @media screen and (max-width: 767px) {
     .carousel-item img {

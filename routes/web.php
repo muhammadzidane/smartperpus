@@ -23,6 +23,7 @@ Route::resource('/authors', AuthorController::class);
 // Books
 Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
 Route::get('/books/payment/{book}', array(BookController::class, 'booksPayment'))->name('books.payment');
+Route::get('/books/shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
 Route::resource('/books', BookController::class);
 
 // Test Ajax

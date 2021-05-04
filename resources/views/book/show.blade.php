@@ -315,4 +315,9 @@
         'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
     )
 )
+
+<div class="click-to-the-top">
+    <button class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up"></i></button>
+</div>
+
 @endsection

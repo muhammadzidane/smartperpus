@@ -228,5 +228,10 @@ class BookController extends Controller
     public function booksPayment() {
         return view('book/book-payment');
     }
+
+    // Keranjang Belanja
+    public function shoppingCart() {
+        return view('book/shopping-cart');
+    }
 }
 

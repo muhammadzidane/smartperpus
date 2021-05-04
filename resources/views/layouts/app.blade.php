@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- CSRF Token -->
@@ -123,7 +123,7 @@
                                 </div>
                             </a>
 
-                            <div class="dropdown-user position-absolute dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="dropdown-user dropdown-menu" aria-labelledby="navbarDropdown">
                                 <div class="mb-3">
                                     <div>
                                         <a class="dropdown-item" href="#"">Akun Saya</a>
