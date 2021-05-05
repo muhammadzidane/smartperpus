@@ -1,24 +1,37 @@
 @extends('layouts.app')
 @section('content')
 
-<div>
-    <h4 class="hd-18">Keranjang Belanja</h4>
+<div class="borbot-gray-bold">
+    <div class="d-flex w-maxc c-p text-grey">
+        <div class="d-flex mr-4">
+            <i class="fa fa-heart mr-2 tred f-20" aria-hidden="true"></i>
+            <h4 class="hd-16">Daftar Wishlist</h4>
+        </div>
+        <div class="d-flex mr-4 active-authbook">
+            <i class="fas fa-shopping-basket mr-2 text-green f-20"></i>
+            <h4 class="hd-16">Keranjang Saya</h4>
+        </div>
+        <div class="d-flex mr-4">
+            <i class="fas fa-user-circle mr-2 f-20 text-grey"></i>
+            <h4 class="hd-16">Akun Saya</h4>
+        </div>
+    </div>
 </div>
 
 <div class="d-flex mt-5">
     <div class="purchase-records">
-        <div class="white-content px-0 pt-0 m-0 borbot-gray-bold">
+        <div class="white-content px-0 pt-0 m-0 borbot-yellow-bold">
             <div class="p-15 pb-0 d-flex">
-                <input type="checkbox" class="mt-1 mr-2" name="" id="">
-                <h4 class="hd-18">Pilih Semua</h4>
+                <input type="checkbox" class="mt-1 mr-2" name="" id="checked-all">
+                <label for="checked-all" class="tbold m-0">Pilih Semua</label>
             </div>
         </div>
         <div class="white-content mt-4 px-0 pt-0 pb-4 m-0 borbot-gray-bold">
             <div class="white-content-header-2">
                 <div class="d-flex justify-content-between w-100">
                     <div class="d-flex">
-                        <input type="checkbox" class="mt-1 mr-2" name="" id="">
-                        <div class="tbold">Pilih</div>
+                        <input type="checkbox" class="mt-1 mr-2" name="" id="pilih">
+                        <label for="pilih" class="tbold m-0">Pilih</label>
                     </div>
                     <div>
                         <div class="tred-bold">Hapus</div>
@@ -40,7 +53,7 @@
                                 </div>
                                 <div class="mr-5">
                                     <div class="tbold">Jumlah</div>
-                                    <div class="text-grey">
+                                    <div class="text-grey d-flex">
                                         <div>
                                             <span id="book-needed">1</span>
                                             <span>/</span>
@@ -68,8 +81,8 @@
             <div class="white-content-header-2">
                 <div class="d-flex justify-content-between w-100">
                     <div class="d-flex">
-                        <input type="checkbox" class="mt-1 mr-2" name="" id="">
-                        <div class="tbold">Pilih</div>
+                        <input type="checkbox" class="mt-1 mr-2" name="" id="pilih">
+                        <label for="pilih" class="tbold m-0">Pilih</label>
                     </div>
                     <div>
                         <div class="tred-bold">Hapus</div>
@@ -91,7 +104,7 @@
                                 </div>
                                 <div class="mr-5">
                                     <div class="tbold">Jumlah</div>
-                                    <div class="text-grey">
+                                    <div class="text-grey d-flex">
                                         <div>
                                             <span id="book-needed">1</span>
                                             <span>/</span>
@@ -119,8 +132,8 @@
             <div class="white-content-header-2">
                 <div class="d-flex justify-content-between w-100">
                     <div class="d-flex">
-                        <input type="checkbox" class="mt-1 mr-2" name="" id="">
-                        <div class="tbold">Pilih</div>
+                        <input type="checkbox" class="mt-1 mr-2" name="" id="pilih">
+                        <label for="pilih" class="tbold m-0">Pilih</label>
                     </div>
                     <div>
                         <div class="tred-bold">Hapus</div>
@@ -142,7 +155,7 @@
                                 </div>
                                 <div class="mr-5">
                                     <div class="tbold">Jumlah</div>
-                                    <div class="text-grey">
+                                    <div class="text-grey d-flex">
                                         <div>
                                             <span id="book-needed">1</span>
                                             <span>/</span>
@@ -172,7 +185,7 @@
             <div class="white-content pt-0 m-0">
                 <div id="book-payment" class="text-grey py-2 mb-0 bordash-gray">
                     <div class="mt-2 mb-4">
-                        <h4 class="hd-18 text-center text-body">Ringkasan Pembayaran</h4>
+                        <h4 class="hd-16 text-center text-body">Ringkasan Pembayaran</h4>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>

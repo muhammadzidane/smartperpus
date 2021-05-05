@@ -9,6 +9,7 @@ ul li {
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
+.text-green { color: #81B214 !important; }
 .text-grey { color: #6E7C7C !important; }
 .synopsis { text-indent: 20px;}
 .fa-long-arrow-alt-left {
@@ -23,12 +24,17 @@ ul li {
     font-family: 'Righteous', cursive;
 
 }
+
+.f-20 { font-size: 20px !important;  }
+.f-28 { font-size: 28px; }
 .w-12 { width: 12%; }
 .w-15 { width: 15%; }
 .w-20 { width: 20%; }
 .w-30 { width: 30%; }
 .w-40 { width: 40%; }
+.w-98 { width: 98%; }
 .hd-14 { font-size: 14px; }
+.hd-16 { font-size: 16px; }
 .hd-18 { font-size: 18px; }
 
 .btn-none {
@@ -532,6 +538,31 @@ footer {
 .btn-wishlist:hover .far { display: none; }
 .fa-share-alt { color: #e4d3cf; }
 
+.wishlist-search { position: relative; }
+.wishlist-search input {
+    width: 265px;
+    height: 34px;
+    margin: 2px 0;
+    border: 2px solid #E7E7DE;
+    border-radius: 4px;
+    background-color: #F6F5F5;
+    text-indent: 40px;
+    outline: none;
+}
+.wishlist-search input:focus {
+    border: 2px solid #686d76;
+    box-shadow: 0 0 2px #686d76;
+}
+.wishlist-search-icon {
+    font-size: 18px;
+    color: #fff600;
+}
+.wishlist-search span {
+    position: absolute;
+    top: 25%;
+    left: 4%;
+}
+
 /* Ulasan Produk */
 .rating-product-reviews {
     display: flex;
@@ -581,10 +612,8 @@ footer {
 }
 
 .borbot-gray-0 { border-bottom: 1px solid #e2d5d5; }
-
-.borbot-gray-bold {
-    border-bottom: 5px solid #e2d5d5;
-}
+.borbot-gray-bold { border-bottom: 5px solid #e2d5d5; }
+.borbot-yellow-bold { border-bottom: 5px solid #fff600; }
 
 /* Customer Reviews */
 .customer-reviews {
@@ -726,7 +755,7 @@ footer {
     height: max-content;
 }
 
-.active-authbook { box-shadow: 0 3px 0 0 #686d76; }
+.active-authbook { box-shadow: 0 5px 0 0 #686d76; }
 
 .wkwk1 {display: flex;}
 .wkwk1 > div:first-child {
@@ -1017,8 +1046,6 @@ footer {
     /* width: 140px; */
     /* height: 140px; */
 }
-
-.f-28 { font-size: 28px; }
 
 /* Keranjang Belanja */
 

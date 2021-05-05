@@ -233,5 +233,9 @@ class BookController extends Controller
     public function shoppingCart() {
         return view('book/shopping-cart');
     }
+
+    public function wishlist() {
+        return view('book/wishlist');
+    }
 }
 

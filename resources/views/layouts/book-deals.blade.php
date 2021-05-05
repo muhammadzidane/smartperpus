@@ -1,7 +1,7 @@
 <div class="book-deals">
     <div class="position-relative">
         <h3 class="book-deals-title mr-3">{{ $title }}</h3>
-            <a class="show-all" href="#">Lihat Semua</a>
+        <a class="show-all" href="#">Lihat Semua</a>
     </div>
 
     @if(session('pesan'))

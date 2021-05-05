@@ -30,7 +30,7 @@
     </div>
     <div class="book-show-sinopsis">
         <div class="white-content">
-            <h4 class="tbold">{{ $book->name }}</h4>
+            <h5>{{ $book->name }}</h5>
             <div class="my-1 d-flex">
                 <div>
                     <div>
@@ -56,7 +56,9 @@
                     </div>
                 </div>
             </div>
-            <h5><a href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a></h5>
+            <h4 class="hd-14">
+                <a class="text-grey" href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a>
+            </h4>
             <div class="mt-3">
                 @if (strlen($book->synopsis->text) > 500)
                     <p>{{ substr($book->synopsis->text, 0, 500) }} <a href="">Lihat Semua....</a></p>
@@ -69,7 +71,7 @@
         <div class="detail-and-buy">
             <div class="book-show-detail">
                 <div>
-                    <h5 class="title-border-red">Detail</h5>
+                    <h4 class="title-border-red hd-18">Detail</h4>
                     <div class="d-flex">
                         <div class="w-50">
                             <div>ISBN</div>
@@ -81,7 +83,7 @@
                             <div>Lebar</div>
                             <div>Panjang</div>
                         </div>
-                        <div class="w-50">
+                        <div class="w-50 text-grey">
                             <div>{{ $book->isbn }}</div>
                             <div>{{ $book->subtitle }}</div>
                             <div>{{ $book->pages }}</div>
@@ -96,7 +98,7 @@
             </div>
             <div class="book-payment">
                 <div class="d-flex justify-content-between">
-                    <h4 class="mb-3">Stok Buku Cetak: <span class="tred-bold">{{ $book->printedStock->amount }}</span></h4>
+                    <h5 class="mb-3">Stok Buku Cetak : <span class="tred-bold">{{ $book->printedStock->amount }}</span></h5>
                     <div class="info-book">
                         <div>
                             <i class="info-book-tooltips fas fa-info-circle"></i>
@@ -126,7 +128,7 @@
                                 <i class="fa fa-heart"></i>
                                 <span>Wishlist</span>
                             </button>
-                            <div><i class="add-shop fas fa-shopping-cart"></i>Keranjang</div>
+                            <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
                             <div>
                                 <span class="share-sosmed">
                                     <span class="mr-1"><i class="fa fa-share-alt" aria-hidden="true"></i></span>
@@ -148,7 +150,7 @@
 </div>
 
 <div id="rating" class="white-content p-4 mt-c">
-    <h4 class="tbold title-border-red my-3">Ulasan Produk</h4>
+    <h5 class="tbold title-border-red my-3">Ulasan Produk</h5>
     <p class="tred-bold">{{ $book->name }}.</p>
     <div class="rating-product-reviews">
         <div>
