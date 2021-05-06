@@ -20,9 +20,8 @@ ul li {
 .w-maxc { width: max-content; }
 .bg-grey { background-color: #FBF7F7; }
 
-.text-righteous, li a, .book-deals > h2, h4, h5 {
+.text-righteous, li a, .book-deals > h2, h4, h5 , .btn-outline-yellow{
     font-family: 'Righteous', cursive;
-
 }
 
 .f-20 { font-size: 20px !important;  }
@@ -30,8 +29,12 @@ ul li {
 .w-12 { width: 12%; }
 .w-15 { width: 15%; }
 .w-20 { width: 20%; }
+.w-22 { width: 22%; }
 .w-30 { width: 30%; }
 .w-40 { width: 40%; }
+.w-78 { width: 78%; }
+.w-79 { width: 79%; }
+.w-80 { width: 80%; }
 .w-98 { width: 98%; }
 .hd-14 { font-size: 14px; }
 .hd-16 { font-size: 16px; }
@@ -363,7 +366,7 @@ footer {
     width: 50%;
 }
 
-.white-content {
+.white-content, .white-content-0 {
     padding: 15px;
     margin: 15px 0;
     background-color: #fffdf6;
@@ -1016,7 +1019,6 @@ footer {
 
 .img-transfer {
     width: 40px;
-    /* height: 50px; */
 }
 
 .courier-choise-service {
@@ -1047,7 +1049,43 @@ footer {
     /* height: 140px; */
 }
 
-/* Keranjang Belanja */
+/* My Account */
+.change-profile-img {
+    width: 21%;
+}
+
+.profile-img {
+    width: 100%;
+    max-height: 166px;
+    border-radius: 100%;
+}
+
+.btn-sm {
+    padding: 5px 0;
+    background-color: transparent;
+}
+
+.btn-outline-yellow {
+    padding: 5px 10px;
+    color: #6E7C7C;
+    border-color: #fff600;
+}
+
+.change-password { margin-top: 22px; }
+.change-password button { padding: 5px 37px; }
+.waiting-for-payment {
+    position: absolute;
+    color: white;
+    background-color: #ee6f57;
+    font-size: 9px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    left: 87%;
+    bottom: 50%;
+    border-radius: 100%;
+}
 
 @media screen and (max-width: 767px) {
     .carousel-item img {

@@ -3,7 +3,7 @@
 use App\Http\Controllers\
 {
     AjaxController,BookController, AuthorController, CategoryController,
-    HomeController, TestController,
+    HomeController, TestController, AccountController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -19,6 +19,9 @@ Route::get('/pagination', array(TestController::class, 'pagination'));
 Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
 
 Route::resource('/authors', AuthorController::class);
+
+// My Account
+Route::get('/account', array(AccountController::class, 'index'));
 
 // Books
 Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
