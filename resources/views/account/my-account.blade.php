@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('content')
 
+<h1 id="test" class="w-sm-100">wkwk</h1>
+
 <div class="borbot-gray-bold">
     <div class="d-flex w-maxc c-p text-grey">
         <div class="d-flex mr-4">
@@ -18,8 +20,8 @@
     </div>
 </div>
 
-<div class="mt-5 d-lg-flex">
-    <div class="w-78 mr-5">
+<div class="mt-5">
+    <div class="w-78 mr-5 bg-dark w-sm-100">
         <div class="white-content px-0 pt-0 pb-4 m-0 borbot-gray-bold">
             <div class="container pt-4">
                 <div class="d-flex container pb-4 borbot-gray-0">
@@ -37,7 +39,7 @@
                         </div>
                     </div>
                     <div class="w-79">
-                        <div class="ml-5 d-flex justify-content-between">
+                        <div class="ml-5 d-flex justify-content-between overflow-hidden">
                             <div class="tbold">
                                 <div>
                                     <div>Nama</div>

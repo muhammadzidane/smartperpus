@@ -26,130 +26,69 @@
 
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-lg navbar-light bg-cus-navbar h-100 shadow-sm sticky-top">
-            <div class="container-fluid">
-                <a class="navbar-brand text-righteous" href="{{ url('/') }}">
-                    <img class="logo" src="{{ asset('img/logo.png') }}" alt="">
-                    <span class="logo-text">Smartperpus</span>
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse"
-                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
-                    <!-- Left Side Of Navbar -->
-                    <div class="circle-input">
-                        <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                            <button type="submit">
-                                <i class="fas fa-search search-icon"></i>
-                            </button>
-                            <input type="text" name="keywords" id="keywords" class="search-text"
-                            placeholder="Judul Buku, Nama Author" autocomplete="off">
-                            <input type="hidden" name="page" value="1">
-                        </form>
-                        <div id="search-values">
+        <nav class="cus-navbar">
+            <div class="logo">
+                <img class="logo-img" src="{{ asset('img/logo.png') }}" alt="">
+            </div>
+            <div class="circle-input">
+                <form class="search-form" action="{{ route('search.books') }}" method="GET">
+                    <div>
+                        <div class="search-icon">
+                            <i class="fas fa-search m-auto"></i>
+                        </div>
+                        <input type="text" name="keywords" id="keywords" class="search-text"
+                        placeholder="Judul Buku, Nama Author" autocomplete="off">
+                        <input type="hidden" name="page" value="1">
+                    </div>
+                </form>
+            </div>
+                <!-- <div class="circle-input"> -->
+                <!-- <div id="search-values">
+                    <div>
+                        <div class="py-3">
                             <div>
-                                <div class="py-3">
-                                    <div>
-                                        <h6 class="ml-3 tred-bold">Buku</h6>
-                                        <ul id="search-books">
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h6 class="ml-3 tred-bold">Author</h6>
-                                        <ul id="search-authors">
-                                        </ul>
-                                    </div>
+                                <h6 class="ml-3 tred-bold">Buku</h6>
+                                <ul id="search-books">
+                                    </ul>
+                            </div>
+                            <div>
+                                <h6 class="ml-3 tred-bold">Author</h6>
+                                <ul id="search-authors">
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <ul class="navbar-nav mr-auto nav-left">
-                        <li id="categories" class="nav-item">
-                            <a class="nav-link text-body" href="#">Kategori <i class="fas fa-caret-down ml-1"></i></a>
-                            <div>
-                                <div>
-                                    @foreach(\App\Models\Category::orderBy('name')->get() as $category)
-                                        <span class="category">
-                                            <a href="#">{{ $category->name }}</a>
-                                        </span>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-body" href="#">Genre</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-body" href="#">Best Seller</i></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-body" href="#">Komik</i></a>
-                        </li>
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                        @if (Route::has('login'))
-                        <li class="nav-item mr-2">
-                            <!-- Button trigger login modal -->
-                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                        </li>
-                        @endif
-
-                        @if (Route::has('register'))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                        </li>
-                        @endif
-                        @else
-                        <li class="nav-item dropdown position-relative">
-                            <a id="navbarDropdown" class="nav-link" href="#" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                <div class="user">
-                                    <div class="user-circle">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="user-name">
-                                        <div>{{ Auth::user()->first_name }}</div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <div class="dropdown-user dropdown-menu" aria-labelledby="navbarDropdown">
-                                <div class="mb-3">
-                                    <div>
-                                        <a class="dropdown-item" href="#"">Akun Saya</a>
-                                    </div>
-                                    <div>
-                                        <a class="dropdown-item" href="#"">Daftar Wishlist</a>
-                                    </div>
-                                    <div>
-                                        <a class="dropdown-item" href="#">Keranjang Saya</a>
-                                    </div>
-                                </div>
-                                <div>
-                                    <form action="{{ route('logout') }}" method="post">
-                                        @csrf
-                                        <button type="submit" class="btn dropdown-item text-right text-righteous">
-                                            Logout
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </li>
-                        @endguest
-                    </ul>
-                </div>
+                </div> -->
+            <div class="cus-nav">
+                <ul class="ul-nav">
+                    <div class="d-flex ml-3">
+                        <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
+                        <li>Best Seller</li>
+                        <li>Buku Diskon</li>
+                    </div>
+                    <div class="d-flex ml-auto align-items-center">
+                        <li><button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button></li>
+                        <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                    </div>
+                </ul>
             </div>
         </nav>
+        <div class="responsive-navbar">
+            <ul class="ul-nav">
+                <div class="d-flex ml-3">
+                    <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
+                    <li>Best Seller</li>
+                    <li>Buku Diskon</li>
+                </div>
+                <div class="d-flex ml-auto align-items-center">
+                    <li><button id="login" class="btn btn-red" data-toggle="modal"
+                            data-target="#modal-login">Masuk</button></li>
+                    <li class="mr-3"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                </div>
+            </ul>
+
+        </div>
 
         @yield('carousel')
 

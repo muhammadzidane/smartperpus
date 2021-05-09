@@ -55,6 +55,126 @@ body {
     background-color: #f6f5f5;
 }
 
+/* Navbar */
+.cus-navbar {
+    background-color: #fff600;
+    padding: 4px 50px;
+    display: flex;
+    font-family: 'Righteous';
+}
+
+.responsive-navbar { display: none; }
+
+.cus-nav {
+    width: 50%;
+}
+
+.logo {
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 20%;
+}
+
+.logo-text {
+    font-size: 18px;
+}
+
+.logo-img {
+    width: 160px;
+}
+
+.ul-nav {
+    display: flex;
+    list-style-type: none;
+    height: 100%;
+    align-items: center;
+    padding: 2px 0;
+    margin: 0;
+    font-family: 'Righteous';
+}
+
+.ul-nav li:not(.ul-nav li:last-child) {
+    margin-right: 17px;
+}
+
+.circle-input {
+    display: block;
+    width: 30%;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.search-text {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ea5455;
+    height: 45px;
+    text-indent: 30px;
+    border-top-right-radius: 23px;
+    border-bottom-right-radius: 23px;
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    left: -25px;
+    background-color: red;
+    display: flex;
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    color: white;
+    font-size: 18px;
+}
+
+@media screen and (max-width: 992px)  {
+    .w-sm-100 { width: 100% !important; background-color: red !important; }
+    #test {
+        background-color: pink;
+    }
+
+    /* Navbar */
+    .cus-navbar {
+        padding: 10px 20px;
+    }
+
+    .responsive-navbar {
+        display: block;
+        background-color: #f6f6f6;
+        padding: 0 10px;
+        border-bottom: 3px solid #e2d5d5;
+    }
+
+    .cus-nav {
+        display: none;
+    }
+
+    .logo {
+        width: 60%;
+    }
+
+    .logo-img {
+        width: 130px;
+    }
+
+    .circle-input {
+        width: 40%;
+    }
+
+    .btn-red {
+        padding: 3px 12px;
+        margin: 5px 0;
+    }
+}
+
+@media screen and (max-width: 564px)  {
+    * {
+        font-size: 12px;
+    }
+}
+
+
 #keywords:focus {  background-color: #fffdf6; }
 
 .arrow-lihat-semua {
@@ -66,47 +186,6 @@ body {
     border-radius: 100%;
     font-size: 30px;
     color: #f8fafc;
-}
-
-.search-text {
-    border: 2px solid #ea5455;
-    background-color: #ece8d9;
-    margin-left: -33px;
-    width: 89%;
-    height: 95%;
-    border-radius: 10px 25px 25px 10px;
-    text-indent: 30px;
-    position: absolute;
-    outline: none;
-    top: 1.4px;
-}
-
-.search-icon {
-    background-color: #ea5455;
-    color: bisque;
-    font-size: 20px;
-    padding: 13px;
-    width: 45px;
-    height: 45px;
-    border-radius: 100%;
-    position: relative;
-    z-index: 1;
-}
-
-.search-form {
-    display: inline;
-}
-
-.search-form button {
-    border: none;
-    background-color: transparent;
-}
-
-.circle-input {
-    display: block;
-    margin-left: 36px;
-    width:30%;
-    position: relative;
 }
 
 #search-values {
@@ -130,16 +209,6 @@ body {
     /* display: none; */
 }
 
-.logo {
-    width: 52px;
-    position: absolute;
-    bottom: 6px;
-    /* height: 50px; */
-}
-
-.logo-text {
-    margin-left: 58px;
-}
 
 .nav-left .nav-link:hover {
     border-bottom: 2px solid black;
@@ -180,6 +249,7 @@ body {
 .category a {
     color: black !important;
 }
+
 
 
 /* Caraousel IMG */
@@ -1076,7 +1146,7 @@ footer {
 .waiting-for-payment {
     position: absolute;
     color: white;
-    background-color: #ee6f57;
+    background-color: #ee6f57 ;
     font-size: 9px;
     width: 18px;
     height: 18px;
@@ -1087,7 +1157,7 @@ footer {
     border-radius: 100%;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
     .carousel-item img {
         height: 120px;
     }
@@ -1164,5 +1234,25 @@ footer {
     /* Gambar-gambar buku diskon */
     .a div img {
         height: 56px;
+    }
+}
+
+#test {
+    background-color: red;
+}
+
+/* Small Width Screen */
+@media screen and (max-width: 992px)  {
+    .w-sm-100 { width: 100% !important; background-color: red !important; }
+    #test {
+        background-color: pink;
+    }
+}
+
+@media screen and (max-width: 576px)  {
+    /* .w-sm-100 { display: none; } */
+    #test {
+        width: max-content !important;
+        background-color: pink !important;
     }
 }

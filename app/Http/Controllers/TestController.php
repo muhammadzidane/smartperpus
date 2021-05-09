@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        return view('');
+        return view('test');
     }
 
     public function pagination() {
