@@ -26,73 +26,75 @@
 
 <body>
     <div id="app">
-        <nav class="cus-navbar">
-            <div class="logo">
-                <img class="logo-img" src="{{ asset('img/logo.png') }}" alt="">
-            </div>
-            <div class="circle-input">
-                <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                    <div>
-                        <div class="search-icon">
-                            <i class="fas fa-search m-auto"></i>
-                        </div>
-                        <input type="text" name="keywords" id="keywords" class="search-text"
-                        placeholder="Judul Buku, Nama Author" autocomplete="off">
-                        <input type="hidden" name="page" value="1">
-                    </div>
-                </form>
-            </div>
-                <!-- <div class="circle-input"> -->
-                <!-- <div id="search-values">
-                    <div>
-                        <div class="py-3">
-                            <div>
-                                <h6 class="ml-3 tred-bold">Buku</h6>
-                                <ul id="search-books">
-                                    </ul>
+        <div>
+            <nav class="cus-navbar">
+                <div class="logo">
+                    <img class="logo-img" src="{{ asset('img/logo.png') }}" alt="">
+                </div>
+                <div class="circle-input">
+                    <form class="search-form" action="{{ route('search.books') }}" method="GET">
+                        <div>
+                            <div class="search-icon">
+                                <i class="fas fa-search m-auto"></i>
                             </div>
-                            <div>
-                                <h6 class="ml-3 tred-bold">Author</h6>
-                                <ul id="search-authors">
-                                    </ul>
+                            <input type="text" name="keywords" id="keywords" class="search-text"
+                            placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="hidden" name="page" value="1">
+                        </div>
+                    </form>
+                </div>
+                    <!-- <div class="circle-input"> -->
+                    <!-- <div id="search-values">
+                        <div>
+                            <div class="py-3">
+                                <div>
+                                    <h6 class="ml-3 tred-bold">Buku</h6>
+                                    <ul id="search-books">
+                                        </ul>
+                                </div>
+                                <div>
+                                    <h6 class="ml-3 tred-bold">Author</h6>
+                                    <ul id="search-authors">
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div> -->
-            <div class="cus-nav">
+                    </div> -->
+                <div class="cus-nav">
+                    <ul class="ul-nav">
+                        <div class="d-flex ml-3">
+                            <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
+                            <li>Best Seller</li>
+                            <li>Buku Diskon</li>
+                        </div>
+                        <div class="d-flex ml-auto align-items-center">
+                            <li><button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button></li>
+                            <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                        </div>
+                    </ul>
+                </div>
+            </nav>
+            <div class="responsive-navbar">
                 <ul class="ul-nav">
-                    <div class="d-flex ml-3">
+                    <div class="d-flex">
                         <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
                         <li>Best Seller</li>
                         <li>Buku Diskon</li>
                     </div>
                     <div class="d-flex ml-auto align-items-center">
-                        <li><button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button></li>
-                        <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                        <li><button id="login" class="btn btn-red" data-toggle="modal"
+                                data-target="#modal-login">Masuk</button></li>
+                        <li class="mr-3"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
                     </div>
                 </ul>
-            </div>
-        </nav>
-        <div class="responsive-navbar">
-            <ul class="ul-nav">
-                <div class="d-flex ml-3">
-                    <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
-                    <li>Best Seller</li>
-                    <li>Buku Diskon</li>
-                </div>
-                <div class="d-flex ml-auto align-items-center">
-                    <li><button id="login" class="btn btn-red" data-toggle="modal"
-                            data-target="#modal-login">Masuk</button></li>
-                    <li class="mr-3"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
-                </div>
-            </ul>
 
+            </div>
         </div>
 
         @yield('carousel')
 
-        <main class="py-4 container">
+        <main class="py-4 container-lg">
             @yield('content')
         </main>
 

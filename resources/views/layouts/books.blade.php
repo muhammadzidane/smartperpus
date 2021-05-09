@@ -12,7 +12,7 @@
             </div>
             <div class="desk-book">
                 <div>
-                    <a href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name  }}</a>
+                    <a class="tbreak-all" href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name  }}</a>
                 </div>
             </div>
             <div class="rating-and-author">

@@ -15,6 +15,7 @@ ul li {
 .fa-long-arrow-alt-left {
     font-size: 19px;
 }
+.tbreak-all { word-break: break-all; }
 .fa-times { cursor: pointer;}
 .bg-cus-navbar { background-color: #fff600; }
 .w-maxc { width: max-content; }
@@ -66,7 +67,7 @@ body {
 .responsive-navbar { display: none; }
 
 .cus-nav {
-    width: 50%;
+    width: 55%;
 }
 
 .logo {
@@ -99,7 +100,7 @@ body {
 
 .circle-input {
     display: block;
-    width: 30%;
+    width: 25%;
     position: relative;
     margin-top: auto;
     margin-bottom: auto;
@@ -127,53 +128,6 @@ body {
     color: white;
     font-size: 18px;
 }
-
-@media screen and (max-width: 992px)  {
-    .w-sm-100 { width: 100% !important; background-color: red !important; }
-    #test {
-        background-color: pink;
-    }
-
-    /* Navbar */
-    .cus-navbar {
-        padding: 10px 20px;
-    }
-
-    .responsive-navbar {
-        display: block;
-        background-color: #f6f6f6;
-        padding: 0 10px;
-        border-bottom: 3px solid #e2d5d5;
-    }
-
-    .cus-nav {
-        display: none;
-    }
-
-    .logo {
-        width: 60%;
-    }
-
-    .logo-img {
-        width: 130px;
-    }
-
-    .circle-input {
-        width: 40%;
-    }
-
-    .btn-red {
-        padding: 3px 12px;
-        margin: 5px 0;
-    }
-}
-
-@media screen and (max-width: 564px)  {
-    * {
-        font-size: 12px;
-    }
-}
-
 
 #keywords:focus {  background-color: #fffdf6; }
 
@@ -289,7 +243,7 @@ footer {
 }
 
 .book {
-    width: 165.31px;
+    width: 18.52%;
     margin: 15px 8px;
     box-shadow: 0 0 1.2px black;
     display: flex;
@@ -298,6 +252,8 @@ footer {
     cursor: pointer;
     transition: width 100ms;
     position: relative;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .book:hover {
@@ -1157,102 +1113,100 @@ footer {
     border-radius: 100%;
 }
 
-@media screen and (max-width: 768px) {
+
+/* Large Width Screen */
+@media screen and (max-width: 992px)  {
+
+    /* Halaman Home */
     .carousel-item img {
-        height: 120px;
+        height: 280px;
     }
 
-    .col-3 .w-100 {
-        display: none;
+    .kp-1 img, .kp-2 img {
+        height: 100px;
     }
-
-    /* Book - Home */
 
     .book {
-        width: 22.99%;
-        font-size: 8.4px;
+        width: 22.93%;
     }
 
-    .desk-book div a {
-        font-size: 8.4px;
+    /* Navbar */
+    .cus-navbar {
+        padding: 10px 20px;
     }
 
-    .book-deals-title{
-        font-size: 14px;
+    .responsive-navbar {
+        display: block;
+        background-color: #f6f6f6;
+        padding: 0 10px;
+        border-bottom: 3px solid #e2d5d5;
     }
 
-    .show-all, .show-all i {
-        font-size: 10px;
-    }
-
-    /* Book Show */
-    .book-show-cover {
-        height: 35%;
-    }
-
-    .book-show-buy {
-        height: 65%;
-    }
-
-    /* Rating Buku */
-    .rating-star {
-        font-size: 10px;
-    }
-
-    .rating-number {
-        font-size: 8.4px;
-    }
-
-    /* Kategori Pilihan */
-
-    .kp-1, .kp-2 {
-        width: 25%;
-        padding: 0 5px;
-    }
-
-    .kp1:last-child, .kp-2:last-child {
+    .cus-nav {
         display: none;
     }
 
-    .kp-2 > img, .kp-1 > img {
-        /* width: 60%; */
-        width: 74px;
-        height: 74px;
+    .logo {
+        width: 60%;
     }
 
-    /* Arrow Lihat Semua */
-    .arrow-lihat-semua {
-        font-size: 16px;
-        right: -13px;
-        top: 2.4px;
+    .logo-img {
+        width: 130px;
     }
 
-    .show-all {
-        margin-right: 5px;
+    .circle-input {
+        width: 40%;
     }
 
-    /* Gambar-gambar buku diskon */
-    .a div img {
-        height: 56px;
+    .btn-red {
+        padding: 3px 12px;
+        margin: 5px 0;
     }
 }
 
-#test {
-    background-color: red;
-}
+@media screen and (max-width: 768px)  {
+    /* Halaman Home */
+    .carousel-item img {
+        height: 220px;
+    }
 
-/* Small Width Screen */
-@media screen and (max-width: 992px)  {
-    .w-sm-100 { width: 100% !important; background-color: red !important; }
-    #test {
-        background-color: pink;
+    .kp-1 img, .kp-2 img {
+        height: 110px;
+    }
+
+    .book {
+        width: 30%;
     }
 }
 
-@media screen and (max-width: 576px)  {
-    /* .w-sm-100 { display: none; } */
-    #test {
-        width: max-content !important;
-        background-color: pink !important;
+@media screen and (max-width: 564px)  {
+    * {
+        font-size: 12px;
     }
+
+    .carousel-item img {
+        height: 100px;
+    }
+
+    .ul-nav li:not(.ul-nav li:last-child) {
+        margin-right: 12px;
+    }
+
+    .search-icon {
+        left: -20px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .book {
+        width: 44.77%;
+    }
+
+    .search-text {
+        height: 35px;
+    }
+}
+
+@media screen and (max-width: 341px) {
+    .book { width: 44.06%; }
 }

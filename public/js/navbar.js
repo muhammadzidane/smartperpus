@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+    // Jika /search/books
     // Modul Search Books - First Load
     if (window.location.pathname == '/search/books') {
         $.ajax({
@@ -16,9 +17,9 @@ $(document).ready(function () {
             },
             success: function (response) {
                 $('#book-search').html(response.books);
+                $('.book').css('width', '22.95%');
             },
         });
-
     }
 
     $('#login').trigger('click');
@@ -600,8 +601,6 @@ $(document).ready(function () {
             $(this).children('i').removeClass('fas').addClass('far');
         }
     });
-
-
 }); // End of onload Event
 
 function alertError(message) {
