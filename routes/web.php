@@ -43,6 +43,7 @@ Route::prefix('/ajax/request/')->group(function() {
     Route::post('search', array(AjaxController::class, 'search'));
     Route::post('pagination', array(AjaxController::class, 'pagination'));
     Route::post('pagination-data', array(AjaxController::class, 'paginationData'));
+    Route::get('responsive-filters', array(AjaxController::class, 'responsiveFilters'));
 
     // Filter
     Route::post('filter-search', array(AjaxController::class, 'filterSearch'));

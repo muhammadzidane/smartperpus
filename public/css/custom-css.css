@@ -25,6 +25,10 @@ ul li {
     font-family: 'Righteous', cursive;
 }
 
+.btn-outline-warning, .btn-outline-grey {
+    border: 2px solid #6E7C7C;
+}
+
 .f-20 { font-size: 20px !important;  }
 .f-28 { font-size: 28px; }
 .w-12 { width: 12%; }
@@ -36,10 +40,16 @@ ul li {
 .w-78 { width: 78%; }
 .w-79 { width: 79%; }
 .w-80 { width: 80%; }
+.w-90 { width: 90%; }
 .w-98 { width: 98%; }
 .hd-14 { font-size: 14px; }
 .hd-16 { font-size: 16px; }
 .hd-18 { font-size: 18px; }
+
+.anjir-img {
+    width: 92px;
+    height: 139px;
+}
 
 .btn-none {
     border: none;
@@ -243,7 +253,7 @@ footer {
 }
 
 .book {
-    width: 18.52%;
+    width: 14.91%;
     margin: 15px 8px;
     box-shadow: 0 0 1.2px black;
     display: flex;
@@ -405,7 +415,6 @@ footer {
 }
 
 .book-show-detail {
-    padding-left: 15px;
     width: 50%;
 }
 
@@ -420,10 +429,11 @@ footer {
 }
 
 .book-payment {
+    /* display: flex; */
+    flex-direction: column;
     border: 1px solid #f0a500;
     background-color: #fffdf6;
     width: 50%;
-    height: 260px;
     padding: 15px;
     position: relative;
     border-radius: 6px;
@@ -466,12 +476,12 @@ footer {
 }
 
 .buy {
-    padding: 15px;
+    /* padding: 15px;
     padding-bottom: 10px;
     position: absolute;
-    bottom: 0;
+    bottom: 0px;
     right: 0;
-    width: 100%;
+    width: 100%; */
 }
 
 .btn-red {
@@ -697,6 +707,7 @@ footer {
 .kategori-pilihan > div {
     display: flex;
     margin: 27px 20px;
+
 }
 
 .kp-2, .kp-1 {
@@ -989,16 +1000,13 @@ footer {
 
 /* Purchase Records */
 .purchase-records {
-    width: 69%;
+    width: 72%;
 }
 
 .pay-for-the-book {
-    width: 31%;
+    width: 28%;
 }
 
-.w-80 {
-    width: 80%;
-}
 
 .p-15 { padding: 15px; }
 .px-15 { padding: 0 15px; }
@@ -1127,7 +1135,7 @@ footer {
     }
 
     .book {
-        width: 22.93%;
+        width: 17.78%;
     }
 
     /* Navbar */
@@ -1162,8 +1170,28 @@ footer {
         padding: 3px 12px;
         margin: 5px 0;
     }
+
+    .purchase-records { width: 70%; }
+    .pay-for-the-book { width: 30%; }
+
+    /* Search Book */
+    .wkwk1 > div:first-child {
+        display: none !important;
+    }
+
+    .wkwk1 > div:last-child {
+        width: 100%;
+        margin: 0 !important;
+    }
+
+    #book-search .books .book {
+        width: 17.79% !important;
+    }
+
+    #filter-button { display: block !important; }
 }
 
+/* Media Medium */
 @media screen and (max-width: 768px)  {
     /* Halaman Home */
     .carousel-item img {
@@ -1175,7 +1203,26 @@ footer {
     }
 
     .book {
-        width: 30%;
+        width: 30.22%;
+    }
+
+    /* Book Show */
+    .detail-and-buy {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-show-detail, .form-register { width: 100%; }
+    .book-payment { margin-top: 30px; width: 75%; }
+    .purchase-records { width: 60%; }
+    .pay-for-the-book { width: 40%; }
+
+    /* Register */
+    .register-user-pict { display: none; }
+
+    /* Book Search */
+    #book-search .books .book {
+        width: 21.90% !important;
     }
 }
 
@@ -1183,6 +1230,8 @@ footer {
     * {
         font-size: 12px;
     }
+
+    h4, .hd-18 { font-size: 14px !important; }
 
     .carousel-item img {
         height: 100px;
@@ -1198,15 +1247,28 @@ footer {
         height: 35px;
     }
 
+    .books { justify-content: center; }
+
     .book {
-        width: 44.77%;
+        width: 43%;
     }
 
     .search-text {
         height: 35px;
     }
-}
 
-@media screen and (max-width: 341px) {
-    .book { width: 44.06%; }
+    /* Buy Blade */
+    #buying-content { flex-direction: column; }
+    #buying-img { width: 100%; }
+    #book-payment { display: flex; flex-direction: column; }
+    .purchase-records, .pay-for-the-book, .pay-for-the-book div { width: 100% !important; }
+    .pay-for-the-book div div:first-child { display: flex;}
+    .pay-for-the-book div div:first-child > div:first-child { width: 35% !important; }
+    .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
+    .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
+
+    /* Book Search */
+    #book-search .books .book {
+        width: 43.90% !important;
+    }
 }

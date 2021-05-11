@@ -17,7 +17,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 $('#book-search').html(response.books);
-                $('.book').css('width', '22.95%');
+                $('.book').css('width', '22.52%');
             },
         });
     }
@@ -182,11 +182,13 @@ $(document).ready(function () {
 
     // Modul ~ Search Book
     // Filter minimum / maksimum harga
-    $('#min-max-value').on('click', function(e) {
+    $('.min-max-value').on('click', function(e) {
         e.preventDefault();
 
-        let min_price_val        = $('#min-price').val();
-        let max_price_val        = $('#max-price').val();
+        let min_price_val = $('#modal-filter').hasClass('show') ? $('.min-price').last().val() : $('.min-price').val();
+        let max_price_val = $('#modal-filter').hasClass('show') ? $('.max-price').last().val() : $('.max-price').val();
+
+        $('#modal-filter').modal('hide');
 
         if (min_price_val != '') {
             appendFilter('.filter-min-price',
@@ -208,6 +210,8 @@ $(document).ready(function () {
     // Filter Rating
     $('.filter-star-search').on('click', function() {
         $('.click-to-the-top').trigger('click');
+
+        $('#modal-filter').modal('hide');
 
         appendFilter('.rating-4-plus',
             [`Bintang 4 Keatas`, 4, 'rating-4-plus']

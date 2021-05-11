@@ -4,7 +4,7 @@
     <div class="text-center">
         <h4>Lakukan pembayaran dalam</h4>
         <h1 id="payment-limit-time" class="text-righteous my-4">24 : 00 : 00</h1>
-        <div class="hd-18">Batas waktu pembayaran : <span id="payment-limit-date" class="tbold">Kamis, 15 September 2021</span></div>
+        <div>Batas waktu pembayaran : <span id="payment-limit-date" class="tbold">Kamis, 15 September 2021</span></div>
     </div>
 
     <div>

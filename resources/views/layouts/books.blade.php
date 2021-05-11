@@ -5,8 +5,7 @@
                 <div class="book-persentage-discount">{{ round(($book->discount / $book->price) * 100) }}%</div>
             @endisset
             <div class='book-cover'>
-
-                  <div class="gambar-buku">
+                <div class="gambar-buku">
                     <img src="{{ url('img/book/' . $book->image )  }}">
                 </div>
             </div>
@@ -17,7 +16,7 @@
             </div>
             <div class="rating-and-author">
                 <div>
-                    <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->authors[0]->name  }}</a>
+                    <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}"><small>{{ $book->authors[0]->name  }}</small></a>
                 </div>
                 <div class="d-flex">
                     <div class="rating">
@@ -65,11 +64,11 @@
 
                         <div class="rating-number">{{ $book->rating }}</div>
                     </div>
-                    <div class="add-to-wishlist">
-                        <i class="far fa-heart"></i>
-                        <div class="wishlist-text">
-                            <div>Tambahkan pada wishlist</div>
-                        </div>
+                </div>
+                <div class="add-to-wishlist">
+                    <i class="far fa-heart"></i>
+                    <div class="wishlist-text">
+                        <div>Tambahkan pada wishlist</div>
                     </div>
                 </div>
             </div>

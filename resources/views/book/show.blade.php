@@ -71,7 +71,7 @@
         <div class="detail-and-buy">
             <div class="book-show-detail">
                 <div>
-                    <h4 class="title-border-red hd-18">Detail</h4>
+                    <h5 class="title-border-red">Detail</h5>
                     <div class="d-flex">
                         <div class="w-50">
                             <div>ISBN</div>
@@ -121,7 +121,7 @@
                         </div>
                     </div>
 
-                    <div class="buy">
+                    <div class="mt-5">
                         <div class="d-flex justify-content-between">
                             <button class="btn-wishlist">
                                 <i class="far fa-heart"></i>
@@ -129,14 +129,6 @@
                                 <span>Wishlist</span>
                             </button>
                             <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
-                            <div>
-                                <span class="share-sosmed">
-                                    <span class="mr-1"><i class="fa fa-share-alt" aria-hidden="true"></i></span>
-                                    <span><a href="#"><i class="fab fa-facebook-f"></i></a></span>
-                                    <span><a href="#"><i class="fab fa-twitter" aria-hidden="true"></i></a></span>
-                                    <span><a href="#"><i class="fab fa-instagram"></i></a></span>
-                                </span>
-                            </div>
                         </div>
                         <div>
                             <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</a>

@@ -41,7 +41,9 @@
             <div class="container mx-3 mt-4">
                 <div class="ml-1">
                     <div class="d-flex">
-                        <img class="w-12" src="{{ asset('img/book/jujutsu-kaisen-01.jpg') }}">
+                        <div>
+                            <img class="anjir-img" src="{{ asset('img/book/jujutsu-kaisen-01.jpg') }}">
+                        </div>
                         <div class="w-30 pl-3">
                             <div class="text-righteous overflow-hidden">Jujutsu Kaisen 01</div>
                         </div>
@@ -92,7 +94,9 @@
             <div class="container mx-3 mt-4">
                 <div class="ml-1">
                     <div class="d-flex">
-                        <img class="w-12" src="{{ asset('img/book/jujutsu-kaisen-02.jpg') }}">
+                        <div class="w-12">
+                            <img class="w-100" src="{{ asset('img/book/jujutsu-kaisen-02.jpg') }}">
+                        </div>
                         <div class="w-30 pl-3">
                             <div class="text-righteous overflow-hidden">Jujutsu Kaisen 02</div>
                         </div>
@@ -143,7 +147,9 @@
             <div class="container mx-3 mt-4">
                 <div class="ml-1">
                     <div class="d-flex">
-                        <img class="w-12" src="{{ asset('img/book/detektif-conan-96.jpg') }}">
+                        <div class="w-12">
+                            <img class="w-100" src="{{ asset('img/book/detektif-conan-96.jpg') }}">
+                        </div>
                         <div class="w-30 pl-3">
                             <div class="text-righteous overflow-hidden">Detektif Conan 96</div>
                         </div>

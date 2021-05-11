@@ -1,36 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>Smartperpus</title>
-
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script src="{{ asset('js/dist/book-carousel.js') }}"></script>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
-
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('js/dist/style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
-    <style>
-    </style>
-</head>
-<body>
-<div class="pt-4 shadow-lg">
-<button class="btn btn-sm w-15 text-grey btn-outline-grey" data-toggle="modal" data-target="#modal-filter">Filter <i class="fas fa-filter"></i></button>
-
-<!-- Modal Login -->
 <div class="modal fade" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered p-5" role="document">
         <div class="modal-content modal-content-login">
@@ -57,11 +24,11 @@
                                     @endforeach
                                 @endforeach
 
-                                @php
+                                 @php
                                     $count_categories = array_count_values($arr_categories);
                                 @endphp
 
-                                @forelse ($count_categories as $category_key => $category_val)
+                                 @forelse ($count_categories as $category_key => $category_val)
                                     <div class="c-p">{{ $category_key . ' (' . $category_val . ')' }}</div>
                                     @empty
                                     <div class="tred-bold">Kosong</div>
@@ -81,7 +48,7 @@
                                 </div>
                             </div>
 
-                            <h6 class="tbold borbot-gray-0 pb-2 mt-4">Maksimum Harga</h6>
+                             <h6 class="tbold borbot-gray-0 pb-2 mt-4">Maksimum Harga</h6>
                             <div class="form-group">
                                 <div class="d-flex">
                                     <label class="tbold mt-2 mr-2" for="">Rp</label>
@@ -93,7 +60,7 @@
                         </form>
                     </div>
 
-                    <div class="white-content">
+                     <div class="white-content">
                         <h6 class="tbold borbot-gray-0 pb-2">Rating</h6>
                         <div class="p-2">
                             <div data-filter-star="4" class="filter-star-search c-p">
@@ -108,8 +75,3 @@
         </div>
     </div>
 </div>
-</div>
-
-
-</body>
-</html>

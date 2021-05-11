@@ -289,4 +289,10 @@ class AjaxController extends Controller
             echo $response;
         }
     }
+
+    public function responsiveFilters() {
+        $data = view('book.modal-filters')->render();
+
+        return response()->json(compact('data'));
+    }
 }

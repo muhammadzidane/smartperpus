@@ -29,7 +29,7 @@
         <div>
             <nav class="cus-navbar">
                 <div class="logo">
-                    <img class="logo-img" src="{{ asset('img/logo.png') }}" alt="">
+                    <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
                 </div>
                 <div class="circle-input">
                     <form class="search-form" action="{{ route('search.books') }}" method="GET">
@@ -167,7 +167,6 @@
                 </div>
             </div>
         </div>
-
 
         <footer class="">
             <div class="container">

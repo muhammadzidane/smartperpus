@@ -25,13 +25,13 @@
     <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
 </head>
 <body>
-    <div class="register-user container py-4">
+    <div class="register-user container-lg py-4">
         <div class="form-register">
             <form id="form-register" action="{{ route('register') }}" method="POST">
                 <div class="text-right p-0"><a href="{{ route('home') }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
                 <div class="mb-4">
                     <h5 class="tred-bold">Buat Akun Anda Sekarang</h5>
-                    <div class="pb-2">Sudah Memiliki akun? <a href="{{ route('login') }}" class="text-decoration-none tred-bold">Masuk</a></div>
+                    <div class="mt-4 pb-2">Sudah Memiliki akun? <a href="{{ route('login') }}" class="text-decoration-none tred-bold">Masuk</a></div>
                 </div>
 
                 <div id="error-register"></div>

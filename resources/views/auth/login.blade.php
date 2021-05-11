@@ -32,7 +32,7 @@
                 <h5 class="tred-bold mb-4">Login</h5>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control-login  ">
+                    <input type="email" name="email" id="email" class="form-control-custom">
                     @error('email')
                     <span class="tred small small" role="alert">
                         <strong>{{ $message }}</strong>
@@ -42,7 +42,7 @@
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="d-flex">
-                        <input type="password" name="password" id="password" class="form-control-login"
+                        <input type="password" name="password" id="password" class="form-control-custom"
                             aria-describedby="helpId" autocomplete="off">
                         <button id="toggle-password" type="button" class="show-password">
                             <i class="fa fa-eye" aria-hidden="true"></i>
@@ -55,7 +55,7 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <button id="button-login" type="submit">Daftar</button>
+                    <button id="button-login" class="button-submit" type="submit">Login</button>
                 </div>
                 <div class="mb-3">
                     <div class="login-atau tred">Atau login dengan</div>

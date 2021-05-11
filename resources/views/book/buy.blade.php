@@ -9,21 +9,21 @@
     <a class="tsmall" href="#">{{ $book->categories[0]->name }}</a><i class="fas fa-caret-right tsmall"></i>
     <span class="tsmall tred-bold">{{ $book->name }}</>
 </div>
-<div class="d-flex">
+<div id="buying-content" class="d-flex">
     <div class="purchase-records">
         <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold">
             <div class="white-content-header">
-                <h4>{{ $book->name }}</h4>
+                <h4 class="hd-18">{{ $book->name }}</h4>
             </div>
-            <div class="container ml-3">
+            <div class="container mx-3">
             <div>
-                <div class="d-flex">
-                    <div class="text-righteous flex-grow-1">
-                        <div class="hd-18">Harga</div>
+                <div class="d-flex flex-wrap">
+                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                        <div>Harga</div>
                         <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
                     </div>
-                    <div class="text-righteous flex-grow-1">
-                        <div class="hd-18">Jumlah</div>
+                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                        <div>Jumlah</div>
                         <div class="d-flex">
                             <div>
                                 <span id="book-needed">1</span>
@@ -36,12 +36,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="text-righteous flex-grow-1">
-                        <div class="hd-18">Berat Barang</div>
+                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                        <div>Berat Barang</div>
                         <div id="weight" data-weight="300">300 gram</div>
                     </div>
-                    <div class="text-righteous flex-grow-1">
-                        <div class="hd-18">Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
+                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                        <div>Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
                         <div>
                             <label class="d-flex c-p">
                                 <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance" id="shipping-insurance">
@@ -158,28 +158,30 @@
         <div class="w-75 ml-auto">
             <div class="white-content pt-0">
                 <div>
-                    <img class="w-80 d-block mx-auto" src="{{ asset('img/book/' . $book->image) }}" alt="" srcset="">
+                    <img id="buying-img" class="w-90 d-block mx-auto" src="{{ asset('img/book/' . $book->image) }}" alt="" srcset="">
                 </div>
-                <div id="book-payment" class="text-grey mt-4 py-2 mb-0 bordash-gray">
-                    <div class="d-flex justify-content-between">
-                        <div>Harga Buku</div>
-                        <div id="book-price" data-book-price="{{ $book->price }}">{{ rupiah_format($book->price) }}</div>
+                <div class="d-flex flex-column">
+                    <div id="book-payment" class="text-grey mt-4 py-2 mb-0 bordash-gray">
+                        <div class="d-flex justify-content-between">
+                            <div>Harga</div>
+                            <div id="book-price" class="text-right" data-book-price="{{ $book->price }}">{{ rupiah_format($book->price) }}</div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>Jumlah Barang</div>
+                            <div class="text-right" id="jumlah-barang">1</div>
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Jumlah Barang</div>
-                        <div id="jumlah-barang">1</div>
-                    </div>
-                </div>
-                <div class="mt-2 text-grey">
-                    <div class="d-flex justify-content-between">
-                        <div>Total Pembayaran</div>
-                        <div id="total-payment" data-total-payment="{{ $book->price }}"
-                          class="tred-bold text-righteous">{{ rupiah_format($book->price) }}</div>
-                    </div>
-                    <div class="mt-3">
-                        <a id="payment-button" href="{{ route('books.payment', array('book' => $book->name)) }}" class="btn btn-red w-100">
-                            <i class="fas fa-shield-alt mr-2"></i>Bayar
-                        </a>
+                    <div class="mt-auto text-grey">
+                        <div class="d-flex justify-content-between">
+                            <div>Total Pembayaran</div>
+                            <div id="total-payment" data-total-payment="{{ $book->price }}"
+                              class="tred-bold text-righteous text-right">{{ rupiah_format($book->price) }}</div>
+                        </div>
+                        <div class="mt-3">
+                            <a id="payment-button" href="{{ route('books.payment', array('book' => $book->name)) }}" class="btn btn-red w-100">
+                                <i class="fas fa-shield-alt mr-2"></i>Bayar
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
