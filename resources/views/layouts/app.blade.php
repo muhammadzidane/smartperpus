@@ -43,34 +43,33 @@
                         </div>
                     </form>
                 </div>
-                    <!-- <div class="circle-input"> -->
-                    <!-- <div id="search-values">
-                        <div>
-                            <div class="py-3">
-                                <div>
-                                    <h6 class="ml-3 tred-bold">Buku</h6>
-                                    <ul id="search-books">
-                                        </ul>
-                                </div>
-                                <div>
-                                    <h6 class="ml-3 tred-bold">Author</h6>
-                                    <ul id="search-authors">
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 <div class="cus-nav">
                     <ul class="ul-nav">
                         <div class="d-flex ml-3">
-                            <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
+                            <li id="categories" class="">
+                                Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                <div class="-value">
+                                    <div class="d-flex">
+                                        <div class="mr-5">
+                                            @foreach (\App\Models\Category::get()->take(10) as $category)
+                                                <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                            @endforeach
+                                        </div>
+                                        <div>
+                                            @foreach (\App\Models\Category::take(10)->skip(10)->get() as $category)
+                                                <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
                             <li>Best Seller</li>
                             <li>Buku Diskon</li>
                         </div>
                         <div class="d-flex ml-auto align-items-center">
                             <li><button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button></li>
-                            <li><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
+                            <li><a href="{{ route('register') }}"></a></li>
                         </div>
                     </ul>
                 </div>
@@ -83,9 +82,8 @@
                         <li>Buku Diskon</li>
                     </div>
                     <div class="d-flex ml-auto align-items-center">
-                        <li><button id="login" class="btn btn-red" data-toggle="modal"
+                        <li><button id="login" class="btn-none tbold text-grey" data-toggle="modal"
                                 data-target="#modal-login">Masuk</button></li>
-                        <li class="mr-3"><a href="{{ route('register') }}">{{ __('Register') }}</a></li>
                     </div>
                 </ul>
 
@@ -97,6 +95,83 @@
         <main class="py-4 container-lg">
             @yield('content')
         </main>
+
+        <footer>
+            <div>
+                <div class="footer-logo">
+                    <img class="w-15" src="{{ asset('img/logo.png') }}" alt="">
+                </div>
+                <div class="d-flex justify-content-center mt-5 bg-grey-2 py-4">
+                    <div class="mr-5"><i class="fab fa-facebook-f"></i></div>
+                    <div class="mr-5"><i class="fab fa-twitter"></i></div>
+                    <div><i class="fab fa-instagram"></i></div>
+                </div>
+                <div class="white-content-0 pt-5">
+                    <div class="container-lg d-flex">
+                        <div class="footer-content">
+                            <div>
+                                <h4 class="hd-18">Tentang Smartperpus</h4>
+                            </div>
+                            <div class="mt-4">
+                                <div class="text-grey">
+                                    Smartperpus adalah toko online / offline yang menyediakan buku-buku berkualitas dan original yang
+                                    tersedia dalam bentuk buku cetak dan ebook (file pdf). Toko offline berada di Jl. Pasir Honje No.
+                                    221 RT004/01, Cimenyan, Kota Bandung dan telah berdiri sejak tahun 2021.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-content">
+                            <div>
+                                <div>
+                                    <h4 class="hd-18">Pembayaran</h4>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <img class="w-100" src="{{ asset('img/transfer/bri-edit.png') }}">
+                                        </div>
+                                        <div class="mr-3">
+                                            <img class="w-100" src="{{ asset('img/transfer/gopay-edit.png') }}">
+                                        </div>
+                                        <div>
+                                            <img class="w-100" src="{{ asset('img/transfer/bni-edit.png') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-c">
+                                    <h4 class="hd-18">Pengiriman</h4>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <img class="w-100" src="{{ asset('img/couriers/jne.jpg') }}">
+                                        </div>
+                                        <div class="mr-3">
+                                            <img class="w-100" src="{{ asset('img/transfer/gopay-edit.png') }}">
+                                        </div>
+                                        <div>
+                                            <img class="w-100" src="{{ asset('img/transfer/bni-edit.png') }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="footer-content">
+                            <div>
+                                <h4 class="hd-18">Kontak Kami</h4>
+                            </div>
+                            <div class="mt-4 text-grey">
+                                <div><i class="fas fa-phone mr-1"></i><span>(WA) 0895364040902</span></div>
+                                <div><i class="fas fa-phone mr-1"></i><span>(WA) 081321407123</span></div>
+                                <div><i class="fas fa-phone mr-1"></i><span>(Telp) 0223938123</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-year"><h4 class="hd-14">Smartperpus - 2021</h4></div>
+                </div>
+            </div>
+        </footer>
 
         <!-- Modal Login -->
         <div class="modal fade" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
@@ -167,18 +242,8 @@
                 </div>
             </div>
         </div>
-
-        <footer class="">
-            <div class="container">
-                <div class="row">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elitaaaaaa
-                </div>
-            </div>
-        </footer>
     </div>
 </body>
-
-
 <script src="{{ asset('js/navbar.js') }}"></script>
 <script src="{{ asset('js/helper-functions.js') }}"></script>
 

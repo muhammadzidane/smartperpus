@@ -1,6 +1,6 @@
 ul li {
     list-style-type: none;
-    /* padding: 0; */
+    cursor: pointer;
 }
 
 .c-p { cursor: pointer; }
@@ -20,6 +20,7 @@ ul li {
 .bg-cus-navbar { background-color: #fff600; }
 .w-maxc { width: max-content; }
 .bg-grey { background-color: #FBF7F7; }
+.bg-grey-2 { background-color: #E7E7DE; }
 
 .text-righteous, li a, .book-deals > h2, h4, h5 , .btn-outline-yellow{
     font-family: 'Righteous', cursive;
@@ -36,19 +37,21 @@ ul li {
 .w-20 { width: 20%; }
 .w-22 { width: 22%; }
 .w-30 { width: 30%; }
+.w-35 { width: 35%; }
 .w-40 { width: 40%; }
 .w-78 { width: 78%; }
 .w-79 { width: 79%; }
 .w-80 { width: 80%; }
 .w-90 { width: 90%; }
 .w-98 { width: 98%; }
+.hd-12 { font-size: 12px; }
 .hd-14 { font-size: 14px; }
 .hd-16 { font-size: 16px; }
 .hd-18 { font-size: 18px; }
 
-.anjir-img {
-    width: 92px;
-    height: 139px;
+.img-shcart {
+    width: 120px;
+    height: auto;
 }
 
 .btn-none {
@@ -185,15 +188,11 @@ body {
 #categories > div {
     display: none;
     position: absolute;
-    top: 81%;
-    border-top: 2px solid black;
-    width: 35%;
-    height: 200px;
-    box-shadow: 0px 0px 1.2px black;
-    z-index: 1;
-    background-color: #f8fafc;
-    opacity: 0.95;
-    cursor: pointer;
+    background-color: #fffdf6;
+    box-shadow: 0 0 1px 0.3px black;
+    top: 52px;
+    z-index: 2;
+    padding: 0 10px 0 10px;
 }
 
 #categories:hover > div {
@@ -223,17 +222,50 @@ body {
 
 /* Footer */
 footer {
-    border-top: 4px solid #dfddc7;
-    background-color: red;
-    height:50vh;
-    margin-top: 100px;
+    margin-top: 75px;
+    background-color: #f6f5f5;
 }
 
-/* Best Seller Book */
-.book-deals {
-    background-color: #fffdf6;
-    width: 100% !important;
+.footer-img {
+    background-color: #f6f5f5;
+}
+
+.footer-content {
+    width: 33.33%;
+    margin-right: 30px;
+}
+
+.footer-logo {
+    overflow: hidden;
+    text-align: center;
+}
+
+.footer-logo:before,
+.footer-logo:after {
+    background-color: #E2D5D5;
+    content: "";
+    display: inline-block;
+    height: 5px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+}
+
+.footer-logo:before {
+    right: 9.80vw;
+    margin-left: -50%;
+}
+
+.footer-logo:after {
+    left: 9.80vw;
+    margin-right: -50%;
+}
+
+.footer-year {
     margin-top: 60px;
+    padding: 5px 0 1px 0;
+    background-color: #fff600;
+    text-align: center;
 }
 
 .book-deals > div:first-child, .kategori-pilihan > h3 {
@@ -402,9 +434,12 @@ footer {
     width: 50%;
 }
 
-.white-content, .white-content-0 {
+.white-content {
     padding: 15px;
     margin: 15px 0;
+}
+
+.white-content-0, .white-content {
     background-color: #fffdf6;
     box-shadow: 0 0 0.7px #bbbbbb;
 }
@@ -682,10 +717,19 @@ footer {
     border-radius: 100%;
 }
 
+.fa-facebook-f, .fa-twitter, .fa-instagram  {
+    text-align: center;
+    padding-top: 9px;
+    width: 35px;
+    height: 35px;
+    color: white;
+    font-size: 18px;
+    border-radius: 100%;
+}
 .fa-facebook-f { background: #3B5998; }
 .fa-twitter { background-color: #55ACEE; }
 .fa-instagram { background-color: #125688; }
-.fa-google { background-color: #dd4b39; }
+.fa-phone { color: #9FE6A0; }
 
 /* Rekomendasi Buku */
 .book-recommendations {
@@ -1121,7 +1165,6 @@ footer {
     border-radius: 100%;
 }
 
-
 /* Large Width Screen */
 @media screen and (max-width: 992px)  {
 
@@ -1224,11 +1267,22 @@ footer {
     #book-search .books .book {
         width: 21.90% !important;
     }
+
+    /* Shopping Cart */
+    .pay-for-the-book {
+        display: none;
+    }
+
+    .purchase-records { width: 100%; }
 }
 
 @media screen and (max-width: 564px)  {
     * {
         font-size: 12px;
+    }
+
+    #wsm {
+        /* display: none; */
     }
 
     h4, .hd-18 { font-size: 14px !important; }

@@ -255,6 +255,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 $('#book-search').html(response.books);
+                $('.book').css('width', '22.52%');
                 exitFilters();
             }
         });
