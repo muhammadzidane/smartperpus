@@ -9,4 +9,8 @@ class AccountController extends Controller
     public function index() {
         return view('account/my-account');
     }
+
+    public function transactionLists() {
+        return view('account.transaction-lists');
+    }
 }

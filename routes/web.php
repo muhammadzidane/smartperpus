@@ -22,6 +22,10 @@ Route::resource('/authors', AuthorController::class);
 
 // My Account
 Route::get('/account', array(AccountController::class, 'index'));
+Route::prefix('/account')->group(function() {
+    Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'));
+
+});
 
 // Books
 Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');

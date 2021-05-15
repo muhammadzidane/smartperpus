@@ -107,7 +107,7 @@
                     <div><i class="fab fa-instagram"></i></div>
                 </div>
                 <div class="white-content-0 pt-5">
-                    <div class="container-lg d-flex">
+                    <div class="container-lg d-flex flex-wrap">
                         <div class="footer-content">
                             <div>
                                 <h4 class="hd-18">Tentang Smartperpus</h4>
