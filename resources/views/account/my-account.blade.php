@@ -83,7 +83,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3">
+    <div class="col-lg-3 h-maxc">
         <div class="white-content m-0 h-100 borbot-gray-bold">
             <div class="borbot-gray-0 pb-3">
                 <div class="container mt-1">

@@ -24,7 +24,7 @@ Route::resource('/authors', AuthorController::class);
 Route::get('/account', array(AccountController::class, 'index'));
 Route::prefix('/account')->group(function() {
     Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'));
-
+    Route::get('/my-reviews', array(AccountController::class, 'myReviews'));
 });
 
 // Books
