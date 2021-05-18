@@ -3,6 +3,7 @@ ul li {
     cursor: pointer;
 }
 
+.z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
 .fa-star { color: gold; }
 .mt-c { margin-top: 75px !important; }
@@ -65,8 +66,15 @@ ul li {
     box-shadow: none!important;
 }
 
+.c-middle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 body {
     background-color: #f6f5f5;
+    font-size: 13px;
 }
 
 /* Navbar */
@@ -690,12 +698,9 @@ footer {
     margin-bottom: 40px;
 }
 
-.bordash-gray {
-    border-bottom: 2px dashed #e2d5d5;
-    margin-bottom: 40px;
-}
-
 .borbot-gray-0 { border-bottom: 1px solid #e2d5d5; }
+.borleft-gray-0 { border-left: 1px solid #e2d5d5; }
+.borright-gray-0 { border-right: 1px solid #e2d5d5; }
 .borbot-gray-bold { border-bottom: 5px solid #e2d5d5; }
 .borbot-yellow-bold { border-bottom: 5px solid #fff600; }
 
@@ -871,8 +876,27 @@ footer {
 .click-to-the-top {
     display: none;
     position: fixed;
-    bottom: 50px;
-    right: 50px;
+    bottom: 25px;
+    right: 25px;
+}
+
+.chat {
+    display: block;
+    position: fixed;
+    bottom: 25px;
+    right: 87px;
+}
+
+.btn-chat {
+    background-color: #ea5455;
+    height: 50px;
+    width: 50px;
+    text-align: center;
+    border-radius: 100%;
+    padding-top: 2px;
+    font-size: 25px;
+    color: white;
+    border: 2px solid #f6f5f5;
 }
 
 .fa-caret-up {
@@ -885,6 +909,95 @@ footer {
     font-size: 30px;
     color: white;
     border: 2px solid #f6f5f5;
+}
+
+/* Chat dengan admin */
+.chat-content {
+    background-color: #FFFAFA;
+    width: 46vw;
+    box-shadow: 0 0 2px black;
+}
+
+.chat-info {
+    background-color: #F8F1F1;
+    text-align: center;
+    box-shadow: 0 0 1px grey;
+    padding: 2px 0;
+}
+
+.type-message {
+    background-color: #E1F1DD;
+    padding: 7px 12px 7px 12px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
+
+.chattings {
+    display: flex;
+    height: 60vh;
+    overflow-y: auto;
+}
+
+.chat-msg-user {
+    padding: 3px 20px 5px 12px;
+    background: #F8F1F1;
+    border-radius: 5px;
+    border-bottom-right-radius: 25px;
+    max-width: 85%;
+    width: max-content;
+    margin-left: auto;
+}
+
+.chat-msg-admin {
+    padding: 3px 12px 5px 20px;
+    background: #d1d9d9;
+    border-radius: 5px;
+    border-bottom-left-radius: 25px;
+    max-width: 85%;
+    width: max-content;
+    margin-right: auto;
+}
+
+.chat-text-admin {
+    text-align: right;
+    word-break: break-all;
+}
+
+.chat-text-user {
+    text-align: left;
+    word-break: break-all;
+}
+
+.type-message-input {
+    margin: 0 auto;
+    border: none;
+    background-color: #FFFAFA;
+    border-radius: 8px;
+    width: 96%;
+    padding: 5.20px;
+    text-indent: 10px;
+    outline: none;
+}
+
+.type-message-plane, .type-message-camera {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.type-message-plane {
+    color: #E7A117;
+    font-size: 18px;
+    padding-left: 10px;
+}
+
+.type-message-camera {
+    line-height: 20px;
+    font-size: 20px;
+    color: #434343;
+    padding-right: 10px;
 }
 
 /* Pagination */
@@ -1189,7 +1302,7 @@ footer {
     border-radius: 100%;
 }
 
-/* Large Width Screen */
+/* Media Large */
 @media screen and (max-width: 992px)  {
 
     /* Halaman Home */
@@ -1260,6 +1373,11 @@ footer {
 
 /* Media Medium */
 @media screen and (max-width: 768px)  {
+    /* Chatting dengan admin */
+    .chat-with-admin > div:last-child > div:first-child {
+        display: none;
+    }
+
     /* Halaman Home */
     .carousel-item img {
         height: 220px;
