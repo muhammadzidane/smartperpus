@@ -23,8 +23,9 @@ Route::resource('/authors', AuthorController::class);
 // My Account
 Route::get('/account', array(AccountController::class, 'index'));
 Route::prefix('/account')->group(function() {
-    Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'));
+    Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
     Route::get('/my-reviews', array(AccountController::class, 'myReviews'));
+    Route::get('/waiting-for-payments', array(AccountController::class, 'waitingForPayments'));
 });
 
 // Books

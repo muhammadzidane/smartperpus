@@ -116,7 +116,8 @@ $(document).ready(function () {
         $(this).scrollTop() >= 40 ? $('.click-to-the-top').show() : $('.click-to-the-top').hide();
     });
 
-    $('.click-to-the-top').on('click', function () {
+    $('#click-to-the-top').on('click', function (e) {
+        e.stopPropagation();
         let scrollY = $(document).scrollTop();
         let scrollToTheTop = setInterval(function () {
             $(document).scrollTop() == 0 ? clearInterval(scrollToTheTop) : $(document).scrollTop(scrollY -= 25);
@@ -606,7 +607,31 @@ $(document).ready(function () {
             $(this).children('i').removeClass('fas').addClass('far');
         }
     });
+
+    // Chat dengan admin
+    let btnChatclickedCount = 0;
+    $('#btn-chat').on('click', function() {
+        btnChatclickedCount++;
+
+        $('.chat-with-admin').show();
+        $(this).hide();
+
+        if (btnChatclickedCount == 1) {
+            $('.chattings').scrollTop($(document).height());
+        }
+    });
+
+    $('#btn-chat-exit').on('click', function() {
+
+        $('.chat-with-admin').hide();
+        $('#btn-chat').show();
+
+    });
 }); // End of onload Event
+
+function removeContent(element) {
+    $(element).remove();
+}
 
 function alertError(message) {
     alert(message)

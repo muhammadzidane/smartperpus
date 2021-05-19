@@ -68,8 +68,15 @@
                             <li>Buku Diskon</li>
                         </div>
                         <div class="d-flex ml-auto align-items-center">
-                            <li><button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button></li>
-                            <li><a href="{{ route('register') }}"></a></li>
+                            @guest
+                                <li>
+                                    <button id="login" class="btn btn-red" data-toggle="modal"
+                                    data-target="#modal-login">Masuk</button></li>
+                                </li>
+                            @endguest
+                            @auth
+                                @include('layouts.auth-nav-login')
+                            @endauth
                         </div>
                     </ul>
                 </div>
@@ -82,8 +89,15 @@
                         <li>Buku Diskon</li>
                     </div>
                     <div class="d-flex ml-auto align-items-center">
-                        <li><button id="login" class="btn-none tbold text-grey" data-toggle="modal"
-                                data-target="#modal-login">Masuk</button></li>
+                        @guest
+                            <li>
+                                <button id="login" class="btn-none tbold text-grey" data-toggle="modal"
+                                data-target="#modal-login">Masuk</button>
+                            </li>
+                        @endguest
+                        @auth
+                            @include('layouts.auth-nav-login')
+                        @endauth
                     </div>
                 </ul>
 

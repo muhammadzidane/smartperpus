@@ -109,31 +109,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 h-maxc">
-        <div class="white-content m-0 h-100 borbot-gray-bold">
-            <div class="borbot-gray-0 pb-3">
-                <div class="container mt-1">
-                    <h4 class="hd-16">Pembelian</h4>
-                    <div class="text-grey">
-                        <div class="d-flex w-maxc position-relative">
-                            <div>Menunggu pembayaran</div>
-                            <div class="waiting-for-payment">6</div>
-                        </div>
-                        <div class="active-acc">Daftar transaksi</div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3">
-                <div class="container mt-1">
-                    <h4 class="hd-16">Kontak Masuk</h4>
-                    <div class="text-grey">
-                        <div>Ulasan</div>
-                        <div>Diskusi produk</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('account.purchases-and-inboxes', array('transaction_list' => 'active-acc'))
 </div>
 
 

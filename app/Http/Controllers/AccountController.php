@@ -15,6 +15,10 @@ class AccountController extends Controller
     }
 
     public function myReviews() {
-        return view(('account.my-reviews'));
+        return view('account.my-reviews');
+    }
+
+    public function waitingForPayments() {
+        return view('account.waiting-for-payments');
     }
 }

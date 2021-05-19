@@ -46,7 +46,7 @@
 )
 
 
-<div class="container discount-images">
+<!-- <div class="container discount-images">
     <div>
         <img src="{{ url('img/book/book-discount.jpg') }}">
     </div>
@@ -56,15 +56,14 @@
     <div>
         <img src="{{ url('img/book/book-discount.jpg') }}">
     </div>
-</div>
+</div> -->
 
 <div class="chat">
-    <button class="btn-none btn-chat"><i class="far fa-comments"></i></button>
-    <div class="chat-content">
+    <div class="chat-content" aria-labelledby="triggerId">
         <div class="chat-with-admin">
             <div class="borbot-gray-0 d-flex justify-content-between">
                 <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
-                <button class="btn-none c-middle mr-2"><i class="fa fa-times" aria-hidden="true"></i></button>
+                <button id="btn-chat-exit" class="btn-none c-middle mr-2"><i class="fa fa-caret-down" aria-hidden="true"></i></button>
             </div>
             <div class="row ml-0">
                 <div class="col-md-4 p-0">
@@ -78,7 +77,12 @@
                     <div>
                         <div class="chat-info">
                             <i class="fa fa-info-circle" aria-hidden="true"></i>
-                            <span class="f-10"><small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small></span>
+                            <span class="f-10">
+                                <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
+                            </span>
+                            <span onclick="removeContent($('.chat-info'))" class="float-right mr-2">
+                                <small><i class="fa fa-times" aria-hidden="true"></i></small>
+                            </span>
                         </div>
                         <div class="container">
                             <div class="chattings">
@@ -112,12 +116,34 @@
                                         <div class="chat-msg-admin">
                                             <div class="chat-text-admin">banyak gan stok nya mah</div>
                                         </div>
-                                    </div><div class="mt-3">
+                                    </div>
+                                    <div class="mt-3">
                                         <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
                                         <div class="chat-msg-admin">
                                             <div class="chat-text-admin">banyak gan stok nya mah</div>
                                         </div>
-                                    </div><div class="mt-3">
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
+                                        <div class="chat-msg-admin">
+                                            <div class="chat-text-admin">banyak gan stok nya mah</div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="text-right"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
+                                        <div class="chat-msg-user">
+                                            <div class="chat-img-user"><img class="w-50" src="{{ asset('img/book/detektif-conan-97.jpg') }}" alt="" srcset=""></div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
+                                        <div class="chat-msg-admin">
+                                            <div class="chat-img-admin">
+                                                <img class="w-50" src="{{ asset('img/book/detektif-conan-97.jpg') }}" alt="" srcset="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
                                         <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
                                         <div class="chat-msg-admin">
                                             <div class="chat-text-admin">banyak gan stok nya mah</div>
@@ -140,8 +166,11 @@
     </div>
 </div>
 <div>
-    <div class="click-to-the-top">
-        <button class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up" aria-hidden="true"></i></button>
+    <div class="click-in-buttom">
+        <button id="btn-chat" class="btn-none"><i class="far fa-comments"></i></button>
+        <div class="click-to-the-top">
+            <button id="click-to-the-top" class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up" aria-hidden="true"></i></button>
+        </div>
     </div>
 </div>
 
