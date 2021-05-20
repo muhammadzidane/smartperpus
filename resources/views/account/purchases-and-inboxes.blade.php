@@ -1,4 +1,4 @@
-<div class="col-lg-3 h-maxc">
+<div class="col-lg-3 h-maxc purchases-and-inboxes">
     <div class="white-content m-0 h-100 borbot-gray-bold">
         <div class="borbot-gray-0 pb-3">
             <div class="container mt-1">
@@ -20,8 +20,12 @@
             <div class="container mt-1">
                 <h4 class="hd-16">Kontak Masuk</h4>
                 <div class="text-grey">
-                    <div class="{{ $reviews ?? '' }}">Ulasan</div>
-                    <div class="{{ $product_discutions ?? '' }}">Diskusi produk</div>
+                    <div class="{{ $reviews ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('my.reviews') }}">Ulasan</a>
+                    </div>
+                    <div class="{{ $product_discutions ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('chat') }}" class=" $product_discutions ?? ''  }}">Chat</a>
+                    </div>
                 </div>
             </div>
         </div>

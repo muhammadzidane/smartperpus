@@ -22,6 +22,7 @@ ul li {
 .h-maxc { height: max-content; }
 .bg-grey { background-color: #FBF7F7; }
 .bg-grey-2 { background-color: #E7E7DE; }
+.shadow-custom { box-shadow: 0 0 0.7px #bbbbbb !important; }
 
 .text-righteous, li a, .book-deals > h2, h4, h5 , .btn-outline-yellow{
     font-family: 'Righteous', cursive;
@@ -199,6 +200,11 @@ body {
     /* display: none; */
 }
 
+dropdown-navbar {
+    color: #212529;
+    font-size: 20px;
+}
+
 
 .nav-left .nav-link:hover {
     border-bottom: 2px solid black;
@@ -213,13 +219,13 @@ body {
     position: absolute;
     background-color: #fffdf6;
     box-shadow: 0 0 1px 0.3px black;
-    top: 52px;
+    top: 49px;
     z-index: 2;
     padding: 0 10px 0 10px;
 }
 
 #categories:hover > div {
-    display: block;
+    display: flex;
 }
 
 #categories > div > div {
@@ -592,8 +598,9 @@ footer {
     width: 46px;
     height: 46px;
     border-radius: 100%;
-    font-size: 22px;
 }
+
+.user-circle i { font-size: 24px; }
 
 .dropdown-user { padding: 10px 5px; }
 
@@ -897,8 +904,8 @@ footer {
 .chat {
     display: block;
     position: fixed;
-    bottom: 25px;
-    right: 87px;
+    /* bottom: 25px;
+    right: 87px; */
 }
 
 .chat-with-admin { display: none;}
@@ -1293,7 +1300,20 @@ footer {
 /* My Account */
 .change-profile-img {
     width: 21%;
+    margin: 0 auto;
 }
+
+
+.account-table {
+    width: 100%;
+}
+
+.account-table tr td {
+    padding-bottom: 10px;
+
+}
+
+.account-table tr td:last-child { text-align: right; }
 
 .active-acc {
     background-color: #f8ede3;
@@ -1304,9 +1324,6 @@ footer {
     border: 1px solid black;
 }
 .account-table div div:last-child { margin-left: auto; }
-.account-table tr {
-    /* padding: 10px; */
-}
 
 .profile-img {
     width: 100%;
@@ -1364,7 +1381,7 @@ footer {
     }
 
     .responsive-navbar {
-        display: block;
+        display: none;
         background-color: #f6f6f6;
         padding: 0 10px;
         border-bottom: 3px solid #e2d5d5;
@@ -1409,14 +1426,21 @@ footer {
     }
 
     #filter-button { display: block !important; }
+
+    .purchases-and-inboxes { margin-top: 30px;}
 }
 
 /* Media Medium */
 @media screen and (max-width: 768px)  {
-    /* Chatting dengan admin */
-    .chat-with-admin > div:last-child > div:first-child {
+    /* Chatting dengan dmin  dan Navbar*/
+    .chat-with-admin > div:last-child > div:first-child, .responsive-navbar, .circle-input {
         display: none;
     }
+
+    /* dropdown-navbar { */
+        /* display: block; */
+        /* margin-left: auto; */
+    /* } */
 
     /* Halaman Home */
     .carousel-item img {
@@ -1456,14 +1480,34 @@ footer {
     }
 
     .purchase-records { width: 100%; }
+
+    /* My Account */
+    .change-profile-img {
+        width: 50%;
+    }
+
+    #add-account-photo {
+        width: 180% !important;
+        position: relative;
+        left: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .account-table {
+        margin-top: 25px;
+    }
 }
 
+/* Media Small */
 @media screen and (max-width: 564px)  {
     * {
         font-size: 12px;
     }
 
     h4, .hd-18 { font-size: 14px !important; }
+
+    .hd-14 { font-size: 12.50px !important; }
 
     .carousel-item img {
         height: 100px;

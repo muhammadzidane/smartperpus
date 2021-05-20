@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="row mt-5">
+<div class="row mt-md-4">
     <div class="col-lg-9">
         <div class="white-content-0">
             <div class="white-content-header-2 flex-column">

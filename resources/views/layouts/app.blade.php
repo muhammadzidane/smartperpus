@@ -43,12 +43,15 @@
                         </div>
                     </form>
                 </div>
+                <div id="dropdown-navbar" class="self-middle ml-auto d-md-none">
+                    <button class="btn-none"><i class="fas fa-grip-lines"></i></button>
+                </div>
                 <div class="cus-nav">
-                    <ul class="ul-nav">
-                        <div class="d-flex ml-3">
-                            <li id="categories" class="">
+                    <ul class="ul-nav h-100">
+                        <div class="d-flex h-100 align-items-center ml-3">
+                            <li id="categories" class="h-100 c-middle">
                                 Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                <div class="-value">
+                                <div>
                                     <div class="d-flex">
                                         <div class="mr-5">
                                             @foreach (\App\Models\Category::get()->take(10) as $category)
@@ -82,23 +85,19 @@
                 </div>
             </nav>
             <div class="responsive-navbar">
-                <ul class="ul-nav">
-                    <div class="d-flex">
-                        <li>Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
-                        <li>Best Seller</li>
-                        <li>Buku Diskon</li>
-                    </div>
-                    <div class="d-flex ml-auto align-items-center">
-                        @guest
-                            <li>
-                                <button id="login" class="btn-none tbold text-grey" data-toggle="modal"
-                                data-target="#modal-login">Masuk</button>
-                            </li>
+                <ul class="ul-nav d-block text-center">
+                    <li class="m-0">Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
+                    <li class="m-0">Best Seller</li>
+                    <li class="m-0">Buku Diskon</li>
+                    @guest
+                        <li>
+                            <button id="login" class="btn-none tred" data-toggle="modal"
+                            data-target="#modal-login">Masuk</button></li>
+                        </li>
                         @endguest
-                        @auth
-                            @include('layouts.auth-nav-login')
-                        @endauth
-                    </div>
+                    @auth
+                        @include('layouts.auth-nav-login')
+                    @endauth
                 </ul>
 
             </div>

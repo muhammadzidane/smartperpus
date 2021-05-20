@@ -1,4 +1,4 @@
-<li class="nav-item dropdown position-relative">
+<li class="nav-item dropdown self-middle">
     <a id="navbarDropdown" class="nav-link" href="#" role="button"
         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <div class="user">

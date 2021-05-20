@@ -627,6 +627,10 @@ $(document).ready(function () {
         $('#btn-chat').show();
 
     });
+
+    $('#dropdown-navbar').on('click', function() {
+        $('.responsive-navbar').slideToggle('fast');
+    })
 }); // End of onload Event
 
 function removeContent(element) {

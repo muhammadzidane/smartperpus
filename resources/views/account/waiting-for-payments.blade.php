@@ -1,10 +1,10 @@
 @extends('layouts.app')
 @section('content')
-<div class="row mt-5">
+<div class="row mt-md-4">
     <div class="col-lg-9">
         <div class="white-content-0">
             <div class="white-content-header-2 flex-column">
-                <h4 class="hd-14 m-0">Menunggu Pembayaran <span class="tred">(3)</span></h4>
+                <h4 class="hd-14 m-0">Chat <span class="tred">(3)</span></h4>
                 <div class="mt-2">
                     <div class="wishlist-search">
                         <span><i class="fa fa-search wishlist-search-icon" aria-hidden="true"></i></span>
