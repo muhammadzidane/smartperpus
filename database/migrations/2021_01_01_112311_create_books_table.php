@@ -18,7 +18,7 @@ class CreateBooksTable extends Migration
             $table->char('isbn', 13)->unique();
             $table->string('name')->unique();
             $table->integer('price');
-            $table->string('image', 50);
+            $table->string('image');
             $table->foreignId('author_id')->constrained()->onDelete('cascade');
             $table->float('rating', 2, 1);
             $table->integer('discount')->nullable();

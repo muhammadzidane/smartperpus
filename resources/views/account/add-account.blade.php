@@ -30,12 +30,8 @@
             <form id="form-register" action="{{ route('register') }}" method="POST">
                 <div class="text-right p-0"><a href="{{ route('home') }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
                 <div class="mb-4">
-                    @if (Route::currentRouteName() == 'user.create')
-                        <h5 class="tred-bold">Tambah User</h5>
-                    @else
-                        <h5 class="tred-bold">Buat Akun Anda Sekarang</h5>
-                        <div class="mt-4 pb-2">Sudah Memiliki akun? <a href="{{ route('login') }}" class="text-decoration-none tred-bold">Masuk</a></div>
-                    @endif
+                    <h5 class="tred-bold">Tambah Akun Baru</h5>
+                    <div class="mt-4 pb-2">Sudah Memiliki akun? <a href="{{ route('login') }}" class="text-decoration-none tred-bold">Masuk</a></div>
                 </div>
 
                 <div id="error-register"></div>
@@ -58,16 +54,6 @@
                     </span>
                     @enderror
                 </div>
-                @can('viewAny', \App\Models\User::class)
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        <select class="form-control-custom register-form" name="role" id="role">
-                            <option value="guest">Guest</option>
-                            <option value="admin">Admin</option>
-                            <option value="super_admin">Super Admin</option>
-                        </select>
-                    </div>
-                @endcan
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" name="email" id="email" class="form-control-custom register-form" required>
@@ -117,3 +103,4 @@
     <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>
 </html>
+

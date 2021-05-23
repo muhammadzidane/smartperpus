@@ -8,7 +8,7 @@
     <span class="tsmall">{{ $book->name }}</span>
 </div>
 
-<div class="book-show">
+<div class="book-show d-sm-flex">
     <div>
         <div class="book-show-cover">
             <img src="{{ url('img/book/' . $book->image) }}">

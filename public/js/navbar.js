@@ -25,7 +25,7 @@ $(document).ready(function () {
     $('#login').trigger('click');
 
     // Search Buku dan Author ( ada di Navbar )
-    $('#keywords').on('keyup', function () {
+    $('.keywords').on('keyup', function () {
         if ($(this).val() === '') {
             $('#search-values').hide();
         }
@@ -36,7 +36,7 @@ $(document).ready(function () {
                 url: '/ajax/request/store',
                 data: {
                     '_token': csrfToken,
-                    'search_value': $('#keywords').val()
+                    'search_value': $('.keywords').val()
                 },
                 success: function (response) {
                     response.books.length == 0 ? $('#search-books').prev().hide() : $('#search-books').prev().show();
@@ -73,11 +73,11 @@ $(document).ready(function () {
                 url     : "/ajax/request/search",
                 data    : {
                     '_token'       : csrfToken,
-                    'keywords'     : $('#keywords').val(),
+                    'keywords'     : $('.keywords').val(),
                 },
                 success : function (response) {
                     $('#book-search').html(response.books);
-                    $('#search-text').html($('#keywords').val());
+                    $('#search-text').html($('.keywords').val());
 
                     for (const key in response.bookCategory) {
                         if (response.bookCategory.hasOwnProperty.call(response.bookCategory, key)) {
@@ -88,14 +88,14 @@ $(document).ready(function () {
 
                     // Merubah parameter URL tanpa reload
                     history.pushState({}, null,
-                      `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${$('.p-active').text()}`);
+                      `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${$('.p-active').text()}`);
                 },
             });
 
         }
     });
 
-    $('#keywords').on('blur', function() {
+    $('.keywords').on('blur', function() {
         $('#search-values').hide();
     });
 
@@ -362,7 +362,7 @@ $(document).ready(function () {
         }
 
         window.history.pushState({}, null,
-            `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${parseInt(activePage.text()) + 1}`
+            `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${parseInt(activePage.text()) + 1}`
         );
     });
 
@@ -395,7 +395,7 @@ $(document).ready(function () {
         }
 
         window.history.pushState({}, null,
-            `http://smartperpus.com/search/books?keywords=${$('#keywords').val()}&page=${parseInt(activePage.text()) - 1}`
+            `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${parseInt(activePage.text()) - 1}`
         );
 
     });

@@ -25,4 +25,8 @@ class AccountController extends Controller
     public function chat() {
         return view('account.chat');
     }
+
+    public function addNewAccount() {
+        return view('account.add-account');
+    }
 }

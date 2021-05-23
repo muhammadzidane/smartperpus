@@ -37,7 +37,7 @@
                             <div class="search-icon">
                                 <i class="fas fa-search m-auto"></i>
                             </div>
-                            <input type="text" name="keywords" id="keywords" class="search-text"
+                            <input type="text" name="keywords" class="keywords search-text"
                             placeholder="Judul Buku, Nama Author" autocomplete="off">
                             <input type="hidden" name="page" value="1">
                         </div>
@@ -84,8 +84,22 @@
                     </ul>
                 </div>
             </nav>
-            <div class="responsive-navbar">
+            <div class="responsive-navbar d-md-none">
                 <ul class="ul-nav d-block text-center">
+                    <li>
+                        <div class="circle-input">
+                            <form class="search-form" action="{{ route('search.books') }}" method="GET">
+                                <div>
+                                    <div class="search-icon">
+                                        <i class="fas fa-search m-auto"></i>
+                                    </div>
+                                    <input type="text" name="keywords" class="keywords search-text"
+                                        placeholder="Judul Buku, Nama Author" autocomplete="off">
+                                    <input type="hidden" name="page" value="1">
+                                </div>
+                            </form>
+                        </div>
+                    </li>
                     <li class="m-0">Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
                     <li class="m-0">Best Seller</li>
                     <li class="m-0">Buku Diskon</li>

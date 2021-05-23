@@ -14,10 +14,16 @@ class BookCategorySeeder extends Seeder
      */
     public function run()
     {
-        $book_count = \App\Models\Book::count();
-
-        for ($i=1; $i <= $book_count; $i++) {
+        for ($i=1; $i <= 10; $i++) {
             Book::find($i)->categories()->attach(Category::firstWhere('name', 'Komik'));
+        }
+
+        for ($i=11; $i <= 23 ; $i++) {
+            Book::find($i)->categories()->attach(Category::firstWhere('name', 'Kamus'));
+        }
+
+        for ($i=24; $i <= 30 ; $i++) {
+            Book::find($i)->categories()->attach(Category::firstWhere('name', 'Buku Masak'));
         }
     }
 }

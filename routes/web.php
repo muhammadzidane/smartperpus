@@ -3,7 +3,7 @@
 use App\Http\Controllers\
 {
     AjaxController,BookController, AuthorController, CategoryController,
-    HomeController, TestController, AccountController,
+    HomeController, TestController, AccountController, UserController
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -14,6 +14,9 @@ Route::get('/', array(HomeController::class, 'index'))->name('home');
 // TEST
 Route::get('/test', array(TestController::class, 'test'))->name('test');
 Route::get('/pagination', array(TestController::class, 'pagination'));
+
+// User
+Route::resource('/user', UserController::class);
 
 // Search
 Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
@@ -27,6 +30,7 @@ Route::prefix('/account')->group(function() {
     Route::get('/my-reviews', array(AccountController::class, 'myReviews'))->name('my.reviews');
     Route::get('/waiting-for-payments', array(AccountController::class, 'waitingForPayments'))->name('waiting.for.payment');
     Route::get('/chat', array(AccountController::class, 'chat'))->name('chat');
+    Route::get('/add-new-account', array(AccountController::class, 'addNewAccount'))->name('add.new.account');
 });
 
 // Books
@@ -60,9 +64,7 @@ Route::prefix('/ajax/request/')->group(function() {
 Auth::routes();
 
 Route::fallback(function($wkwk) {
-    $faker = \Faker\Factory::create('id_ID');
-
-    dump($faker->lastName);
+    return 'gk ada halaman ini';
 });
 
 // Categories Route

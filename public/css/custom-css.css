@@ -6,7 +6,7 @@ ul li {
 .z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
 .fa-star { color: gold; }
-.mt-c { margin-top: 75px !important; }
+.mt-c, .kategori-pilihan { margin-top: 40px !important; }
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
@@ -23,6 +23,12 @@ ul li {
 .bg-grey { background-color: #FBF7F7; }
 .bg-grey-2 { background-color: #E7E7DE; }
 .shadow-custom { box-shadow: 0 0 0.7px #bbbbbb !important; }
+.relative-none {
+    bottom: 0;
+    right: 0;
+    top: 0;
+    left: 0s;
+}
 
 .text-righteous, li a, .book-deals > h2, h4, h5 , .btn-outline-yellow{
     font-family: 'Righteous', cursive;
@@ -405,20 +411,16 @@ footer {
 /* Book Show */
 .book-show {
     margin-top: 21px;
-    display: flex;
 }
 
 .book-show > :nth-child(1) {
     width: 25%;
-    display: flex;
     flex-direction: column;
 }
 
 .book-show > :nth-child(2) {
-    /* background-color: #3B5998; */
     padding-left: 30px;
     width: 75%;
-    display: flex;
     flex-direction: column;
 }
 
@@ -426,6 +428,10 @@ footer {
 .book-show-link, .book-show-link:hover ,.desk-book a{
     text-decoration: none ;
     color: #212529;
+}
+
+.book-show-cover {
+    margin-bottom: 45px;
 }
 
 .book-show-cover > img {
@@ -494,14 +500,13 @@ footer {
 }
 
 .book-payment {
-    /* display: flex; */
-    flex-direction: column;
+    position: relative;
     border: 1px solid #f0a500;
     background-color: #fffdf6;
     width: 50%;
     padding: 15px;
-    position: relative;
     border-radius: 6px;
+    height: max-content;
 }
 
 .book-payment div:last-child {
@@ -579,9 +584,6 @@ footer {
 }
 
 /* Halaman Home */
-.book-deals:not(.book-deals:first-child) {
-    margin-top: 75px;
-}
 
 /* User */
 .user {
@@ -602,7 +604,9 @@ footer {
 
 .user-circle i { font-size: 24px; }
 
-.dropdown-user { padding: 10px 5px; }
+.dropdown-user {
+    padding: 10px 5px;
+}
 
 /* Wishlist */
 .btn-wishlist {
@@ -750,7 +754,7 @@ footer {
     border-radius: 100%;
 }
 
-.fa-facebook-f, .fa-twitter, .fa-instagram  {
+.fa-facebook-f, .fa-twitter, .fa-instagram, .fa-google  {
     text-align: center;
     padding-top: 9px;
     width: 35px;
@@ -763,6 +767,7 @@ footer {
 .fa-twitter { background-color: #55ACEE; }
 .fa-instagram { background-color: #125688; }
 .fa-phone { color: #9FE6A0; }
+.fa-google { background-color: #dd4b39; }
 
 /* Rekomendasi Buku */
 .book-recommendations {
@@ -775,7 +780,6 @@ footer {
     position: relative;
     background-color: #fffdf6;
     padding: 1px 0;
-    margin: 60px 0;
     border-bottom: 3px solid #ea5455;
     box-shadow: 0 0 1.2px gray;
     border-radius: 7px;
@@ -783,12 +787,14 @@ footer {
 
 .kategori-pilihan > div {
     display: flex;
-    margin: 27px 20px;
-
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 27px 0;
+    flex-direction: row;
 }
 
 .kp-2, .kp-1 {
-    width: 25%;
+    width: 250px;
     text-align: center;
     cursor: pointer;
     padding: 0 9px;
@@ -804,8 +810,8 @@ footer {
 }
 
 .kp-2 > img, .kp-1 > img {
-    width: 95%;
-    height: 155px;
+    width: 100%;
+    height: 145px;
 }
 
 .discount-time {
@@ -893,8 +899,9 @@ footer {
 
 .click-in-buttom, .click-to-the-top {
     position: fixed;
-    bottom: 25px;
+    bottom: 10px;
     right: 25px;
+    z-index: 100;
 }
 
 .click-to-the-top {
@@ -904,8 +911,9 @@ footer {
 .chat {
     display: block;
     position: fixed;
-    /* bottom: 25px;
-    right: 87px; */
+    z-index: 100;
+    bottom: 10px;
+    right: 87px;
 }
 
 .chat-with-admin { display: none;}
@@ -1167,6 +1175,11 @@ footer {
     box-shadow: 0 0 0.7px #bbbbbb;
 }
 
+.select-role {
+    background-color: pink;
+    border: none;
+}
+
 .form-register {
     width: 40%;
     background-color: #fffdf6;
@@ -1248,10 +1261,10 @@ footer {
 
 .courier-choise {
     border: 2px solid #FFFAA4;
-    padding: 2px 8px;
+    padding: 2px 12px;
+    width: 120px;
     border-radius: 7px;
     margin-right: 7px;
-    width: 110px;
     text-align: center;
     cursor: pointer;
 }
@@ -1361,14 +1374,13 @@ footer {
 
 /* Media Large */
 @media screen and (max-width: 992px)  {
-
     /* Halaman Home */
     .carousel-item img {
         height: 280px;
     }
 
-    .kp-1 img, .kp-2 img {
-        height: 100px;
+    .kategori-pilihan > div {
+        margin: 20px 0;
     }
 
     .book {
@@ -1437,18 +1449,9 @@ footer {
         display: none;
     }
 
-    /* dropdown-navbar { */
-        /* display: block; */
-        /* margin-left: auto; */
-    /* } */
-
     /* Halaman Home */
     .carousel-item img {
         height: 220px;
-    }
-
-    .kp-1 img, .kp-2 img {
-        height: 110px;
     }
 
     .book {
@@ -1533,7 +1536,7 @@ footer {
         height: 35px;
     }
 
-    /* Buy Blade */
+    /* Book Buy  */
     #buying-content { flex-direction: column; }
     #buying-img { width: 100%; }
     #book-payment { display: flex; flex-direction: column; }
@@ -1542,12 +1545,26 @@ footer {
     .pay-for-the-book div div:first-child > div:first-child { width: 35% !important; }
     .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
     .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
+    .courier-choise { width: 110px; }
 
     /* Book Search */
     #book-search .books .book {
         width: 43.90% !important;
     }
 
+    /* Book Show */
+    .book-show > div:first-child, .book-show-sinopsis {
+        width: 100% !important;
+    }
+
+    .book-show-detail {
+        padding: 0 3px;
+
+    }
+
+    .book-show > :nth-child(2) {
+        padding: 0;
+    }
     /* Footer */
     .footer-content:last-child {
         width: 33.40%;

@@ -97,18 +97,18 @@
             <div class="white-content-header-2 d-block">
                 <h4 class="hd-18">Pilih Kurir</h4>
                 <form>
-                    <div class="ml-3 mt-4 d-flex">
+                    <div class="ml-3 mt-4 d-flex overflow-auto">
                         <div class="courier-choise">
                             <input type="radio" name="courier-choise" value="jne" class="d-none">
-                            <img src="{{ asset('img/couriers/jne.jpg') }}" alt="" srcset="">
+                            <img class="bg-dark" src="{{ asset('img/couriers/jne.jpg') }}">
                         </div>
                         <div class="courier-choise">
                             <input type="radio" name="courier-choise" value="tiki" class="d-none">
-                            <img src="{{ asset('img/couriers/tiki.jpg') }}" alt="" srcset="">
+                            <img src="{{ asset('img/couriers/tiki.jpg') }}">
                         </div>
                         <div class="courier-choise">
                             <input type="radio" name="courier-choise" value="pos" class="d-none">
-                            <img src="{{ asset('img/couriers/pos.png') }}" alt="" srcset="">
+                            <img src="{{ asset('img/couriers/pos.png') }}">
                         </div>
                     </div>
                 </form>

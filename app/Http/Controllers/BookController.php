@@ -15,7 +15,7 @@ class BookController extends Controller
      */
     public function index(Book $book)
     {
-        // $this->authorize('viewAny', Book::class);
+        $this->authorize('viewAny', $book);
         return view('book/index', array('books' => Book::get()));
     }
 
@@ -46,6 +46,7 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Book::class);
 
         $validate_data = $request->validate(
             array(

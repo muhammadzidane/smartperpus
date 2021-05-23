@@ -20,7 +20,7 @@
 
 <div class="row mt-md-4">
     <div class="col-lg-9">
-        <div class="chat position-relative">
+        <div class="position-relative relative-none">
             <div class="chat-content w-100 shadow-custom" aria-labelledby="triggerId">
                 <div class="chat-with-admin d-block">
                     <div class="borbot-gray-0 d-flex justify-content-between">

@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Book;
 use App\Models\User;
-use Illuminate\Auth\Access\{HandlesAuthorization, Response};
+use Illuminate\Auth\Access\HandlesAuthorization;
 
-class BookPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -19,7 +18,7 @@ class BookPolicy
     public function viewAny(User $user)
     {
         return in_array($user->role, array(
-            'admin', 'super_admin',
+            'super_admin'
         ));
     }
 
@@ -27,14 +26,12 @@ class BookPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function view(User $user, Book $book)
+    public function view(User $user, User $model)
     {
-        return in_array($user->role, array(
-            'admin',
-        ));
+        //
     }
 
     /**
@@ -45,19 +42,19 @@ class BookPolicy
      */
     public function create(User $user)
     {
-        return in_array($user->role, array(
-            'admin', 'super_admin',
-        ));
+        // return in_array($user->role, array(
+        //     'super_admin'
+        // ));
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function update(User $user, Book $book)
+    public function update(User $user, User $model)
     {
         //
     }
@@ -66,10 +63,10 @@ class BookPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function delete(User $user, Book $book)
+    public function delete(User $user, User $model)
     {
         //
     }
@@ -78,10 +75,10 @@ class BookPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function restore(User $user, Book $book)
+    public function restore(User $user, User $model)
     {
         //
     }
@@ -90,10 +87,10 @@ class BookPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Book  $book
+     * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function forceDelete(User $user, Book $book)
+    public function forceDelete(User $user, User $model)
     {
         //
     }

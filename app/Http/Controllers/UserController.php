@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class TestController2 extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,7 +14,6 @@ class TestController2 extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -23,7 +23,8 @@ class TestController2 extends Controller
      */
     public function create()
     {
-        //
+        $this->authorize('viewAny', User::class);
+        return view('auth.register');
     }
 
     /**
