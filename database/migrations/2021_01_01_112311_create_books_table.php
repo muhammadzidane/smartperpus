@@ -27,7 +27,7 @@ class CreateBooksTable extends Migration
             $table->date('release_date');
             $table->string('publisher');
             $table->string('subtitle');
-            $table->float('weight');
+            $table->integer('weight');
             $table->float('width');
             $table->float('height');
             $table->timestamps();

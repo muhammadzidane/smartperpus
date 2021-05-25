@@ -6,7 +6,7 @@
             @endisset
             <div class='book-cover'>
                 <div class="gambar-buku">
-                    <img src="{{ url('img/book/' . $book->image )  }}">
+                    <img src="{{ url('storage/books/' . $book->image )  }}">
                 </div>
             </div>
             <div class="desk-book">
@@ -32,12 +32,12 @@
                                         @if ($j == $k)
                                             @for ($l=0; $l < $i ; $l++)
                                                 <div>
-                                                    <i class="fa fa-star rating-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star rating-star"></i>
                                                 </div>
                                             @endfor
 
                                               <div>
-                                                <i class="fa fa-star-half rating-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star-half rating-star"></i>
                                             </div>
                                         @endif
 
@@ -46,7 +46,7 @@
                                     @if ($j == 0)
                                         @for ($l=0; $l < $i ; $l++)
                                             <div>
-                                                <i class="fa fa-star rating-star" aria-hidden="true"></i>
+                                                <i class="fa fa-star rating-star"></i>
                                             </div>
                                         @endfor
                                     @endif
@@ -57,12 +57,24 @@
                         @if($rating_book == 5.0)
                             @for($i = 0; $i < 5; $i++)
                                 <div>
-                                    <i class="fa fa-star rating-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star rating-star"></i>
                                 </div>
                             @endfor
                         @endif
 
-                        <div class="rating-number">{{ $book->rating }}</div>
+                        @if ($rating_book == 0)
+                            @for($i = 0; $i < 5; $i++)
+                                <div>
+                                <i class="far fa-star"></i>
+                                </div>
+                            @endfor
+                        @endif
+
+                        @if ($book->rating == 0)
+                            <div class="ml-2"><small class="text-grey">0</small></div>
+                        @else
+                            <div class="rating-number">{{ $book->rating }}</div>
+                        @endif
                     </div>
                 </div>
                 <div class="add-to-wishlist">

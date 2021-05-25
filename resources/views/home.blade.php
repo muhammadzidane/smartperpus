@@ -5,9 +5,6 @@
 @endsection
 
 @section('content')
-@can('create', \App\Models\Book::class)
-    <h1>hanya bisa di lihat oleh admin</h1>
-@endcan
 
 <div class="kategori-pilihan px-3">
 

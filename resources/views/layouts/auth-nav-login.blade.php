@@ -15,7 +15,7 @@
         <div class="mb-3">
             @can('viewAny', \App\Models\Book::class)
                 <div>
-                    <a class="dropdown-item" href="#">Tambahkan Buku</a>
+                    <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
                 </div>
                 @can('viewAny', \App\Models\User::class)
                     <div>

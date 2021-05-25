@@ -113,7 +113,6 @@
                         @include('layouts.auth-nav-login')
                     @endauth
                 </ul>
-
             </div>
         </div>
 

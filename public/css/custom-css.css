@@ -23,6 +23,7 @@ ul li {
 .bg-grey { background-color: #FBF7F7; }
 .bg-grey-2 { background-color: #E7E7DE; }
 .shadow-custom { box-shadow: 0 0 0.7px #bbbbbb !important; }
+.h-75vh { height: 75vh !important; }
 .relative-none {
     bottom: 0;
     right: 0;
@@ -50,7 +51,8 @@ ul li {
 .w-78 { width: 78%; }
 .w-79 { width: 79%; }
 .w-80 { width: 80%; }
-.w-90 { width: 90%; }
+.w-90 { width: 90% !important; }
+.w-95 { width: 95% !important; }
 .w-98 { width: 98%; }
 .hd-12 { font-size: 12px; }
 .hd-14 { font-size: 14px; }
@@ -1482,7 +1484,8 @@ footer {
         display: none;
     }
 
-    .purchase-records { width: 100%; }
+    .purchase-records, #book-create { width: 100% !important; }
+    .form-register { padding: 12px; }
 
     /* My Account */
     .change-profile-img {

@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, Author, Category};
+use App\Models\{Book, Author, Category, Synopsis};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 class BookController extends Controller
 {
@@ -26,6 +25,8 @@ class BookController extends Controller
      */
     public function create()
     {
+        $this->authorize('viewAny', Book::class);
+
         $book_categories = collect(
             array(
                 'Komik', 'Aksi', 'Romantis', 'Petualangan', 'Drama',
@@ -48,60 +49,67 @@ class BookController extends Controller
     {
         $this->authorize('create', Book::class);
 
-        $validate_data = $request->validate(
-            array(
-                'name'          => array('required', 'unique:books'),
-                'price'         => array('required', 'integer'),
-                'image'         => array('required', 'file', 'max:2000', 'mimes:jpg'),
-                'author_change' => array('required'),
-                'categories'    => array('required'),
-                'synopsis'      => array('required'),
-            )
+        $validate_data = $request->validate(array(
+            'nama_penulis'       => array('required', 'min:3'),
+            'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn'),
+            'judul_buku'         => array('required', 'unique:books,name'),
+            'sinopsis'           => array('required', 'unique:synopses,text'),
+            'price'              => array('required', 'numeric'),
+            'jumlah_barang'      => array('required', 'numeric'),
+            'penerbit'           => array('required'),
+            'jumlah_halaman'     => array('required', 'numeric'),
+            'tanggal_rilis'      => array('required', 'date'),
+            'subtitle'           => array('required'),
+            'berat'              => array('required', 'numeric'),
+            'panjang'            => array('required', 'numeric'),
+            'lebar'              => array('required', 'numeric'),
+            'gambar_sampul_buku' => array('required', 'file', 'image', 'mimes:jpg,png', 'unique:books,image', 'max:2000'),
+        ));
+
+        $author     = Author::create(array('name' => $request->nama_penulis));
+        $book_name  = Book::firstWhere('name', $request->judul_buku);
+        dump($author);
+        dump($book_name);
+
+        $validate_data = array(
+            'isbn'         => $validate_data['isbn'],
+            'name'         => $validate_data['judul_buku'],
+            'price'        => (int) $validate_data['price'],
+            'image'        => strtolower(str_replace(' ', '_', $validate_data['gambar_sampul_buku']->getClientOriginalName())),
+            'author_id'    => $author->id,
+            'rating'       => 0.0,
+            'discount'     => null,
+            'ebook'        => $request->tersedia_dalam_ebook,
+            'pages'        => (int) $validate_data['jumlah_halaman'],
+            'release_date' => $validate_data['tanggal_rilis'],
+            'publisher'    => $validate_data['penerbit'],
+            'subtitle'     => $validate_data['subtitle'],
+            'weight'       => (int) $validate_data['berat'],
+            'width'        => (float) $validate_data['lebar'],
+            'height'       => (float) $validate_data['panjang'],
         );
 
-        $validate_data['image'] = $validate_data['image']->getClientOriginalName();
-        $author                 = Author::where('name', $validate_data['author_change'])->first();
-
-        if (!$author) {
-            $author = Author::create(
-                array(
-                    'id' => $validate_data['author_change']
-                )
-            );
-
-        }
-
-        $book =  Book::create(
-            array(
-                'name'      => $validate_data['name'],
-                'price'     => $validate_data['price'],
-                'image'     => $validate_data['image'],
-                'author_id' => $author->id,
-            )
-        );
-
-        $author->books()->attach(Book::find($book->id));
-
-        foreach ($validate_data['categories'] as $category) {
-            $book->categories()->create(
-                array(
-                    'name'    => $category,
-                    'book_id' => $book->id,
-                )
-            );
-        }
-
-        $book->synopsis()->create(
-            array(
-                'text'    => $validate_data['synopsis'],
-                'book_id' => $book->id,
-            )
-        );
-
-        $pesan = 'Berhasil menambah buku ' . $book->name;
-
-        return redirect()->route('books.index')->with('pesan', $pesan);
         dump($validate_data);
+
+        // Buat buku
+        if (!in_array($validate_data, array(null))) {
+            $book = Book::create($validate_data);
+
+            $book->categories()->attach(Category::firstWhere('name', $request->kategori));
+            $book->printedStock()->create(array('amount' => $request->jumlah_barang));
+            $book->synopsis()->create(array('text' => $request->sinopsis));
+            $author->books()->attach(Book::find($book->id));
+            $request->gambar_sampul_buku->storeAs('public/books',
+              str_replace(' ', '_', strtolower($request->gambar_sampul_buku->getClientOriginalName())));
+
+            dump($author->name);
+            dump($validate_data);
+
+
+        }
+        else {
+            dump('gagal buat buku');
+        }
     }
 
     /**
@@ -149,8 +157,8 @@ class BookController extends Controller
         $validate_data = $request->validate(
             array(
                 'name'        => array('required', 'unique:books,name,' . $book->id),
-                'price'       => array('required', 'integer'),
-                'image'       => array('required', 'file', 'max:2000', 'mimes:jpg'),
+                'price'       => array('required', 'numeric'),
+                'image'       => array('required', 'file', 'max:2000', 'mimes:jpg,jng'),
                 'author_change' => array('required'),
                 'categories'  => array('required'),
                 'synopsis'    => array('required'),
