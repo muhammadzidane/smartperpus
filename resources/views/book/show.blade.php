@@ -11,19 +11,19 @@
 <div class="book-show d-sm-flex">
     <div>
         <div class="book-show-cover">
-            <img src="{{ url('img/book/' . $book->image) }}">
+            <img src="{{ url('storage/books/' . $book->image) }}">
             <div class="book-show-images">
                 <div>
-                    <img src="{{ url('img/book/' . $book->image) }}" class="w-100">
+                    <img src="{{ url('storage/books/' . $book->image) }}" class="w-100">
                 </div>
                 <div>
-                    <img src="{{ url('img/book/' . $book->image) }}" class="w-100">
+                    <img src="{{ url('storage/books/' . $book->image) }}" class="w-100">
                 </div>
                 <div>
-                    <img src="{{ url('img/book/' . $book->image) }}" class="w-100">
+                    <img src="{{ url('storage/books/' . $book->image) }}" class="w-100">
                 </div>
                 <div>
-                    <img src="{{ url('img/book/' . $book->image) }}" class="w-100">
+                    <img src="{{ url('storage/books/' . $book->image) }}" class="w-100">
                 </div>
             </div>
         </div>
@@ -31,6 +31,20 @@
     <div class="book-show-sinopsis">
         <div class="white-content">
             <h5>{{ $book->name }}</h5>
+            @can('view', $book)
+                <div class="d-flex float-right">
+                    <div class="mr-2">
+                        <form action="{{ route('book.add.discount', array('book' => $book->id)) }}" method="post">
+                            <button type="submit" class="btn btn-primary">Tambah Diskon</button>
+                            @csrf
+                        </form>
+                    </div>
+                    <div class="mr-2">
+                        <a href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
+                    </div>
+                    <div><a href="#" type="button" class="btn btn-danger">Delete</a></div>
+                </div>
+            @endcan
             <div class="my-1 d-flex">
                 <div>
                     <div>
@@ -172,7 +186,7 @@
     @for($i = 0; $i < 3; $i++)
         <div class="customer-reviews">
             <div>
-                <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
             </div>
             <div>
                 <div>
@@ -220,7 +234,7 @@
             <!-- Pertanyaan Customer -->
             <div class="borbot-gray">
                 <div class="d-flex">
-                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
                     <div class="d-flex justify-content-between w-100">
                         <div>Muhammad Zidane</div>
                         <div class="purchase-date">2 Minggu yang lalu</div>
@@ -238,7 +252,7 @@
             <!-- Jawaban Admin -->
             <div class="px-3">
                 <div class="d-flex">
-                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
                     <div class="d-flex justify-content-between w-100">
                         <div>Admin</div>
                         <div class="purchase-date">6 Hari yang lalu</div>
@@ -260,7 +274,7 @@
             <!-- Pertanyaan Customer -->
             <div class="borbot-gray">
                 <div class="d-flex">
-                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
                     <div class="d-flex justify-content-between w-100">
                         <div>Muhammad Zidane</div>
                         <div class="purchase-date">2 Minggu yang lalu</div>
@@ -278,7 +292,7 @@
             <!-- Jawaban Admin -->
             <div class="px-3">
                 <div class="d-flex">
-                    <img class="customer-reviews-profile" src="{{ url('img/book/' . $book->image) }}">
+                    <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
                     <div class="d-flex justify-content-between w-100">
                         <div>Admin</div>
                         <div class="purchase-date">6 Hari yang lalu</div>

@@ -37,6 +37,7 @@ Route::prefix('/account')->group(function() {
 Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
 Route::get('/books/payment/{book}', array(BookController::class, 'booksPayment'))->name('books.payment');
 Route::get('/books/shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
+Route::post('/books/add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
 Route::get('/books/wishlist/', array(BookController::class, 'wishlist'));
 Route::resource('/books', BookController::class);
 

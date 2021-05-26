@@ -1,15 +1,24 @@
 @extends('layouts/app')
 @section('content')
 
-<div style="margin: 9rem 0"> {{-- Nanti hapus--}}
+@if (session('pesan'))
+    <div class="alert alert-primary" role="alert">
+        <strong>{{ session('pesan') }}</strong>
+    </div>
+@endif
 
-    <h1 class="my-5 text-center">Edit Book</h1>
+<div class="register-user py-4">
 
-    <form action="{{ route('books.update', array('book' => $book->id)) }}" method="post" class="w-50 my-5" enctype="multipart/form-data">
-        @include('book.form', array('submit_button' => 'Edit'))
-        @method('patch')
+
+    <div id="book-create" class="form-register w-75 mx-auto">
+    <form id="form-register" multiple="multiple" enctype="multipart/form-data"
+      action="{{ route('books.update', array('book' => $book->id)) }}" method="POST">
+        @include('book.form', array( 'title' => 'Edit Buku', 'button_text' => 'Edit'))
+        @method('PATCH')
+        @csrf
     </form>
-
 </div>
+<script src="{{ asset('js/register.js') }}"></script>
+<script src="{{ asset('js/helper-functions.js') }}"></script>
 
 @endsection

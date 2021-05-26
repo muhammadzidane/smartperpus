@@ -50,7 +50,7 @@ class BookController extends Controller
         $this->authorize('create', Book::class);
 
         $validate_data = $request->validate(array(
-            'nama_penulis'       => array('required', 'min:3'),
+            'nama_penulis'       => array('required', 'min:3', 'unique:authors,name'),
             'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn'),
             'judul_buku'         => array('required', 'unique:books,name'),
             'sinopsis'           => array('required', 'unique:synopses,text'),
@@ -67,9 +67,6 @@ class BookController extends Controller
         ));
 
         $author     = Author::create(array('name' => $request->nama_penulis));
-        $book_name  = Book::firstWhere('name', $request->judul_buku);
-        dump($author);
-        dump($book_name);
 
         $validate_data = array(
             'isbn'         => $validate_data['isbn'],
@@ -89,8 +86,6 @@ class BookController extends Controller
             'height'       => (float) $validate_data['panjang'],
         );
 
-        dump($validate_data);
-
         // Buat buku
         if (!in_array($validate_data, array(null))) {
             $book = Book::create($validate_data);
@@ -102,13 +97,9 @@ class BookController extends Controller
             $request->gambar_sampul_buku->storeAs('public/books',
               str_replace(' ', '_', strtolower($request->gambar_sampul_buku->getClientOriginalName())));
 
-            dump($author->name);
-            dump($validate_data);
+            $pesan = 'Berhasil menambah buku ' . $request->judul_buku;
 
-
-        }
-        else {
-            dump('gagal buat buku');
+            return redirect()->back()->with('pesan', $pesan);;
         }
     }
 
@@ -154,57 +145,50 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $validate_data = $request->validate(
-            array(
-                'name'        => array('required', 'unique:books,name,' . $book->id),
-                'price'       => array('required', 'numeric'),
-                'image'       => array('required', 'file', 'max:2000', 'mimes:jpg,jng'),
-                'author_change' => array('required'),
-                'categories'  => array('required'),
-                'synopsis'    => array('required'),
-            )
+        $validate_data = $request->validate(array(
+            'nama_penulis'       => array('required', 'min:3', 'unique:authors,name,' . $book->authors[0]->id),
+            'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn,' . $book->id),
+            'judul_buku'         => array('required', 'unique:books,name,' . $book->id),
+            'sinopsis'           => array('required', 'unique:synopses,text,' . $book->id),
+            'price'              => array('required', 'numeric'),
+            'jumlah_barang'      => array('required', 'numeric'),
+            'penerbit'           => array('required'),
+            'jumlah_halaman'     => array('required', 'numeric'),
+            'tanggal_rilis'      => array('required', 'date'),
+            'subtitle'           => array('required'),
+            'berat'              => array('required', 'numeric'),
+            'panjang'            => array('required', 'numeric'),
+            'lebar'              => array('required', 'numeric'),
+            'gambar_sampul_buku' => array('required', 'file', 'image', 'mimes:jpg,png', 'unique:books,image', 'max:2000'),
+        ));
+
+        $update = array(
+            'isbn'         => $validate_data['isbn'],
+            'name'         => $validate_data['judul_buku'],
+            'price'        => (int) $validate_data['price'],
+            'image'        => strtolower(str_replace(' ', '_', $validate_data['gambar_sampul_buku']->getClientOriginalName())),
+            'author_id'    => $book->authors[0]->id,
+            'rating'       => 0.0,
+            'discount'     => null,
+            'ebook'        => $request->tersedia_dalam_ebook,
+            'pages'        => (int) $validate_data['jumlah_halaman'],
+            'release_date' => $validate_data['tanggal_rilis'],
+            'publisher'    => $validate_data['penerbit'],
+            'subtitle'     => $validate_data['subtitle'],
+            'weight'       => (int) $validate_data['berat'],
+            'width'        => (float) $validate_data['lebar'],
+            'height'       => (float) $validate_data['panjang'],
         );
 
-        $validate_data['image'] = $validate_data['image']->getClientOriginalName();
+        $book->update($update);
+        $book->synopsis()->update(array('text' => $validate_data['sinopsis']));
+        $book->categories()->update(array('category_id' => Category::firstWhere('name', $request->kategori)->id));
+        $book->authors()->update(array('name' => $request->nama_penulis));
+        $book->printedStock()->update(array('amount' => $request->jumlah_barang));
 
-        $nama_buku = $book->name;
+        $pesan = 'Berhasil men-update buku ' . $request->judul_buku;
 
-        $book->categories()->delete();
-
-        foreach ($validate_data['categories'] as $category) {
-            $book->categories()->create(
-
-                array(
-                    'name'    => $category,
-                    'book_id' => $book->id,
-                )
-            );
-        }
-
-        $book->update(
-            array(
-                'name'  => $validate_data['name'],
-                'price' => $validate_data['price'],
-                'image' => $validate_data['image'],
-            )
-        );
-
-        $book->synopsis()->update(
-            array(
-                'text'    => $validate_data['synopsis'],
-                'book_id' => $book->id,
-            )
-        );
-
-        $book->authors[0]->pivot->update(
-            array(
-                'author_id' => $validate_data['author_change'],
-            )
-        );
-
-        $pesan = 'Berhasil mengubah data ' . $nama_buku;
-
-        return redirect()->route('books.index')->with('pesan', $pesan);
+        return redirect()->back()->with('pesan', $pesan);
     }
 
     /**
@@ -245,6 +229,10 @@ class BookController extends Controller
 
     public function wishlist() {
         return view('book/wishlist');
+    }
+
+    public function addDiscount() {
+        return 'diskon diambahkan';
     }
 }
 

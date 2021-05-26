@@ -4,6 +4,12 @@
     @include('layouts/carousel')
 @endsection
 
+@if (session('pesan'))
+    <div class="alert alert-primary" role="alert">
+        <strong>{{ session('pesan') }}</strong>
+    </div>
+@endif
+
 @section('content')
 
 <div class="kategori-pilihan px-3">
@@ -43,19 +49,6 @@
         'books' => \App\Models\Category::where('name', 'komik')->first()->books
     )
 )
-
-
-<!-- <div class="container discount-images">
-    <div>
-        <img src="{{ url('img/book/book-discount.jpg') }}">
-    </div>
-    <div>
-        <img src="{{ url('img/book/book-discount.jpg') }}">
-    </div>
-    <div>
-        <img src="{{ url('img/book/book-discount.jpg') }}">
-    </div>
-</div> -->
 
 <div class="chat">
     <div class="chat-content" aria-labelledby="triggerId">

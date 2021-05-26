@@ -33,7 +33,7 @@ class BookPolicy
     public function view(User $user, Book $book)
     {
         return in_array($user->role, array(
-            'admin',
+            'admin', 'super_admin',
         ));
     }
 
