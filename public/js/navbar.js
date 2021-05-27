@@ -1,6 +1,18 @@
 // JS untuk Navbar
 "use strict";
 
+function removeContent(element) {
+    $(element).remove();
+}
+
+function alertError(message) {
+    alert(message)
+}
+
+function toggle(selectorTarget) {
+    $(selectorTarget).toggle();
+}
+
 $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -631,12 +643,10 @@ $(document).ready(function () {
     $('#dropdown-navbar').on('click', function() {
         $('.responsive-navbar').slideToggle('fast');
     })
+
+    // Book Show
+    $('#book-show-delete').on('click', function(e) {
+        e.preventDefault();
+        confirm('Apakah anda yakin ingin menghapus semua data pada buku ini ?') ? $(this).parent().trigger('submit') : console.log(false);
+    });
 }); // End of onload Event
-
-function removeContent(element) {
-    $(element).remove();
-}
-
-function alertError(message) {
-    alert(message)
-}

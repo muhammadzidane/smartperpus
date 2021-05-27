@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\{Book, Author, Category, Synopsis};
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -53,7 +54,7 @@ class BookController extends Controller
             'nama_penulis'       => array('required', 'min:3', 'unique:authors,name'),
             'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn'),
             'judul_buku'         => array('required', 'unique:books,name'),
-            'sinopsis'           => array('required', 'unique:synopses,text'),
+            'sinopsis'           => array('required'),
             'price'              => array('required', 'numeric'),
             'jumlah_barang'      => array('required', 'numeric'),
             'penerbit'           => array('required'),
@@ -75,7 +76,7 @@ class BookController extends Controller
             'image'        => strtolower(str_replace(' ', '_', $validate_data['gambar_sampul_buku']->getClientOriginalName())),
             'author_id'    => $author->id,
             'rating'       => 0.0,
-            'discount'     => null,
+            'discount'     => $request->tambah_discount,
             'ebook'        => $request->tersedia_dalam_ebook,
             'pages'        => (int) $validate_data['jumlah_halaman'],
             'release_date' => $validate_data['tanggal_rilis'],
@@ -149,7 +150,7 @@ class BookController extends Controller
             'nama_penulis'       => array('required', 'min:3', 'unique:authors,name,' . $book->authors[0]->id),
             'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn,' . $book->id),
             'judul_buku'         => array('required', 'unique:books,name,' . $book->id),
-            'sinopsis'           => array('required', 'unique:synopses,text,' . $book->id),
+            'sinopsis'           => array('required'),
             'price'              => array('required', 'numeric'),
             'jumlah_barang'      => array('required', 'numeric'),
             'penerbit'           => array('required'),
@@ -169,7 +170,7 @@ class BookController extends Controller
             'image'        => strtolower(str_replace(' ', '_', $validate_data['gambar_sampul_buku']->getClientOriginalName())),
             'author_id'    => $book->authors[0]->id,
             'rating'       => 0.0,
-            'discount'     => null,
+            'discount'     => $request->tambah_discount,
             'ebook'        => $request->tersedia_dalam_ebook,
             'pages'        => (int) $validate_data['jumlah_halaman'],
             'release_date' => $validate_data['tanggal_rilis'],
@@ -200,9 +201,12 @@ class BookController extends Controller
     public function destroy(Book $book)
     {
         $pesan = 'Berhasil menghapus buku ' . $book->name;
-        $book->authors()->delete();
 
-        return redirect()->route('books.index')->with('pesan', $pesan);
+        if ($book->delete()) {
+            Storage::delete('public/storage/books/' . $book->image);
+            unlink(storage_path('app/public/books/' . $book->image));
+            return redirect()->route('home')->with('pesan', $pesan);
+        }
     }
 
     // Search Book

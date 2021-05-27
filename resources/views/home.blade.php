@@ -4,15 +4,17 @@
     @include('layouts/carousel')
 @endsection
 
+
+@section('content')
+
 @if (session('pesan'))
     <div class="alert alert-primary" role="alert">
         <strong>{{ session('pesan') }}</strong>
     </div>
 @endif
 
-@section('content')
-
 <div class="kategori-pilihan px-3">
+
 
     <h3 class="text-righteous p-2">Kategori Pilihan</h3>
 

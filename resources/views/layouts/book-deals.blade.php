@@ -4,12 +4,6 @@
         <a class="show-all" href="#">Lihat Semua</a>
     </div>
 
-    @if(session('pesan'))
-        <div class="alert alert-primary" role="alert">
-            <strong>{{ session('pesan') }}</strong>
-        </div>
-    @endif
-
     @include('layouts.books')
 </div>
 

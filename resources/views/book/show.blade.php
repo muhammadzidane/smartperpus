@@ -30,21 +30,21 @@
     </div>
     <div class="book-show-sinopsis">
         <div class="white-content">
-            <h5>{{ $book->name }}</h5>
             @can('view', $book)
-                <div class="d-flex float-right">
-                    <div class="mr-2">
-                        <form action="{{ route('book.add.discount', array('book' => $book->id)) }}" method="post">
-                            <button type="submit" class="btn btn-primary">Tambah Diskon</button>
-                            @csrf
-                        </form>
-                    </div>
+                <div class="d-flex justify-content-end">
                     <div class="mr-2">
                         <a href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
                     </div>
-                    <div><a href="#" type="button" class="btn btn-danger">Delete</a></div>
+                    <div>
+                        <form action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
+                            <button id="book-show-delete" type="button" class="btn btn-danger">Delete</button>
+                            @method('DELETE')
+                            @csrf
+                        </form>
+                    </div>
                 </div>
             @endcan
+            <h5>{{ $book->name }}</h5>
             <div class="my-1 d-flex">
                 <div>
                     <div>

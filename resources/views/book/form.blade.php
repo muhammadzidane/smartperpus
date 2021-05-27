@@ -59,6 +59,16 @@
         @enderror
     </div>
     <div class="form-group w-50">
+        <label for="tambah_discount">Tambah / Edit Diskon <small class="tred-bold">(Boleh kosong)</small></label>
+        <input type="number" name="tambah_discount" id="tambah_discount"
+          class="form-control-custom w-90 register-form" value="{{ old('tambah_discount') ?? $book->discount ?? '' }}">
+        @error('discount')
+        <span class="tred small" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
+    </div>
+    <div class="form-group w-50">
         <label for="kategori">Kategori</label>
         <select name="kategori" id="kategori" class="form-control-custom w-90">
             @foreach (\App\Models\Category::get() as $category)
