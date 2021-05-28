@@ -16,7 +16,10 @@ Route::get('/test', array(TestController::class, 'test'))->name('test');
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // User
-Route::resource('/user', UserController::class);
+// Route::post('/users/{user}/delete', array(UserController::class, 'destroy'));
+Route::post('/users/{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
+Route::post('/users/{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
+Route::resource('/users', UserController::class);
 
 // Search
 Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
@@ -44,6 +47,7 @@ Route::resource('/books', BookController::class);
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 
+
 // Ajax
 Route::prefix('/ajax/request/')->group(function() {
     Route::post('cek-ongkir', array(AjaxController::class, 'cekOngkir'));
@@ -62,7 +66,6 @@ Route::prefix('/ajax/request/')->group(function() {
     Route::post('sort-books', array(AjaxController::class, 'sortBooks'));
 });
 
-Auth::routes();
 
 Route::fallback(function($wkwk) {
     return 'gk ada halaman ini';
@@ -73,3 +76,5 @@ Route::get('/categories/{category}', array(CategoryController::class, 'index'))-
 
 // Reset Password
 Route::get('/forgot-password', array(ForgotPasswordController::class, 'showLinkRequestForm'))->name('forgot.password');
+
+Auth::routes();

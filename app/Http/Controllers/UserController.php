@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -14,6 +15,14 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', User::class);
+
+        return view('user.list-of-employees',
+            array(
+                'me'    => Auth::user(),
+                'users' => User::withTrashed()->get(),
+            )
+        );
     }
 
     /**
@@ -24,6 +33,7 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize('viewAny', User::class);
+
         return view('auth.register');
     }
 
@@ -57,7 +67,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('user.edit', array('user' => User::find($id)));
     }
 
     /**
@@ -69,7 +79,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        // Ajax
+        return response()->json(array('data' => true));
     }
 
     /**
@@ -78,8 +90,48 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        $user  = User::find($id);
+        $pesan = 'Berhasil menghapus user ' . $user->first_name . ' ' . $user->last_name;
+
+        $user->forceDelete();
+
+        if ($request->userDelete !== null) {
+            return response()->json(array('pesan' => $pesan)); // AJAX
+        }
+        else {
+            return redirect()->back()->with('pesan', $pesan); // non AJAX
+        }
+    }
+
+    public function softDelete($id, Request $request)
+    {
+        $user  = User::find($id);
+        $pesan = 'Berhasil menblokir user ' . $user->first_name . ' ' . $user->last_name;
+
+        $user->delete();
+
+        if ($request->userBlock !== null) {
+            return response()->json(array('pesan' => $pesan)); // AJAX
+        }
+        else {
+            return redirect()->back()->with('pesan', $pesan); // non AJAX
+        }
+    }
+
+    public function restore($id, Request $request) {
+        $user = User::withTrashed()->find($id);
+
+        $pesan = 'Berhasil melepas blokir user ' . $user->first_name . ' ' . $user->last_name;
+
+        $user->restore();
+
+        if ($request->userRestoreBlock !== null) {
+            return response()->json(array('pesan' => $pesan)); // AJAX
+        }
+        else {
+            return redirect()->back()->with('pesan', $pesan); // non AJAX
+        }
     }
 }

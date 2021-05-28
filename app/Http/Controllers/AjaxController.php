@@ -69,7 +69,7 @@ class AjaxController extends Controller
         }
     }
 
-    // Validasi register user
+    // Validasi register
     public function register(Request $request) {
         $validator = Validator::make($request->all(),
             array(
@@ -93,6 +93,9 @@ class AjaxController extends Controller
             );
         }
     }
+
+    // Validasi tambah buku - Book Create
+
 
     // Filter minimal dan maksimal harga
     public function filterSearch(Request $request) {
@@ -292,6 +295,12 @@ class AjaxController extends Controller
 
     public function responsiveFilters() {
         $data = view('book.modal-filters')->render();
+
+        return response()->json(compact('data'));
+    }
+
+    public function checkLoginForm() {
+        $data = 'berhasil request';
 
         return response()->json(compact('data'));
     }

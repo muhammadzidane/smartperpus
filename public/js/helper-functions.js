@@ -1,9 +1,5 @@
 'use strict';
-
-let csrfToken = $('meta[name="csrf-token"]').attr('content');
-
 // Cek apakah form input dengan class yg sama, ada valuenya atau tidak
-
 function checkFormRequiredInputs(classInputs) {
     let flag = [];
 

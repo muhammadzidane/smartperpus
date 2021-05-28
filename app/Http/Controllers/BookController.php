@@ -205,6 +205,7 @@ class BookController extends Controller
         if ($book->delete()) {
             Storage::delete('public/storage/books/' . $book->image);
             unlink(storage_path('app/public/books/' . $book->image));
+
             return redirect()->route('home')->with('pesan', $pesan);
         }
     }
@@ -237,6 +238,10 @@ class BookController extends Controller
 
     public function addDiscount() {
         return 'diskon diambahkan';
+    }
+
+    public function showRegistrationForm() {
+        return view('auth.register');
     }
 }
 

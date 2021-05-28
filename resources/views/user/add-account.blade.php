@@ -99,7 +99,6 @@
     <div class="text-center my-5">
         <h6 class="tred-bold">Smartperpus - {{ date('Y', strtotime('now')) }}</h6>
     </div>
-    <script src="{{ asset('js/register.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>
 </html>

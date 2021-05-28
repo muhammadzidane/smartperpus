@@ -8,7 +8,6 @@
         </form>
     </div>
 </div>
-<script src="{{ asset('js/register.js') }}"></script>
 <script src="{{ asset('js/helper-functions.js') }}"></script>
 @endsection
 

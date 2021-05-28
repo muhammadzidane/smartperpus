@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        // return view('test');
+        return view('test');
         // return 'wkwk';
-        dump(Route::currentRouteName());
+        // dump(Route::currentRouteName());
     }
 
     public function pagination() {

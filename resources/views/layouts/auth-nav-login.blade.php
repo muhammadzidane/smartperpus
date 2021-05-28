@@ -19,7 +19,10 @@
                 </div>
                 @can('viewAny', \App\Models\User::class)
                     <div>
-                        <a class="dropdown-item" href="{{ route('user.create') }}">Tambahkan Akun</a>
+                        <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Akun</a>
+                    </div>
+                    <div>
+                        <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>
                     </div>
                 @endcan
             @endcan

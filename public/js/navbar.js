@@ -17,6 +17,7 @@ $(document).ready(function () {
 
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+
     // Jika /search/books
     // Modul Search Books - First Load
     if (window.location.pathname == '/search/books') {
@@ -648,5 +649,103 @@ $(document).ready(function () {
     $('#book-show-delete').on('click', function(e) {
         e.preventDefault();
         confirm('Apakah anda yakin ingin menghapus semua data pada buku ini ?') ? $(this).parent().trigger('submit') : console.log(false);
+    });
+
+    // User Index - Daftar karyawan
+    $('.user-block').on('click', function(e) {
+
+        let thisButton = $(this);
+
+        e.preventDefault();
+
+        if ($(this).text() == 'Blokir') {
+            if (confirm('Apakah anda yakin ingin menblok user tersebut ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: `/users/${$(this).parent().data('id')}/block`,
+                    data: {
+                        '_token'     : csrfToken,
+                        'userBlock' : true,
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
+                        $(thisButton).text('Lepas Blokir');
+                        $(thisButton).parent().parent().parent().addClass('text-grey tbold');
+                    }
+                });
+            }
+        }
+        else {
+            if (confirm('Apakah anda yakin ingin melepas blok user tersebut ?')) {
+                $.ajax({
+                    type: "POST",
+                    url: `/users/${$(this).parent().data('id')}/restore`,
+                    data: {
+                        '_token'           : csrfToken,
+                        'userRestoreBlock' : true,
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
+                        $(thisButton).text('Blokir');
+                        $(thisButton).parent().parent().parent().removeClass('text-grey tbold');
+                    }
+                });
+            }
+        }
+
+
+    });
+
+    // User Delete / Destroy
+    $('.user-delete').on('click', function(e) {
+
+        e.preventDefault();
+
+        let confirm = confirm('Apakah anda yakin ingin menghapus user tersebut secara permanen ?');
+
+        if (confirm) {
+            $(this).parent().parent().parent().remove();
+
+            $.ajax({
+                type: "POST",
+                url: `/users/${$(this).parent().data('id')}`,
+                data: {
+                    '_token'     : csrfToken,
+                    '_method'    : 'DELETE',
+                    'userDelete' : true,
+                },
+                dataType: "JSON",
+                success: function (response) {
+                    $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
+                }
+            });
+        }
+    });
+
+    // User Edit
+    if ($('.user-edit-inp').val() !== '') {
+        $('#user-edit-submit').addClass('active-login');
+    }
+
+    keyUpToggleFormButton('.user-edit-inp');
+
+    $('#user-edit-submit').on('click', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            url: `/users/${$(this).data('id')}`,
+            data: {
+                '_token'     : csrfToken,
+                '_method'    : 'PATCH',
+                'userUpdate' : true,
+            },
+            dataType: "JSON",
+            success: function (response) {
+                console.log(response)
+            }
+        });
     });
 }); // End of onload Event
