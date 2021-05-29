@@ -700,12 +700,9 @@ $(document).ready(function () {
 
     // User Delete / Destroy
     $('.user-delete').on('click', function(e) {
-
         e.preventDefault();
 
-        let confirm = confirm('Apakah anda yakin ingin menghapus user tersebut secara permanen ?');
-
-        if (confirm) {
+        if (confirm('Apakah anda yakin ingin menghapus user tersebut secara permanen ?')) {
             $(this).parent().parent().parent().remove();
 
             $.ajax({
@@ -738,13 +735,19 @@ $(document).ready(function () {
             type: "POST",
             url: `/users/${$(this).data('id')}`,
             data: {
-                '_token'     : csrfToken,
-                '_method'    : 'PATCH',
+                '_token'    : csrfToken,
+                '_method'   : 'PATCH',
+                'first_name': $('#nama_awal').val(),
+                'last_name' : $('#nama_akhir').val(),
+                'email'     : $('#user-email').val(),
+                'role'      : $('#role').val(),
+
                 'userUpdate' : true,
             },
             dataType: "JSON",
             success: function (response) {
-                console.log(response)
+                $('#pesan').text(response.pesan);
+                $('#pesan').removeClass('d-none');
             }
         });
     });

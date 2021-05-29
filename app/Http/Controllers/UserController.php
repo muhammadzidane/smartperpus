@@ -15,12 +15,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', User::class);
+        // $this->authorize('viewAny', User::class);
 
         return view('user.list-of-employees',
             array(
                 'me'    => Auth::user(),
-                'users' => User::withTrashed()->get(),
+                'users' => User::withTrashed()->where('id', '!=', Auth::id())->get(),
             )
         );
     }
@@ -32,7 +32,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->authorize('viewAny', User::class);
+        // $this->authorize('viewAny', User::class);
 
         return view('auth.register');
     }
@@ -67,6 +67,8 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        // $this->authorize('viewAny', User::class);
+
         return view('user.edit', array('user' => User::find($id)));
     }
 
@@ -79,9 +81,32 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $this->authorize('update', User::class);
 
-        // Ajax
-        return response()->json(array('data' => true));
+        $user = User::find($id);
+
+        $first_name = $user->first_name;
+        $last_name  = $user->last_name;
+
+
+        $user->update(
+            array(
+                'first_name' => $request->first_name ?? $request->nama_awal,
+                'last_name'  => $request->last_name ?? $request->nama_akhir,
+                'email'      => $request->email,
+                'role'       => $request->role,
+            )
+        );
+
+        $pesan = 'Berhasil men-update ' . $first_name . ' ' . $last_name;
+
+        if ($request->userUpdate !== null) { // AJAX
+            return response()->json(array('pesan' => $pesan));
+        }
+        else { // non AJAX
+            return redirect()->back()->with('pesan', $pesan);
+        }
+
     }
 
     /**

@@ -7,10 +7,14 @@
     </div>
 @endif
 
+<div id="pesan" class="alert alert-warning d-none" role="alert">
+    <strong></strong>
+</div>
+
 <div class="register-user py-4">
     <div id="book-create" class="form-register w-75 mx-auto">
     <form id="form-register" multiple="multiple" enctype="multipart/form-data"
-      action="#" method="POST">
+      action="{{ route('users.update', array('user' => $user->id)) }}" method="POST">
       <div class="text-right p-0"><a href="{{ route('home') }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
         <div class="mb-4">
             <h5 class="tred-bold">Edit User</h5>
@@ -45,7 +49,7 @@
             </div>
             <div class="form-group w-100">
                 <label for="email">Email</label>
-                <input type="text" name="email"
+                <input type="text" name="email" id="user-email"
                   class="form-control-custom user-edit-inp"
                   value="{{ $user->email }}" required>
 
@@ -81,6 +85,7 @@
                 </span>
                 @enderror
             </div>
+
         </div>
 
         <div class="form-group mt-4">

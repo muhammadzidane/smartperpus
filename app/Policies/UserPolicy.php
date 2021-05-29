@@ -42,9 +42,9 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        // return in_array($user->role, array(
-        //     'super_admin'
-        // ));
+        return in_array($user->role, array(
+            'super_admin'
+        ));
     }
 
     /**
@@ -56,7 +56,9 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        //
+        return in_array($user->role, array(
+            'super_admin'
+        ));
     }
 
     /**
