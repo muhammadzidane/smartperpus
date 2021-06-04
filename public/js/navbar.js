@@ -721,54 +721,45 @@ $(document).ready(function () {
         }
     });
 
-    // User Edit
-    if ($('.user-edit-inp').val() !== '') {
-        $('#user-edit-submit').addClass('active-login');
-    }
+    // User Edit / Update
 
-    keyUpToggleFormButton('.user-edit-inp');
-
-    $('#user-edit-submit').on('click', function(e) {
+    $('#user-edit-form').on('submit', function(e) {
         e.preventDefault();
-
         $('#click-to-the-top').trigger('click');
+
+        let form        = $(this)[0];
+        let formData    = new FormData(form);
 
         let confirmText = 'Apakah anda yakin ingin men-update user tersebut ?';
 
         if (confirm(confirmText)) {
             $.ajax({
-                type: "POST",
-                url: `/users/${$(this).data('id')}`,
-                data: {
-                    '_token'    : csrfToken,
-                    '_method'   : 'PATCH',
-                    'first_name': $('#nama_awal').val(),
-                    'last_name' : $('#nama_akhir').val(),
-                    'email'     : $('#user-email').val(),
-                    'role'      : $('#role').val(),
-                },
-                dataType: "JSON",
-                success: function (response) {
+                type       : "POST",
+                url        : `/users/${$(this).data('id')}`,
+                data       : formData,
+                processData: false,
+                cache      : false,
+                contentType: false,
+                dataType   : "JSON",
+                success    : function (response) {
                     $('#pesan').removeClass('d-none');
 
-                    if (!response.success) {
-                        let pesan = ``;
+
+                    if (response.status === 'fail') {
+                        let pesan = '';
 
                         for (const key in response.pesan) {
                             if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
                                 const element = response.pesan[key];
 
-                                pesan += `<div>${element[0]
-                                    .replace('First name', 'Nama awal')
-                                    .replace('Last name', 'Nama akhir')}
-                                </div>`;
+                                pesan += `<div><i class="fas fa-exclamation-triangle"></i> ${element[0]}</div>`;
                             }
                         }
 
-                        $('#pesan').html(pesan);
+                        $('#pesan strong').html(pesan);
                     }
-                    else { // Update sukses
-                        $('#pesan').html(response.pesan);
+                    else {
+                        $('#pesan strong').text(response.pesan);
                     }
                 }
             });
@@ -811,58 +802,61 @@ $(document).ready(function () {
 
     keyUpToggleFormButton('.book-edit-inp');
 
-    // $('#book-edit-submit').on('click', function(e) {
-    //     e.preventDefault();
+    $('#book-edit-submit').on('click', function(e) {
+        e.preventDefault();
 
-    //     $('#click-to-the-top').trigger('click');
+        $('#click-to-the-top').trigger('click');
 
-    //     $.ajax({
-    //         type: "POST",
-    //         url: `/books/${$('#book-edit-form').data('id')}`,
-    //         data: {
-    //             '_token'              : csrfToken,
-    //             '_method'             : 'PATCH',
-    //             'isbn'                : $('#isbn').val(),
-    //             'nama_penulis'        : $('#nama_penulis').val(),
-    //             'judul_buku'          : $('#judul_buku').val(),
-    //             'price'               : $('#price').val(),
-    //             'tambah_diskon'       : $('#tambah_diskon').val(),
-    //             'sinopsis'            : $('#sinopsis').val(),
-    //             'jumlah_barang'       : $('#jumlah_barang').val(),
-    //             'kategori'            : $('#kategori').val(),
-    //             'tersedia_dalam_ebook': $('#tersedia_dalam_ebook').val(),
-    //             'jumlah_halaman'      : $('#jumlah_halaman').val(),
-    //             'tanggal_rilis'       : $('#tanggal_rilis').val(),
-    //             'penerbit'            : $('#penerbit').val(),
-    //             'subtitle'            : $('#subtitle').val(),
-    //             'berat'               : $('#berat').val(),
-    //             'lebar'               : $('#lebar').val(),
-    //             'panjang'             : $('#panjang').val(),
-    //             'gambar_sampul_buku'  : $('#gambar_sampul_buku').val(),
-    //         },
-    //         dataType: "JSON",
-    //         success: function (response) {
-    //             $('#pesan').removeClass('d-none');
+        $.ajax({
+            type: "POST",
+            url: `/books/${$('#book-edit-form').data('id')}`,
+            data: {
+                '_token'              : csrfToken,
+                '_method'             : 'PATCH',
+                'isbn'                : $('#isbn').val(),
+                'nama_penulis'        : $('#nama_penulis').val(),
+                'judul_buku'          : $('#judul_buku').val(),
+                'price'               : $('#price').val(),
+                'tambah_diskon'       : $('#tambah_diskon').val(),
+                'sinopsis'            : $('#sinopsis').val(),
+                'jumlah_barang'       : $('#jumlah_barang').val(),
+                'kategori'            : $('#kategori').val(),
+                'tersedia_dalam_ebook': $('#tersedia_dalam_ebook').val(),
+                'jumlah_halaman'      : $('#jumlah_halaman').val(),
+                'tanggal_rilis'       : $('#tanggal_rilis').val(),
+                'penerbit'            : $('#penerbit').val(),
+                'subtitle'            : $('#subtitle').val(),
+                'berat'               : $('#berat').val(),
+                'lebar'               : $('#lebar').val(),
+                'panjang'             : $('#panjang').val(),
+                'gambar_sampul_buku'  : $('#gambar_sampul_buku').val(),
+            },
+            dataType: "JSON",
+            success: function (response) {
+                $('#pesan').removeClass('d-none');
 
-    //             if (!response.status) {
-    //                 let pesan = ``;
+                if (!response.status) {
+                    let pesan = ``;
 
-    //                 for (const key in response.pesan) {
-    //                     if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
-    //                         const element = response.pesan[key];
+                    for (const key in response.pesan) {
+                        if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
+                            const element = response.pesan[key];
 
-    //                          pesan += `<div>${element[0]}</div>`;
-    //                     }
-    //                 }
-    //                 $('#pesan').html(pesan);
-    //             }
-    //             else { // Update sukses
-    //                 $('#pesan').html(response.pesan);
-    //             }
+                             pesan += `<div>${element[0]}</div>`;
+                        }
+                    }
+                    $('#pesan').html(pesan);
+                }
+                else { // Update sukses
+                    $('#pesan').html(response.pesan);
+                }
 
-    //         },
-    //     });
-    // })
+            },
+        });
+    })
+
+    // User Change Password
+
 
     // Book Create
     $('#book-create-submit').on('click', function(e) {

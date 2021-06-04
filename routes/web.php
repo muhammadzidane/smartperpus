@@ -21,6 +21,8 @@ Route::post('/users/{user}/destroyPhotoProfile', array(UserController::class, 'd
 Route::post('/users/add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
 Route::post('/users/{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
 Route::post('/users/{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
+Route::get('/users/{user}/change-password', array(UserController::class, 'showChangePassword'))->name('users.show.change.password');
+Route::post('/users/{user}/change-password', array(UserController::class, 'updateChangePassword'))->name('users.update.change.password');
 Route::resource('/users', UserController::class);
 
 // Search

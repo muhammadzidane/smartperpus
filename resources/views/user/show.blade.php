@@ -124,36 +124,46 @@
                     </div>
                     <div class="d-flex flex-column w-100">
                         <div class="ml-md-5 overflow-auto">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="hd-18">Biodata diri</h4>
+                                </div>
+                                <div><a href="{{ route('users.edit', array('user' => $user->id)) }}" class="btn-none p-0 tred-bold text-decoration-none">Ubah</a></div>
+
+                            </div>
                             <table class="account-table">
                                 <tr>
                                     <th>Nama</th>
                                     <td>{{ $user->first_name . ' ' . $user->last_name }}</td>
-                                    <td><button type="button" class="btn-none p-0 tred-bold">Ubah</button></td>
                                 </tr>
                                 <tr>
                                     <th>Tanggal Lahir</th>
-                                    <td>19 Juli 2000</td>
-                                    <td><button type="button" class="btn-none p-0 tred-bold">Ubah</button></td>
+                                    <td>{{ $user->date_of_birth ?? '-'}}</td>
                                 </tr>
                                 <tr>
                                     <th>Jenis Kelamin</th>
-                                    <td>{{ $user->gender === 'L' ? 'Laki - laki' : 'Perempuan' }}</td>
-                                    <td><button type="button" class="btn-none p-0 tred-bold">Ubah</button></td>
+                                    <td>
+                                        @if ($user->gender === null)
+                                            {{ '-' }}
+                                        @elseif ($user->gender === 'L')
+                                            {{ 'Laki - laki' }}
+                                        @else
+                                            {{ 'Perempuan' }}
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Email</th>
                                     <td>{{ $user->email }}</td>
-                                    <td><button type="button" class="btn-none p-0 tred-bold">Ubah</button></td>
                                 </tr>
                                 <tr>
                                     <th>Nomer Handphone</th>
-                                    <td>{{ $user->phone_number }}</td>
-                                    <td><button type="button" class="btn-none p-0 tred-bold">Ubah</button></td>
+                                    <td>{{ $user->phone_number ?? '-' }}</td>
                                 </tr>
                             </table>
                         </div>
                         <div class="ml-auto mt-auto">
-                            <button class="btn btn-sm btn-outline-yellow">Ubah Password</button>
+                            <a href="{{ route('users.show.change.password', array('user' => $user->id)) }}" class="btn btn-sm btn-outline-yellow">Ubah Password</a>
                         </div>
                     </div>
                 </div>

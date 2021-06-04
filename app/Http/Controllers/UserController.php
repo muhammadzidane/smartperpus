@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use GuzzleHttp\Middleware;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Validator, Storage};
+use Illuminate\Support\Facades\{ Validator, Storage , Auth, Hash};
 
 class UserController extends Controller
 {
@@ -69,11 +68,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $user)
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('view', $user);
 
-        return view('user.edit', array('user' => User::find($id)));
+        return view('user.edit', compact('user'));
     }
 
     /**
@@ -83,32 +82,34 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-
-        $first_name = $user->first_name;
-        $last_name  = $user->last_name;
-        $pesan      = 'Berhasil men-update ' . $first_name . ' ' . $last_name;
-
-        $update = array(
-            'first_name' => $request->first_name ?? $request->nama_awal,
-            'last_name' => $request->last_name ?? $request->nama_akhir,
-            'email' => $request->email,
-            'role' => $request->role,
+        $validation = array(
+            'nama_awal'       => array('required'),
+            'nama_akhir'      => array('required'),
+            'email'           => array('required', 'email:rfc,dns'),
+            'tanggal_lahir'   => array('nullable', 'date'),
+            'jenis_kelamin'   => array('nullable', 'in:L,P'),
+            'nomer_handphone' => array('nullable', 'min:12', 'max:13'),
         );
 
+        $update = array(
+            'first_name'    => $request->first_name ?? $request->nama_awal,
+            'last_name'     => $request->last_name ?? $request->nama_akhir,
+            'email'         => $request->email,
+            'role'          => $request->role ?? $user->role,
+            'date_of_birth' => $request->tanggal_lahir,
+            'gender'        => $request->jenis_kelamin,
+            'phone_number'  => $request->nomer_handphone,
+        );
+
+        $pesan      = 'Berhasil men-update ' . $user->first_name . ' ' . $user->last_name;
+
         if ($request->ajax()) { // AJAX
-            $validator = Validator::make($request->all(),
-                array(
-                    'first_name' => array('required'),
-                    'last_name'  => array('required'),
-                    'email'      => array('email:rfc,dns'),
-                )
-            );
+            $validator = Validator::make($request->all(), $validation);
 
             if ($validator->fails()) {
-                return response()->json(array('pesan' => $validator->getMessageBag()));
+                return response()->json(array('pesan' => $validator->getMessageBag(), 'status' => 'fail'));
             }
             else {
                 $user->update($update);
@@ -118,13 +119,7 @@ class UserController extends Controller
 
         }
         else { // non AJAX
-            $validate_data = $request->validate(
-                array(
-                    'nama_awal'  => array('required'),
-                    'nama_akhir' => array('required'),
-                    'email'      => array('required', 'email:rfc,dns')
-                )
-            );
+            $validate_data = $request->validate($validation);
 
             $user->update($update);
             return redirect()->back()->with('pesan', $pesan);
@@ -232,6 +227,44 @@ class UserController extends Controller
         }
         else {
             return redirect()->back()->with('pesan', $pesan);
+        }
+    }
+
+    public function showChangePassword(User $user) {
+        $this->authorize('view', $user);
+
+        return view('user.change-password', compact(('user')));
+    }
+
+    public function updateChangePassword(Request $request, User $user) {
+        $update = array('password' => Hash::make($request->password_baru));
+
+        $check_password = Hash::check($request->password_lama, $user->password);
+
+        if (!$check_password) {
+            $pesan = 'Password anda salah';
+        }
+        else {
+            $pesan = null;
+        }
+
+        $validator = Validator::make($request->all(),
+            array(
+                'password_lama'        => array('required', 'min:6',),
+                'password_baru'        => array('required', 'min:6'),
+                'ulangi_password_baru' => array('required', 'min:6', 'same:password_baru'),
+            ),
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput()->with('pesan_password', $pesan);
+        }
+        else {
+            $user->update($update);
+
+            $pesan = 'Berhasil mengganti password ' . $user->first_name . ' ' . $user->last_name;
+
+            return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan);
         }
     }
 }

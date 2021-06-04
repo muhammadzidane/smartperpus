@@ -1,4 +1,4 @@
-<div class="text-right p-0"><a href="{{ route('home') }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
+<div class="text-right p-0"><a href="{{ url()->previous() }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
 <div class="mb-4">
     <h5 class="tred-bold">{{ $title }}</h5>
 </div>

@@ -26,7 +26,7 @@ function keyUpToggleFormButton(classInputs) {
     $(classInputs).on('keyup', function () {
         checkFormRequiredInputs($(classInputs)) === true
         ? $('.button-submit').addClass('active-login')
-        : $('.button-submit').removeClass('active-login');;
+        : $('.button-submit').removeClass('active-login');
     });
 }
 
