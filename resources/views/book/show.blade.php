@@ -71,7 +71,7 @@
                 </div>
             </div>
             <h4 class="hd-14">
-                <a class="text-grey" href="{{ route('authors.show', array('author' => $book->authors[0]->id )) }}">{{ $book->authors[0]->name }}</a>
+                <a class="text-grey" href="{{ route('authors.show', array('author' => $book->author->id )) }}">{{ $book->author->name }}</a>
             </h4>
             <div class="mt-3">
                 @if (strlen($book->synopsis->text) > 500)

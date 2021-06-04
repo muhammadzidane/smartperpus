@@ -6,7 +6,7 @@
     <ul class="list-group my-3">
         <li class="list-group-item">{{ $book->name }}</li>
         <li class="list-group-item">{{ $book->categories[0]->name }}</li>
-        <li class="list-group-item">{{ $book->authors[0]->name }}</li>
+        <li class="list-group-item">{{ $book->author->name }}</li>
     </ul>
     @endforeach
 @endisset

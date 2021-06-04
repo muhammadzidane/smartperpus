@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CobaMiddleware
 {
@@ -16,7 +17,6 @@ class CobaMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        dd('coba middleware');
         return $next($request);
     }
 }

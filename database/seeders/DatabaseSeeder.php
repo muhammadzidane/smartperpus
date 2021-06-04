@@ -24,14 +24,10 @@ class DatabaseSeeder extends Seeder
                 // Seeder bagian Books
                 AuthorSeeder::class,
                 BookSeeder::class,
-                AuthorBookSeeder::class,
                 CategorySeeder::class,
                 SynopsisSeeder::class,
                 BookCategorySeeder::class,
                 PrintedBookStockSeeder::class,
-
-                // Seeder bagian Couriers
-
             )
         );
     }

@@ -13,10 +13,12 @@ Route::get('/', array(HomeController::class, 'index'))->name('home');
 
 // TEST
 Route::get('/test', array(TestController::class, 'test'))->name('test');
+Route::post('/test', array(TestController::class, 'testPost'))->name('test.post');
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // User
-// Route::post('/users/{user}/delete', array(UserController::class, 'destroy'));
+Route::post('/users/{user}/destroyPhotoProfile', array(UserController::class, 'destroyPhotoProfile'))->name('users.destroy.photo.profile');
+Route::post('/users/add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
 Route::post('/users/{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
 Route::post('/users/{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
 Route::resource('/users', UserController::class);
@@ -27,14 +29,14 @@ Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('
 Route::resource('/authors', AuthorController::class);
 
 // My Account
-Route::get('/account', array(AccountController::class, 'index'));
-Route::prefix('/account')->group(function() {
-    Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
-    Route::get('/my-reviews', array(AccountController::class, 'myReviews'))->name('my.reviews');
-    Route::get('/waiting-for-payments', array(AccountController::class, 'waitingForPayments'))->name('waiting.for.payment');
-    Route::get('/chat', array(AccountController::class, 'chat'))->name('chat');
-    Route::get('/add-new-account', array(AccountController::class, 'addNewAccount'))->name('add.new.account');
-});
+// Route::get('/account', array(AccountController::class, 'index'));
+// Route::prefix('/account')->group(function() {
+    // Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
+//     Route::get('/my-reviews', array(AccountController::class, 'myReviews'))->name('my.reviews');
+//     Route::get('/waiting-for-payments', array(AccountController::class, 'waitingForPayments'))->name('waiting.for.payment');
+//     Route::get('/chat', array(AccountController::class, 'chat'))->name('chat');
+//     Route::get('/add-new-account', array(AccountController::class, 'addNewAccount'))->name('add.new.account');
+// });
 
 // Books
 Route::get('/books/buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');

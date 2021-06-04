@@ -10,8 +10,8 @@
                             <div class="waiting-for-payment">6</div>
                         </div>
                     </div>
-                    <div class="{{ $transaction_list ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('transaction.lists') }}">Daftar transaksi</a>
+                    <div class="">
+                        <a class="text-decoration-none text-grey" href="#">Daftar transaksi</a>
                     </div>
                 </div>
             </div>
@@ -21,10 +21,10 @@
                 <h4 class="hd-16">Kontak Masuk</h4>
                 <div class="text-grey">
                     <div class="{{ $reviews ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('my.reviews') }}">Ulasan</a>
+                        <a class="text-decoration-none text-grey" href="#">Ulasan</a>
                     </div>
                     <div class="{{ $product_discutions ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('chat') }}" class=" $product_discutions ?? ''  }}">Chat</a>
+                        <a class="text-decoration-none text-grey" href="#" class=" $product_discutions ?? ''  }}">Chat</a>
                     </div>
                 </div>
             </div>

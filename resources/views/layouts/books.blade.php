@@ -16,7 +16,7 @@
             </div>
             <div class="rating-and-author">
                 <div>
-                    <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}"><small>{{ $book->authors[0]->name  }}</small></a>
+                    <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}"><small>{{ $book->author->name  }}</small></a>
                 </div>
                 <div class="d-flex">
                     <div class="rating">

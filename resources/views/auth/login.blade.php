@@ -24,7 +24,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
 </head>
-
+j
 <body>
     <div class="register-user container py-4">
         <div class="form-register">

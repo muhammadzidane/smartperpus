@@ -731,24 +731,155 @@ $(document).ready(function () {
     $('#user-edit-submit').on('click', function(e) {
         e.preventDefault();
 
+        $('#click-to-the-top').trigger('click');
+
+        let confirmText = 'Apakah anda yakin ingin men-update user tersebut ?';
+
+        if (confirm(confirmText)) {
+            $.ajax({
+                type: "POST",
+                url: `/users/${$(this).data('id')}`,
+                data: {
+                    '_token'    : csrfToken,
+                    '_method'   : 'PATCH',
+                    'first_name': $('#nama_awal').val(),
+                    'last_name' : $('#nama_akhir').val(),
+                    'email'     : $('#user-email').val(),
+                    'role'      : $('#role').val(),
+                },
+                dataType: "JSON",
+                success: function (response) {
+                    $('#pesan').removeClass('d-none');
+
+                    if (!response.success) {
+                        let pesan = ``;
+
+                        for (const key in response.pesan) {
+                            if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
+                                const element = response.pesan[key];
+
+                                pesan += `<div>${element[0]
+                                    .replace('First name', 'Nama awal')
+                                    .replace('Last name', 'Nama akhir')}
+                                </div>`;
+                            }
+                        }
+
+                        $('#pesan').html(pesan);
+                    }
+                    else { // Update sukses
+                        $('#pesan').html(response.pesan);
+                    }
+                }
+            });
+        }
+    });
+
+    // User Delete Photo Profile
+    $('#user-destroy-photo-profile-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let confirmText = 'Apakah anda yakin ingin mengapus foto profil anda ?';
+        let userId      = $(this).data('id');
+        let form        = $(this)[0];
+        let formData    = new FormData(form);
+
+        if (confirm(confirmText)) {
+            $.ajax({
+                type       : "POST",
+                url        : `/users/${userId}/destroyPhotoProfile`,
+                enctype    : 'multipart/form-data',
+                data       : formData,
+                processData: false,
+                cache      : false,
+                contentType: false,
+                dataType   : "JSON",
+                success    : function (response) {
+                    console.log(response);
+                },
+                error    : function(errors) {
+                    console.log(errors);
+                }
+            });
+        }
+    });
+
+    // Book Edit - Stuck
+    if ($('.book-edit-inp').val() !== '') {
+        $('#book-edit-submit').addClass('active-login');
+    }
+
+    keyUpToggleFormButton('.book-edit-inp');
+
+    // $('#book-edit-submit').on('click', function(e) {
+    //     e.preventDefault();
+
+    //     $('#click-to-the-top').trigger('click');
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: `/books/${$('#book-edit-form').data('id')}`,
+    //         data: {
+    //             '_token'              : csrfToken,
+    //             '_method'             : 'PATCH',
+    //             'isbn'                : $('#isbn').val(),
+    //             'nama_penulis'        : $('#nama_penulis').val(),
+    //             'judul_buku'          : $('#judul_buku').val(),
+    //             'price'               : $('#price').val(),
+    //             'tambah_diskon'       : $('#tambah_diskon').val(),
+    //             'sinopsis'            : $('#sinopsis').val(),
+    //             'jumlah_barang'       : $('#jumlah_barang').val(),
+    //             'kategori'            : $('#kategori').val(),
+    //             'tersedia_dalam_ebook': $('#tersedia_dalam_ebook').val(),
+    //             'jumlah_halaman'      : $('#jumlah_halaman').val(),
+    //             'tanggal_rilis'       : $('#tanggal_rilis').val(),
+    //             'penerbit'            : $('#penerbit').val(),
+    //             'subtitle'            : $('#subtitle').val(),
+    //             'berat'               : $('#berat').val(),
+    //             'lebar'               : $('#lebar').val(),
+    //             'panjang'             : $('#panjang').val(),
+    //             'gambar_sampul_buku'  : $('#gambar_sampul_buku').val(),
+    //         },
+    //         dataType: "JSON",
+    //         success: function (response) {
+    //             $('#pesan').removeClass('d-none');
+
+    //             if (!response.status) {
+    //                 let pesan = ``;
+
+    //                 for (const key in response.pesan) {
+    //                     if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
+    //                         const element = response.pesan[key];
+
+    //                          pesan += `<div>${element[0]}</div>`;
+    //                     }
+    //                 }
+    //                 $('#pesan').html(pesan);
+    //             }
+    //             else { // Update sukses
+    //                 $('#pesan').html(response.pesan);
+    //             }
+
+    //         },
+    //     });
+    // })
+
+    // Book Create
+    $('#book-create-submit').on('click', function(e) {
+        e.preventDefault();
+
         $.ajax({
             type: "POST",
-            url: `/users/${$(this).data('id')}`,
+            url: `/books`,
             data: {
-                '_token'    : csrfToken,
-                '_method'   : 'PATCH',
-                'first_name': $('#nama_awal').val(),
-                'last_name' : $('#nama_akhir').val(),
-                'email'     : $('#user-email').val(),
-                'role'      : $('#role').val(),
-
-                'userUpdate' : true,
+                '_token'            : csrfToken,
+                'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
             },
             dataType: "JSON",
             success: function (response) {
-                $('#pesan').text(response.pesan);
-                $('#pesan').removeClass('d-none');
+                console.log(response);
             }
         });
     });
+
 }); // End of onload Event

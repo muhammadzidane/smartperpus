@@ -1313,14 +1313,16 @@ footer {
 }
 
 /* My Account */
-.change-profile-img {
-    width: 21%;
-    margin: 0 auto;
-}
-
-
 .account-table {
     width: 100%;
+}
+
+.change-profile > div:first-child {
+    width: 23%;
+}
+
+.change-profile > div:last-child {
+    width: 77%;
 }
 
 .account-table tr td {
@@ -1341,10 +1343,12 @@ footer {
 .account-table div div:last-child { margin-left: auto; }
 
 .profile-img {
-    width: 100%;
-    border-radius: 100%;
-}
+    object-fit: cover;
+    border-radius: 50%;
+    height: 170px;
+    width: 170px;
 
+}
 .btn-sm {
     padding: 5px 0;
     background-color: transparent;
@@ -1352,10 +1356,16 @@ footer {
 
 .btn-sm-0 { padding: 2px 12px; }
 
-.btn-outline-yellow {
+.btn-outline-yellow, .btn-outline-red {
     padding: 5px 10px;
     color: #6E7C7C;
+}
+.btn-outline-yellow {
     border-color: #fff600;
+}
+
+.btn-outline-red {
+    border-color: #ea5455;
 }
 
 .change-password { margin-top: 22px; }
@@ -1488,10 +1498,6 @@ footer {
     .form-register { padding: 12px; }
 
     /* My Account */
-    .change-profile-img {
-        width: 50%;
-    }
-
     #add-account-photo {
         width: 180% !important;
         position: relative;

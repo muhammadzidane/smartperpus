@@ -12,7 +12,7 @@ class Author extends Model
     protected $guarded = array();
 
     public function books() {
-        return $this->belongsToMany('App\Models\Book')->withTimestamps();
+        return $this->hasOne('App\Models\Book');
     }
 
     // Mutators

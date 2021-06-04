@@ -233,7 +233,7 @@
 
             @foreach($book->authors as $author)
             <td>
-                <a href="{{ route('authors.show', array('author' => $book->authors[0]->id)) }}">{{ $author->name }}</a>
+                <a href="{{ route('authors.show', array('author' => $book->author->id)) }}">{{ $author->name }}</a>
                     </td>
                 @endforeach
 

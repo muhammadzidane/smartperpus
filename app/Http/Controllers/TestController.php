@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        return view('test');
-        // return 'wkwk';
-        // dump(Route::currentRouteName());
+        // return view('test');
+
+        $key = array('njir' => 1, 'wkwk' => 2);
+        $arr_key = array_keys($key);
+
+        $new_array = array_push($arr_key);
+        dump($new_array);
+    }
+
+    public function testPost() {
+        return 'wkwkwkwkw123';
     }
 
     public function pagination() {

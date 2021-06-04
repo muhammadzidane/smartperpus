@@ -13,8 +13,8 @@ class Book extends Model
     protected $guarded = array();
 
     // Relasi antar tabel
-    public function authors() {
-        return $this->belongsToMany('App\Models\Author')->withTimestamps();
+    public function author() {
+        return $this->belongsTo('App\Models\Author');
     }
 
     public function categories() {

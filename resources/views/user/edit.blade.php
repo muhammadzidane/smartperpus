@@ -20,8 +20,6 @@
             <h5 class="tred-bold">Edit User</h5>
         </div>
 
-        <div id="error-register"></div>
-
         <div class="d-flex flex-wrap">
             <div class="form-group w-100">
                 <label for="nama_awal">Nama Awal</label>

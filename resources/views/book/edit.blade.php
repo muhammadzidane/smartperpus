@@ -7,17 +7,24 @@
     </div>
 @endif
 
+<div id="pesan" class="alert alert-warning d-none" role="alert">
+    <strong></strong>
+</div>
+
 <div class="register-user py-4">
-
-
     <div id="book-create" class="form-register w-75 mx-auto">
-    <form id="form-register" multiple="multiple" enctype="multipart/form-data"
+    <form id="book-edit-form" data-id="{{ $book->id }}" enctype="multipart/form-data"
       action="{{ route('books.update', array('book' => $book->id)) }}" method="POST">
-        @include('book.form', array( 'title' => 'Edit Buku', 'button_text' => 'Edit'))
+        @include('book.form',
+            array(
+                'title'       => 'Edit Buku',
+                'button_id'   => 'book-edit-submit',
+                'button_text' => 'Edit',
+                )
+        )
         @method('PATCH')
         @csrf
     </form>
 </div>
-<script src="{{ asset('js/helper-functions.js') }}"></script>
 
 @endsection

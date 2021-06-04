@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\{Validator, Storage};
 
 class UserController extends Controller
 {
@@ -15,9 +17,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
 
-        return view('user.list-of-employees',
+        return view('user.index',
             array(
                 'me'    => Auth::user(),
                 'users' => User::withTrashed()->where('id', '!=', Auth::id())->get(),
@@ -32,7 +34,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        // $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
 
         return view('auth.register');
     }
@@ -45,7 +47,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -54,9 +56,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+        $this->authorize('view', $user);
+
+        return view('user.show', compact('user'));
     }
 
     /**
@@ -67,7 +71,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        // $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', User::class);
 
         return view('user.edit', array('user' => User::find($id)));
     }
@@ -81,29 +85,48 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // $this->authorize('update', User::class);
-
         $user = User::find($id);
 
         $first_name = $user->first_name;
         $last_name  = $user->last_name;
+        $pesan      = 'Berhasil men-update ' . $first_name . ' ' . $last_name;
 
-
-        $user->update(
-            array(
-                'first_name' => $request->first_name ?? $request->nama_awal,
-                'last_name'  => $request->last_name ?? $request->nama_akhir,
-                'email'      => $request->email,
-                'role'       => $request->role,
-            )
+        $update = array(
+            'first_name' => $request->first_name ?? $request->nama_awal,
+            'last_name' => $request->last_name ?? $request->nama_akhir,
+            'email' => $request->email,
+            'role' => $request->role,
         );
 
-        $pesan = 'Berhasil men-update ' . $first_name . ' ' . $last_name;
+        if ($request->ajax()) { // AJAX
+            $validator = Validator::make($request->all(),
+                array(
+                    'first_name' => array('required'),
+                    'last_name'  => array('required'),
+                    'email'      => array('email:rfc,dns'),
+                )
+            );
 
-        if ($request->userUpdate !== null) { // AJAX
-            return response()->json(array('pesan' => $pesan));
+            if ($validator->fails()) {
+                return response()->json(array('pesan' => $validator->getMessageBag()));
+            }
+            else {
+                $user->update($update);
+
+                return response()->json(array('pesan' => $pesan, 'success' => true));
+            }
+
         }
         else { // non AJAX
+            $validate_data = $request->validate(
+                array(
+                    'nama_awal'  => array('required'),
+                    'nama_akhir' => array('required'),
+                    'email'      => array('required', 'email:rfc,dns')
+                )
+            );
+
+            $user->update($update);
             return redirect()->back()->with('pesan', $pesan);
         }
 
@@ -157,6 +180,58 @@ class UserController extends Controller
         }
         else {
             return redirect()->back()->with('pesan', $pesan); // non AJAX
+        }
+    }
+
+    public function photoUpdateOrInsert(Request $request) {
+        $request->validate(
+            array(
+                'foto_profile' => array('nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2000'),
+            )
+        );
+
+        $photo_profile = $request->foto_profile->getClientOriginalName();
+
+        $user = Auth::user();
+
+        if ($user->profile_image !== null) {
+            Storage::delete($user->profile_image);
+            unlink(storage_path('app\public\user\profile\\' . $user->profile_image));
+
+            $pesan = 'Berhasil men-edit foto profil ' . $user->first_name . ' ' . $user->last_name;
+        }
+        else {
+            $pesan = 'Berhasil menambah foto profil ' . $user->first_name . ' ' . $user->last_name;
+        }
+
+        User::find(Auth::id())->update(array('profile_image' => $photo_profile));
+
+        if (!Storage::exists('public/users/profile/' . $photo_profile)) {
+            $request->foto_profile->storeAs('public/user/profile',
+              str_replace(' ', '_', strtolower($photo_profile)));
+
+        }
+
+        return redirect()->back()->with('pesan', $pesan);
+    }
+
+    public function destroyPhotoProfile(Request $request, User $user) {
+        $update = array(
+            'profile_image' => null
+        );
+
+        $pesan = 'Berhasil menghapus foto profil ' . $user->first_name . ' ' . $user->last_name;
+
+        Storage::delete($user->profile_image);
+        unlink(storage_path('app\public\user\profile\\' . $user->profile_image));
+
+        $user->update($update);
+
+        if ($request->ajax()) {
+            return response()->json(array('pesan' => $pesan));
+        }
+        else {
+            return redirect()->back()->with('pesan', $pesan);
         }
     }
 }

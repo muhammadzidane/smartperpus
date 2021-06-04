@@ -27,7 +27,7 @@
                 @endcan
             @endcan
             <div>
-                <a class="dropdown-item" href="#"">Akun Saya</a>
+                <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
             </div>
             <div>
                 <a class="dropdown-item" href="#"">Daftar Wishlist</a>
