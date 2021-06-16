@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\{ User, District, City, Province };
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{ Validator, Storage , Auth, Hash};
@@ -239,32 +239,45 @@ class UserController extends Controller
     public function updateChangePassword(Request $request, User $user) {
         $update = array('password' => Hash::make($request->password_baru));
 
-        $check_password = Hash::check($request->password_lama, $user->password);
-
-        if (!$check_password) {
-            $pesan = 'Password anda salah';
-        }
-        else {
-            $pesan = null;
-        }
-
         $validator = Validator::make($request->all(),
             array(
-                'password_lama'        => array('required', 'min:6',),
+                'password_lama'        => array('required', function ($attribute, $value, $fail) use ($user) {
+                    if (!Hash::check($value, $user->password)) {
+                        return $fail(__('Password lama anda salah.'));
+                    }
+                }
+                ),
                 'password_baru'        => array('required', 'min:6'),
                 'ulangi_password_baru' => array('required', 'min:6', 'same:password_baru'),
             ),
         );
 
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput()->with('pesan_password', $pesan);
+        $pesan_berhasil = 'Berhasil mengganti password ' . $user->first_name . ' ' . $user->last_name;
+
+        if ($request->ajax()) {
+            if ($validator->fails()) {
+                return response()->json(array('pesan' => $validator->errors(), 'status' => 'fail'));
+            }
+            else {
+                $user->update($update);
+
+                return response()->json(array('pesan' => $pesan_berhasil, 'status' => 'successful'));
+            }
         }
         else {
-            $user->update($update);
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput()->with('pesan_password', $pesan_berhasil);
+            }
+            else {
+                $user->update($update);
 
-            $pesan = 'Berhasil mengganti password ' . $user->first_name . ' ' . $user->last_name;
-
-            return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan);
+                return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan_berhasil);
+            }
         }
+
+    }
+
+    public function changeAddress(Request $request, User $user) {
+
     }
 }

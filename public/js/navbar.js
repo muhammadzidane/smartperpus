@@ -14,9 +14,7 @@ function toggle(selectorTarget) {
 }
 
 $(document).ready(function () {
-
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
-
 
     // Jika /search/books
     // Modul Search Books - First Load
@@ -154,7 +152,7 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     let errorLogin  = '<div class="error tred small mb-2" role="alert">';
-                        errorLogin += '<strong>' + response.message + '</strong>';
+                        errorLogin += `<strong>${response.message}</strong>`;
                         errorLogin += '</div>';
 
                     if (!response.success) {
@@ -326,7 +324,6 @@ $(document).ready(function () {
                 $('.click-to-the-top').trigger('click');
                 $('#book-search').html(response.books);
                 ajaxFilterDataBooks();
-                console.log(pageNumber);
             }
         });
 
@@ -377,6 +374,7 @@ $(document).ready(function () {
         window.history.pushState({}, null,
             `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${parseInt(activePage.text()) + 1}`
         );
+
     });
 
     $('#pagination-prev').on('click', function() {
@@ -445,6 +443,63 @@ $(document).ready(function () {
         checkShippingInsurance();
     });
 
+    // Book Buy - Event Change Provinsi
+    $('.provinsi').on('change', function() {
+        let form        = $(this).parents('form')[0];
+        let formData    = new FormData(form);
+
+        $.ajax({
+            type       : "POST",
+            url        : "/ajax/request/change-province",
+            data       : formData,
+            dataType   : "JSON",
+            processData: false,
+            cache      : false,
+            contentType: false,
+            success    : function (response) {
+                let citiesAndDistrictsHtml = '';
+                let districtsHtml          = '';
+
+                response.cities.forEach(city => {
+                    citiesAndDistrictsHtml += `<option value="${city.id}">${city.name}</option>`;
+                });
+
+                $('.kota-atau-kabupaten').html(citiesAndDistrictsHtml);
+
+                response.districts.forEach(district => {
+                    districtsHtml += `<option value="${district.id}">${district.name}</option>`;
+                });
+
+                $('.kecamatan').html(districtsHtml);
+            },
+        });
+    })
+
+    // Book Buy - Event Change City
+    $('.kota-atau-kabupaten').on('change', function() {
+        let form        = $(this).parents('form')[0];
+        let formData    = new FormData(form);
+
+        $.ajax({
+            type       : "POST",
+            url        : "/ajax/request/change-city",
+            data       : formData,
+            dataType   : "JSON",
+            processData: false,
+            cache      : false,
+            contentType: false,
+            success    : function (response) {
+                let districtsHtml = '';
+
+                response.districts.forEach(district => {
+                    districtsHtml += `<option value="${district.id}">${district.name}</option>`;
+                });
+
+                $('.kecamatan').html(districtsHtml);
+            },
+        });
+
+    })
 
     // Tulis Catatan
     $('#btn-write-notes').on('click', function() {
@@ -455,6 +510,10 @@ $(document).ready(function () {
             $('#btn-write-notes').show();
             $('#input-write-notes').addClass('d-none');
         });
+    });
+
+    $('#write-notes-cancel').on('click', function() {
+        $('#write-note').val('');
     });
 
     // Cek API Rajaongkir
@@ -500,7 +559,7 @@ $(document).ready(function () {
                     let courierChoiseHtml  = `<div>`;
                         courierChoiseHtml += `<div class="courier-choise-service">`;
                         courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
-                        courierChoiseHtml += `<span class="tbold">${description}</span>`;
+                        courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
                         courierChoiseHtml += `<span> - </span>`;
                         courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
                         courierChoiseHtml += `<div class="ml-4">`;
@@ -528,28 +587,44 @@ $(document).ready(function () {
                     let shippingInsurance        = $('#shipping-insurance').is(':checked') ? 1000 : 0;
                     let courierServicePriceHtml  = `<div class="d-flex justify-content-between">`;
                         courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
-                        courierServicePriceHtml += `<div id="shipping-cost">${shippingCost}</div>`;
+                        courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
                         courierServicePriceHtml += `</div>`;
 
-                        if ($('#shipping-cost').length <= 0) {
-                            $('#book-payment').append(courierServicePriceHtml);
-                        }
-                        else {
-                            $('#shipping-cost').text(shippingCost);
-                        }
+                    if ($('#shipping-cost').length <= 0) {
+                        $('#book-payment').append(courierServicePriceHtml);
+                    }
+                    else {
+                        $('#shipping-cost').text(shippingCost);
+                    }
 
-                        let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
+                    let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
 
-                        $('#total-payment').attr('data-total-payment', totalPayment);
-                        $('#total-payment').text(rupiahFormat(totalPayment));
+                    $('#total-payment').attr('data-total-payment', totalPayment);
+                    $('#total-payment').text(rupiahFormat(totalPayment));
+                    $('#book-total-payment').val(totalPayment);
                 });
             },
         });
 
     });
 
-    $('#payment-button').on('click', function(e) {
+    $('#book-payment-form').on('submit', function(e) {
+        let courierService = $('input[name=courier-service]:checked').val();
+        let paymentMethod  = $('input[name=payment-method]:checked').val();
 
+        if (courierService === undefined || paymentMethod === undefined) {
+            e.preventDefault();
+
+            $('#click-to-the-top').trigger('click');
+            $('#pesan').removeClass('d-none');
+            $('#pesan strong').text('Pilihan Kurir / Metode Pembayaran wajib di pilih');
+        }
+        else {
+            $('#book-courier-service-head').val($('#courier-choise-name').text());
+            $('#book-courier-service').val($('.inp-courier-choise-service:checked').next().text());
+            $('#book-payment-method').val($('input[name=payment-method]').val());
+            $('#book-note').val($('#write-note').val());
+        }
     });
 
     // Book Payment
@@ -572,7 +647,7 @@ $(document).ready(function () {
 
     }, 1000);
 
-    let paymentLimitText = `${myDays[date.getDay() + 1] ?? myDays[0]}, ${date.getDate()} ${months[date.getMonth() - 1]} ${date.getFullYear()}`;
+    let paymentLimitText = `${myDays[date.getDay() + 1] ?? myDays[0]}, ${date.getDate() + 1} ${months[date.getMonth()]} ${date.getFullYear()}`;
 
     $('#payment-limit-date').text(paymentLimitText);
 
@@ -722,7 +797,6 @@ $(document).ready(function () {
     });
 
     // User Edit / Update
-
     $('#user-edit-form').on('submit', function(e) {
         e.preventDefault();
         $('#click-to-the-top').trigger('click');
@@ -856,24 +930,128 @@ $(document).ready(function () {
     })
 
     // User Change Password
-
-
-    // Book Create
-    $('#book-create-submit').on('click', function(e) {
+    $('#user-change-password-form').on('submit', function(e) {
         e.preventDefault();
 
+        let userId      = $(this).data('id');
+        let form        = $(this)[0];
+        let formData    = new FormData(form);
+
         $.ajax({
-            type: "POST",
-            url: `/books`,
-            data: {
-                '_token'            : csrfToken,
-                'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
-            },
+            type: 'POST',
+            url: `/users/${userId}/change-password`,
+            data: formData,
+            processData: false,
+            cache      : false,
+            contentType: false,
             dataType: "JSON",
             success: function (response) {
-                console.log(response);
+                $('#click-to-the-top').trigger('click');
+
+                if (response.status === 'fail') {
+                    let pesan = '';
+
+                    $('#pesan').removeClass('d-none');
+
+                    for (const key in response.pesan) {
+                        if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
+                            const element = response.pesan[key];
+
+                            pesan += `<div><i class="fas fa-exclamation-triangle"></i> ${element[0]}</div>`;
+                        }
+                    }
+
+                    $('#pesan strong').html(pesan);
+                }
+                else {
+                    sessionStorage.setItem('pesan', 'Berhasil mengubah password');
+                    history.back();
+                }
+
             }
         });
     });
+
+
+    if (sessionStorage.getItem('pesan') !== null) {
+        $('#pesan strong').text(sessionStorage.getItem('pesan'));
+        $('#pesan').removeClass('d-none');
+    }
+
+    sessionStorage.clear();
+
+    // Book Create
+    // $('#book-create-submit').on('click', function(e) {
+    //     e.preventDefault();
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: `/books`,
+    //         data: {
+    //             '_token'            : csrfToken,
+    //             'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
+    //         },
+    //         dataType: "JSON",
+    //         success: function (response) {
+    //             console.log(response);
+    //         }
+    //     });
+    // });
+
+    // Customer Create
+    $('#customer-store').on('submit', function(e) {
+        e.preventDefault();
+
+        let alamatWajibDisi = $('#customer-store-empty').length;
+
+        $('.validate-error').text('');
+
+        if (alamatWajibDisi == 1) {
+            $('#customer-store-empty').remove();
+        }
+
+        ajaxForm('POST', '#customer-store', `/customers`, function(response) {
+
+            if (response.status) {
+                let dataCustomers = $('#data-customers').children().length;
+
+                $('.close').trigger('click');
+                $('#data-customers').append(response.dataCustomer);
+
+                if (dataCustomers == 5) {
+                    $('#customer-store-modal-trigger').hide();
+                    scrollToElement($('.data-customer').last(), 500);
+                }
+                else {
+                    scrollToElement($('.data-customer').last(), 500);
+                }
+
+                customerDestroy();
+                customerUpdate();
+            }
+            else {
+                for (const key in response.errorMsg) {
+                    if (response.errorMsg.hasOwnProperty.call(response.errorMsg, key)) {
+                        const element = response.errorMsg[key];
+
+                        $('.error_' + key).text(element[0]);
+                    }
+                }
+            }
+
+        });
+    });
+
+    $('#customer-store-modal-trigger').on('click', function() {
+        $('#customer-store').each(function(){
+            $(this).find(':input[type=text]').val('');
+            $(this).find(':input[type=number]').val('');
+        });
+    });
+    // Customer Update
+    customerUpdate();
+
+    // Customer Destroy
+    customerDestroy();
 
 }); // End of onload Event

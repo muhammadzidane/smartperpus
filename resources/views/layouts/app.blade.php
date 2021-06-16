@@ -157,7 +157,7 @@
                                             <img class="w-100" src="{{ asset('img/transfer/bri-edit.png') }}">
                                         </div>
                                         <div class="mr-3">
-                                            <img class="w-100" src="{{ asset('img/transfer/gopay-edit.png') }}">
+                                            <img class="w-100" src="{{ asset('img/transfer/bri-edit.png') }}">
                                         </div>
                                         <div>
                                             <img class="w-100" src="{{ asset('img/transfer/bni-edit.png') }}">
@@ -173,10 +173,10 @@
                                             <img class="w-100" src="{{ asset('img/couriers/jne.jpg') }}">
                                         </div>
                                         <div class="mr-3">
-                                            <img class="w-100" src="{{ asset('img/transfer/gopay-edit.png') }}">
+                                            <img class="w-100" src="{{ asset('img/couriers/pos.png') }}">
                                         </div>
                                         <div>
-                                            <img class="w-100" src="{{ asset('img/transfer/bni-edit.png') }}">
+                                            <img class="w-100" src="{{ asset('img/couriers/tiki.jpg') }}">
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +232,7 @@
                                 <div class="d-flex">
                                     <input type="password" name="password" id="password" class="form-control-custom login-form"
                                      autocomplete="off" required>
-                                    <button id="toggle-password" type="button" class="show-password">
+                                    <button id="toggle-password" type="button" class="show-password btn-none bg-transparent">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>

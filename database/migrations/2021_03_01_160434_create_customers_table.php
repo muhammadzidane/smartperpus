@@ -15,10 +15,13 @@ class CreateCustomersTable extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('adress');
-            $table->dateTime('birth_date');
-            $table->string('phone_number', 13)->unique();
+            $table->string('address');
+            $table->string('district');
+            $table->string('city');
+            $table->string('province');
+            $table->string('phone_number', 13);
             $table->timestamps();
         });
     }

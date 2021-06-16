@@ -18,11 +18,17 @@
     </div>
 </div>
 
+<!-- Error Laravel -->
 @if (session('pesan'))
     <div class="alert alert-primary mt-4" role="alert">
         <strong>{{ session('pesan') }}</strong>
     </div>
 @endif
+
+<!-- Error JS -->
+<div id="pesan" class="d-none alert alert-primary mt-4" role="alert">
+    <strong></strong>
+</div>
 
 <div class="row d-md-flex mt-md-4">
     <div class="col-lg-9 d-lg-flex">

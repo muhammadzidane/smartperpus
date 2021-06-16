@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, Author, Category, Synopsis};
+use App\Models\{ Book, Author, Category, BookPurchase };
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Storage, Validator};
+use Illuminate\Support\Facades\{ Storage, Validator, Auth };
 
 class BookController extends Controller
 {
@@ -126,7 +126,6 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        Auth::check();
         return view('book.show', compact('book'));
     }
 
@@ -282,14 +281,11 @@ class BookController extends Controller
 
     // Beli buku
     public function booksBuy($book) {
-        $book = Book::firstWhere('name', $book);
+        $book         = Book::firstWhere('name', $book);
+        $user         = Auth::user();
+        $book_version = $book->ebook ? 'ebook' : 'hard_cover';
 
-        return view('book/buy', compact(('book')));
-    }
-
-    // Pembelian Buku
-    public function booksPayment() {
-        return view('book/book-payment');
+        return view('book/buy', compact('book', 'user', 'book_version'));
     }
 
     // Keranjang Belanja
@@ -307,6 +303,25 @@ class BookController extends Controller
 
     public function showRegistrationForm() {
         return view('auth.register');
+    }
+
+    // Book Buy
+    public function bookPayment(Request $request, Book $book) {
+
+        dump($book);
+        dump($request->all());
+        // $book->bookPurchases()->create(
+            // array(
+                // 'user_id' => Auth::id(),
+                // 'book_version' =>
+            // )
+        // );
+        // return view('book.book-payment', compact('request', 'book'));
+    }
+
+    // Menunggu Pembayaran
+    public function waitingForPayments() {
+        return view('user.waiting-for-payments');
     }
 }
 

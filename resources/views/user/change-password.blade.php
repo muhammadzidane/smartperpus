@@ -7,7 +7,7 @@
     </div>
 @endif
 
-<div id="pesan" class="alert alert-warning d-none tred-bold" role="alert">
+<div id="pesan" class="alert d-none alert-warning tred-bold" role="alert">
     <strong></strong>
 </div>
 
@@ -31,12 +31,6 @@
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
-
-                @if(session('pesan_password'))
-                    <span class="tred small" role="alert">
-                        <strong>{{ session('pesan_password') }}</strong>
-                    </span>
-                @endif
             </div>
             <div class="form-group w-100">
                 <label for="password_baru">Password Baru</label>

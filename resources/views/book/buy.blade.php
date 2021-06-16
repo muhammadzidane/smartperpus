@@ -1,53 +1,75 @@
 @extends('layouts.app')
 @section('content')
 
-
-
 <div class="home-and-anymore-show">
     <a class="tsmall" href="#">Home</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">Categories</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">{{ $book->categories[0]->name }}</a><i class="fas fa-caret-right tsmall"></i>
     <span class="tsmall tred-bold">{{ $book->name }}</>
 </div>
+
+@if (session('pesan'))
+    <div class="alert mt-4 alert-primary" role="alert">
+        <strong>{{ session('pesan') }}</strong>
+    </div>
+@endif
+
+<div id="pesan" class="mt-4 d-none alert alert-warning" role="alert">
+    <strong></strong>
+</div>
+
 <div id="buying-content" class="d-flex">
     <div class="purchase-records">
         <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold">
             <div class="white-content-header">
-                <h4 class="hd-18">{{ $book->name }}</h4>
+                <h4 class="hd-14">{{ $book->name }}</h4>
             </div>
             <div class="container mx-3">
-            <div>
+            <div class="book-buy-desc d-sm-flex">
+                <div class="mw-17 mr-sm-4">
+                    <div>
+                        <img class="w-100" src="{{ asset('storage/books/' . $book->image) }}">
+                    </div>
+                </div>
                 <div class="d-flex flex-wrap">
-                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                    <div class="text-righteous mr-5">
                         <div>Harga</div>
                         <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
                     </div>
-                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                    <div class="text-righteous mr-5">
                         <div>Jumlah</div>
                         <div class="d-flex">
                             <div>
                                 <span id="book-needed">1</span>
                                 <span>/</span>
-                                <span id="total-book" data-total-book="{{ $book->printedStock->amount }}">{{ $book->printedStock->amount - 1 }}</span>
+                                <span id="total-book"
+                                    data-total-book="{{ $book->printedStock->amount }}">{{ $book->printedStock->amount - 1 }}</span>
                             </div>
                             <div class="ml-2">
-                                <button id="plus-one-book" class="btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
-                                <button id="sub-one-book" class="btn-none p-0"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+                                <button id="plus-one-book" class="btn-none p-0"><i class="fa fa-plus-circle"
+                                  aria-hidden="true"></i></button>
+                                <button id="sub-one-book" class="btn-none p-0"><i class="fa fa-minus-circle"
+                                aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                    <div class="text-righteous mr-5">
                         <div>Berat Barang</div>
                         <div id="weight" data-weight="300">300 gram</div>
                     </div>
-                    <div class="text-righteous w-maxc flex-grow-1 mb-2 mr-2">
+                    <div class="text-righteous mr-5">
                         <div>Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
                         <div>
                             <label class="d-flex c-p">
-                                <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance" id="shipping-insurance">
+                                <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance"
+                                  id="shipping-insurance">
                                 <div>Rp1.000</div>
                             </label>
                         </div>
+                    </div>
+                    <div class="text-righteous mr-5">
+                        <div>Versi Buku</div>
+                        <div class="tred-bold">{{ $book_version === 'ebook' ? 'E-Book' : 'Buku Cetak' }}</div>
                     </div>
                 </div>
             </div>
@@ -55,7 +77,7 @@
                     <button id="btn-write-notes" class="btn-none"><i class="fas fa-pencil-alt"></i> Tulis Catatan</button>
                     <div id="input-write-notes" class="d-none">
                         <div class="d-flex">
-                            <input type="text" class="form-control w-25" name="write_note_val" id="write-note-val" aria-describedby="helpId"
+                            <input type="text" class="form-control w-25" name="write_note" id="write-note" aria-describedby="helpId"
                               placeholder="Contoh : Ebook, Buku Cetak">
                             <div class="d-flex align-items-center ml-2">
                                 <button id="write-notes-cancel" class="btn-none tred-bold">Batal</button>
@@ -67,40 +89,133 @@
         </div>
         <div class="white-content px-0 pt-0 pb-4 m-0 mt-5 borbot-gray-bold">
             <div class="white-content-header-2">
-                <h4 class="hd-18">Alamat Pengiriman</h4>
+                <div class="d-flex justify-content-between w-100">
+                    <div>
+                        <h4 class="hd-18">Alamat Pengiriman</h4>
+                    </div>
+                    <div>
+                        @if (count($user->customer) < 5)
+                            <button id="customer-store-modal-trigger" class="btn-none tred-bold" data-toggle="modal"
+                            data-target="#modal-customer-store">Tambah</button>
+                        @endif
+
+                        <form id="customer-store" data-id="{{ $user->id }}"
+                          action="{{ route('customers.store')  }}" method="post">
+
+                            @include('book.form-edit-delete-customer',
+                                array(
+                                    'modal_trigger'       => 'modal-customer-store',
+                                    'modal_header'        => 'Tambah Alamat Tujuan',
+                                    'modal_submit_button' => 'Tambah',
+                                )
+                            )
+                            @csrf
+                        </form>
+                    </div>
+                </div>
             </div>
-            <div class="container ml-3 mt-4">
-                <div class="d-flex">
+            <div class="container px-4 mt-4">
+                <div id="customer-store-msg" class="alert d-none mt-4 alert-warning" role="alert">
+                    <strong></strong>
+                </div>
+                <div>
                     <div>
                         <div class="mb-2">
                             <span class="tbold">Alamat Smartperpus</span> -
-                            <span id="origin" class="text-grey" data-origin-id="22"
-                              data-subdistrict-id="337" data-origin-type="subdistrict">Jl Pahlawan No. 92, Cikadut,  Kota. Bandung, Jawa Barat</span>
+                            <span id="origin" class="text-grey tbold" data-origin-id="22"
+                              data-subdistrict-id="337" data-origin-type="subdistrict">
+                              Jl Pasir Honje No. 221, Cimenyan,  Kota Bandung, Jawa Barat
+                            </span>
                         </div>
-                        <div>
-                            <i class="fas fa-circle-notch text-grey mr-1"></i>
-                            <span class="tbold">Rumah</span> -
-                            <span id="destination" class="text-grey" data-destination-id="22"
-                              data-subdistrict-id="317" data-destination-type="subdistrict">Jl . Pasir Honje No. 221, Cimenyan, Kab. Bandung, Jawa Barat</span>
-                            <a href="#" class="text-grey tbold ml-2">Ubah</a>
-                        </div>
-                        <div>
-                            <i class="fas fa-circle-notch text-grey mr-1"></i>
-                            <span class="tbold">Nama</span> -
-                            <span class="text-grey">Muhammad Zidane Alsaadawi - 081321407123</span>
+                        <div id="data-customers">
+                            @forelse ($user->customer->take(5) as $customer)
+                                <div class="data-customer borbot-gray-0 mt-3 pb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <div class="destination">
+                                                <i class="fas fa-circle-notch text-grey mr-1"></i>
+                                                <span class="tbold">Alamat Tujuan</span>
+                                                <div class="text-grey" data-destination-id="22"
+                                                data-subdistrict-id="317" data-destination-type="subdistrict">
+                                                   <span class="customer-address">{{ $customer->address . ', ' }}</span>
+                                                   <span class="customer-district">{{ $customer->district . ', ' }}</span>
+                                                   <span class="customer-city">{{ $customer->city  . '. ' }}</span>
+                                                   <span class="customer-province">{{ $customer->province }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <i class="fas fa-circle-notch text-grey mr-1"></i>
+                                                <span class="tbold">Nama Penerima</span> -
+                                                <span class="customer-name text-grey">{{ $customer->name }}</span>
+                                                <span class="customer-phone-number text-grey">( {{ $customer->phone_number }} )</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label>
+                                                <input type="radio" name="alamat_pengiriman" value="{{ $customer->id }}">
+                                                <span>Pilih</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex mt-2">
+                                        <div class="ml-auto">
+                                            <div class="d-flex">
+                                                <div class="c-middle mr-1">
+                                                    <button class="customer-edit btn-none tred-bold"
+                                                      data-id="{{ $customer->id }}" data-toggle="modal"
+                                                      data-target="#modal-customer-edit">Edit</button>
+                                                </div>
+                                                <div>
+                                                    <form class="customer-destroy-form" data-id="{{ $customer->id }}"
+                                                      action="{{ route('customers.destroy', array('customer' =>  $customer->id)) }}"
+                                                      method="post">
+                                                        <button class="btn btn-red btn-sm-0" type="submit">Hapus</button>
+
+                                                        @method('DELETE')
+                                                        @csrf
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div id="customer-store-empty" class="d-flex mt-4 mx-3">
+                                    <div>
+                                        <img class="w-100" src="{{ asset('img/map-book2.png') }}">
+                                    </div>
+                                    <div class="col-9 ml-2 c-middle"><h4 class="tred-bold hd-18">Alamat Tujuan Wajib Diisi</h4></div>
+                                </div>
+                            @endforelse
+
+                            <div>
+                                <form id="customer-edit-form" action="#" data method="post">
+
+                                    @include('book.form-edit-delete-customer',
+                                        array(
+                                            'modal_trigger'       => 'modal-customer-edit',
+                                            'modal_header'        => 'Edit Alamat Tujuan',
+                                            'modal_submit_button' => 'Edit',
+                                        )
+                                    )
+
+                                    @method('PATCH')
+                                    @csrf
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="white-content px-0 pt-0 pb-4 mt-5 borbot-gray-bold">
+        <div id="courier-choise" class="white-content px-0 pt-0 pb-4 mt-5 borbot-gray-bold">
             <div class="white-content-header-2 d-block">
                 <h4 class="hd-18">Pilih Kurir</h4>
                 <form>
                     <div class="ml-3 mt-4 d-flex overflow-auto">
                         <div class="courier-choise">
                             <input type="radio" name="courier-choise" value="jne" class="d-none">
-                            <img class="bg-dark" src="{{ asset('img/couriers/jne.jpg') }}">
+                            <img src="{{ asset('img/couriers/jne.jpg') }}">
                         </div>
                         <div class="courier-choise">
                             <input type="radio" name="courier-choise" value="tiki" class="d-none">
@@ -130,23 +245,25 @@
                     <div>
                         <label class="c-p d-block">
                             <div>
-                                <input type="radio" name="test-bri" class="test-bri" id="">
+                                <input type="radio" name="payment-method" class="inp-courier-choise-service"
+                                  value="Transfer Bank BRI" id="">
                                 <img src="{{ asset('img/transfer/bri.png') }}" class="img-transfer" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BRI</span>
                             </div>
                         </label>
                         <label class="c-p d-block">
                             <div class="mt-3">
-                                <input type="radio" name="test-bri" class="test-bri" id="">
+                                <input type="radio" name="payment-method" class="inp-courier-choise-service"
+                                  value="Transfer Bank BNI" id="">
                                 <img src="{{ asset('img/transfer/bni.png') }}" style="width:47px;" class="img-transfer" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BNI</span>
                             </div>
                         </label>
                         <label class="c-p d-block">
                             <div class="mt-3">
-                                <input type="radio" name="test-bri" class="test-bri" id="">
-                                <img src="{{ asset('img/transfer/gopay.png') }}" style="width:70px;" class="img-transfer" alt="" srcset="">
-                                <span class="tbold">Transfer Gopay</span>
+                                <input type="radio" name="payment-method" class="inp-courier-choise-service" value="Transfer Bank BCA" id="">
+                                <img src="{{ asset('img/transfer/bca.png') }}" style="width:70px;" class="img-transfer" alt="" srcset="">
+                                <span class="tbold">Transfer Bank BCA</span>
                             </div>
                         </label>
                     </div>
@@ -156,35 +273,44 @@
     </div>
     <div class="pay-for-the-book">
         <div class="w-75 ml-auto">
-            <div class="white-content pt-0">
-                <div>
-                    <img id="buying-img" class="w-90 d-block mx-auto" src="{{ asset('img/book/' . $book->image) }}" alt="" srcset="">
-                </div>
-                <div class="d-flex flex-column">
-                    <div id="book-payment" class="text-grey mt-4 py-2 mb-0 bordash-gray">
-                        <div class="d-flex justify-content-between">
-                            <div>Harga</div>
-                            <div id="book-price" class="text-right" data-book-price="{{ $book->price }}">{{ rupiah_format($book->price) }}</div>
+            <form id="book-payment-form" data-id="{{ $book->id }}"
+              action="{{ route('books.payment.post', array('book' => $book->id))  }}" method="post">
+                <div class="white-content pt-0">
+                    <div class="d-flex flex-column">
+                        <div id="book-payment" class="text-greypy-2 mb-0 bordash-gray">
+                            <div class="my-4">
+                                <h4 class="hd-16 text-center text-body">Ringkasan Pembayaran</h4>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>Harga</div>
+                                <div id="book-price" class="text-right" data-book-price="{{ $book->price }}">{{ rupiah_format($book->price) }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>Jumlah Barang</div>
+                                <div class="text-right" id="jumlah-barang">1</div>
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Jumlah Barang</div>
-                            <div class="text-right" id="jumlah-barang">1</div>
+                        <div class="mt-auto text-grey">
+                            <div class="d-flex justify-content-between">
+                                <div>Total Pembayaran</div>
+                                <div id="total-payment" data-total-payment="{{ $book->price }}"
+                                class="tred-bold text-righteous text-right">{{ rupiah_format($book->price) }}</div>
+                            </div>
+                            <div class="mt-3">
+                                <input type="hidden" id="book-total-payment" name="book_total_payment" value="{{ $book->price }}">
+                                <input type="hidden" id="book-courier-service-head" name="book_courier_service_head">
+                                <input type="hidden" id="book-courier-service" name="book_courier_service">
+                                <input type="hidden" id="book-payment-method" name="book_payment_method">
+                                <input type="hidden" id="book-note" name="book_note">
+                                <button type="submit" id="payment-button" class="btn btn-red w-100">
+                                    <i class="fas fa-shield-alt mr-2"></i>Bayar
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="mt-auto text-grey">
-                        <div class="d-flex justify-content-between">
-                            <div>Total Pembayaran</div>
-                            <div id="total-payment" data-total-payment="{{ $book->price }}"
-                              class="tred-bold text-righteous text-right">{{ rupiah_format($book->price) }}</div>
-                        </div>
-                        <div class="mt-3">
-                            <a id="payment-button" href="{{ route('books.payment', array('book' => $book->name)) }}" class="btn btn-red w-100">
-                                <i class="fas fa-shield-alt mr-2"></i>Bayar
-                            </a>
-                        </div>
-                    </div>
                 </div>
-            </div>
+                @csrf
+            </form>
         </div>
     </div>
 </div>

@@ -184,20 +184,23 @@ function checkShippingInsurance() {
         shippingInsuranceHtml += `</div>`;
 
     if ($('#shipping-insurance').is(':checked') && $('#shipping-book').length <= 0) {
-
         $('#book-payment').append(shippingInsuranceHtml);
         $('#total-payment').attr('data-total-payment', totalPayment + 1000);
         $('#total-payment').text(`Rp${numberFormat(totalPayment + 1000, 0, 0, '.')}`);
+        $('#book-total-payment').val(totalPayment + 1000);
     }
     else {
         if (!$('#shipping-insurance').is(':checked')) {
             $('#shipping-book').remove();
             $('#total-payment').attr('data-total-payment', totalPayment);
             $('#total-payment').text(`Rp${numberFormat(totalPayment, 0, 0, '.')}`);
+
+            $('#book-total-payment').val(totalPayment);
         }
         else {
             $('#total-payment').attr('data-total-payment', totalPayment + 1000);
             $('#total-payment').text(`Rp${numberFormat(totalPayment + 1000, 0, 0, '.')}`);
+            $('#book-total-payment').val(totalPayment + 1000);
         }
     }
 }
@@ -205,3 +208,136 @@ function checkShippingInsurance() {
 function ucwords(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+function ajaxForm(method, formSelector, ajaxUrl, successFunction) {
+    let form        = $(formSelector)[0];
+    let formData    = new FormData(form);
+
+    $.ajax({
+        type       : method,
+        url        : ajaxUrl,
+        data       : formData,
+        dataType   : "JSON",
+        processData: false,
+        cache      : false,
+        contentType: false,
+        success    : successFunction,
+        error : function(errors) {
+            console.log(errors.responseJSON);
+        }
+    });
+}
+
+function scrollToElement(selector, ) {
+    $([document.documentElement, document.body]).animate({
+        scrollTop: $(selector).offset().top
+    }, 500);
+}
+
+// Customer
+function customerDestroy(){
+    //#region - Customer Destroy
+    $('.customer-destroy-form').on('submit', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let dataCustomerLength = $('#data-customers').children().length - 1;
+        let customerId         = $(this).data('id');
+        let dataCustomer       = $(this).closest($('.data-customer'));
+        let dataCustomers      = $('#data-customers');
+
+        if (confirm('Apakah anda yakin ingin menghapus alamat tersebut ?')) {
+            ajaxForm('POST', this, `/customers/${customerId}`, function() {;
+                scrollToElement(dataCustomers, 500);
+                dataCustomer.remove();
+
+                if ((dataCustomerLength - 1) < 5) {
+                    $('#customer-store-modal-trigger').show();
+                }
+
+                console.log(dataCustomerLength - 1);
+
+                if ((dataCustomerLength - 1) == 0) {
+                    console.log(true);
+                    $('#customer-store-empty').show();
+                }
+            });
+        }
+
+    });
+    //#endregion - Customer Destroy
+}
+
+function customerUpdate() {
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+    let changeName, dataCustomer, changePhoneNumber, changeAddress, changeCity, changeDistrict, changeProvince;
+
+    // Customer Modal Edit
+    $('.customer-edit').on('click', function() {
+        let form              = $('.modal-customer-edit').children().children();
+            changeName        = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-name'));
+            changePhoneNumber = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-phone-number'));
+            changeAddress     = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-address'));
+            changeDistrict    = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-district'));
+            changeCity        = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-city'));
+            changeProvince    = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-province'));
+            dataCustomer      = $(this).closest($('.data-customer'));
+
+        $('#customer-edit-form').attr('data-id', $(this).data('id'));
+        $('#customer-edit-form').attr('action', `http://smartperpus.com/customers/${$(this).data('id')}`);
+
+        $.ajax({
+            type    : "POST",
+            url     : `/customers/${$(this).data('id')}/ajax/request/edit-submit-get-data`,
+            data    : { '_token' : csrfToken },
+            dataType: "JSON",
+            success : function (response) {
+                form.children('input[name=nama_penerima]').val(response.customer.name);
+                form.children('input[name=nomer_handphone]').val(response.customer.phone_number);
+                form.children('input[name=alamat_tujuan]').val(response.customer.address);
+            },
+
+        });
+    });
+
+    $('#customer-edit-form').on('submit', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        let customerId = $(this).data('id');
+
+        $('.validate-error').text('');
+
+        let namaPenerima = $(this.nama_penerima).val();
+        let phoneNumber  = $(this.nomer_handphone).val();
+        let address      = $(this.alamat_tujuan).val() + ',';
+        let district     = $(this.kecamatan).find(':selected').text() + ',';
+        let city         = $(this.kota_atau_kabupaten).find(':selected').text() + '.';
+        let province     = $(this.provinsi).find(':selected').text();
+
+        ajaxForm('POST', this, `/customers/${customerId}`, function(response) {
+            if (response.status) {
+                changeName.text(namaPenerima);
+                changePhoneNumber.text(`( ${phoneNumber} )`);
+                changeAddress.text(address);
+                changeDistrict.text(district);
+                changeCity.text(city);
+                changeProvince.text(province);
+
+                $('.close').trigger('click');
+
+                scrollToElement(dataCustomer, 300);
+            }
+            else {
+                for (const key in response.errorMsg) {
+                    if (response.errorMsg.hasOwnProperty.call(response.errorMsg, key)) {
+                        const element = response.errorMsg[key];
+
+                        $('.error_' + key).text(element[0]);
+                    }
+                }
+            }
+        });
+    });
+}
+// End Customer

@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Provinces;
+use App\Models\District;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProvincesFactory extends Factory
+class DistrictFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Provinces::class;
+    protected $model = District::class;
 
     /**
      * Define the model's default state.

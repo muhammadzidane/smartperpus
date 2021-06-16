@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(
             array(
-
                 // User Seeder
                 UserSeeder::class,
 
@@ -28,6 +27,9 @@ class DatabaseSeeder extends Seeder
                 SynopsisSeeder::class,
                 BookCategorySeeder::class,
                 PrintedBookStockSeeder::class,
+                ProvinceSeeder::class,
+                CitySeeder::class,
+                DistrictSeeder::class,
             )
         );
     }

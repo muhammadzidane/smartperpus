@@ -29,6 +29,10 @@ class Book extends Model
         return $this->hasOne('App\Models\PrintedBookStock');
     }
 
+    public function bookPurchases() {
+        return $this->hasMany('App\Models\BookPurchase');
+    }
+
     // Accessors
     // public function getPriceAttribute($value) {
     //     return 'Rp' . number_format($value, null, null, '.');

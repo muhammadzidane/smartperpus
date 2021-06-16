@@ -19,7 +19,7 @@ class AccountController extends Controller
     }
 
     public function waitingForPayments() {
-        return view('account.waiting-for-payments');
+        return view('user.waiting-for-payments');
     }
 
     public function chat() {

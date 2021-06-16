@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book};
+use App\Models\{Author, Book, Province, City};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -11,13 +11,7 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        // return view('test');
-
-        $key = array('njir' => 1, 'wkwk' => 2);
-        $arr_key = array_keys($key);
-
-        $new_array = array_push($arr_key);
-        dump($new_array);
+        return view('test');
     }
 
     public function testPost() {

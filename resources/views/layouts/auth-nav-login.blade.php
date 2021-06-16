@@ -26,11 +26,15 @@
                     </div>
                 @endcan
             @endcan
+
             <div>
                 <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
             </div>
             <div>
                 <a class="dropdown-item" href="#"">Daftar Wishlist</a>
+            </div>
+            <div>
+                <a class="dropdown-item" href="#"">Menunggu Pembayaran</a>
             </div>
             <div>
                 <a class="dropdown-item" href="#">Keranjang Saya</a>

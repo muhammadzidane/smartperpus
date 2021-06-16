@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class BookPurchase extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,7 @@ class Customer extends Model
         return $this->belongsToMany('App\Models\User');
     }
 
-    // Mutators
-    public function setNameAttribute($value) {
-        $this->attributes['name'] = ucwords($value);
+    public function book() {
+        return $this->belongsToMany('App\Models\Book');
     }
 }

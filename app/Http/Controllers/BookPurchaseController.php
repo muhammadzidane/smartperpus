@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Provinces;
+use App\Models\BookPurchase;
 use Illuminate\Http\Request;
 
-class ProvincesController extends Controller
+class BookPurchaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class ProvincesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Provinces  $provinces
+     * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function show(Provinces $provinces)
+    public function show(BookPurchase $bookPurchase)
     {
         //
     }
@@ -52,10 +52,10 @@ class ProvincesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Provinces  $provinces
+     * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function edit(Provinces $provinces)
+    public function edit(BookPurchase $bookPurchase)
     {
         //
     }
@@ -64,10 +64,10 @@ class ProvincesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Provinces  $provinces
+     * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Provinces $provinces)
+    public function update(Request $request, BookPurchase $bookPurchase)
     {
         //
     }
@@ -75,10 +75,10 @@ class ProvincesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Provinces  $provinces
+     * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Provinces $provinces)
+    public function destroy(BookPurchase $bookPurchase)
     {
         //
     }

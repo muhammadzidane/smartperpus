@@ -126,27 +126,45 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <div>Buku Cetak</div>
-                            <div>E-Book</div>
                         </div>
                         <div>
-                            <div class="tred-bold">{{ rupiah_format($book->price * 2) }}</div>
-
                             <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
                         </div>
                     </div>
 
                     <div class="mt-5">
                         <div class="d-flex justify-content-between">
-                            <button class="btn-wishlist">
-                                <i class="far fa-heart"></i>
-                                <i class="fa fa-heart"></i>
-                                <span>Wishlist</span>
-                            </button>
-                            <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
+                            <div>
+                                <button class="btn-none btn-wishlist">
+                                    <i class="far fa-heart"></i>
+                                    <i class="fa fa-heart"></i>
+                                    <span>Wishlist</span>
+                                </button>
+                            </div>
+                            <div>
+                                <button class="btn-none"><i class="fas fa-comment-dots"></i> Tanya Produk</button>
+                            </div>
+                            <div>
+                                <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
+                            </div>
                         </div>
                         <div>
-                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mb-2">Beli Buku Cetak</a>
-                            <button type="button" class="btn btn-yellow w-100">Beli E-Book</button>
+                            @if ($book->ebook === 0)
+                                <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
+                            @else
+                                <a href="{{ route('books.buy', array('book' => $book->name)) }}"
+                                    type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
+                            @endif
+
+                            @auth
+                                <a href="{{ route('books.buy', array('book' => $book->name)) }}"
+                                  type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                            @endauth
+
+                            @guest
+                                <a href="{{ route('login') }}"
+                                  type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                            @endguest
                         </div>
                     </div>
                 </div>

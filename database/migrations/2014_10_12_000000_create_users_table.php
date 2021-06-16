@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->enum('gender', array('L', 'P'))->nullable();
             $table->string('phone_number', 13)->nullable();
             $table->string('profile_image')->nullable();
+            $table->string('address')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

@@ -13,6 +13,14 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
+    public function bookPurchases() {
+        return $this->hasMany('App\Models\BookPurchase');
+    }
+
+    public function customer() {
+        return $this->hasMany('App\Models\Customer');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
