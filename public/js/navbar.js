@@ -501,6 +501,17 @@ $(document).ready(function () {
 
     })
 
+    // Show All Synopsis
+    $('#book-synopsis-toggle-button').on('click', function() {
+        let synopsis = $('#synopsis > p');
+
+        $('#book-synopsis-show').toggle();
+        $(this).appendTo(synopsis);
+        toggleText(this , 'Lihat Semua....', 'Sembunyikan....');
+    });
+
+    // End of Book Buy
+
     // Tulis Catatan
     $('#btn-write-notes').on('click', function() {
         $(this).hide();
@@ -518,113 +529,167 @@ $(document).ready(function () {
 
     // Cek API Rajaongkir
     $('.courier-choise').on('click', function() {
-        $('input[name=courier-choise]').removeAttr('checked');
-        $(this).children('input').attr('checked', 'checked');
-        $('.courier-choise').removeClass('cc-active');
-        $(this).addClass('cc-active');
 
-        let originSubdistictId       = $('#origin').data('subdistrict-id');
-        let originType               = $('#origin').data('origin-type');
-        let destinationSubdistrictId = $('#destination').data('subdistrict-id');
-        let destinationType          = $('#destination').data('destination-type');
-        let weight                   = $('#weight').data('weight');
-        let courierChoise            = $('input[name=courier-choise]:checked').val();
+        let dataCustomerLength = $('.data-customer').length;
 
-        $.ajax({
-            type: "POST",
-            url : "/ajax/request/cek-ongkir",
-            data: {
-                '_token'          : csrfToken,
-                'origin_id'       : originSubdistictId,
-                'origin_type'     : originType,
-                'destination_id'  : destinationSubdistrictId,
-                'destination_type': destinationType,
-                'weight'          : weight,
-                'courier'         : courierChoise,
-            },
-            dataType: "JSON",
-            success : function (response) {
-                let result = response.rajaongkir.results[0];
+        if (dataCustomerLength != 0) {
+            // Loading Couriers - Membuat loading saat layanan kurir belum muncul
+            let courierServices = $('.courier-choise-service').length;
+            let spinnerHtml     = `<div class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
+                spinnerHtml    += `<div class="spin"></div>`;
+                spinnerHtml    += `</div>`;
 
-                $('#courier-choise-name').text(result.name);
-                $('#courier-choise-result').html('');
+            if (courierServices == 0) {
 
-                let courierChoiseHtml  = function(description,etd ,costPrice) {
+                console.log(courierServices);
+                $('#courier-choise-result').html(spinnerHtml);
+            }
+            // End of Loading Couriers
 
-                    // Jika tidak ada string Hari pada etd, maka tambahkan string 'Hari'
-                    let path        = /(HARI|JAM)/i;
-                    let regexResult = etd.match(path) ?? '';
-                    etd         = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
+            $('input[name=courier-choise]').removeAttr('checked');
+            $(this).children('input').attr('checked', 'checked');
+            $('.courier-choise').removeClass('cc-active');
+            $(this).addClass('cc-active');
 
-                    let courierChoiseHtml  = `<div>`;
-                        courierChoiseHtml += `<div class="courier-choise-service">`;
-                        courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
-                        courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
-                        courierChoiseHtml += `<span> - </span>`;
-                        courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
-                        courierChoiseHtml += `<div class="ml-4">`;
-                        courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
-                        courierChoiseHtml += `</div>`;
-                        courierChoiseHtml += `</div>`;
-                        courierChoiseHtml += `</div>`;
+            let originSubdistictId       = $('#origin').data('subdistrict-id');
+            let originType               = $('#origin').data('origin-type');
+            let destinationSubdistrictId = $('#destination').data('subdistrict-id');
+            let destinationType          = $('#destination').data('destination-type');
+            let weight                   = $('#weight').data('weight');
+            let courierChoise            = $('input[name=courier-choise]:checked').val();
 
-                    return courierChoiseHtml;
-                }
+            $.ajax({
+                type: "POST",
+                url : "/ajax/request/cek-ongkir",
+                data: {
+                    '_token'          : csrfToken,
+                    'origin_id'       : originSubdistictId,
+                    'origin_type'     : originType,
+                    'destination_id'  : destinationSubdistrictId,
+                    'destination_type': destinationType,
+                    'weight'          : weight,
+                    'courier'         : courierChoise,
+                },
+                dataType: "JSON",
+                success : function (response) {
+                    let result = response.rajaongkir.results[0];
 
-                result.costs.forEach(element => {
-                    element.cost.forEach(costElement => {
-                        $('#courier-choise-result').append(courierChoiseHtml(element.description, costElement.etd, costElement.value));
+                    $('#courier-choise-name').text(result.name);
+                    $('#courier-choise-result').html('');
+
+                    let courierChoiseHtml  = function(description,etd ,costPrice) {
+
+                        // Jika tidak ada string Hari pada etd, maka tambahkan string 'Hari'
+                        let path        = /(HARI|JAM)/i;
+                        let regexResult = etd.match(path) ?? '';
+                        etd         = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
+
+                        let courierChoiseHtml  = `<div>`;
+                            courierChoiseHtml += `<div class="courier-choise-service">`;
+                            courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
+                            courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
+                            courierChoiseHtml += `<span> - </span>`;
+                            courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
+                            courierChoiseHtml += `<div class="ml-4">`;
+                            courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
+                            courierChoiseHtml += `</div>`;
+                            courierChoiseHtml += `</div>`;
+                            courierChoiseHtml += `</div>`;
+
+                        return courierChoiseHtml;
+                    }
+
+                    result.costs.forEach(element => {
+                        element.cost.forEach(costElement => {
+                            $('#courier-choise-result').append(courierChoiseHtml(element.description, costElement.etd, costElement.value));
+                        });
                     });
-                });
 
-                $('.courier-choise-service').on('click', function() {
-                    $('.inp-courier-choise-service').removeAttr('checked');
-                    $(this).children('input').attr('checked', 'checked');
+                    $('.courier-choise-service').on('click', function() {
+                        $('.inp-courier-choise-service').removeAttr('checked');
+                        $(this).children('input').attr('checked', 'checked');
 
-                    let bookPrice                = $('#book-price').data('book-price');
-                    let shippingCost             = $(this).children('input:checked').val() ?? 0;
-                    let bookNeeded               = parseInt($('#book-needed').text());
-                    let shippingInsurance        = $('#shipping-insurance').is(':checked') ? 1000 : 0;
-                    let courierServicePriceHtml  = `<div class="d-flex justify-content-between">`;
-                        courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
-                        courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
-                        courierServicePriceHtml += `</div>`;
+                        let bookPrice                = $('#book-price').data('book-price');
+                        let shippingCost             = $(this).children('input:checked').val() ?? 0;
+                        let bookNeeded               = parseInt($('#book-needed').text());
+                        let shippingInsurance        = $('#shipping-insurance').is(':checked') ? 1000 : 0;
+                        let courierServicePriceHtml  = `<div class="d-flex justify-content-between">`;
+                            courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
+                            courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
+                            courierServicePriceHtml += `</div>`;
 
-                    if ($('#shipping-cost').length <= 0) {
-                        $('#book-payment').append(courierServicePriceHtml);
-                    }
-                    else {
-                        $('#shipping-cost').text(shippingCost);
-                    }
+                        if ($('#shipping-cost').length <= 0) {
+                            $('#book-payment').append(courierServicePriceHtml);
+                        }
+                        else {
+                            $('#shipping-cost').text(shippingCost);
+                        }
 
-                    let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
+                        let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
 
-                    $('#total-payment').attr('data-total-payment', totalPayment);
-                    $('#total-payment').text(rupiahFormat(totalPayment));
-                    $('#book-total-payment').val(totalPayment);
-                });
-            },
-        });
+                        $('#total-payment').attr('data-total-payment', totalPayment);
+                        $('#total-payment').text(rupiahFormat(totalPayment));
+                        $('#book-total-payment').val(totalPayment);
+                    });
+                },
+            });
+        }
+        else {
+            let errorMsg = `<span class="tred" role="alert"><strong>anjai</strong></span>`;
 
+            scrollToElement('#alamat-pengiriman', 500);
+            $('#alamat-pengiriman > span').remove();
+            $('#alamat-pengiriman').append(errorMsg);
+        }
     });
 
     $('#book-payment-form').on('submit', function(e) {
-        let courierService = $('input[name=courier-service]:checked').val();
-        let paymentMethod  = $('input[name=payment-method]:checked').val();
+        let bookId             = $(this).data('id');
+        let courierServiceCost = $('.inp-courier-choise-service:checked').val()
+        let courierServiceName = $('.inp-courier-choise-service:checked').next().text();
+        let paymentMethod      = $('.inp-payment-method:checked').val();
+        let address            = $('.customer-address:checked').val();
+        let uniqueCode         = randomIntFromInterval(100, 999);
 
-        if (courierService === undefined || paymentMethod === undefined) {
+        if (courierServiceCost === undefined || paymentMethod === undefined || address === undefined) {
             e.preventDefault();
+        }
 
-            $('#click-to-the-top').trigger('click');
-            $('#pesan').removeClass('d-none');
-            $('#pesan strong').text('Pilihan Kurir / Metode Pembayaran wajib di pilih');
-        }
-        else {
-            $('#book-courier-service-head').val($('#courier-choise-name').text());
-            $('#book-courier-service').val($('.inp-courier-choise-service:checked').next().text());
-            $('#book-payment-method').val($('input[name=payment-method]').val());
-            $('#book-note').val($('#write-note').val());
-        }
+        $('#book-amount').val($('#jumlah-barang').text());
+        $('#book-courier-name').val($('#courier-choise-name').text());
+        $('#book-courier-service').val(courierServiceName);
+        $('#book-shipping-cost').val(courierServiceCost);
+        $('#book-note').val($('#write-note').val());
+        $('#book-insurance').val($('#shipping-insurance:checked').val());
+
+        console.log($('#book-insurance'));
+        $('#book-unique-code').val(uniqueCode);
+        $('#book-payment-method').val(paymentMethod);
+        $('#book-customer-address').val($('.customer-address:checked').val());
+
+        ajaxForm('POST', this, `/books/${bookId}/payment`, function(response) {
+            if (response.errors) {
+                let errorMsgs = '';
+
+                for (const key in response.errors) {
+                    if (response.errors.hasOwnProperty.call(response.errors, key)) {
+                        const error = response.errors[key][0];
+
+                        errorMsgs += `<div><strong>${error}</strong></div>`;
+                    }
+                }
+
+                $('#click-to-the-top').trigger('click');
+                $('#pesan').removeClass('d-none');
+                $('#pesan').html(errorMsgs)
+            }
+            else {
+                $("#book-payment-form").on('submit', function() {
+                    return false;
+                });
+            }
+        });
+
     });
 
     // Book Payment
@@ -1023,6 +1088,7 @@ $(document).ready(function () {
                     scrollToElement($('.data-customer').last(), 500);
                 }
                 else {
+                    $('#alamat-pengiriman > span').remove();
                     scrollToElement($('.data-customer').last(), 500);
                 }
 
@@ -1048,6 +1114,7 @@ $(document).ready(function () {
             $(this).find(':input[type=number]').val('');
         });
     });
+
     // Customer Update
     customerUpdate();
 

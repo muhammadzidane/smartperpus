@@ -11,7 +11,14 @@
             </div>
             <div class="desk-book">
                 <div>
-                    <a class="tbreak-all" href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name  }}</a>
+                    @if (strlen($book->name) > 40)
+                        <a class="tbreak-all" href="{{ route('books.show', array('book' => $book->id)) }}">
+                            {{ substr($book->name, 0, 40) }}...
+                            </a>
+
+                        @else
+                        <a class="tbreak-all" href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name }}</a>
+                    @endif
                 </div>
             </div>
             <div class="rating-and-author">

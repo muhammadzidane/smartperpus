@@ -50,12 +50,12 @@ Route::resource('/authors', AuthorController::class);
 // Books
 Route::prefix('/books')->group(function() {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
-    Route::get('payment/{book}', array(BookController::class, 'booksPayment'))->name('books.payment');
+    Route::get('payment/{book}', array(BookController::class, 'bookPayment'))->name('books.payment');
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::get('wishlist/', array(BookController::class, 'wishlist'));
     Route::get('/waiting-for-payments', array(BookController::class, 'waitingForPayments'))->name('waiting.for.payment');
-    Route::post('{book}/payment', array(BookController::class, 'bookPayment'))->name('books.payment.post');
+    Route::post('{book}/payment', array(BookController::class, 'bookPaymentPost'))->name('books.payment.post');
 });
 Route::resource('/books', BookController::class);
 // Test Ajax

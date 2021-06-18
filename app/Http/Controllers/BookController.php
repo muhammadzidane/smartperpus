@@ -306,10 +306,37 @@ class BookController extends Controller
     }
 
     // Book Buy
-    public function bookPayment(Request $request, Book $book) {
+    public function bookPaymentPost(Request $request, Book $book) {
+        $validator = Validator::make($request->all(),
+            array(
+                'pilihan_kurir'     => array('required'),
+                'metode_pembayaran' => array('required'),
+                'alamat_pengiriman' => array('required'),
+            )
+        );
 
-        dump($book);
-        dump($request->all());
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+
+            if ($request->ajax()) {
+                return response()->json(compact('errors'));
+            }
+            else {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }
+        }
+        else {
+            if ($request->ajax()) {
+                $successMessage = 'Berhasil';
+
+                return response()->json(compact('successMessage'));
+            }
+            else {
+                dump('berhasil');
+                dump($request->all());
+            }
+        }
         // $book->bookPurchases()->create(
             // array(
                 // 'user_id' => Auth::id(),
@@ -319,9 +346,15 @@ class BookController extends Controller
         // return view('book.book-payment', compact('request', 'book'));
     }
 
+    public function bookPayment() {
+        $book = Book::find(1);
+        return view('book.book-payment', array('book' => $book));
+    }
+
     // Menunggu Pembayaran
     public function waitingForPayments() {
         return view('user.waiting-for-payments');
     }
+
 }
 

@@ -4,7 +4,7 @@
             <div class="destination">
                 <i class="fas fa-circle-notch text-grey mr-1"></i>
                 <span class="tbold">Alamat Tujuan</span>
-                <div class="text-grey" data-destination-id="22"
+                <div id="destination" class="text-grey" data-destination-id="22"
                 data-subdistrict-id="317" data-destination-type="subdistrict">
                    <span class="customer-address">{{ $customer_address . ', ' }}</span>
                    <span class="customer-district">{{ $customer_district . ', ' }}</span>

@@ -8,15 +8,26 @@
     <span class="tsmall tred-bold">{{ $book->name }}</>
 </div>
 
-@if (session('pesan'))
-    <div class="alert mt-4 alert-primary" role="alert">
-        <strong>{{ session('pesan') }}</strong>
+@if (session('pesan') || $errors->any())
+    <div id="pesan" class="mt-4 alert alert-primary" role="alert">
+        @if (session('pesan'))
+            <div><strong>{{ session('pesan') }}</strong></div>
+        @endif
+
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                <div>
+                    <strong>{{ $error }}</strong>
+                </div>
+            @endforeach
+        @endif
     </div>
 @endif
 
-<div id="pesan" class="mt-4 d-none alert alert-warning" role="alert">
+<div id="pesan" class="mt-4 alert d-none alert-warning" role="alert">
     <strong></strong>
 </div>
+
 
 <div id="buying-content" class="d-flex">
     <div class="purchase-records">
@@ -61,7 +72,7 @@
                         <div>Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
                         <div>
                             <label class="d-flex c-p">
-                                <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance"
+                                <input type="checkbox" class="mt-1 mr-2 c-p" name="shipping_insurance" value="1000"
                                   id="shipping-insurance">
                                 <div>Rp1.000</div>
                             </label>
@@ -69,11 +80,11 @@
                     </div>
                     <div class="text-righteous mr-5">
                         <div>Versi Buku</div>
-                        <div class="tred-bold">{{ $book_version === 'ebook' ? 'E-Book' : 'Buku Cetak' }}</div>
+                        <div class="tred-bold">{{ $book_version === 'ebook' ? 'Buku Cetal, E-Book' : 'Buku Cetak' }}</div>
                     </div>
                 </div>
             </div>
-                <div class="text-righteous mt-4 pl-3">
+                <div class="text-righteous mt-4">
                     <button id="btn-write-notes" class="btn-none"><i class="fas fa-pencil-alt"></i> Tulis Catatan</button>
                     <div id="input-write-notes" class="d-none">
                         <div class="d-flex">
@@ -90,7 +101,7 @@
         <div class="white-content px-0 pt-0 pb-4 m-0 mt-5 borbot-gray-bold">
             <div class="white-content-header-2">
                 <div class="d-flex justify-content-between w-100">
-                    <div>
+                    <div id="alamat-pengiriman">
                         <h4 class="hd-18">Alamat Pengiriman</h4>
                     </div>
                     <div>
@@ -135,7 +146,7 @@
                                             <div class="destination">
                                                 <i class="fas fa-circle-notch text-grey mr-1"></i>
                                                 <span class="tbold">Alamat Tujuan</span>
-                                                <div class="text-grey" data-destination-id="22"
+                                                <div id="destination" class="text-grey" data-destination-id="22"
                                                 data-subdistrict-id="317" data-destination-type="subdistrict">
                                                    <span class="customer-address">{{ $customer->address . ', ' }}</span>
                                                    <span class="customer-district">{{ $customer->district . ', ' }}</span>
@@ -152,7 +163,7 @@
                                         </div>
                                         <div>
                                             <label>
-                                                <input type="radio" name="alamat_pengiriman" value="{{ $customer->id }}">
+                                                <input class="customer-address" type="radio" name="alamat_pengiriman" value="{{ $customer->id }}">
                                                 <span>Pilih</span>
                                             </label>
                                         </div>
@@ -199,7 +210,6 @@
                                         )
                                     )
 
-                                    @method('PATCH')
                                     @csrf
                                 </form>
                             </div>
@@ -228,7 +238,8 @@
                     </div>
                 </form>
 
-                <!-- <button id="cek-ongkir" type="submit">Cek Ongkir</button> -->
+
+            <!-- <button id="cek-ongkir" type="submit">Cek Ongkir</button> -->
             </div>
             <div class="container ml-3 mt-4">
                 <h4 id="courier-choise-name" class="hd-18 mb-3"></h4>
@@ -245,7 +256,7 @@
                     <div>
                         <label class="c-p d-block">
                             <div>
-                                <input type="radio" name="payment-method" class="inp-courier-choise-service"
+                                <input type="radio" name="payment_method" class="inp-payment-method"
                                   value="Transfer Bank BRI" id="">
                                 <img src="{{ asset('img/transfer/bri.png') }}" class="img-transfer" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BRI</span>
@@ -253,7 +264,7 @@
                         </label>
                         <label class="c-p d-block">
                             <div class="mt-3">
-                                <input type="radio" name="payment-method" class="inp-courier-choise-service"
+                                <input type="radio" name="payment_method" class="inp-payment-method"
                                   value="Transfer Bank BNI" id="">
                                 <img src="{{ asset('img/transfer/bni.png') }}" style="width:47px;" class="img-transfer" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BNI</span>
@@ -261,7 +272,7 @@
                         </label>
                         <label class="c-p d-block">
                             <div class="mt-3">
-                                <input type="radio" name="payment-method" class="inp-courier-choise-service" value="Transfer Bank BCA" id="">
+                                <input type="radio" name="payment_method" class="inp-payment-method" value="Transfer Bank BCA" id="">
                                 <img src="{{ asset('img/transfer/bca.png') }}" style="width:70px;" class="img-transfer" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BCA</span>
                             </div>
@@ -297,11 +308,18 @@
                                 class="tred-bold text-righteous text-right">{{ rupiah_format($book->price) }}</div>
                             </div>
                             <div class="mt-3">
-                                <input type="hidden" id="book-total-payment" name="book_total_payment" value="{{ $book->price }}">
-                                <input type="hidden" id="book-courier-service-head" name="book_courier_service_head">
-                                <input type="hidden" id="book-courier-service" name="book_courier_service">
-                                <input type="hidden" id="book-payment-method" name="book_payment_method">
-                                <input type="hidden" id="book-note" name="book_note">
+                                <input type="hidden" id="book-version" name="book_version"
+                                  value="{{ $book_version === 'ebook' ? 'ebook' : 'hard_cover' }}">
+                                <input type="hidden" id="book-amount" name="amount">
+                                <input type="hidden" id="book-courier-name" name="courier_name">
+                                <input type="hidden" id="book-courier-service" name="pilihan_kurir">
+                                <input type="hidden" id="book-shipping-cost" name="shipping_cost">
+                                <input type="hidden" id="book-note" name="note">
+                                <input type="hidden" id="book-insurance" name="insurance">
+                                <input type="hidden" id="book-unique-code">
+                                <input type="hidden" id="book-total-payment" name="total_pembayaran">
+                                <input type="hidden" id="book-payment-method" name="metode_pembayaran">
+                                <input type="hidden" id="book-customer-address" name="alamat_pengiriman">
                                 <button type="submit" id="payment-button" class="btn btn-red w-100">
                                     <i class="fas fa-shield-alt mr-2"></i>Bayar
                                 </button>

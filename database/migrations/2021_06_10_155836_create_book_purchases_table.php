@@ -22,6 +22,8 @@ class CreateBookPurchasesTable extends Migration
             $table->string('courier_name');
             $table->string('courier_service');
             $table->integer('shipping_cost');
+            $table->string('note');
+            $table->integer('insurance');
             $table->integer('unique_code');
             $table->integer('total_payment');
             $table->enum('payment_method', array('Transfer Bank BRI', 'Transfer Bank BNI', 'Transfer Bank BCA'));

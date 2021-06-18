@@ -5,6 +5,29 @@ ul li {
 
 label { cursor: pointer; }
 
+/* Spinner */
+.spin {
+    display: inline-block;
+    width: 58px;
+    height: 58px;
+    border: 4px solid #e2d5d5;
+    border-radius: 50%;
+    border-top-color: #6E7C7C;
+    animation: spin 1s ease-in-out infinite;
+    -webkit-animation: spin 1s ease-in-out infinite;
+}
+
+  @keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+
 .z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
 .fa-star { color: gold; }

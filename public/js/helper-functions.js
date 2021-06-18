@@ -1,4 +1,9 @@
 'use strict';
+// Random Number
+function randomIntFromInterval(min, max) { // min and max included
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 // Cek apakah form input dengan class yg sama, ada valuenya atau tidak
 function checkFormRequiredInputs(classInputs) {
     let flag = [];
@@ -228,10 +233,10 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction) {
     });
 }
 
-function scrollToElement(selector, ) {
+function scrollToElement(selector, duration) {
     $([document.documentElement, document.body]).animate({
         scrollTop: $(selector).offset().top
-    }, 500);
+    }, duration);
 }
 
 // Customer
@@ -255,10 +260,7 @@ function customerDestroy(){
                     $('#customer-store-modal-trigger').show();
                 }
 
-                console.log(dataCustomerLength - 1);
-
                 if ((dataCustomerLength - 1) == 0) {
-                    console.log(true);
                     $('#customer-store-empty').show();
                 }
             });
@@ -268,12 +270,15 @@ function customerDestroy(){
     //#endregion - Customer Destroy
 }
 
+// Customer Update
 function customerUpdate() {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
     let changeName, dataCustomer, changePhoneNumber, changeAddress, changeCity, changeDistrict, changeProvince;
 
     // Customer Modal Edit
     $('.customer-edit').on('click', function() {
+        $('#method-patch').remove();
+
         let form              = $('.modal-customer-edit').children().children();
             changeName        = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-name'));
             changePhoneNumber = $($(this).parents('div .d-flex')[1]).prev().find($('.customer-phone-number'));
@@ -315,29 +320,41 @@ function customerUpdate() {
         let city         = $(this.kota_atau_kabupaten).find(':selected').text() + '.';
         let province     = $(this.provinsi).find(':selected').text();
 
-        ajaxForm('POST', this, `/customers/${customerId}`, function(response) {
-            if (response.status) {
-                changeName.text(namaPenerima);
-                changePhoneNumber.text(`( ${phoneNumber} )`);
-                changeAddress.text(address);
-                changeDistrict.text(district);
-                changeCity.text(city);
-                changeProvince.text(province);
+        if (confirm('Apakah anda yakin ingin mengedit alamat tersebut ?')) {
+            let patchMethod = `<input id="method-patch" type="hidden" name="_method" value="PATCH">`;
 
-                $('.close').trigger('click');
+            $(this).append(patchMethod);
 
-                scrollToElement(dataCustomer, 300);
-            }
-            else {
-                for (const key in response.errorMsg) {
-                    if (response.errorMsg.hasOwnProperty.call(response.errorMsg, key)) {
-                        const element = response.errorMsg[key];
+            ajaxForm('POST', this, `/customers/${customerId}`, function(response) {
+                if (response.status) {
+                    changeName.text(namaPenerima);
+                    changePhoneNumber.text(`( ${phoneNumber} )`);
+                    changeAddress.text(address);
+                    changeDistrict.text(district);
+                    changeCity.text(city);
+                    changeProvince.text(province);
 
-                        $('.error_' + key).text(element[0]);
+                    $('.close').trigger('click');
+
+                    scrollToElement(dataCustomer, 300);
+                }
+                else {
+                    for (const key in response.errorMsg) {
+                        if (response.errorMsg.hasOwnProperty.call(response.errorMsg, key)) {
+                            const element = response.errorMsg[key];
+
+                            $('.error_' + key).text(element[0]);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+
     });
 }
 // End Customer
+
+// Toggle Text
+function toggleText (selector, a, b) {
+    return $(selector).text($(selector).text() == b ? a : b);
+}

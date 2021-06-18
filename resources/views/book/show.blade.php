@@ -73,9 +73,15 @@
             <h4 class="hd-14">
                 <a class="text-grey" href="{{ route('authors.show', array('author' => $book->author->id )) }}">{{ $book->author->name }}</a>
             </h4>
-            <div class="mt-3">
+            <div id="synopsis" class="mt-3">
                 @if (strlen($book->synopsis->text) > 500)
-                    <p>{{ substr($book->synopsis->text, 0, 500) }} <a href="">Lihat Semua....</a></p>
+                    <p>
+                        <span>{{ substr($book->synopsis->text, 0, 500) }}</span>
+                        <span>
+                            <button id="book-synopsis-toggle-button" class="btn-none p-0 ml-1 text-primary">Lihat Semua....</button>
+                            <span id="book-synopsis-show" style="display: none;">{{ substr($book->synopsis->text, 500) }}</span>
+                        </span>
+                    </p>
 
                     @else
                     <p class="synopsis">{{ $book->synopsis->text }}</p>
