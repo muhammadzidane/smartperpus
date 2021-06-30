@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                 // Seeder bagian Books
                 AuthorSeeder::class,
                 BookSeeder::class,
+                BookPurchaseSeeder::class,
                 CategorySeeder::class,
                 SynopsisSeeder::class,
                 BookCategorySeeder::class,

@@ -114,8 +114,8 @@ class AuthorController extends Controller
         );
 
         $pesan = 'Berhasil edit author ' . $author->name;
-
         return redirect()->route('authors.index')->with('pesan', $pesan);
+
     }
 
     /**

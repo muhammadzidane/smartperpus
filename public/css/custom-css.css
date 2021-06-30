@@ -50,6 +50,7 @@ label { cursor: pointer; }
 .shadow-custom { box-shadow: 0 0 0.7px #bbbbbb !important; }
 .fa-comment-dots { color: #9fe6a0; font-size: 15px; }
 .h-75vh { height: 75vh !important; }
+.h-46vh { height: 46vh !important; }
 .relative-none {
     bottom: 0;
     right: 0;
@@ -579,7 +580,7 @@ footer {
     color: #ee6f57;
     position: absolute;
     top: -36px;
-    left: 58px;
+    right: 0;
     background-color: #fffdf6;
     width: max-content;
     padding: 5px 8px;
@@ -966,6 +967,37 @@ footer {
     right: 87px;
 }
 
+.user-chat {
+    border-bottom: 1px solid #dfddc7;
+}
+
+.user-chattings > div:first-child {
+    margin-top: 1.2rem;
+    border-top: 1px solid #dfddc7;
+}
+
+.user-chat:hover {
+    cursor: pointer;
+    background-color: #ece8d9;
+}
+
+.user-chat-clicked {
+    background-color: #ece8d9;
+}
+
+.chat-empty-img {
+    max-width: 65%;
+    position: absolute;
+    left: 20%;
+    bottom: 20%;
+}
+
+.testt {
+    /* display: none !important; */
+    height: 420px;
+    overflow: auto;
+}
+
 .chat-with-admin { display: none;}
 
 #btn-chat {
@@ -996,6 +1028,7 @@ footer {
 
 /* Chat dengan admin */
 .chat-content {
+    display: none;
     background-color: #FFFAFA;
     width: 46vw;
     box-shadow: 0 0 2px black;
@@ -1011,16 +1044,14 @@ footer {
 .type-message {
     background-color: #E1F1DD;
     padding: 7px 12px 7px 12px;
-    width: 100%;
-    margin-top: 15px;
-    margin-bottom: 12px;
-    border-radius: 8px;
 }
 
 .chattings {
     display: flex;
-    height: 60vh;
+    position: relative;
     overflow-y: auto;
+    height: 55vh;
+    margin-bottom: 15px;
 }
 
 .chat-msg-user {
@@ -1178,7 +1209,7 @@ footer {
 
 .button-submit {
     cursor: not-allowed;
-    background-color: #e2d5d5;
+    background-color: #fff600;
     color: white;
     width: 100%;
     border: none;
@@ -1425,7 +1456,7 @@ footer {
     height: 18px;
     line-height: 18px;
     text-align: center;
-    left: 99%;
+    left: 88%;
     bottom: 50%;
     border-radius: 100%;
 }
@@ -1502,10 +1533,22 @@ footer {
 
 /* Media Medium */
 @media screen and (max-width: 768px)  {
-    /* Chatting dengan dmin  dan Navbar*/
+    /* Chatting dengan admin  dan Navbar*/
     .chat-with-admin > div:last-child > div:first-child, .responsive-navbar, .circle-input {
         display: none;
     }
+
+    .chat-content {
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .chat {
+        bottom: 0;
+        right: 0;
+    }
+
+    .chattings { height: 80vh; }
 
     /* Halaman Home */
     .carousel-item img {

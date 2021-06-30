@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{ Book, Author, Category, BookPurchase };
+use App\Models\{ Book, Author, Category, BookPurchase, User, BookUser };
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{ Storage, Validator, Auth };
+use Illuminate\Support\Facades\{ Storage, Validator, Auth, Date};
 
 class BookController extends Controller
 {
@@ -305,56 +305,14 @@ class BookController extends Controller
         return view('auth.register');
     }
 
-    // Book Buy
-    public function bookPaymentPost(Request $request, Book $book) {
-        $validator = Validator::make($request->all(),
-            array(
-                'pilihan_kurir'     => array('required'),
-                'metode_pembayaran' => array('required'),
-                'alamat_pengiriman' => array('required'),
-            )
-        );
-
-
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-
-            if ($request->ajax()) {
-                return response()->json(compact('errors'));
-            }
-            else {
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
-        }
-        else {
-            if ($request->ajax()) {
-                $successMessage = 'Berhasil';
-
-                return response()->json(compact('successMessage'));
-            }
-            else {
-                dump('berhasil');
-                dump($request->all());
-            }
-        }
-        // $book->bookPurchases()->create(
-            // array(
-                // 'user_id' => Auth::id(),
-                // 'book_version' =>
-            // )
-        // );
-        // return view('book.book-payment', compact('request', 'book'));
-    }
-
-    public function bookPayment() {
-        $book = Book::find(1);
-        return view('book.book-payment', array('book' => $book));
-    }
-
     // Menunggu Pembayaran
     public function waitingForPayments() {
-        return view('user.waiting-for-payments');
-    }
+        $user      = User::find(Auth::id());
+        $book_users = BookUser::where('user_id', $user->id)->get();
 
+        // dump($book_users);
+        return view('user.waiting-for-payments', compact('user', 'book_users'));
+
+    }
 }
 

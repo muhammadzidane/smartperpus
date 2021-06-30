@@ -20,7 +20,7 @@ class UserPolicy
     public function viewAny(User $user)
     {
         return in_array($user->role, array(
-            'super_admin'
+            'super_admin', 'admin'
         ));
     }
 

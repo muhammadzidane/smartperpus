@@ -3,11 +3,12 @@
 use App\Http\Controllers\
 {
     AjaxController,BookController, AuthorController, CategoryController,
-    HomeController, TestController, AccountController, CityController, CustomerController, UserController, ProvinceController,
+    HomeController, TestController, BookPurchaseController,
+    CityController, CustomerController, UserController, ProvinceController,
+    UserChatController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Models\Customer;
 use Illuminate\Support\Facades\{Route, Auth};
 
 Route::get('/', array(HomeController::class, 'index'))->name('home');
@@ -50,14 +51,25 @@ Route::resource('/authors', AuthorController::class);
 // Books
 Route::prefix('/books')->group(function() {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
-    Route::get('payment/{book}', array(BookController::class, 'bookPayment'))->name('books.payment');
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::get('wishlist/', array(BookController::class, 'wishlist'));
     Route::get('/waiting-for-payments', array(BookController::class, 'waitingForPayments'))->name('waiting.for.payment');
-    Route::post('{book}/payment', array(BookController::class, 'bookPaymentPost'))->name('books.payment.post');
 });
 Route::resource('/books', BookController::class);
+
+// Book Purchase
+Route::prefix('/book-purchases')->group(function() {
+    Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
+    Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
+    Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
+});
+
+Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user')->middleware('book_user');
+
+// Chat dengan admin
+Route::resource('/user-chats', UserChatController::class);
+
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
 

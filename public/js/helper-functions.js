@@ -229,6 +229,7 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction) {
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
+            console.log(errors.responseJSON.message);
         }
     });
 }
@@ -246,25 +247,26 @@ function customerDestroy(){
         e.preventDefault();
         e.stopImmediatePropagation();
 
-        let dataCustomerLength = $('#data-customers').children().length - 1;
+        let dataCustomerLength = $('.data-customer').length - 1;
         let customerId         = $(this).data('id');
         let dataCustomer       = $(this).closest($('.data-customer'));
-        let dataCustomers      = $('#data-customers');
+        let dataCustomers      = $('.data-customer');
 
         if (confirm('Apakah anda yakin ingin menghapus alamat tersebut ?')) {
             ajaxForm('POST', this, `/customers/${customerId}`, function() {;
                 scrollToElement(dataCustomers, 500);
                 dataCustomer.remove();
 
-                if ((dataCustomerLength - 1) < 5) {
+                if (dataCustomerLength < 5) {
                     $('#customer-store-modal-trigger').show();
                 }
 
-                if ((dataCustomerLength - 1) == 0) {
+                if (dataCustomerLength == 0) {
                     $('#customer-store-empty').show();
                 }
             });
         }
+
 
     });
     //#endregion - Customer Destroy
@@ -276,7 +278,9 @@ function customerUpdate() {
     let changeName, dataCustomer, changePhoneNumber, changeAddress, changeCity, changeDistrict, changeProvince;
 
     // Customer Modal Edit
-    $('.customer-edit').on('click', function() {
+    $('.customer-edit').on('click', function(e) {
+        e.stopImmediatePropagation;
+
         $('#method-patch').remove();
 
         let form              = $('.modal-customer-edit').children().children();
@@ -297,6 +301,7 @@ function customerUpdate() {
             data    : { '_token' : csrfToken },
             dataType: "JSON",
             success : function (response) {
+                console.log(response.customer.name);
                 form.children('input[name=nama_penerima]').val(response.customer.name);
                 form.children('input[name=nomer_handphone]').val(response.customer.phone_number);
                 form.children('input[name=alamat_tujuan]').val(response.customer.address);
@@ -320,7 +325,10 @@ function customerUpdate() {
         let city         = $(this.kota_atau_kabupaten).find(':selected').text() + '.';
         let province     = $(this.provinsi).find(':selected').text();
 
+        console.log(namaPenerima);
+
         if (confirm('Apakah anda yakin ingin mengedit alamat tersebut ?')) {
+
             let patchMethod = `<input id="method-patch" type="hidden" name="_method" value="PATCH">`;
 
             $(this).append(patchMethod);
@@ -358,3 +366,62 @@ function customerUpdate() {
 function toggleText (selector, a, b) {
     return $(selector).text($(selector).text() == b ? a : b);
 }
+
+// Book User / Book Payment
+// Jika deadline pembayaran habis maka hapus data dari database, lalu redirect ke home
+function ajaxBookPurchaseDeadlineDestroy() {
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        type    : "POST",
+        url     : `/book-purchases/ajax-payment-deadline`,
+        data    : { '_token' : csrfToken },
+        dataType: "JSON",
+        success : function (response) {
+            console.log(response);
+        },
+    });
+}
+
+function getPaymentDeadlineText(userId) {
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        type    : "POST",
+        url     : `/book-purchases/${userId}/ajax-payment-deadline-text`,
+        data    : { '_token' : csrfToken },
+        dataType: "JSON",
+        success : function (response) {
+            let deadlineText = `${response.hours} : ${response.minutes} : ${response.seconds}`;
+
+            $('#payment-limit-time').text(deadlineText);
+
+            setInterval(() => {
+                let minutes = response.minutes;
+                let seconds = response.seconds < 10 ? '0' + response.seconds-- : response.seconds--;
+                let hours   = response.hours;
+
+                let deadlineText = `${hours} : ${minutes} : ${seconds}`;
+
+                if (response.seconds < 0) {
+                    response.minutes--;
+                    response.seconds = 59;
+                }
+
+                if (response.minutes < 0) {
+                    response.hours--;
+                    response.minutes = 59;
+                }
+
+                if (response.hours < 0) {
+                    window.location.href = response.home;
+                }
+
+                $('#payment-limit-time').text(deadlineText);
+            }, 1000);
+
+        },
+    });
+}
+
+

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book, Province, City};
+use App\Models\{Author, Book, Province, City, User, BookUser, UserChat};
+use Illuminate\Support\Facades\Date;
+use Faker\Factory as Faker;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +15,16 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        return view('test');
+        $a = '1';
+
+        $chats = DB::select(
+            'select user_chats.* from user_chats,
+            (select user_id,max(created_at) as transaction_date
+                 from user_chats
+                 group by user_id) max_user
+              where user_chats.user_id=max_user.user_id
+              and user_chats.created_at=max_user.transaction_date'
+        );
     }
 
     public function testPost() {

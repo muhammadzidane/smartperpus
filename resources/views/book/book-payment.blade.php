@@ -3,8 +3,8 @@
 
     <div class="text-center">
         <h4>Lakukan pembayaran dalam</h4>
-        <h1 id="payment-limit-time" class="text-righteous my-4">24 : 00 : 00</h1>
-        <div>Batas waktu pembayaran : <span id="payment-limit-date" class="tbold">Kamis, 15 September 2021</span></div>
+        <h1 id="payment-limit-time" class="text-righteous my-4"></h1>
+        <div>Batas waktu pembayaran : <span id="payment-limit-date" data-id="{{ $bookUser->id }}" class="tbold"></span></div>
     </div>
 
     <div>
@@ -19,7 +19,7 @@
                         <div>
                             <div class="d-flex">
                                 <div>
-                                    @switch($request->book_payment_method)
+                                    @switch($bookUser->payment_method)
                                         @case('Transfer Bank BRI')
                                             <img src="{{ asset('img/transfer/bri.png') }}" class="w-20">
                                         @break
@@ -34,77 +34,87 @@
                                     <h4 class="d-inline align-middle tred ml-3 f-28">1903847182123</h4>
                                 </div>
                             </div>
+                            <h4 class="mt-4 hd-14">Atas nama <span class="text-grey">Muhammad Zidane Alsaadawi</span></h4>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex p-15 ml-4">
+                <div class="d-flex justify-content-between p-15 ml-4">
                     <div>
                         <h4 class="hd-18">Total Pembayaran</h4>
-                        <div class="hd-18 tred-bold">{{ rupiah_format($request->book_total_payment) }}</div>
+                        <div class="hd-18 tred-bold">{{ rupiah_format($bookUser->total_payment) }}</div>
+                        <div class="mt-4 text-grey"><i class="fa fa-info-circle" aria-hidden="true"></i> Unggah bukti pembayaran agar proses cepat dilakukan</div>
                     </div>
                     <div class="ml-4">
-
-                        <button id="login" class="btn-none tred tred-bold" data-toggle="modal"
+                        <button class="btn-none tred tred-bold" data-toggle="modal"
                           data-target="#modal-payment-detail">Lihat Detail</button>
 
                         <!-- Modal lihat detail pembayaran -->
-                        @extends('layouts.modal-custom',
-                        array(
-                            'modal_trigger_id' => 'modal-payment-detail',
-                            'modal_size_class' => 'modal-lg',
-                            'modal_header'     => 'Detail Pembayaran',
-                            'modal_body'       =>
-                            '
-                        <div class="row borbot-gray-0 pb-2">
-                            <div class="col-3"><img class="w-100" src="{{ asset('storage/books/' . $book->image) }}"></div>
-                                <div class="col-9">
-                                    <div>
-                                        <h4 class="hd-14">{{ $book->name }}</h4>
-                                        <h4 class="hd-14 tred">( Buku Cetak )</h4>
+                        <div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog"
+                          aria-labelledby="modelTitleId" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered p-5" role="document">
+                                <div class="modal-content modal-content-login">
+                                    <div class="px-3 mb-4 d-flex justify-content-between">
+                                        <h5 class="modal-title tred login-header">Detail Pembayaran</h5>
+                                        <button type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                    <div class="text-grey">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Jumlah barang</div>
-                                            <div>1</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Harga barang</div>
-                                            <div>{{ rupiah_format($book->price) }}</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Kurir</div>
-                                            <div>{{ $request->book_courier_service }}</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Layanan kurir</div>
-                                            <div>Indonesia Kilat</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Ongkos Kirim</div>
-                                            <div>Rp7.000</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Layanan pembayaran</div>
-                                            <div>Transfer Bank BRI</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Ongkos Kirim</div>
-                                            <div>Rp7.000</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Kode unik</div>
-                                            <div>Rp135</div>
-                                        </div>
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <div>Total Pembayaran</div>
-                                            <div class="tred-bold">Rp100.000</div>
+                                    <div class="modal-body">
+                                        <div class="row borbot-gray-0 pb-2 px-3">
+                                            <div class="col-3">
+                                                <img class="w-100"
+                                                  src="{{ asset('storage/books/' . App\Models\Book::find($bookUser->book_id)->image) }}">
+                                            </div>
+                                                <div class="col-9">
+                                                    <div>
+                                                        <h4 class="hd-14">{{ App\Models\Book::find($bookUser->book_id)->name }} </h4>
+                                                        <h4 class="hd-14 tred">( Buku Cetak )</h4>
+                                                    </div>
+                                                    <div class="text-grey">
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Jumlah barang</div>
+                                                            <div>{{ $bookUser->amount }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Harga barang</div>
+                                                            <div>{{ rupiah_format(App\Models\Book::find($bookUser->book_id)->price) }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Kurir</div>
+                                                            <div>{{ $bookUser->courier_name }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Layanan kurir</div>
+                                                            <div>{{ $bookUser->courier_service }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Ongkos Kirim</div>
+                                                            <div>Rp7.000</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Layanan pembayaran</div>
+                                                            <div>{{ $bookUser->payment_method }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Ongkos Kirim</div>
+                                                            <div>{{ rupiah_format($bookUser->shipping_cost) }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Kode unik</div>
+                                                            <div>{{ rupiah_format($bookUser->unique_code) }}</div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between mb-1">
+                                                            <div>Total Pembayaran</div>
+                                                            <div class="tred-bold">{{ rupiah_format($bookUser->total_payment) }}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        '
-                        )
-                        )
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,7 +124,7 @@
             <div class="white-content-header-2">
                 <h4 class="hd-18">Petunjuk Pembayaran</h4>
             </div>
-            @switch($request->book_payment_method)
+            @switch($bookUser->payment_method)
                 @case('Transfer Bank BRI')
                 <div class="my-4 c-p">
                     <div class="payment-instructions borbot-gray-0" data-bank="bri-atm">

@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Book;
+use App\Models\Testimoni;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BookFactory extends Factory
+class TestimoniFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Book::class;
+    protected $model = Testimoni::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,7 @@ class BookFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Harry Potter and the Goblet of Fire',
-            'price' => 460000,
+            //
         ];
     }
 }

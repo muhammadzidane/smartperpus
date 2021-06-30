@@ -550,14 +550,5 @@ class BookSeeder extends Seeder
                 )
             );
         }
-
-        // Book::create(
-        //     array(
-        //         'name'        => 'Kimetsu Mugen Train',
-        //         'price'       => 23400,
-        //         'image'       => 'kimetsu-mugen-train.jpg',
-        //         'author_id'   => 2,
-        //     )
-        // );
     }
 }

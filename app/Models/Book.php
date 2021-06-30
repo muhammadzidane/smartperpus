@@ -17,6 +17,10 @@ class Book extends Model
         return $this->belongsTo('App\Models\Author');
     }
 
+    public function users() {
+        return $this->belongsToMany('App\Models\User')->withTimestamps();
+    }
+
     public function categories() {
         return $this->belongsToMany('App\Models\Category')->withTimestamps();
     }
@@ -27,10 +31,6 @@ class Book extends Model
 
     public function printedStock() {
         return $this->hasOne('App\Models\PrintedBookStock');
-    }
-
-    public function bookPurchases() {
-        return $this->hasMany('App\Models\BookPurchase');
     }
 
     // Accessors

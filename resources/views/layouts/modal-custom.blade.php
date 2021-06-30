@@ -8,7 +8,6 @@
                 </button>
             </div>
             <div class="modal-body">
-                @php echo $modal_body; @endphp
             </div>
         </div>
     </div>

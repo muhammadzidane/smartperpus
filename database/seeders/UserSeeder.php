@@ -46,6 +46,26 @@ class UserSeeder extends Seeder
                 'P',
                 '089528229989',
             ),
+            array(
+                'Lara',
+                'Greyrat',
+                'lara@gmail.com',
+                'guest',
+                Hash::make('lara123'),
+                '1998-02-21',
+                'P',
+                '089528229989',
+            ),
+            array(
+                'Eris',
+                'Putri',
+                'eris@gmail.com',
+                'admin',
+                Hash::make('eris123'),
+                '1998-02-22',
+                'P',
+                '089528229989',
+            ),
         );
 
         foreach ($users as $user) {

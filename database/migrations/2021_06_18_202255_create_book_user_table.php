@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBookPurchasesTable extends Migration
+class CreateBookUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateBookPurchasesTable extends Migration
      */
     public function up()
     {
-        Schema::create('book_purchases', function (Blueprint $table) {
+        Schema::create('book_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('invoice', 10);
             $table->enum('book_version', array('ebook', 'hard_cover'));
             $table->integer('amount');
             $table->string('courier_name');
@@ -24,9 +25,10 @@ class CreateBookPurchasesTable extends Migration
             $table->integer('shipping_cost');
             $table->string('note')->nullable();
             $table->integer('insurance')->nullable();
-            $table->integer('unique_code');
+            $table->smallInteger('unique_code');
             $table->integer('total_payment');
             $table->enum('payment_method', array('Transfer Bank BRI', 'Transfer Bank BNI', 'Transfer Bank BCA'));
+            $table->enum('payment_status', array('failed', 'waiting_for_payment', 'waiting_for_confirmation', 'already_paid'));
             $table->dateTime('payment_deadline');
             $table->timestamps();
         });
@@ -39,6 +41,6 @@ class CreateBookPurchasesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('book_purchases');
+        Schema::dropIfExists('book_user');
     }
 }

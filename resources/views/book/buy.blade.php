@@ -2,10 +2,10 @@
 @section('content')
 
 <div class="home-and-anymore-show">
-    <a class="tsmall" href="#">Home</a><i class="fas fa-caret-right tsmall"></i>
+    <a class="tsmall" href="{{ route('home') }}">Home</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">Categories</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">{{ $book->categories[0]->name }}</a><i class="fas fa-caret-right tsmall"></i>
-    <span class="tsmall tred-bold">{{ $book->name }}</>
+    <span class="tsmall tred-bold">{{ $book->name }}</span>
 </div>
 
 @if (session('pesan') || $errors->any())
@@ -66,7 +66,7 @@
                     </div>
                     <div class="text-righteous mr-5">
                         <div>Berat Barang</div>
-                        <div id="weight" data-weight="300">300 gram</div>
+                        <div id="weight" data-weight="300">{{ $book->weight }} gram</div>
                     </div>
                     <div class="text-righteous mr-5">
                         <div>Asuransi Pengiriman <i class="fa fa-info-circle" aria-hidden="true"></i></div>
@@ -140,9 +140,9 @@
                         </div>
                         <div id="data-customers">
                             @forelse ($user->customer->take(5) as $customer)
-                                <div class="data-customer borbot-gray-0 mt-3 pb-3">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
+                                <div class="data-customer mt-3 pb-3">
+                                    <div class="row justify-content-between">
+                                        <div class="col-10">
                                             <div class="destination">
                                                 <i class="fas fa-circle-notch text-grey mr-1"></i>
                                                 <span class="tbold">Alamat Tujuan</span>
@@ -161,14 +161,16 @@
                                                 <span class="customer-phone-number text-grey">( {{ $customer->phone_number }} )</span>
                                             </div>
                                         </div>
-                                        <div>
-                                            <label>
-                                                <input class="customer-address" type="radio" name="alamat_pengiriman" value="{{ $customer->id }}">
-                                                <span>Pilih</span>
-                                            </label>
+                                        <div class="col-2">
+                                            <div class="ml-auto w-maxc">
+                                                <label>
+                                                    <input class="customer-address" type="radio" name="alamat_pengiriman" value="{{ $customer->id }}">
+                                                    <span>Pilih</span>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex mt-2">
+                                    <div class="d-flex mt-2 borbot-gray-0">
                                         <div class="ml-auto">
                                             <div class="d-flex">
                                                 <div class="c-middle mr-1">
@@ -191,11 +193,14 @@
                                     </div>
                                 </div>
                             @empty
-                                <div id="customer-store-empty" class="d-flex mt-4 mx-3">
-                                    <div>
-                                        <img class="w-100" src="{{ asset('img/map-book2.png') }}">
+                                <div id="customer-store-empty">
+                                    <div class="d-flex mt-4 mx-3">
+                                        <div>
+                                            <img class="w-100" src="{{ asset('img/map-book2.png') }}">
+                                        </div>
+                                        <div class="col-9 ml-2 c-middle"><h4 class="tred-bold hd-18">Alamat Tujuan Wajib Diisi</h4></div>
                                     </div>
-                                    <div class="col-9 ml-2 c-middle"><h4 class="tred-bold hd-18">Alamat Tujuan Wajib Diisi</h4></div>
+
                                 </div>
                             @endforelse
 
@@ -256,24 +261,24 @@
                     <div>
                         <label class="c-p d-block">
                             <div>
-                                <input type="radio" name="payment_method" class="inp-payment-method"
+                                <input type="radio" name="payment_method" class="inp-payment-method mr-2"
                                   value="Transfer Bank BRI" id="">
-                                <img src="{{ asset('img/transfer/bri.png') }}" class="img-transfer" alt="" srcset="">
+                                <img src="{{ asset('img/transfer/bri.png') }}" class="img-transfer mr-1" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BRI</span>
                             </div>
                         </label>
                         <label class="c-p d-block">
-                            <div class="mt-3">
-                                <input type="radio" name="payment_method" class="inp-payment-method"
+                            <div class="mt-4">
+                                <input type="radio" name="payment_method" class="inp-payment-method mr-2"
                                   value="Transfer Bank BNI" id="">
-                                <img src="{{ asset('img/transfer/bni.png') }}" style="width:47px;" class="img-transfer" alt="" srcset="">
+                                <img src="{{ asset('img/transfer/bni.png') }}" style="width:47px;" class="img-transfer mr-1" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BNI</span>
                             </div>
                         </label>
                         <label class="c-p d-block">
-                            <div class="mt-3">
-                                <input type="radio" name="payment_method" class="inp-payment-method" value="Transfer Bank BCA" id="">
-                                <img src="{{ asset('img/transfer/bca.png') }}" style="width:70px;" class="img-transfer" alt="" srcset="">
+                            <div class="mt-4">
+                                <input type="radio" name="payment_method" class="inp-payment-method mr-2" value="Transfer Bank BCA" id="">
+                                <img src="{{ asset('img/transfer/bca.png') }}" style="width:70px;" class="img-transfer mr-1" alt="" srcset="">
                                 <span class="tbold">Transfer Bank BCA</span>
                             </div>
                         </label>
@@ -285,7 +290,7 @@
     <div class="pay-for-the-book">
         <div class="w-75 ml-auto">
             <form id="book-payment-form" data-id="{{ $book->id }}"
-              action="{{ route('books.payment.post', array('book' => $book->id))  }}" method="post">
+              action="{{ route('book-purchases.store', array('book' => $book->id))  }}" method="post">
                 <div class="white-content pt-0">
                     <div class="d-flex flex-column">
                         <div id="book-payment" class="text-greypy-2 mb-0 bordash-gray">
@@ -316,7 +321,7 @@
                                 <input type="hidden" id="book-shipping-cost" name="shipping_cost">
                                 <input type="hidden" id="book-note" name="note">
                                 <input type="hidden" id="book-insurance" name="insurance">
-                                <input type="hidden" id="book-unique-code">
+                                <input type="hidden" id="book-unique-code" name="unique_code">
                                 <input type="hidden" id="book-total-payment" name="total_pembayaran">
                                 <input type="hidden" id="book-payment-method" name="metode_pembayaran">
                                 <input type="hidden" id="book-customer-address" name="alamat_pengiriman">

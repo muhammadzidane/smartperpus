@@ -33,8 +33,6 @@ $(document).ready(function () {
         });
     }
 
-    $('#login').trigger('click');
-
     // Search Buku dan Author ( ada di Navbar )
     $('.keywords').on('keyup', function () {
         if ($(this).val() === '') {
@@ -539,11 +537,8 @@ $(document).ready(function () {
                 spinnerHtml    += `<div class="spin"></div>`;
                 spinnerHtml    += `</div>`;
 
-            if (courierServices == 0) {
-
-                console.log(courierServices);
-                $('#courier-choise-result').html(spinnerHtml);
-            }
+            $('#courier-choise-name').html('');
+            $('#courier-choise-result').html(spinnerHtml);
             // End of Loading Couriers
 
             $('input[name=courier-choise]').removeAttr('checked');
@@ -635,7 +630,7 @@ $(document).ready(function () {
             });
         }
         else {
-            let errorMsg = `<span class="tred" role="alert"><strong>anjai</strong></span>`;
+            let errorMsg = `<span class="tred" role="alert"><strong>Harap tambah alamat</strong></span>`;
 
             scrollToElement('#alamat-pengiriman', 500);
             $('#alamat-pengiriman > span').remove();
@@ -644,6 +639,7 @@ $(document).ready(function () {
     });
 
     $('#book-payment-form').on('submit', function(e) {
+        e.preventDefault();
         let bookId             = $(this).data('id');
         let courierServiceCost = $('.inp-courier-choise-service:checked').val()
         let courierServiceName = $('.inp-courier-choise-service:checked').next().text();
@@ -652,7 +648,6 @@ $(document).ready(function () {
         let uniqueCode         = randomIntFromInterval(100, 999);
 
         if (courierServiceCost === undefined || paymentMethod === undefined || address === undefined) {
-            e.preventDefault();
         }
 
         $('#book-amount').val($('#jumlah-barang').text());
@@ -661,13 +656,11 @@ $(document).ready(function () {
         $('#book-shipping-cost').val(courierServiceCost);
         $('#book-note').val($('#write-note').val());
         $('#book-insurance').val($('#shipping-insurance:checked').val());
-
-        console.log($('#book-insurance'));
         $('#book-unique-code').val(uniqueCode);
         $('#book-payment-method').val(paymentMethod);
         $('#book-customer-address').val($('.customer-address:checked').val());
 
-        ajaxForm('POST', this, `/books/${bookId}/payment`, function(response) {
+        ajaxForm('POST', this, `/book-purchases/${bookId}`, function(response) {
             if (response.errors) {
                 let errorMsgs = '';
 
@@ -681,39 +674,33 @@ $(document).ready(function () {
 
                 $('#click-to-the-top').trigger('click');
                 $('#pesan').removeClass('d-none');
-                $('#pesan').html(errorMsgs)
+                $('#pesan').html(errorMsgs);
             }
             else {
-                $("#book-payment-form").on('submit', function() {
-                    return false;
-                });
+                window.location.href = response.url;
             }
         });
 
     });
 
     // Book Payment
-    let months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-	let myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
-    let date = new Date();
-    let i    = 59;
+    let pathName      = window.location.pathname;
+    let regexMatch    = /\/book-purchases\/[0-9]{1}/;
+    let regexPathName = pathName.match(regexMatch);
 
-    setInterval(() => {
+    let userId        = $('#payment-limit-date').data('id');
+    let months        = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    let myDays        = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
+    let date          = new Date();
+    let i             = 59;
 
-        date.setHours(23);
-        date.setMinutes(59);
-        date.setSeconds(i--);
+    ajaxBookPurchaseDeadlineDestroy();
 
-        $('#payment-limit-time').text(`${date.getHours()} : ${date.getMinutes()} : ${date.getSeconds()}`);
-
-        if (date.toLocaleTimeString() == '00.00.00') {
-            // Pembayaran Gagal
-        }
-
-    }, 1000);
+    if (regexPathName) {
+        getPaymentDeadlineText(userId);
+    }
 
     let paymentLimitText = `${myDays[date.getDay() + 1] ?? myDays[0]}, ${date.getDate() + 1} ${months[date.getMonth()]} ${date.getFullYear()}`;
-
     $('#payment-limit-date').text(paymentLimitText);
 
     // Petunjuk Pembayaran
@@ -766,16 +753,19 @@ $(document).ready(function () {
     $('#btn-chat').on('click', function() {
         btnChatclickedCount++;
 
+        $('.chat-content').show();
         $('.chat-with-admin').show();
         $(this).hide();
 
         if (btnChatclickedCount == 1) {
             $('.chattings').scrollTop($(document).height());
         }
+
+        $('.type-message-input').trigger('focus');
     });
 
     $('#btn-chat-exit').on('click', function() {
-
+        $('.chat-content').hide();
         $('.chat-with-admin').hide();
         $('#btn-chat').show();
 
@@ -784,6 +774,42 @@ $(document).ready(function () {
     $('#dropdown-navbar').on('click', function() {
         $('.responsive-navbar').slideToggle('fast');
     })
+
+    // Chat dengan admin - UserChat Store
+    $('#chats-store-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let inputValue = $('.type-message-input').val();
+
+        if (inputValue != '') {
+            ajaxForm('POST', '#chats-store-form', `/chats`, function(response) {
+                $('.chattings > div').append(response.chat);
+                $('.type-message-input').val('');
+                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+            });
+        }
+    });
+
+    // Chat dengan user - AdminChat Store
+    $('.user-chat').on('click', function() {
+        let dataId = $(this).data('id');
+
+        $(this).prevAll().removeClass('user-chat-clicked');
+        $(this).nextAll().removeClass('user-chat-clicked');
+        $(this).addClass('user-chat-clicked');
+        $('.type-message-input').trigger('focus');
+
+        $.ajax({
+            type    : "GET",
+            url     : `/user-chats/${dataId}`,
+            data    : {},
+            dataType: "JSON",
+            success : function (response) {
+                $('.chattings > div').html(response.userChatsHtml);
+            }
+        });
+    });
+
 
     // Book Show
     $('#book-show-delete').on('click', function(e) {
@@ -1072,13 +1098,13 @@ $(document).ready(function () {
         $('.validate-error').text('');
 
         if (alamatWajibDisi == 1) {
-            $('#customer-store-empty').remove();
+            $('#customer-store-empty').hide();
         }
 
         ajaxForm('POST', '#customer-store', `/customers`, function(response) {
 
             if (response.status) {
-                let dataCustomers = $('#data-customers').children().length;
+                let dataCustomers = $('.data-customer').length + 1;
 
                 $('.close').trigger('click');
                 $('#data-customers').append(response.dataCustomer);
@@ -1092,8 +1118,8 @@ $(document).ready(function () {
                     scrollToElement($('.data-customer').last(), 500);
                 }
 
-                customerDestroy();
                 customerUpdate();
+                customerDestroy();
             }
             else {
                 for (const key in response.errorMsg) {

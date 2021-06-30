@@ -271,18 +271,51 @@
     </div>
     @auth
         <div class="chat">
-            <div class="chat-content" aria-labelledby="triggerId">
+            <div class="chat-content"  aria-labelledby="triggerId">
                 <div class="chat-with-admin">
                     <div class="borbot-gray-0 d-flex justify-content-between">
                         <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
                         <button id="btn-chat-exit" class="btn-none c-middle mr-2"><i class="fa fa-caret-down" aria-hidden="true"></i></button>
                     </div>
                     <div class="row ml-0">
-                        <div class="col-md-4 p-0">
-                            <div class="borright-gray-0 h-100">
-                                <div class="p-2">
-                                    <img class="w-100" src="{{ asset('img/admin.png') }}">
-                                </div>
+                        <div class="col-md-4 p-0 overflow-auto">
+                            <div class="borright-gray-0">
+                                @can('viewAny', App\Models\User::class)
+                                    <div class="testt">
+                                        <div class="p-2">
+                                            <form action="#" method="post">
+                                                <input type="text" class="form-control-custom" placeholder="Cari user...">
+                                            </form>
+                                        </div>
+
+                                        @php
+                                            $chats = DB::select(
+                                                'select user_chats.* from user_chats,
+                                                (select user_id,max(created_at) as transaction_date
+                                                    from user_chats
+                                                    group by user_id) max_user
+                                                where user_chats.user_id=max_user.user_id
+                                                and user_chats.created_at=max_user.transaction_date'
+                                            );
+                                        @endphp
+
+                                        <div class="user-chattings">
+                                            @foreach ($chats as $chat)
+                                                <div class="user-chat pl-3 py-3"
+                                                  data-id="{{ App\Models\User::find($chat->user_id)->id }}">
+                                                    <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
+                                                    . App\Models\User::find($chat->user_id)->last_name }}</div>
+                                                    <div>{{ strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' }}</div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+
+                                    @else
+                                        <div class="p-2 testt">
+                                            <img class="w-100" src="{{ asset('img/admin.png') }}">
+                                        </div>
+                                @endcan
                             </div>
                         </div>
                         <div class="col-md-8 pl-0">
@@ -299,80 +332,41 @@
                                 <div class="container">
                                     <div class="chattings">
                                         <div class="mt-auto w-100">
-                                            <div>
-                                                <div class="text-right"><small><span class="tbold">Anda</span>, 19 Juli 2000, 20:30 WIB</small></div>
-                                                <div class="chat-msg-user">
-                                                    <div class="chat-text-user">stok buku cetak ny msih ada gk min ?</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-right"><small><span class="tbold">Anda</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-user">
-                                                    <div class="chat-text-user">Halo nama saya muhammmad zidane alsaadawi ganteng sedunia aawokawok</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-right"><small><span class="tbold">Anda</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-user">
-                                                    <div class="chat-text-user">min bales dong</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-text-admin">banyak gan stok nya mah</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-text-admin">banyak gan stok nya mah</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-text-admin">banyak gan stok nya mah</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-text-admin">banyak gan stok nya mah</div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-right"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-user">
-                                                    <div class="chat-img-user"><img class="w-50" src="{{ asset('img/book/detektif-conan-97.jpg') }}" alt="" srcset=""></div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-img-admin">
-                                                        <img class="w-50" src="{{ asset('img/book/detektif-conan-97.jpg') }}" alt="" srcset="">
+                                            @foreach (App\Models\UserChat::where('user_id',
+                                              Illuminate\Support\Facades\Auth::id())->get() as $chat)
+                                                <div class="mt-3">
+                                                    <div class="text-right">
+                                                        <small>
+                                                            <span class="tbold">Anda,</span>
+                                                            <span> {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }} WIB</span>
+                                                        </small>
+                                                    </div>
+                                                    <div class="chat-msg-user">
+                                                        <div class="chat-text-user">{{ $chat->text }}</div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <div class="text-left"><small><span class="tbold">Admin</span>, 19 Juli 2000, 20:31 WIB</small></div>
-                                                <div class="chat-msg-admin">
-                                                    <div class="chat-text-admin">banyak gan stok nya mah</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="type-message">
-                                        <div class="d-flex">
-                                            <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
-                                            <input class=" type-message-input" type="text" name="type-message" id="" placeholder="Ketik pesan...">
-                                            <i class="type-message-plane fas fa-paper-plane"></i>
+
+                                                <!-- empty -->
+                                                    <!-- <div class="chat-empty-img"><img class="w-100" src="{{ asset('img/chat.png') }}"></div> -->
+                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="type-message">
+                    <div>
+                        <form id="chats-store-form" action="{{ route('user-chats.store') }}" class="d-flex" method="post">
+                            <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
+                            <input class="type-message-input" type="text" name="message" id="" placeholder="Ketik pesan..." autocomplete="off">
+                            <button class="btn-none">
+                                <i class="type-message-plane fas fa-paper-plane"></i>
+                            </button>
+
+                            @csrf
+                        </form>
                     </div>
                 </div>
             </div>

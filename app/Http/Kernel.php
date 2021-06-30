@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\BookUserMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -63,5 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'coba' => \App\Http\Middleware\CobaMiddleware::class,
+        'book_user' => \App\Http\Middleware\BookUserMiddleware::class,
     ];
 }

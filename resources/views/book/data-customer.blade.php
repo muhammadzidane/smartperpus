@@ -21,7 +21,7 @@
         </div>
         <div>
             <label>
-                <input type="radio" name="alamat_pengiriman" value="{{ $customer_id }}">
+                <input class="customer-address" type="radio" name="alamat_pengiriman" value="{{ $customer_id }}">
                 <span>Pilih</span>
             </label>
         </div>
