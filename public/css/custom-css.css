@@ -972,7 +972,6 @@ footer {
 }
 
 .user-chattings > div:first-child {
-    margin-top: 1.2rem;
     border-top: 1px solid #dfddc7;
 }
 
@@ -1053,6 +1052,17 @@ footer {
     height: 380px;
     margin-bottom: 15px;
     padding: 0 14px;
+}
+
+.chat-search-user-input {
+    background-color: transparent;
+    border: 1px solid pink;
+    border-radius: 6px;
+    padding: 2px;
+    width: 100%;
+    font-size: 12px;
+    outline: none;
+    text-indent: 10px;
 }
 
 .chat-msg-user {

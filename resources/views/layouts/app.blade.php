@@ -286,23 +286,20 @@
                                 @can('viewAny', App\Models\User::class)
                                     <div class="testt">
                                         <div class="p-2">
-                                            <form action="#" method="post">
-                                                <input type="text" class="form-control-custom" placeholder="Cari user...">
-                                            </form>
+                                            <input id="chat-search-user" type="text" class="chat-search-user-input"
+                                              placeholder="Cari user..." autocomplete="off">
                                         </div>
-
-                                        @php
-                                            $chats = DB::select(
-                                                'select user_chats.* from user_chats,
-                                                (select user_id,max(created_at) as transaction_date
-                                                    from user_chats
-                                                    group by user_id) max_user
-                                                where user_chats.user_id=max_user.user_id
-                                                and user_chats.created_at=max_user.transaction_date'
-                                            );
-                                        @endphp
-
                                         <div class="user-chattings">
+                                            @php
+                                                $chats = DB::select(
+                                                    'select user_chats.* from user_chats,
+                                                    (select user_id,max(created_at) as transaction_date
+                                                        from user_chats
+                                                        group by user_id) max_user
+                                                    where user_chats.user_id=max_user.user_id
+                                                    and user_chats.created_at=max_user.transaction_date'
+                                                );
+                                            @endphp
                                             @foreach ($chats as $chat)
                                                 <div class="user-chat pl-3 py-3"
                                                   data-id="{{ App\Models\User::find($chat->user_id)->id }}">

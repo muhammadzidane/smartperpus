@@ -74,7 +74,7 @@ Route::resource('/admin-chats', AdminChatController::class);
 
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
-
+Route::post('/admin-chats/search', array(AdminChatController::class, 'show'));
 
 // Ajax
 Route::prefix('/ajax/request')->group(function() {

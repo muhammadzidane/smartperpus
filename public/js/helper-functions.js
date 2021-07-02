@@ -423,4 +423,14 @@ function getPaymentDeadlineText(userId) {
     });
 }
 
+// Search
+const ajaxJson = (method, url, data, successResponse) => {
+    $.ajax({
+        type: method,
+        url: url,
+        data: data,
+        dataType: "JSON",
+        success: successResponse
+    });
+}
 

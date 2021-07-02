@@ -15,32 +15,43 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        $user        = User::find(2);
-        $admin_chats = AdminChat::where('user_id', $user->id)->get();
+        $request = '';
 
-        foreach ($admin_chats as $chattings) {
-            $user->user_chats->push($chattings);
+
+        if($request != '') {
+            $query  = '';
+            $query .= " SELECT user_chats.* FROM user_chats INNER JOIN users ON user_chats.user_id=users.id,";
+            $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
+            $query .= ' WHERE user_chats.user_id = max_user.user_id';
+            $query .= " AND user_chats.created_at = max_user.transaction_date";
+            $query .= " AND concat_ws(' ', users.first_name, users.last_name) LIKE '%$request%'";
+        }
+        else {
+            $query  = '';
+            $query .= " SELECT user_chats.* FROM user_chats INNER JOIN users ON user_chats.user_id=users.id,";
+            $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
+            $query .= ' WHERE user_chats.user_id = max_user.user_id';
+            $query .= " AND user_chats.created_at = max_user.transaction_date";
+            $query .= " AND ( users.first_name LIKE '%%' )";
         }
 
-        $userChatsHtml           = '';
 
-        foreach ($user->user_chats->sortBy('created_at')  as $key => $chat) {
-            $text_align      = $chat->getTable() == 'user_chats' ? 'text-left' : 'text-right';
-            $first_name      = $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin';
-            $last_name       = $chat->getTable() == 'user_chats' ? $chat->user->last_name : '';
-            $chat_msg        = $chat->getTable() == 'user_chats' ? 'chat-msg-admin' : 'chat-msg-user';
-            $chat_msg_align  = $chat->getTable() == 'user_chats' ? 'chat-text-admin' : 'chat-text-user';
-            $iso_format_chat = $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM');
+        $chats = DB::select($query);
 
-            $userChatsHtml .= "<div class='mt-3'>";
-            $userChatsHtml .= "<div class='$text_align'><small><span class='tbold'>$first_name $last_name </span>$iso_format_chat, WIB</small></div>";
-            $userChatsHtml .= "<div class='$chat_msg'>";
-            $userChatsHtml .= "<div class='$chat_msg_align'>$chat->text</div>";
-            $userChatsHtml .= "</div>";
-            $userChatsHtml .= "</div>";
+        $userChatHtml  = "";
 
-            dump($chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM'));
+        foreach ($chats as $chat) {
+            $userChatHtml .= "<div class='user-chat pl-3 py-3'";
+            $userChatHtml .= "data-id='". User::find($chat->user_id)->id  ."'>";
+            $userChatHtml .= "<div class='tbold text-grey'>" . User::find($chat->user_id)->first_name . ' ' ;
+            $userChatHtml .=  User::find($chat->user_id)->last_name . "</div>";
+            $userChatHtml .= "<div>" . strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' . "</div>";
+            $userChatHtml .= "</div>";
         }
+
+        dump($chats);
+
+        // return response()->json(compact('userChatHtml'));
     }
 
     public function testPost() {

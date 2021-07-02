@@ -847,6 +847,16 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Search user
+    $('#chat-search-user').on('keyup', function() {
+        let searchVal = $(this).val();
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+        ajaxJson('POST', `/admin-chats/search`, { _token : csrfToken, searchVal : searchVal }, (response) => {
+            $('.user-chattings').html(response.userChatHtml);
+        });
+    });
     // End of Chat
 
     // Book Show
