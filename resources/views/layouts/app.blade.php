@@ -332,6 +332,33 @@
                                 <div class="container">
                                     <div class="chattings">
                                         <div class="mt-auto w-100">
+                                            @cannot('viewAny', App\Models\User::class)
+
+                                                @foreach (App\Models\AdminChat::where('user_id',
+                                                    Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
+
+                                                    @php
+                                                    Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
+                                                @endphp
+                                                @endforeach
+
+                                                @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
+                                                <div class="mt-3">
+                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}"><small>
+                                                        <span class="tbold">
+                                                            {{ $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin' }}
+                                                            {{ $chat->getTable() == 'user_chats' ? $chat->user->last_name : '' }}
+                                                        </span>, {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }}</small>
+                                                    </div>
+                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
+                                                        <div
+                                                        class="{{  $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
+                                                        {{ $chat->text }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            @endcannot
                                         </div>
                                     </div>
                                 </div>

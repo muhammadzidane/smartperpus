@@ -18,7 +18,6 @@ class TestController extends Controller
         $user        = User::find(2);
         $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
-
         foreach ($admin_chats as $chattings) {
             $user->user_chats->push($chattings);
         }
@@ -42,8 +41,6 @@ class TestController extends Controller
 
             dump($chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM'));
         }
-
-        dump($user->user_chats);
     }
 
     public function testPost() {

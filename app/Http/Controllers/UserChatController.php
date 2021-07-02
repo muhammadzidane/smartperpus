@@ -37,7 +37,7 @@ class UserChatController extends Controller
     }
 
     public function show(Request $request, UserChat $userChat) {
-        $user  = User::find($request->userId);
+        $user        = User::find($request->userId);
         $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
         foreach ($admin_chats as $chattings) {
