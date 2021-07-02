@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat};
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Collection;
@@ -17,41 +18,11 @@ class TestController extends Controller
     public function test() {
         $request = '';
 
+        $now = Carbon::now();
+        $another_time = Carbon::parse('2021-07-01 20:00:00');
 
-        if($request != '') {
-            $query  = '';
-            $query .= " SELECT user_chats.* FROM user_chats INNER JOIN users ON user_chats.user_id=users.id,";
-            $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
-            $query .= ' WHERE user_chats.user_id = max_user.user_id';
-            $query .= " AND user_chats.created_at = max_user.transaction_date";
-            $query .= " AND concat_ws(' ', users.first_name, users.last_name) LIKE '%$request%'";
-        }
-        else {
-            $query  = '';
-            $query .= " SELECT user_chats.* FROM user_chats INNER JOIN users ON user_chats.user_id=users.id,";
-            $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
-            $query .= ' WHERE user_chats.user_id = max_user.user_id';
-            $query .= " AND user_chats.created_at = max_user.transaction_date";
-            $query .= " AND ( users.first_name LIKE '%%' )";
-        }
-
-
-        $chats = DB::select($query);
-
-        $userChatHtml  = "";
-
-        foreach ($chats as $chat) {
-            $userChatHtml .= "<div class='user-chat pl-3 py-3'";
-            $userChatHtml .= "data-id='". User::find($chat->user_id)->id  ."'>";
-            $userChatHtml .= "<div class='tbold text-grey'>" . User::find($chat->user_id)->first_name . ' ' ;
-            $userChatHtml .=  User::find($chat->user_id)->last_name . "</div>";
-            $userChatHtml .= "<div>" . strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' . "</div>";
-            $userChatHtml .= "</div>";
-        }
-
-        dump($chats);
-
-        // return response()->json(compact('userChatHtml'));
+        $diff = $now->diffInDays($another_time);
+        dump($diff);
     }
 
     public function testPost() {

@@ -301,10 +301,19 @@
                                                 );
                                             @endphp
                                             @foreach ($chats as $chat)
-                                                <div class="user-chat pl-3 py-3"
+                                                <div class="user-chat pl-3 py-2"
                                                   data-id="{{ App\Models\User::find($chat->user_id)->id }}">
-                                                    <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
-                                                    . App\Models\User::find($chat->user_id)->last_name }}</div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
+                                                        . App\Models\User::find($chat->user_id)->last_name }}</div>
+                                                        <div class="user-chat-time">
+                                                            @if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($chat->created_at)) >= 1)
+                                                             <small>{{ Carbon\Carbon::parse($chat->created_at)->format('y/m/d') }}</small>
+                                                            @else
+                                                             <small>{{ Carbon\Carbon::parse($chat->created_at)->format('H:i') }}</small>
+                                                            @endif
+                                                        </div>
+                                                    </div>
                                                     <div>{{ strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' }}</div>
                                                 </div>
                                             @endforeach

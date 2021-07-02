@@ -968,6 +968,7 @@ footer {
 }
 
 .user-chat {
+    position: relative;
     border-bottom: 1px solid #dfddc7;
 }
 
@@ -1056,13 +1057,19 @@ footer {
 
 .chat-search-user-input {
     background-color: transparent;
-    border: 1px solid pink;
+    border: 1px solid #bbbbbb;
     border-radius: 6px;
     padding: 2px;
     width: 100%;
     font-size: 12px;
     outline: none;
     text-indent: 10px;
+}
+
+.user-chat-time {
+    margin-right: 5px;
+    width: max-content;
+    margin-left: auto;
 }
 
 .chat-msg-user {

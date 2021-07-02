@@ -823,38 +823,47 @@ $(document).ready(function () {
     });
 
     // Chat dengan user - AdminChat Store
-    $('.user-chat').on('click', function() {
-        let dataId = $(this).data('id');
+    const userChatClick = () => {
+        $('.user-chat').on('click', function() {
+            let dataId = $(this).data('id');
 
-        $(this).prevAll().removeClass('user-chat-clicked');
-        $(this).nextAll().removeClass('user-chat-clicked');
-        $(this).addClass('user-chat-clicked');
-        $('.type-message-input').trigger('focus');
+            $(this).prevAll().removeClass('user-chat-clicked');
+            $(this).nextAll().removeClass('user-chat-clicked');
+            $(this).addClass('user-chat-clicked');
+            $('.type-message-input').trigger('focus');
 
-        $.ajax({
-            type    : "GET",
-            url     : `/user-chats/${dataId}`,
-            data    : { userId : dataId },
-            dataType: "JSON",
-            success : function (response) {
-                console.log(response);
+            $.ajax({
+                type    : "GET",
+                url     : `/user-chats/${dataId}`,
+                data    : { userId : dataId },
+                dataType: "JSON",
+                success : function (response) {
+                    console.log(response);
 
-                $('.chattings > div').html(response.userChatsHtml);
-                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
-            },
-            error : function(response) {
-                console.log(response.responseJSON);
-            }
+                    $('.chattings > div').html(response.userChatsHtml);
+                    $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+                },
+                error : function(response) {
+                    console.log(response);
+                }
+            });
         });
-    });
+    }
+
+    userChatClick();
 
     // Search user
     $('#chat-search-user').on('keyup', function() {
         let searchVal = $(this).val();
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+        if (searchVal == '') {
+            $('.chattings > div').html('');
+        }
+
         ajaxJson('POST', `/admin-chats/search`, { _token : csrfToken, searchVal : searchVal }, (response) => {
             $('.user-chattings').html(response.userChatHtml);
+            userChatClick();
         });
     });
     // End of Chat
