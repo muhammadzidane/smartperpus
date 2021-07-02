@@ -375,13 +375,20 @@
                 <div class="type-message">
                     <div>
                         @cannot('viewAny', App\Models\User::class)
-                            <form id="user-chats-store-form" action="{{ route('user-chats.store') }}" class="d-flex" method="post">
+                            <form id="user-chats-store-form" enctype="multipart/form-data"
+                              action="{{ route('user-chats.store') }}" class="d-flex" method="post">
 
                             @else
-                                <form id="admin-chats-store-form" action="{{ route('admin-chats.store') }}" class="d-flex" method="post">
-                        @endcannot
+                                <form id="admin-chats-store-form" enctype="multipart/form-data"
+                                  action="{{ route('admin-chats.store') }}" class="d-flex" method="post">
 
-                            <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
+                        @endcannot
+                            <span class="mt-2">
+                                <label>
+                                    <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
+                                    <input id="user-chat-send-photo" type="file" name="photo" class="d-none">
+                                </label>
+                            </span>
                             <input class="type-message-input" type="text" name="message" id=""
                             placeholder="Ketik pesan..." autocomplete="off">
                             <button class="btn-none">

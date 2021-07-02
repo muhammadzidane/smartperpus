@@ -1559,6 +1559,22 @@ footer {
     .chat-content {
         width: 100vw;
         height: 100vh;
+        position: relative;
+        top: 0;
+    }
+
+    .click-to-the-top {
+        display: none !important;
+    }
+
+    .type-message {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .click-in-buttom {
+        /* display: none; */
     }
 
     .chat {

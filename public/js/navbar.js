@@ -866,6 +866,11 @@ $(document).ready(function () {
             userChatClick();
         });
     });
+
+    // Mengirim foto pada chat
+    $('#user-chat-send-photo').on('change', () => {
+        console.log(true);
+    })
     // End of Chat
 
     // Book Show
