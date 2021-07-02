@@ -26,6 +26,10 @@ class User extends Authenticatable
         return $this->hasMany(UserChat::class);
     }
 
+    public function admin_chats() {
+        return $this->hasMany(AdminChat::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

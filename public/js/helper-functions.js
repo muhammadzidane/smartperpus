@@ -229,7 +229,6 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction) {
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
-            console.log(errors.responseJSON.message);
         }
     });
 }

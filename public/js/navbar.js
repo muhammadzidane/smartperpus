@@ -775,17 +775,49 @@ $(document).ready(function () {
         $('.responsive-navbar').slideToggle('fast');
     })
 
-    // Chat dengan admin - UserChat Store
-    $('#chats-store-form').on('submit', function(e) {
+    // Chat
+    const responseChats = (response) => {
+        $('.chattings > div').append(response.chat);
+        $('.type-message-input').val('');
+        $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+    }
+
+    // Chat dengan user - AdminChat Store
+    $('#admin-chats-store-form').on('submit', function(e) {
         e.preventDefault();
 
-        let inputValue = $('.type-message-input').val();
+        let userClickedId   = $('.user-chat-clicked').data('id');
+        let inputValue      = $('.type-message-input').val();
+
+        if (inputValue != '' && userClickedId !== undefined) {
+            $.ajax({
+                type: "POST",
+                url: "/admin-chats",
+                data: {
+                    _token : csrfToken,
+                    message: inputValue,
+                    userId : userClickedId,
+                },
+                dataType: "JSON",
+                success: function (response) {
+                    responseChats(response);
+                },
+                error : function(response) {
+                    console.log(response.responseJSON);
+                }
+            });
+        }
+    });
+
+    // Chat dengan admin - UserChat Store
+    $('#user-chats-store-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let inputValue      = $('.type-message-input').val();
 
         if (inputValue != '') {
-            ajaxForm('POST', '#chats-store-form', `/chats`, function(response) {
-                $('.chattings > div').append(response.chat);
-                $('.type-message-input').val('');
-                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+            ajaxForm('POST', '#user-chats-store-form', '/user-chats', function(response) {
+                responseChats(response);
             });
         }
     });
@@ -802,14 +834,20 @@ $(document).ready(function () {
         $.ajax({
             type    : "GET",
             url     : `/user-chats/${dataId}`,
-            data    : {},
+            data    : { userId : dataId },
             dataType: "JSON",
             success : function (response) {
+                console.log(response);
+
                 $('.chattings > div').html(response.userChatsHtml);
+                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+            },
+            error : function(response) {
+                console.log(response.responseJSON);
             }
         });
     });
-
+    // End of Chat
 
     // Book Show
     $('#book-show-delete').on('click', function(e) {

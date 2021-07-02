@@ -15,4 +15,8 @@ class UserChat extends Model
     public function user() {
         return $this->belongsTo(User::class);
     }
+
+    public function admin_chats() {
+        return $this->belongsToMany(AdminChat::class);
+    }
 }

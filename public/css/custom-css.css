@@ -978,7 +978,7 @@ footer {
 
 .user-chat:hover {
     cursor: pointer;
-    background-color: #ece8d9;
+    background-color: #e2d5d5;
 }
 
 .user-chat-clicked {
@@ -1050,8 +1050,9 @@ footer {
     display: flex;
     position: relative;
     overflow-y: auto;
-    height: 55vh;
+    height: 380px;
     margin-bottom: 15px;
+    padding: 0 14px;
 }
 
 .chat-msg-user {

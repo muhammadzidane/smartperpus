@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserChat;
+use App\Models\{ UserChat, AdminChat };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,7 +27,7 @@ class UserChatController extends Controller
         $chat_text_user_or_admin = $user_role == 'guest' ? 'chat-text-user' : 'chat-text0-admin';
 
         $chat  = "<div class='mt-3'>";
-        $chat .= "<div class='$text_right_or_left'><small><span class='tbold'>$anda_or_admin</span>, $iso_format_chat WIB</small></div>";
+        $chat .= "<div class='$text_right_or_left'><small><span class='tbold'>$anda_or_admin</span>, $iso_format_chat WIB wlwl</small></div>";
         $chat .= "<div class='$chat_msg_user_or_admin'>";
         $chat .= "<div class='$chat_text_user_or_admin'>$request->message</div>";
         $chat .= "</div>";
@@ -36,25 +36,32 @@ class UserChatController extends Controller
         return response()->json(compact('chat'));
     }
 
-    public function show(UserChat $userChat) {
-        $user_chats       = $userChat->user->user_chats;
+    public function show(Request $request, UserChat $userChat) {
+        $user  = User::find($request->userId);
+        $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
-        $userChatsHtml = '';
-
-        foreach ($user_chats as $user_chat) {
-            $userChatsHtml  .= '<div class="mt-3">';
-            $userChatsHtml  .= '<div class="text-right">';
-            $userChatsHtml  .= '<small>';
-            $userChatsHtml  .= '<span class="tbold">' . $user_chat->user->first_name . ' ' . $user_chat->user->last_name  .  ', </span>';
-            $userChatsHtml  .= '<span>' . $user_chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') . ' WIB</span>';
-            $userChatsHtml  .= '</small>';
-            $userChatsHtml  .= '</div>';
-            $userChatsHtml  .= '<div class="chat-msg-user">';
-            $userChatsHtml  .= '<div class="chat-text-user">'. $user_chat->text . '</div>';
-            $userChatsHtml  .= '</div>';
-            $userChatsHtml  .= '</div>';
+        foreach ($admin_chats as $chattings) {
+            $user->user_chats->push($chattings);
         }
 
+        $userChatsHtml           = '';
+
+        foreach ($user->user_chats->sortBy('created_at') as $chat) {
+            $text_align      = $chat->getTable() == 'user_chats' ? 'text-left' : 'text-right';
+            $first_name      = $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin';
+            $last_name       = $chat->getTable() == 'user_chats' ? $chat->user->last_name : '';
+            $chat_msg        = $chat->getTable() == 'user_chats' ? 'chat-msg-admin' : 'chat-msg-user';
+            $chat_msg_align  = $chat->getTable() == 'user_chats' ? 'chat-text-admin' : 'chat-text-user';
+
+            $userChatsHtml .= "<div class='mt-3'>";
+            $userChatsHtml .= "<div class='$text_align'><small><span class='tbold'>$first_name $last_name </span>";
+            $userChatsHtml .= $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM');
+            $userChatsHtml .=  " WIB</small></div>";
+            $userChatsHtml .= "<div class='$chat_msg'>";
+            $userChatsHtml .= "<div class='$chat_msg_align'>$chat->text</div>";
+            $userChatsHtml .= "</div>";
+            $userChatsHtml .= "</div>";
+        }
 
         return response()->json(compact('userChatsHtml'));
     }

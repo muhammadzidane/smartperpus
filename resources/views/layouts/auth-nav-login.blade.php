@@ -35,9 +35,9 @@
             </div>
             <div>
                 <div class=" position-relative">
-                    <a class="dropdown-item" href="#"">Menunggu Pembayaran</a>
+                    <a class="dropdown-item" href="#">Menunggu Pembayaran</a>
 
-                    @if (\Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() > 0)
+                    @if (\Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() != 0)
                         <div class="waiting-for-payment">
                             {{ Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() }}
                         </div>

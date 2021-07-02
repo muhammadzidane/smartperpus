@@ -269,13 +269,16 @@
             </div>
         </div>
     </div>
+
     @auth
         <div class="chat">
             <div class="chat-content"  aria-labelledby="triggerId">
                 <div class="chat-with-admin">
                     <div class="borbot-gray-0 d-flex justify-content-between">
                         <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
-                        <button id="btn-chat-exit" class="btn-none c-middle mr-2"><i class="fa fa-caret-down" aria-hidden="true"></i></button>
+                        <button id="btn-chat-exit" class="btn-none c-middle mr-2">
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div class="row ml-0">
                         <div class="col-md-4 p-0 overflow-auto">
@@ -325,30 +328,10 @@
                                     <span class="f-10">
                                         <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
                                     </span>
-                                    <span onclick="removeContent($('.chat-info'))" class="float-right mr-2">
-                                        <small><i class="fa fa-times" aria-hidden="true"></i></small>
-                                    </span>
                                 </div>
                                 <div class="container">
                                     <div class="chattings">
                                         <div class="mt-auto w-100">
-                                            @foreach (App\Models\UserChat::where('user_id',
-                                              Illuminate\Support\Facades\Auth::id())->get() as $chat)
-                                                <div class="mt-3">
-                                                    <div class="text-right">
-                                                        <small>
-                                                            <span class="tbold">Anda,</span>
-                                                            <span> {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }} WIB</span>
-                                                        </small>
-                                                    </div>
-                                                    <div class="chat-msg-user">
-                                                        <div class="chat-text-user">{{ $chat->text }}</div>
-                                                    </div>
-                                                </div>
-
-                                                <!-- empty -->
-                                                    <!-- <div class="chat-empty-img"><img class="w-100" src="{{ asset('img/chat.png') }}"></div> -->
-                                            @endforeach
                                         </div>
                                     </div>
                                 </div>
@@ -358,13 +341,19 @@
                 </div>
                 <div class="type-message">
                     <div>
-                        <form id="chats-store-form" action="{{ route('user-chats.store') }}" class="d-flex" method="post">
+                        @cannot('viewAny', App\Models\User::class)
+                            <form id="user-chats-store-form" action="{{ route('user-chats.store') }}" class="d-flex" method="post">
+
+                            @else
+                                <form id="admin-chats-store-form" action="{{ route('admin-chats.store') }}" class="d-flex" method="post">
+                        @endcannot
+
                             <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
-                            <input class="type-message-input" type="text" name="message" id="" placeholder="Ketik pesan..." autocomplete="off">
+                            <input class="type-message-input" type="text" name="message" id=""
+                            placeholder="Ketik pesan..." autocomplete="off">
                             <button class="btn-none">
                                 <i class="type-message-plane fas fa-paper-plane"></i>
                             </button>
-
                             @csrf
                         </form>
                     </div>

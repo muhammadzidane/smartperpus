@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book, Province, City, User, BookUser, UserChat};
+use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat};
 use Illuminate\Support\Facades\Date;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Collection;
@@ -15,16 +15,35 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        $a = '1';
+        $user        = User::find(2);
+        $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
-        $chats = DB::select(
-            'select user_chats.* from user_chats,
-            (select user_id,max(created_at) as transaction_date
-                 from user_chats
-                 group by user_id) max_user
-              where user_chats.user_id=max_user.user_id
-              and user_chats.created_at=max_user.transaction_date'
-        );
+
+        foreach ($admin_chats as $chattings) {
+            $user->user_chats->push($chattings);
+        }
+
+        $userChatsHtml           = '';
+
+        foreach ($user->user_chats->sortBy('created_at')  as $key => $chat) {
+            $text_align      = $chat->getTable() == 'user_chats' ? 'text-left' : 'text-right';
+            $first_name      = $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin';
+            $last_name       = $chat->getTable() == 'user_chats' ? $chat->user->last_name : '';
+            $chat_msg        = $chat->getTable() == 'user_chats' ? 'chat-msg-admin' : 'chat-msg-user';
+            $chat_msg_align  = $chat->getTable() == 'user_chats' ? 'chat-text-admin' : 'chat-text-user';
+            $iso_format_chat = $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM');
+
+            $userChatsHtml .= "<div class='mt-3'>";
+            $userChatsHtml .= "<div class='$text_align'><small><span class='tbold'>$first_name $last_name </span>$iso_format_chat, WIB</small></div>";
+            $userChatsHtml .= "<div class='$chat_msg'>";
+            $userChatsHtml .= "<div class='$chat_msg_align'>$chat->text</div>";
+            $userChatsHtml .= "</div>";
+            $userChatsHtml .= "</div>";
+
+            dump($chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM'));
+        }
+
+        dump($user->user_chats);
     }
 
     public function testPost() {

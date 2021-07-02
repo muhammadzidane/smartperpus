@@ -28,41 +28,5 @@ class HomeController extends Controller
                 ),
             )
         );
-
-        // $buku_jjk = 5.0;
-
-        // for ($i=0; $i < 5 ; $i++) {
-        //     for ($j=0; $j < 10; $j++) {
-        //         $rating = $i . '.' . $j;
-
-        //         if ((float) $rating == $buku_jjk) {
-        //             for ($k=1; $k <= 9; $k++) {
-        //                 if ($j == $k) {
-        //                     for ($l=0; $l < $i ; $l++) {
-        //                         echo  'half ';
-        //                     }
-
-        //                     echo '. star-half';
-        //                 }
-
-        //             }
-
-        //             if ($j == 0) {
-        //                 for ($l=0; $l < $i ; $l++) {
-        //                     echo  'full ';
-        //                 }
-
-        //                 echo '. star-full';
-        //             }
-        //         }
-        //         else {
-        //             echo 'star ';
-        //             break;
-        //         }
-
-        //     }
-        // }
-
-        // echo 'anjay';
-    } // End method : index
+    }
 }

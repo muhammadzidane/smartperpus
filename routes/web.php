@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\
 {
+    AdminChatController,
     AjaxController,BookController, AuthorController, CategoryController,
     HomeController, TestController, BookPurchaseController,
     CityController, CustomerController, UserController, ProvinceController,
@@ -65,10 +66,11 @@ Route::prefix('/book-purchases')->group(function() {
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
-Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user')->middleware('book_user');
+Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user');
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class);
+Route::resource('/admin-chats', AdminChatController::class);
 
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
