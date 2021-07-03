@@ -972,6 +972,27 @@ footer {
     border-bottom: 1px solid #dfddc7;
 }
 
+#user-chat-send-img {
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+}
+
+
+#user-chat-img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.user-chat-img-information {
+    background-color: transparent;
+    outline: none;
+    width: 90%;
+    border: none;
+    border-bottom: 2px solid #625261;
+    text-indent: 10px;
+}
+
 .user-chattings > div:first-child {
     border-top: 1px solid #dfddc7;
 }
@@ -1048,7 +1069,8 @@ footer {
 
 .chattings {
     display: flex;
-    position: relative;
+    flex-direction: column;
+    justify-content: space-between;
     overflow-y: auto;
     height: 380px;
     margin-bottom: 15px;

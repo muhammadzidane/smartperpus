@@ -337,34 +337,49 @@
                                 </div>
                                 <div class="container">
                                     <div class="chattings">
+                                        @cannot('viewAny', App\Models\User::class)
                                         <div class="mt-auto w-100">
-                                            @cannot('viewAny', App\Models\User::class)
 
-                                                @foreach (App\Models\AdminChat::where('user_id',
-                                                    Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
+                                            @foreach (App\Models\AdminChat::where('user_id',
+                                                Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
 
-                                                    @php
-                                                    Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
-                                                @endphp
-                                                @endforeach
+                                                @php
+                                                Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
+                                            @endphp
+                                            @endforeach
 
-                                                @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
-                                                <div class="mt-3">
-                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}"><small>
-                                                        <span class="tbold">
-                                                            {{ $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin' }}
-                                                            {{ $chat->getTable() == 'user_chats' ? $chat->user->last_name : '' }}
-                                                        </span>, {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }}</small>
-                                                    </div>
-                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
-                                                        <div
-                                                        class="{{  $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
-                                                        {{ $chat->text }}
-                                                        </div>
+                                            @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
+                                            <div class="mt-3">
+                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}"><small>
+                                                    <span class="tbold">
+                                                        {{ $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin' }}
+                                                        {{ $chat->getTable() == 'user_chats' ? $chat->user->last_name : '' }}
+                                                    </span>, {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }}</small>
+                                                </div>
+                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
+                                                    <div
+                                                    class="{{  $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
+                                                    {{ $chat->text }}
                                                     </div>
                                                 </div>
-                                                @endforeach
-                                            @endcannot
+                                            </div>
+                                            @endforeach
+                                        </div>
+                                        @endcannot
+                                        <div id="user-chat-send-img">
+                                            <img id="user-chat-img"
+                                              src="{{ asset('img/form-register.jpg') }}" alt="ur img" srcset="">
+                                              <div class="mt-2">
+                                                  <form enctype="multipart/form-data"
+                                                          action="#" class="d-flex" method="post">
+                                                      <input class="user-chat-img-information" type="text" name="message" id=""
+                                                      placeholder="Tambah keterangan..." autocomplete="off">
+                                                      <button class="btn-none">
+                                                          <i class="type-message-plane fas fa-paper-plane"></i>
+                                                      </button>
+                                                      @csrf
+                                                  </form>
+                                              </div>
                                         </div>
                                     </div>
                                 </div>

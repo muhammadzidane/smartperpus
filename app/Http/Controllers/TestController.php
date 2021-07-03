@@ -16,13 +16,15 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        $request = '';
+        // $request = '';
 
-        $now = Carbon::now();
-        $another_time = Carbon::parse('2021-07-01 20:00:00');
+        // $now = Carbon::now();
+        // $another_time = Carbon::parse('2021-07-01 20:00:00');
 
-        $diff = $now->diffInDays($another_time);
-        dump($diff);
+        // $diff = $now->diffInDays($another_time);
+        // dump($diff);
+
+        return view('test');
     }
 
     public function testPost() {

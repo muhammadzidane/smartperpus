@@ -867,8 +867,35 @@ $(document).ready(function () {
         });
     });
 
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#blah')
+              .attr('src', e.target.result)
+              .width(150)
+              .height(200);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     // Mengirim foto pada chat
     $('#user-chat-send-photo').on('change', () => {
+        let preview = document.getElementById('user-chat-send-img');
+        let file    = document.getElementById('user-chat-send-photo').files[0];
+        let reader  = new FileReader();
+
+        reader.onloadend = function () {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+
         console.log(true);
     })
     // End of Chat
