@@ -814,11 +814,19 @@ $(document).ready(function () {
         e.preventDefault();
 
         let inputValue      = $('.type-message-input').val();
+        let sendPhoto       = $('.user-chat-img-information').length;
 
-        if (inputValue != '') {
+        const userChatStore = () => {
             ajaxForm('POST', '#user-chats-store-form', '/user-chats', function(response) {
                 responseChats(response);
             });
+        }
+
+        if (inputValue != '') {
+            userChatStore();
+        }
+        else if (sendPhoto != 0) {
+            userChatStore();
         }
     });
 
@@ -876,73 +884,89 @@ $(document).ready(function () {
         }
         else {
             $('#user-chat-send-photo').on('change', () => {
-                let html  = `<div id="user-chat-send-img">`;
-                    html += `<div><button id='user-send-img-cancel' class="btn-none"><i class="fa fa-times"></i></button></div>`;
-                    html += `<img id="user-chat-img">`;
-                    html += `</div>`;
-                    html += `<div>`;
-                    html += `<form id='user-chats-store-img-form' enctype="multipart/form-data"`;
-                    html += `action="#" class="d-flex" method="post">`;
-                    html += `<input class="user-chat-img-information" type="text" name="message"`;
-                    html += `placeholder="Tambah keterangan..." autocomplete="off">`;
-                    html += `<button type="submit" class="btn-none">`;
-                    html += `<i class="type-message-plane fas fa-paper-plane"></i>`
-                    html += `</button>`;
-                    html += `</form>`;
-                    html += `</div>`;
+                let ext = $('#user-chat-send-photo').val().split('.').pop().toLowerCase();
 
-                $('.chattings').html(html);
+                if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+                    let html = `<div id='user-chats-error-image'>Hanya bisa mengirim gambar</div>`;
 
+                    $('#user-send-img-cancel').trigger('click');
+                    $('.chattings').parent().prepend(html);
 
-                let preview = document.getElementById('user-chat-img');
-                let file    = document.getElementById('user-chat-send-photo').files[0];
-                let reader  = new FileReader();
-
-                reader.onloadend = () => {
-                    preview.src = reader.result;
-                }
-
-                if (file) {
-                    reader.readAsDataURL(file);
+                    setTimeout(() => {
+                        $('#user-chats-error-image').slideUp(400, () => {
+                            $('#user-chats-error-image').remove();
+                        });
+                    }, 3000);
                 }
                 else {
-                    preview.src = "";
-                }
+                    let html  = `<div id="user-chat-send-img">`;
+                        html += `<div><button id='user-send-img-cancel' class="btn-none"><i class="fa fa-times"></i></button></div>`;
+                        html += `<img id="user-chat-img">`;
+                        html += `</div>`;
+                        html += `<div class="d-flex">`;
+                        html += `<input class="user-chat-img-information" type="text" name="message"`;
+                        html += `placeholder="Tambah keterangan..." autocomplete="off">`;
+                        html += `<button id="user-chat-store-send-img" type="button" class="btn-none">`;
+                        html += `<i class="type-message-plane fas fa-paper-plane"></i>`
+                        html += `</button>`;
+                        html += `</div>`;
 
-                // Batal mengirim foto
-                $('#user-send-img-cancel').on('click', () => {
-                    let userRoleCheck = $('.user-chat-active').find('img').length;
-                    let userId = $('.chattings').data('id');
+                    $('.chattings').html(html);
+                    $('.chats-store-form').parent().hide();
 
-                    if (userRoleCheck == 0) {
-                        $('.user-chat-active').trigger('click');
+
+                    let preview = document.getElementById('user-chat-img');
+                    let file    = document.getElementById('user-chat-send-photo').files[0];
+                    let reader  = new FileReader();
+
+                    reader.onloadend = () => {
+                        preview.src = reader.result;
+                    }
+
+                    if (file) {
+                        reader.readAsDataURL(file);
                     }
                     else {
-                        ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, guest : true }, response => {
-                            $('.chattings').html(response.userChatsHtml);
-                        });
+                        preview.src = "";
                     }
-                });
 
-                // Mengirim pesan Foto pada database
-                $('#user-chats-store-img-form').on('submit', e => {
-                    e.preventDefault();
+                    // Batal mengirim foto
+                    $('#user-send-img-cancel').on('click', () => {
+                        let userRoleCheck = $('.user-chat-active').find('img').length;
+                        let userId = $('.chattings').data('id');
 
-                    let imageInformation = $('.user-chat-img-information').val();
-                    let image         = file.name;
+                        $("#user-chat-send-photo").val(""); // Clear image value
 
-                    ajaxJson('POST', `/user-chats`,
-                        {
-                            _token          : csrfToken,
-                            image           : image,
-                            imageInformation: imageInformation,
-                        },
-                        () => {
-                            $('#user-send-img-cancel').trigger('click');
+                        if (userRoleCheck == 0) {
+                            $('.user-chat-active').trigger('click');
                         }
-                    );
-                });
-            })
+                        else {
+                            ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, guest : true }, response => {
+                                $('.chattings').html(response.userChatsHtml);
+                                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+                            });
+                        }
+
+                        $('.chats-store-form').parent().show();
+                    });
+
+                    // Mengirim pesan Foto pada database
+                    $('#user-chat-store-send-img').on('click', () => {
+                        let message = $('.user-chat-img-information').val();
+
+                        $('.type-message-input').val(message);
+                        $('.chats-store-form').trigger('submit');
+                        $('#user-send-img-cancel').trigger('click');
+                    });
+
+                    $('.user-chat-img-information').on('keypress', (e) => {
+                        if (e.code == 'Enter') {
+                            $('#user-chat-store-send-img').trigger('submit');
+                        }
+                    });
+                }
+
+            });
         }
     });
 

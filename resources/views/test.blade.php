@@ -22,25 +22,23 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
     <style>
-    .parent {
-        background-color :aquamarine;
-        width: 400px;
-        height: 500px;
-        margin: 0 auto;
-        padding-top: 7px;
-    }
-
-    img {
-        width: 60%;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
     </style>
 </head>
 <body>
-    <div class="parent">
-        <img src="{{ asset('img/books_test_image/haikyuu-22.jpg') }}" alt="" srcset="">
-    </div>
+    <form action="{{ route('test.post') }}" enctype="multipart/form-data" method="post">
+        <input type="file" name="photo" id="photo">
+        <button type="submit">Submit</button>
+        @csrf
+    </form>
+    <script src="{{ asset('js/helper-functions.js') }}"></script>
+    <script>
+        $('form').on('submit', e => {
+            e.preventDefault();
+
+            ajaxForm('POST', 'form', '/test', response => {
+                console.log(response);
+            });
+        });
+    </script>
 </body>
 </html>

@@ -335,7 +335,7 @@
                                         <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
                                     </span>
                                 </div>
-                                <div class="container">
+                                <div class="container position-relative">
                                     <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
                                         @cannot('viewAny', App\Models\User::class)
                                         <div class="mt-auto w-100">
@@ -349,39 +349,37 @@
                                             @endforeach
 
                                             @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
-                                            <div class="mt-3">
-                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}"><small>
-                                                    <span class="tbold">
-                                                        {{ $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin' }}
-                                                        {{ $chat->getTable() == 'user_chats' ? $chat->user->last_name : '' }}
-                                                    </span>, {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM') }}</small>
-                                                </div>
-                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
-                                                    <div
-                                                    class="{{  $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
-                                                    {{ $chat->text }}
+                                                <div class="mt-3">
+                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}">
+                                                        <small>
+                                                            {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m') }}
+                                                        </small>
                                                     </div>
+                                                    @if ($chat->image)
+                                                        <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-img-user' : 'chat-img-admin' }}">
+                                                            <img class="w-100 d-block mb-3" src="{{ asset('storage/chats/' . $chat->image) }}">
+                                                            @if ($chat->text != null)
+                                                                <div
+                                                                  class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user'
+                                                                    : 'chat-text-admin' }}">
+                                                                    {{ $chat->text }}
+                                                                </div>
+                                                            @endif
+                                                        </div>
+
+                                                        @else
+                                                            <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
+                                                                <div
+                                                                class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
+                                                                {{ $chat->text }}
+                                                                </div>
+                                                            </div>
+                                                    @endif
                                                 </div>
-                                            </div>
                                             @endforeach
+
                                         </div>
                                         @endcannot
-
-                                        <!-- <div id="user-chat-send-img">
-                                            <img id="user-chat-img"
-                                              src="{{ asset('img/books_test_image/detektif-conan-97.jpg') }}" alt="ur img" srcset="">
-                                        </div>
-                                        <div>
-                                            <form enctype="multipart/form-data"
-                                                    action="#" class="d-flex" method="post">
-                                                <input class="user-chat-img-information" type="text" name="message" id=""
-                                                placeholder="Tambah keterangan..." autocomplete="off">
-                                                <button class="btn-none">
-                                                    <i class="type-message-plane fas fa-paper-plane"></i>
-                                                </button>
-                                                @csrf
-                                            </form>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
@@ -392,11 +390,11 @@
                     <div>
                         @cannot('viewAny', App\Models\User::class)
                             <form id="user-chats-store-form" enctype="multipart/form-data"
-                              action="{{ route('user-chats.store') }}" class="d-flex" method="post">
+                              action="{{ route('user-chats.store') }}" class="d-flex chats-store-form" method="post">
 
                             @else
                                 <form id="admin-chats-store-form" enctype="multipart/form-data"
-                                  action="{{ route('admin-chats.store') }}" class="d-flex" method="post">
+                                  action="{{ route('admin-chats.store') }}" class="d-flex chats-store-form" method="post">
 
                         @endcannot
                             <span class="mt-2">

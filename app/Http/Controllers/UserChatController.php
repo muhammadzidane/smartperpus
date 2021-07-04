@@ -5,36 +5,67 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\{ UserChat, AdminChat };
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\{ Auth, Storage, Validator };
 
 class UserChatController extends Controller
 {
     public function store(Request $request) {
-        $user            = User::find(Auth::id());
-        $user_role_check = $user->role == 'guest' ? 'guest' : 'admin';
-        $text            = $request->image ? $request->imageInformation : $request->message;
-        $create          = array(
-            'text'  => $text,
-            'image' => $request->image ? $request->image : null,
+
+        $validator = Validator::make($request->all(),
+            array(
+                'photo' => array('required', 'file', 'image', 'mimes:jpg,png'),
+            )
         );
-        $user_chat       = $user->user_chats()->create($create);
 
-        $iso_format_chat = $user_chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM');
+        if ($validator->fails()) {
+            $errorMessage = $validator->errors();
 
-        $user_role               = $user->role;
-        $anda_or_admin           = $user_role == 'guest' ? 'Anda' : 'Admin';
-        $text_right_or_left      = $user_role == 'guest' ? 'text-right' : 'text-left';
-        $chat_msg_user_or_admin  = $user_role == 'guest' ? 'chat-msg-user' : 'chat-msg-admin';
-        $chat_text_user_or_admin = $user_role == 'guest' ? 'chat-text-user' : 'chat-text0-admin';
+            return response()->json(compact('errorMessage'));
+        }
+        else {
+            $user            = User::find(Auth::id());
+            $user_role_check = $user->role == 'guest' ? 'guest' : 'admin';
+            $photo_name      = $request->photo ? $request->photo->getClientOriginalName() : '';
+            $text            = $request->message ? $request->message : null;
+            $create          = array(
+                'text' => $text,
+                'image' => $request->photo ? $photo_name : null,
+            );
 
-        $chat  = "<div class='mt-3'>";
-        $chat .= "<div class='$text_right_or_left'><small><span class='tbold'>$anda_or_admin</span>, $iso_format_chat WIB</small></div>";
-        $chat .= "<div class='$chat_msg_user_or_admin'>";
-        $chat .= "<div class='$chat_text_user_or_admin'>$request->message</div>";
-        $chat .= "</div>";
-        $chat .= "</div>";
+            $user_chat  = $user->user_chats()->create($create);
 
-        return response()->json(compact('chat'));
+            if ($request->photo && !Storage::exists('public/chats/' . $photo_name)) {
+                $request->photo->storeAs('public/chats', str_replace(' ', '_', strtolower($photo_name)));
+            }
+
+            $chat = '';
+            $chat .= "<div class='mt-3'>";
+            $chat .= "<div class='text-right'>";
+            $chat .= "<small>";
+            $chat .= $user_chat->created_at->isoFormat('dddd, D MMMM YYYY H:m');
+            $chat .= "</small>";
+            $chat .= "</div>";
+
+            if ($user_chat->image) {
+                $chat .= "<div class='chat-img-user'>";
+                $chat .= "<img class='w-100 d-block mb-3' src='" . asset('storage/chats/' . $user_chat->image) . "'>";
+
+                if ($user_chat->text != null) {
+                    $chat .= "<div class='chat-text-user'>$user_chat->text</div>";
+                }
+
+                $chat .= "</div>";
+
+            }
+            else {
+                $chat .= "<div class='chat-msg-user'><div class='chat-text-user'>$user_chat->text</div></div>";
+            }
+
+            $chat .= '</div>';
+
+            return response()->json(compact('chat'));
+        }
+
     }
 
     public function show(Request $request) {
@@ -65,13 +96,28 @@ class UserChatController extends Controller
 
 
             $html .= "<div class='mt-3'>";
-            $html .= "<div class='$text_align'><small><span class='tbold'>$first_name $last_name </span>";
-            $html .= $chat->created_at->isoFormat('dddd, D MMMM YYYY H:MM');
-            $html .= " WIB</small></div>";
-            $html .= "<div class='$chat_msg'>";
-            $html .= "<div class='$chat_msg_align'>$chat->text</div>";
+            $html .= "<div class='text-right'>";
+            $html .= "<small>";
+            $html .= $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m');
+            $html .= "</small>";
             $html .= "</div>";
-            $html .= "</div>";
+
+            if ($chat->image) {
+                $html .= "<div class='chat-img-user'>";
+                $html .= "<img class='w-100 d-block mb-3' src='" . asset('storage/chats/' . $chat->image) . "'>";
+
+                if ($chat->text != null) {
+                    $html .= "<div class='chat-text-user'>$chat->text</div>";
+                }
+
+                $html .= "</div>";
+
+            }
+            else {
+                $html .= "<div class='chat-msg-user'><div class='chat-text-user'>$chat->text</div></div>";
+            }
+
+            $html .= '</div>';
         }
 
         $userChatsHtml           = "<div class='mt-auto w-100'>$html</div>";

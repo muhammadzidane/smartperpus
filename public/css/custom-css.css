@@ -1095,25 +1095,35 @@ footer {
     margin-left: auto;
 }
 
+.chat-msg-user, .chat-msg-admin {
+    margin-left: auto;
+    width: max-content;
+    border-radius: 5px;
+    max-width: 85%;
+    border: 1px solid rgb(68, 68, 68, 0.2);
+}
+
 .chat-msg-user {
     padding: 3px 20px 5px 12px;
     background: #F8F1F1;
-    border-radius: 5px;
     border-bottom-right-radius: 25px;
-    max-width: 85%;
-    width: max-content;
-    margin-left: auto;
 }
 
 .chat-msg-admin {
     padding: 3px 12px 5px 20px;
     background: #d1d9d9;
-    border-radius: 5px;
     border-bottom-left-radius: 25px;
-    max-width: 85%;
-    width: max-content;
-    margin-right: auto;
 }
+
+.chat-img-user, .chat-img-admiin {
+    width: 65%;
+    background-color: #F8F1F1;
+    padding: 5px 10px;
+    border: 1px solid rgb(68, 68, 68, 0.2);
+}
+
+.chat-img-user { margin-left: auto; }
+.chat-img-admin { margin-right: auto; }
 
 .chat-text-admin {
     text-align: right;
@@ -1125,28 +1135,6 @@ footer {
     word-break: break-all;
 }
 
-.chat-img-user {
-    text-align: center;
-    margin-left: 20px;
-}
-
-.chat-img-admin {
-    text-align: center;
-    margin-right: 20px;
-}
-
-.chat-img-user img, .chat-img-admin img {
-    padding: 2px;
-}
-
-.chat-img-user img {
-    border: 2px solid #E2D5D5;
-}
-
-.chat-img-admin img {
-    border: 2px solid #fffdf6;
-}
-
 .type-message-input {
     margin: 0 auto;
     border: none;
@@ -1156,6 +1144,18 @@ footer {
     padding: 5.20px;
     text-indent: 10px;
     outline: none;
+}
+
+#user-chats-error-image {
+    position: absolute;
+    background-color: rgb(255, 246, 0, 0.8);
+    border-radius: 4px;
+    top: 5%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: max-content;
+    padding: 4px 10px;
 }
 
 .type-message-plane, .type-message-camera {
@@ -1582,8 +1582,10 @@ footer {
     .chat-content {
         width: 100vw;
         height: 100vh;
-        position: relative;
-        top: 0;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .click-to-the-top {
@@ -1596,13 +1598,9 @@ footer {
         width: 100%;
     }
 
-    .click-in-buttom {
-        /* display: none; */
-    }
-
     .chat {
         bottom: 0;
-        right: 0;
+        right: 20px;
     }
 
     .chattings { height: 80vh; }

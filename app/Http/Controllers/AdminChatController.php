@@ -10,10 +10,14 @@ use Illuminate\Support\Facades\{ Auth, DB };
 class AdminChatController extends Controller
 {
     public function store(Request $request) {
-        $user  = User::find($request->userId);
-        $admin = Auth::user();
+        $user   = User::find($request->userId);
+        $admin  = Auth::user();
+        $text   = $request->image ? $request->imageInformation : $request->message;
+        $create = array(
+            'text'  => $text,
+            'image' => $request->image ? $request->image : null,
+        );
 
-        $create     = array('text' => $request->message);
         $admin_chat = $user->admin_chats()->create($create);
         $user_chat  = $user->user_chats;
 

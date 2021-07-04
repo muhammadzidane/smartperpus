@@ -16,7 +16,7 @@ class CreateUserChatsTable extends Migration
         Schema::create('user_chats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('text');
+            $table->string('text')->nullable();
             $table->string('image')->nullable();
             $table->timestamps();
         });

@@ -10,6 +10,7 @@ class UserChat extends Model
     use HasFactory;
 
     protected $guarded = array();
+    protected $dates = array('created_at');
 
     // Relasi antar tabel
     public function user() {

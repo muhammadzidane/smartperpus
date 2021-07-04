@@ -16,13 +16,14 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        dump(User::firstWhere('first_name', 'Eris')->role);
+        // dump(User::firstWhere('first_name', 'Eris')->role);
 
-        // return view('test');
+        return view('test');
     }
 
-    public function testPost() {
-        return 'wkwkwkwkw123';
+    public function testPost(Request $request) {
+        $request->photo->store('public/test');
+        return response()->json(array('photo' => $request->photo));
     }
 
     public function pagination() {
