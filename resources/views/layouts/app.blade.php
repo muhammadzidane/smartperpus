@@ -321,7 +321,7 @@
                                     </div>
 
                                     @else
-                                        <div class="p-2 testt">
+                                        <div class="p-2 testt user-chat-active bg-transparent">
                                             <img class="w-100" src="{{ asset('img/admin.png') }}">
                                         </div>
                                 @endcan
@@ -336,7 +336,7 @@
                                     </span>
                                 </div>
                                 <div class="container">
-                                    <div class="chattings">
+                                    <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
                                         @cannot('viewAny', App\Models\User::class)
                                         <div class="mt-auto w-100">
 
@@ -344,8 +344,8 @@
                                                 Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
 
                                                 @php
-                                                Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
-                                            @endphp
+                                                    Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
+                                                @endphp
                                             @endforeach
 
                                             @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
@@ -366,21 +366,22 @@
                                             @endforeach
                                         </div>
                                         @endcannot
-                                        <div id="user-chat-send-img">
+
+                                        <!-- <div id="user-chat-send-img">
                                             <img id="user-chat-img"
-                                              src="{{ asset('img/form-register.jpg') }}" alt="ur img" srcset="">
-                                              <div class="mt-2">
-                                                  <form enctype="multipart/form-data"
-                                                          action="#" class="d-flex" method="post">
-                                                      <input class="user-chat-img-information" type="text" name="message" id=""
-                                                      placeholder="Tambah keterangan..." autocomplete="off">
-                                                      <button class="btn-none">
-                                                          <i class="type-message-plane fas fa-paper-plane"></i>
-                                                      </button>
-                                                      @csrf
-                                                  </form>
-                                              </div>
+                                              src="{{ asset('img/books_test_image/detektif-conan-97.jpg') }}" alt="ur img" srcset="">
                                         </div>
+                                        <div>
+                                            <form enctype="multipart/form-data"
+                                                    action="#" class="d-flex" method="post">
+                                                <input class="user-chat-img-information" type="text" name="message" id=""
+                                                placeholder="Tambah keterangan..." autocomplete="off">
+                                                <button class="btn-none">
+                                                    <i class="type-message-plane fas fa-paper-plane"></i>
+                                                </button>
+                                                @csrf
+                                            </form>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>

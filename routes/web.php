@@ -70,6 +70,7 @@ Route::resource('/book-purchases', BookPurchaseController::class)->except('store
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class);
+
 Route::resource('/admin-chats', AdminChatController::class);
 
 // Test Ajax

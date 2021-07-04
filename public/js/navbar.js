@@ -786,7 +786,7 @@ $(document).ready(function () {
     $('#admin-chats-store-form').on('submit', function(e) {
         e.preventDefault();
 
-        let userClickedId   = $('.user-chat-clicked').data('id');
+        let userClickedId   = $('.user-chat-active').data('id');
         let inputValue      = $('.type-message-input').val();
 
         if (inputValue != '' && userClickedId !== undefined) {
@@ -827,9 +827,9 @@ $(document).ready(function () {
         $('.user-chat').on('click', function() {
             let dataId = $(this).data('id');
 
-            $(this).prevAll().removeClass('user-chat-clicked');
-            $(this).nextAll().removeClass('user-chat-clicked');
-            $(this).addClass('user-chat-clicked');
+            $(this).prevAll().removeClass('user-chat-active');
+            $(this).nextAll().removeClass('user-chat-active');
+            $(this).addClass('user-chat-active');
             $('.type-message-input').trigger('focus');
 
             $.ajax({
@@ -838,13 +838,13 @@ $(document).ready(function () {
                 data    : { userId : dataId },
                 dataType: "JSON",
                 success : function (response) {
-                    console.log(response);
 
-                    $('.chattings > div').html(response.userChatsHtml);
+                    $('.chattings').html(response.userChatsHtml);
                     $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
                 },
                 error : function(response) {
                     console.log(response);
+                    console.log(response.responseJSON.message);
                 }
             });
         });
@@ -867,37 +867,85 @@ $(document).ready(function () {
         });
     });
 
-    function readURL(input) {
-        if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-            $('#blah')
-              .attr('src', e.target.result)
-              .width(150)
-              .height(200);
-          };
-          reader.readAsDataURL(input.files[0]);
-        }
-    }
-
     // Mengirim foto pada chat
-    $('#user-chat-send-photo').on('change', () => {
-        let preview = document.getElementById('user-chat-send-img');
-        let file    = document.getElementById('user-chat-send-photo').files[0];
-        let reader  = new FileReader();
+    $('#user-chat-send-photo').on('click', (e) => {
 
-        reader.onloadend = function () {
-            preview.src = reader.result;
+        // Jika user tidak di klik, maka tidak bisa kirim gambar
+        if ($('.user-chat-active').length == 0) {
+            e.preventDefault();
         }
+        else {
+            $('#user-chat-send-photo').on('change', () => {
+                let html  = `<div id="user-chat-send-img">`;
+                    html += `<div><button id='user-send-img-cancel' class="btn-none"><i class="fa fa-times"></i></button></div>`;
+                    html += `<img id="user-chat-img">`;
+                    html += `</div>`;
+                    html += `<div>`;
+                    html += `<form id='user-chats-store-img-form' enctype="multipart/form-data"`;
+                    html += `action="#" class="d-flex" method="post">`;
+                    html += `<input class="user-chat-img-information" type="text" name="message"`;
+                    html += `placeholder="Tambah keterangan..." autocomplete="off">`;
+                    html += `<button type="submit" class="btn-none">`;
+                    html += `<i class="type-message-plane fas fa-paper-plane"></i>`
+                    html += `</button>`;
+                    html += `</form>`;
+                    html += `</div>`;
 
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = "";
+                $('.chattings').html(html);
+
+
+                let preview = document.getElementById('user-chat-img');
+                let file    = document.getElementById('user-chat-send-photo').files[0];
+                let reader  = new FileReader();
+
+                reader.onloadend = () => {
+                    preview.src = reader.result;
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    preview.src = "";
+                }
+
+                // Batal mengirim foto
+                $('#user-send-img-cancel').on('click', () => {
+                    let userRoleCheck = $('.user-chat-active').find('img').length;
+                    let userId = $('.chattings').data('id');
+
+                    if (userRoleCheck == 0) {
+                        $('.user-chat-active').trigger('click');
+                    }
+                    else {
+                        ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, guest : true }, response => {
+                            $('.chattings').html(response.userChatsHtml);
+                        });
+                    }
+                });
+
+                // Mengirim pesan Foto pada database
+                $('#user-chats-store-img-form').on('submit', e => {
+                    e.preventDefault();
+
+                    let imageInformation = $('.user-chat-img-information').val();
+                    let image         = file.name;
+
+                    ajaxJson('POST', `/user-chats`,
+                        {
+                            _token          : csrfToken,
+                            image           : image,
+                            imageInformation: imageInformation,
+                        },
+                        () => {
+                            $('#user-send-img-cancel').trigger('click');
+                        }
+                    );
+                });
+            })
         }
+    });
 
-        console.log(true);
-    })
     // End of Chat
 
     // Book Show

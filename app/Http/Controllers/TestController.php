@@ -16,15 +16,9 @@ use Illuminate\Support\Facades\Route;
 class TestController extends Controller
 {
     public function test() {
-        // $request = '';
+        dump(User::firstWhere('first_name', 'Eris')->role);
 
-        // $now = Carbon::now();
-        // $another_time = Carbon::parse('2021-07-01 20:00:00');
-
-        // $diff = $now->diffInDays($another_time);
-        // dump($diff);
-
-        return view('test');
+        // return view('test');
     }
 
     public function testPost() {
