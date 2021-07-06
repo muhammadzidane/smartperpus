@@ -758,7 +758,7 @@ $(document).ready(function () {
         $(this).hide();
 
         if (btnChatclickedCount == 1) {
-            $('.chattings').scrollTop($(document).height());
+                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
         }
 
         $('.type-message-input').trigger('focus');
@@ -886,7 +886,7 @@ $(document).ready(function () {
             $('#user-chat-send-photo').on('change', () => {
                 let ext = $('#user-chat-send-photo').val().split('.').pop().toLowerCase();
 
-                if($.inArray(ext, ['gif','png','jpg','jpeg']) == -1) {
+                if($.inArray(ext, ['png','jpg','jpeg']) == -1) {
                     let html = `<div id='user-chats-error-image'>Hanya bisa mengirim gambar</div>`;
 
                     $('#user-send-img-cancel').trigger('click');
@@ -965,7 +965,6 @@ $(document).ready(function () {
                         }
                     });
                 }
-
             });
         }
     });

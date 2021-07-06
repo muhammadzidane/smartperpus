@@ -884,18 +884,6 @@ footer {
     align-items: center;
 }
 
-.kategori-pilihan::before {
-    border-radius: 100%;
-    background-color: #ea5455;
-    content: '';
-    width: 55px;
-    height: 55px;
-    position: absolute;
-    left: 97.58%;
-    bottom: 90%;
-    border: 5px solid #fffdf6
-}
-
 /* Gambar gambar diskon */
 .discount-images {
     width: 100%;

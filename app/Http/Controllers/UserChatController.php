@@ -3,26 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\{ UserChat, AdminChat };
+use App\Models\{UserChat, AdminChat};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{ Auth, Storage, Validator };
+use Illuminate\Support\Facades\{Auth, Storage, Validator};
 
 class UserChatController extends Controller
 {
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
+        if (!$request->ajax() && $request->photo) {
+            // Validasi backend
+            $validator = Validator::make(
+                $request->all(),
+                array(
+                    'photo' => array('nullable', 'file', 'mimes:jpg,png,jpeg'),
+                )
+            );
 
-        $validator = Validator::make($request->all(),
-            array(
-                'photo' => array('required', 'file', 'image', 'mimes:jpg,png'),
-            )
-        );
-
-        if ($validator->fails()) {
-            $errorMessage = $validator->errors();
-
-            return response()->json(compact('errorMessage'));
-        }
-        else {
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator);
+            }
+        } else {
             $user            = User::find(Auth::id());
             $user_role_check = $user->role == 'guest' ? 'guest' : 'admin';
             $photo_name      = $request->photo ? $request->photo->getClientOriginalName() : '';
@@ -55,9 +56,7 @@ class UserChatController extends Controller
                 }
 
                 $chat .= "</div>";
-
-            }
-            else {
+            } else {
                 $chat .= "<div class='chat-msg-user'><div class='chat-text-user'>$user_chat->text</div></div>";
             }
 
@@ -65,10 +64,10 @@ class UserChatController extends Controller
 
             return response()->json(compact('chat'));
         }
-
     }
 
-    public function show(Request $request) {
+    public function show(Request $request)
+    {
         $user        = User::find($request->userId);
         $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
@@ -81,12 +80,11 @@ class UserChatController extends Controller
         foreach ($user->user_chats->sortBy('created_at') as $chat) {
             if ($request->guest) {
                 $text_align      = $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left';
-                $first_name      = $chat->getTable() == 'user_chats' ? 'admin' : $chat->user->first_name ;
+                $first_name      = $chat->getTable() == 'user_chats' ? 'admin' : $chat->user->first_name;
                 $last_name       = $chat->getTable() == 'user_chats' ? '' : $chat->user->last_name;
                 $chat_msg        = $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin';
                 $chat_msg_align  = $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin';
-            }
-            else {
+            } else {
                 $text_align      = $chat->getTable() == 'user_chats' ? 'text-left' : 'text-right';
                 $first_name      = $chat->getTable() == 'user_chats' ? $chat->user->first_name : 'Admin';
                 $last_name       = $chat->getTable() == 'user_chats' ? $chat->user->last_name : '';
@@ -111,9 +109,7 @@ class UserChatController extends Controller
                 }
 
                 $html .= "</div>";
-
-            }
-            else {
+            } else {
                 $html .= "<div class='chat-msg-user'><div class='chat-text-user'>$chat->text</div></div>";
             }
 
@@ -125,4 +121,3 @@ class UserChatController extends Controller
         return response()->json(compact('userChatsHtml'));
     }
 }
-

@@ -37,8 +37,7 @@
                             <div class="search-icon">
                                 <i class="fas fa-search m-auto"></i>
                             </div>
-                            <input type="text" name="keywords" class="keywords search-text"
-                            placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
                             <input type="hidden" name="page" value="1">
                         </div>
                     </form>
@@ -54,13 +53,15 @@
                                 <div>
                                     <div class="d-flex">
                                         <div class="mr-5">
+
                                             @foreach (\App\Models\Category::get()->take(10) as $category)
-                                                <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                            <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
                                             @endforeach
                                         </div>
                                         <div>
+
                                             @foreach (\App\Models\Category::take(10)->skip(10)->get() as $category)
-                                                <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                            <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
                                             @endforeach
                                         </div>
                                     </div>
@@ -72,13 +73,14 @@
                         </div>
                         <div class="d-flex ml-auto align-items-center">
                             @guest
-                                <li>
-                                    <button id="login" class="btn btn-red" data-toggle="modal"
-                                    data-target="#modal-login">Masuk</button></li>
-                                </li>
+                            <li>
+                                <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                            </li>
+                            </li>
                             @endguest
+
                             @auth
-                                @include('layouts.auth-nav-login')
+                            @include('layouts.auth-nav-login')
                             @endauth
                         </div>
                     </ul>
@@ -93,8 +95,7 @@
                                     <div class="search-icon">
                                         <i class="fas fa-search m-auto"></i>
                                     </div>
-                                    <input type="text" name="keywords" class="keywords search-text"
-                                        placeholder="Judul Buku, Nama Author" autocomplete="off">
+                                    <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
                                     <input type="hidden" name="page" value="1">
                                 </div>
                             </form>
@@ -104,17 +105,30 @@
                     <li class="m-0">Best Seller</li>
                     <li class="m-0">Buku Diskon</li>
                     @guest
-                        <li>
-                            <button id="login" class="btn-none tred" data-toggle="modal"
-                            data-target="#modal-login">Masuk</button></li>
-                        </li>
-                        @endguest
+                    <li>
+                        <button id="login" class="btn-none tred" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                    </li>
+                    </li>
+                    @endguest
+
                     @auth
-                        @include('layouts.auth-nav-login')
+                    @include('layouts.auth-nav-login')
                     @endauth
                 </ul>
             </div>
         </div>
+
+        @if ($errors->any())
+
+        <!-- Error messages from backend -->
+        <div class="alert alert-danger" role="alert">
+            @foreach ($errors->all() as $error)
+            <div>
+                <strong>{{ $error }}</strong>
+            </div>
+            @endforeach
+        </div>
+        @endif
 
         @yield('carousel')
 
@@ -194,7 +208,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="footer-year"><h4 class="hd-14">Smartperpus - 2021</h4></div>
+                    <div class="footer-year">
+                        <h4 class="hd-14">Smartperpus - 2021</h4>
+                    </div>
                 </div>
             </div>
         </footer>
@@ -211,7 +227,7 @@
                     </div>
                     <div class="modal-body">
                         @if (session('errorLogin'))
-                            <div class="error-backend"></div>
+                        <div class="error-backend"></div>
                         @endif
 
                         <div id="error-login">
@@ -221,23 +237,22 @@
                             @csrf
                             <div class="form-group">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" name="email" class="form-control-custom login-form"
-                                 value="{{ old('email') }}" required>
+                                <input type="email" id="email" name="email" class="form-control-custom login-form" value="{{ old('email') }}" required>
+
                                 @error('email')
-                                    <div class="error-backend"></div>
+                                <div class="error-backend"></div>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
                                 <div class="d-flex">
-                                    <input type="password" name="password" id="password" class="form-control-custom login-form"
-                                     autocomplete="off" required>
+                                    <input type="password" name="password" id="password" class="form-control-custom login-form" autocomplete="off" required>
                                     <button id="toggle-password" type="button" class="show-password btn-none bg-transparent">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
                                 @error('password')
-                                    <div class="error-backend"></div>
+                                <div class="error-backend"></div>
                                 @enderror
                                 <div>
                                     <div class="text-right">
@@ -271,154 +286,154 @@
     </div>
 
     @auth
-        <div class="chat">
-            <div class="chat-content"  aria-labelledby="triggerId">
-                <div class="chat-with-admin">
-                    <div class="borbot-gray-0 d-flex justify-content-between">
-                        <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
-                        <button id="btn-chat-exit" class="btn-none c-middle mr-2">
-                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="row ml-0">
-                        <div class="col-md-4 p-0 overflow-auto">
-                            <div class="borright-gray-0">
-                                @can('viewAny', App\Models\User::class)
-                                    <div class="testt">
-                                        <div class="p-2">
-                                            <input id="chat-search-user" type="text" class="chat-search-user-input"
-                                              placeholder="Cari user..." autocomplete="off">
-                                        </div>
-                                        <div class="user-chattings">
-                                            @php
-                                                $chats = DB::select(
-                                                    'select user_chats.* from user_chats,
-                                                    (select user_id,max(created_at) as transaction_date
-                                                        from user_chats
-                                                        group by user_id) max_user
-                                                    where user_chats.user_id=max_user.user_id
-                                                    and user_chats.created_at=max_user.transaction_date'
-                                                );
-                                            @endphp
-                                            @foreach ($chats as $chat)
-                                                <div class="user-chat pl-3 py-2"
-                                                  data-id="{{ App\Models\User::find($chat->user_id)->id }}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
+    <div class="chat">
+        <div class="chat-content" aria-labelledby="triggerId">
+            <div class="chat-with-admin">
+                <div class="borbot-gray-0 d-flex justify-content-between">
+                    <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
+                    <button id="btn-chat-exit" class="btn-none c-middle mr-2">
+                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="row ml-0">
+                    <div class="col-md-4 p-0 overflow-auto">
+                        <div class="borright-gray-0">
+                            @can('viewAny', App\Models\User::class)
+                            <div class="testt">
+                                <div class="p-2">
+                                    <input id="chat-search-user" type="text" class="chat-search-user-input" placeholder="Cari user..." autocomplete="off">
+                                </div>
+                                <div class="user-chattings">
+                                    @php
+                                    $chats = DB::select(
+                                    'select user_chats.* from user_chats,
+                                    (select user_id,max(created_at) as transaction_date
+                                    from user_chats
+                                    group by user_id) max_user
+                                    where user_chats.user_id=max_user.user_id
+                                    and user_chats.created_at=max_user.transaction_date'
+                                    );
+                                    @endphp
+                                    @foreach ($chats as $chat)
+                                    <div class="user-chat pl-3 py-2" data-id="{{ App\Models\User::find($chat->user_id)->id }}">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
                                                         . App\Models\User::find($chat->user_id)->last_name }}</div>
-                                                        <div class="user-chat-time">
-                                                            @if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($chat->created_at)) >= 1)
-                                                             <small>{{ Carbon\Carbon::parse($chat->created_at)->format('y/m/d') }}</small>
-                                                            @else
-                                                             <small>{{ Carbon\Carbon::parse($chat->created_at)->format('H:i') }}</small>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                    <div>{{ strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' }}</div>
-                                                </div>
-                                            @endforeach
+                                            <div class="user-chat-time">
+                                                @if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($chat->created_at)) >= 1)
+                                                <small>{{ Carbon\Carbon::parse($chat->created_at)->format('y/m/d') }}</small>
+                                                @else
+                                                <small>{{ Carbon\Carbon::parse($chat->created_at)->format('H:i') }}</small>
+                                                @endif
+                                            </div>
                                         </div>
+                                        <div>{{ strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' }}</div>
                                     </div>
+                                    @endforeach
+                                </div>
+                            </div>
+
+                            @else
+                            <div class="p-2 testt user-chat-active bg-transparent">
+                                <img class="w-100" src="{{ asset('img/admin.png') }}">
+                            </div>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="col-md-8 pl-0">
+                        <div>
+                            <div class="chat-info">
+                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                <span class="f-10">
+
+                                    <!-- Message error backend - Image only -->
+                                    @if (session('pesan'))
+                                    <small class="tred">Hanya bisa mengirim file gambar</small>
 
                                     @else
-                                        <div class="p-2 testt user-chat-active bg-transparent">
-                                            <img class="w-100" src="{{ asset('img/admin.png') }}">
-                                        </div>
-                                @endcan
+                                    <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
+                                    @endif
+                                </span>
                             </div>
-                        </div>
-                        <div class="col-md-8 pl-0">
-                            <div>
-                                <div class="chat-info">
-                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
-                                    <span class="f-10">
-                                        <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
-                                    </span>
-                                </div>
-                                <div class="container position-relative">
-                                    <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
-                                        @cannot('viewAny', App\Models\User::class)
-                                        <div class="mt-auto w-100">
+                            <div class="container position-relative">
+                                <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
+                                    @cannot('viewAny', App\Models\User::class)
+                                    <div class="mt-auto w-100">
 
-                                            @foreach (App\Models\AdminChat::where('user_id',
-                                                Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
+                                        @foreach (App\Models\AdminChat::where('user_id',
+                                        Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
 
-                                                @php
-                                                    Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
-                                                @endphp
-                                            @endforeach
+                                        @php
+                                        Illuminate\Support\Facades\Auth::user()->user_chats->push($chattings)
+                                        @endphp
+                                        @endforeach
 
-                                            @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
-                                                <div class="mt-3">
-                                                    <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}">
-                                                        <small>
-                                                            {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m') }}
-                                                        </small>
-                                                    </div>
-                                                    @if ($chat->image)
-                                                        <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-img-user' : 'chat-img-admin' }}">
-                                                            <img class="w-100 d-block mb-3" src="{{ asset('storage/chats/' . $chat->image) }}">
-                                                            @if ($chat->text != null)
-                                                                <div
-                                                                  class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user'
+                                        @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
+                                        <div class="mt-3">
+                                            <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}">
+                                                <small>
+                                                    {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m') }}
+                                                </small>
+                                            </div>
+                                            @if ($chat->image)
+                                            <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-img-user' : 'chat-img-admin' }}">
+                                                <img class="w-100 d-block mb-3" src="{{ asset('storage/chats/' . $chat->image) }}">
+                                                @if ($chat->text != null)
+                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user'
                                                                     : 'chat-text-admin' }}">
-                                                                    {{ $chat->text }}
-                                                                </div>
-                                                            @endif
-                                                        </div>
-
-                                                        @else
-                                                            <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
-                                                                <div
-                                                                class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
-                                                                {{ $chat->text }}
-                                                                </div>
-                                                            </div>
-                                                    @endif
+                                                    {{ $chat->text }}
                                                 </div>
-                                            @endforeach
+                                                @endif
+                                            </div>
 
+                                            @else
+                                            <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-msg-user' : 'chat-msg-admin' }}">
+                                                <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user' : 'chat-text-admin' }}">
+                                                    {{ $chat->text }}
+                                                </div>
+                                            </div>
+                                            @endif
                                         </div>
-                                        @endcannot
+                                        @endforeach
+
                                     </div>
+                                    @endcannot
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="type-message">
-                    <div>
-                        @cannot('viewAny', App\Models\User::class)
-                            <form id="user-chats-store-form" enctype="multipart/form-data"
-                              action="{{ route('user-chats.store') }}" class="d-flex chats-store-form" method="post">
+            </div>
+            <div class="type-message">
+                <div>
+                    @cannot('viewAny', App\Models\User::class)
+                    <form id="user-chats-store-form" enctype="multipart/form-data" action="{{ route('user-chats.store') }}" class="d-flex chats-store-form" method="post">
 
-                            @else
-                                <form id="admin-chats-store-form" enctype="multipart/form-data"
-                                  action="{{ route('admin-chats.store') }}" class="d-flex chats-store-form" method="post">
+                        @else
+                        <form id="admin-chats-store-form" enctype="multipart/form-data" action="{{ route('admin-chats.store') }}" class="d-flex chats-store-form" method="post">
 
-                        @endcannot
+                            @endcannot
                             <span class="mt-2">
                                 <label>
                                     <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
                                     <input id="user-chat-send-photo" type="file" name="photo" class="d-none">
                                 </label>
                             </span>
-                            <input class="type-message-input" type="text" name="message" id=""
-                            placeholder="Ketik pesan..." autocomplete="off">
+                            <input class="type-message-input" type="text" name="message" id="" placeholder="Ketik pesan..." autocomplete="off">
                             <button class="btn-none">
                                 <i class="type-message-plane fas fa-paper-plane"></i>
                             </button>
                             @csrf
                         </form>
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
     @endauth
     <div>
         <div class="click-in-buttom">
             @auth
-                <button id="btn-chat" class="btn-none"><i class="far fa-comments"></i></button>
+            <button id="btn-chat" class="btn-none"><i class="far fa-comments"></i></button>
             @endauth
             <div class="click-to-the-top">
                 <button id="click-to-the-top" class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up" aria-hidden="true"></i></button>
