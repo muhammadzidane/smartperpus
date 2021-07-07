@@ -16,7 +16,9 @@ class CreateAdminChatsTable extends Migration
         Schema::create('admin_chats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('text');
+            $table->string('text')->nullable();
+            $table->string('image')->nullable();
+            $table->boolean('read')->default(false);
             $table->timestamps();
         });
     }

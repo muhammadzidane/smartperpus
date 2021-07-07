@@ -304,6 +304,7 @@
                                     <input id="chat-search-user" type="text" class="chat-search-user-input" placeholder="Cari user..." autocomplete="off">
                                 </div>
                                 <div class="user-chattings">
+
                                     @php
                                     $chats = DB::select(
                                     'select user_chats.* from user_chats,
@@ -313,12 +314,13 @@
                                     where user_chats.user_id=max_user.user_id
                                     and user_chats.created_at=max_user.transaction_date'
                                     );
+
                                     @endphp
                                     @foreach ($chats as $chat)
-                                    <div class="user-chat pl-3 py-2" data-id="{{ App\Models\User::find($chat->user_id)->id }}">
+                                    <div class="user-chat pl-3 pr-2 py-2" data-id="{{ App\Models\User::find($chat->user_id)->id }}">
                                         <div class="d-flex justify-content-between">
                                             <div class="tbold text-grey">{{ App\Models\User::find($chat->user_id)->first_name . ' '
-                                                        . App\Models\User::find($chat->user_id)->last_name }}</div>
+                                                    . App\Models\User::find($chat->user_id)->last_name }}</div>
                                             <div class="user-chat-time">
                                                 @if (Carbon\Carbon::now()->diffInDays(Carbon\Carbon::parse($chat->created_at)) >= 1)
                                                 <small>{{ Carbon\Carbon::parse($chat->created_at)->format('y/m/d') }}</small>
@@ -327,7 +329,22 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div>{{ strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' }}</div>
+                                        <div>
+                                            <span>{{ strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' }}</span>
+
+                                            @if (App\Models\UserChat::where('user_id', $chat->user_id)
+                                            ->where('read', false)->get()->count() !== 0)
+
+                                            <span class="user-chat-notifications">
+                                                <small>
+                                                    {{
+                                                        App\Models\UserChat::where('user_id', $chat->user_id)
+                                                        ->where('read', false)->get()->count()
+                                                    }}
+                                                </small>
+                                            </span>
+                                            @endif
+                                        </div>
                                     </div>
                                     @endforeach
                                 </div>
@@ -356,6 +373,7 @@
                                 </span>
                             </div>
                             <div class="container position-relative">
+                                <div id='user-chats-error-image' class="d-none">Hanya bisa mengirim file gambar</div>
                                 <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
                                     @cannot('viewAny', App\Models\User::class)
                                     <div class="mt-auto w-100">
@@ -369,18 +387,23 @@
                                         @endforeach
 
                                         @foreach (Illuminate\Support\Facades\Auth::user()->user_chats->sortBy('created_at') as $chat)
-                                        <div class="mt-3">
+                                        <div class="mt-4">
                                             <div class="{{ $chat->getTable() == 'user_chats' ? 'text-right' : 'text-left' }}">
                                                 <small>
+                                                    @if ($chat->getTable() == 'admin_chats')
+                                                    <span class="tbold">Admin, </span>
+                                                    @endif
+
                                                     {{ $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m') }}
                                                 </small>
                                             </div>
+
                                             @if ($chat->image)
                                             <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-img-user' : 'chat-img-admin' }}">
                                                 <img class="w-100 d-block mb-3" src="{{ asset('storage/chats/' . $chat->image) }}">
                                                 @if ($chat->text != null)
                                                 <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user'
-                                                                    : 'chat-text-admin' }}">
+                                                                : 'chat-text-admin' }}">
                                                     {{ $chat->text }}
                                                 </div>
                                                 @endif
@@ -410,7 +433,7 @@
                     <form id="user-chats-store-form" enctype="multipart/form-data" action="{{ route('user-chats.store') }}" class="d-flex chats-store-form" method="post">
 
                         @else
-                        <form id="admin-chats-store-form" enctype="multipart/form-data" action="{{ route('admin-chats.store') }}" class="d-flex chats-store-form" method="post">
+                        <form id="admin-chats-store-form" enctype="multipart/form-data" action="{{ route('user-chats.store') }}" class="d-flex chats-store-form" method="post">
 
                             @endcannot
                             <span class="mt-2">
@@ -433,14 +456,37 @@
     <div>
         <div class="click-in-buttom">
             @auth
-            <button id="btn-chat" class="btn-none"><i class="far fa-comments"></i></button>
+            <div>
+                <button id="btn-chat" class="btn-none {{ Illuminate\Support\Facades\Auth::user()->role == 'guest' ? 'btn-chat-guest' : '' }}">
+                    <i class="far fa-comments"></i>
+                    @can('viewAny', App\Models\User::class)
+
+                    @if (App\Models\UserChat::where('read', 'false')->get()->count() !== 0)
+                    <div class="btn-chat-unread">
+                        {{ App\Models\UserChat::where('read', 'false')->get()->count() }}
+                    </div>
+                    @endif
+
+                    @else
+
+                    @if (Illuminate\Support\Facades\Auth::user()->admin_chats->where('read', 'false')->count() !== 0)
+                    <div class="btn-chat-unread">
+                        {{ Illuminate\Support\Facades\Auth::user()->admin_chats->where('read', 'false')->count() }}
+                    </div>
+                    @endif
+                    @endcan
+                </button>
+            </div>
             @endauth
             <div class="click-to-the-top">
-                <button id="click-to-the-top" class="btn-to-the-top d-flex ml-auto"><i class="to-the-top fa fa-caret-up" aria-hidden="true"></i></button>
+                <button id="click-to-the-top" class="btn-to-the-top d-flex ml-auto">
+                    <i class="to-the-top fa fa-caret-up"></i>
+                </button>
             </div>
         </div>
     </div>
 </body>
+
 <script src="{{ asset('js/navbar.js') }}"></script>
 <script src="{{ asset('js/helper-functions.js') }}"></script>
 

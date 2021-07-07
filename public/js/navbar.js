@@ -758,7 +758,7 @@ $(document).ready(function () {
         $(this).hide();
 
         if (btnChatclickedCount == 1) {
-                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+            $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
         }
 
         $('.type-message-input').trigger('focus');
@@ -777,81 +777,78 @@ $(document).ready(function () {
 
     // Chat
     const responseChats = (response) => {
-        $('.chattings > div').append(response.chat);
         $('.type-message-input').val('');
-        $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+        $('#user-chat-send-photo').val('');
+
+        if (response.image) {
+            $('#user-send-img-cancel').trigger('click');
+        } else {
+            $('.chattings > div').append(response.chat);
+            $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+        }
     }
 
     // Chat dengan user - AdminChat Store
-    $('#admin-chats-store-form').on('submit', function(e) {
+    $('#admin-chats-store-form').on('submit', e => {
         e.preventDefault();
 
-        let userClickedId   = $('.user-chat-active').data('id');
-        let inputValue      = $('.type-message-input').val();
+        let photoInformation = $('.user-chat-img-information').val();
+        let inputValue       = $('.type-message-input').val();
+        let userClickedId    = $('.user-chat-active').data('id');
 
-        if (inputValue != '' && userClickedId !== undefined) {
-            $.ajax({
-                type: "POST",
-                url: "/admin-chats",
-                data: {
-                    _token : csrfToken,
-                    message: inputValue,
-                    userId : userClickedId,
-                },
-                dataType: "JSON",
-                success: function (response) {
-                    responseChats(response);
-                },
-                error : function(response) {
-                    console.log(response.responseJSON);
-                }
-            });
+        if ((inputValue != '' && userClickedId !== undefined) || photoInformation == '') {
+            ajaxForm('POST', '#admin-chats-store-form', '/user-chats', response => {
+                responseChats(response);
+            }, ['userId', $('.user-chat-active').data('id')]);
         }
     });
 
     // Chat dengan admin - UserChat Store
-    $('#user-chats-store-form').on('submit', function(e) {
+    $('#user-chats-store-form').on('submit', e => {
         e.preventDefault();
 
-        let inputValue      = $('.type-message-input').val();
-        let sendPhoto       = $('.user-chat-img-information').length;
+        let inputValue       = $('.type-message-input').val();
+        let photoInformation = $('.user-chat-img-information').length;
 
         const userChatStore = () => {
-            ajaxForm('POST', '#user-chats-store-form', '/user-chats', function(response) {
+            ajaxForm('POST', '#user-chats-store-form', '/user-chats', response => {
                 responseChats(response);
+                console.log(response.test);
             });
         }
 
         if (inputValue != '') {
             userChatStore();
         }
-        else if (sendPhoto != 0) {
+        else if (photoInformation != 0) {
             userChatStore();
         }
     });
 
-    // Chat dengan user - AdminChat Store
+    // Admin melihat chat milik users
     const userChatClick = () => {
-        $('.user-chat').on('click', function() {
+        $('.user-chat') .on('click', function() {
             let dataId = $(this).data('id');
 
             $(this).prevAll().removeClass('user-chat-active');
             $(this).nextAll().removeClass('user-chat-active');
             $(this).addClass('user-chat-active');
             $('.type-message-input').trigger('focus');
+            $(this).children('div').last().find($('.user-chat-notifications')).remove();
 
             $.ajax({
                 type    : "GET",
                 url     : `/user-chats/${dataId}`,
-                data    : { userId : dataId },
+                data    : { userId : dataId, adminClickShow : true },
                 dataType: "JSON",
                 success : function (response) {
-
                     $('.chattings').html(response.userChatsHtml);
-                    $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+
+                    setTimeout(() => {
+                        $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+                    }, 10);
                 },
                 error : function(response) {
-                    console.log(response);
                     console.log(response.responseJSON.message);
                 }
             });
@@ -869,7 +866,7 @@ $(document).ready(function () {
             $('.chattings > div').html('');
         }
 
-        ajaxJson('POST', `/admin-chats/search`, { _token : csrfToken, searchVal : searchVal }, (response) => {
+        ajaxJson('POST', `/user-chats/search`, { _token : csrfToken, searchVal : searchVal }, (response) => {
             $('.user-chattings').html(response.userChatHtml);
             userChatClick();
         });
@@ -887,20 +884,19 @@ $(document).ready(function () {
                 let ext = $('#user-chat-send-photo').val().split('.').pop().toLowerCase();
 
                 if($.inArray(ext, ['png','jpg','jpeg']) == -1) {
-                    let html = `<div id='user-chats-error-image'>Hanya bisa mengirim gambar</div>`;
-
                     $('#user-send-img-cancel').trigger('click');
-                    $('.chattings').parent().prepend(html);
+                    $('#user-chat-send-photo').val('');
+                    $('#user-chats-error-image').addClass('d-block');
 
                     setTimeout(() => {
                         $('#user-chats-error-image').slideUp(400, () => {
-                            $('#user-chats-error-image').remove();
+                            $('#user-chats-error-image').removeClass('d-block');
                         });
                     }, 3000);
                 }
                 else {
                     let html  = `<div id="user-chat-send-img">`;
-                        html += `<div><button id='user-send-img-cancel' class="btn-none"><i class="fa fa-times"></i></button></div>`;
+                        html += `<div><button id='user-send-img-cancel' class="btn-none mb-3"><i class="fa fa-times"></i></button></div>`;
                         html += `<img id="user-chat-img">`;
                         html += `</div>`;
                         html += `<div class="d-flex">`;
@@ -913,6 +909,7 @@ $(document).ready(function () {
 
                     $('.chattings').html(html);
                     $('.chats-store-form').parent().hide();
+                    $('.user-chat-img-information').trigger('focus');
 
 
                     let preview = document.getElementById('user-chat-img');
@@ -941,9 +938,12 @@ $(document).ready(function () {
                             $('.user-chat-active').trigger('click');
                         }
                         else {
-                            ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, guest : true }, response => {
+                            ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, cancelSendPhoto : true }, response => {
                                 $('.chattings').html(response.userChatsHtml);
-                                $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+
+                                setTimeout(() => {
+                                    $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+                                }, 100);
                             });
                         }
 
@@ -956,17 +956,27 @@ $(document).ready(function () {
 
                         $('.type-message-input').val(message);
                         $('.chats-store-form').trigger('submit');
-                        $('#user-send-img-cancel').trigger('click');
                     });
 
+                    // Jika menekan tombol 'Enter', maka trigger click kirim photo
                     $('.user-chat-img-information').on('keypress', (e) => {
                         if (e.code == 'Enter') {
-                            $('#user-chat-store-send-img').trigger('submit');
+                            $('#user-chat-store-send-img').trigger('click');
                         }
                     });
                 }
             });
         }
+    });
+
+    // User Chat Update - Mengupdate status notifikasi chat menjadi terbaca
+    $('.btn-chat-guest').on('click', e => {
+        let userId = $('.chattings').data('id');
+
+        $('.btn-chat-unread').remove();
+
+        ajaxJson('POST', `/user-chats/${userId}`, { _token : csrfToken, _method : 'PATCH', userId : userId }, () => {
+        });
     });
 
     // End of Chat

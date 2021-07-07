@@ -960,10 +960,22 @@ footer {
     border-bottom: 1px solid #dfddc7;
 }
 
+.user-chat-notifications {
+    float: right;
+    margin-right: 0.2rem;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    background-color: #ee6f57;
+    color: white;
+    border-radius: 100%;
+    text-align: center;
+}
+
 #user-chat-send-img {
     display: flex;
     flex-direction: column;
-    height: 80%;
+    height: 72%;
     margin-top: 10px;
 }
 
@@ -1011,6 +1023,7 @@ footer {
 .chat-with-admin { display: none;}
 
 #btn-chat {
+    position: relative  ;
     background-color: #ea5455;
     height: 50px;
     width: 50px;
@@ -1020,6 +1033,19 @@ footer {
     color: white;
     border: 2px solid #f6f5f5;
     margin-right: 58px;
+}
+
+.btn-chat-unread {
+    position: absolute;
+    background-color: #fff600;
+    color: #444444;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    top: -8px;
+    right: -8px;
+    border-radius: 100%;
+    font-size: 12px;
 }
 
 #btn-chat i { font-size: 22px; }
@@ -1084,7 +1110,6 @@ footer {
 }
 
 .chat-msg-user, .chat-msg-admin {
-    margin-left: auto;
     width: max-content;
     border-radius: 5px;
     max-width: 85%;
@@ -1092,19 +1117,22 @@ footer {
 }
 
 .chat-msg-user {
+    margin-left: auto;
     padding: 3px 20px 5px 12px;
     background: #F8F1F1;
     border-bottom-right-radius: 25px;
 }
 
 .chat-msg-admin {
+    margin-right: auto;
     padding: 3px 12px 5px 20px;
     background: #d1d9d9;
     border-bottom-left-radius: 25px;
 }
 
-.chat-img-user, .chat-img-admiin {
+.chat-img-user, .chat-img-admin {
     width: 65%;
+    height: 100%;
     background-color: #F8F1F1;
     padding: 5px 10px;
     border: 1px solid rgb(68, 68, 68, 0.2);
@@ -1113,13 +1141,23 @@ footer {
 .chat-img-user { margin-left: auto; }
 .chat-img-admin { margin-right: auto; }
 
+.user-chats-bottom-scroll {
+    position: absolute;
+    left: 75%;
+    width: 33px;
+    height: 33px;
+    border-radius: 100%;
+    background-color: #e2d5d5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .chat-text-admin {
-    text-align: right;
     word-break: break-all;
 }
 
 .chat-text-user {
-    text-align: left;
     word-break: break-all;
 }
 

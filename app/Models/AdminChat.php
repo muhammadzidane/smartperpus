@@ -13,11 +13,13 @@ class AdminChat extends Model
     protected $dates   = ['created_at'];
 
     // Relasi antar tabel
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function user_chats() {
+    public function user_chats()
+    {
         return $this->belongsToMany(UserChat::class);
     }
 }

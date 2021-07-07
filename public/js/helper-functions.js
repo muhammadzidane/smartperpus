@@ -214,9 +214,13 @@ function ucwords(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function ajaxForm(method, formSelector, ajaxUrl, successFunction) {
+function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend = '') {
     let form        = $(formSelector)[0];
     let formData    = new FormData(form);
+
+    if (formDataAppend !== '') {
+        formData.append(formDataAppend[0], formDataAppend[1]);
+    }
 
     $.ajax({
         type       : method,

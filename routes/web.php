@@ -1,11 +1,18 @@
 <?php
 
-use App\Http\Controllers\
-{
+use App\Http\Controllers\{
     AdminChatController,
-    AjaxController,BookController, AuthorController, CategoryController,
-    HomeController, TestController, BookPurchaseController,
-    CityController, CustomerController, UserController, ProvinceController,
+    AjaxController,
+    BookController,
+    AuthorController,
+    CategoryController,
+    HomeController,
+    TestController,
+    BookPurchaseController,
+    CityController,
+    CustomerController,
+    UserController,
+    ProvinceController,
     UserChatController,
 };
 
@@ -20,7 +27,7 @@ Route::post('/test', array(TestController::class, 'testPost'))->name('test.post'
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // User
-Route::prefix('/users')->group( function() {
+Route::prefix('/users')->group(function () {
     Route::post('{user}/destroyPhotoProfile', array(UserController::class, 'destroyPhotoProfile'))->name('users.destroy.photo.profile');
     Route::post('add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
     Route::post('{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
@@ -43,14 +50,14 @@ Route::resource('/authors', AuthorController::class);
 // My Account
 // Route::get('/account', array(AccountController::class, 'index'));
 // Route::prefix('/account')->group(function() {
-    // Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
+// Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
 //     Route::get('/my-reviews', array(AccountController::class, 'myReviews'))->name('my.reviews');
 //     Route::get('/chat', array(AccountController::class, 'chat'))->name('chat');
 //     Route::get('/add-new-account', array(AccountController::class, 'addNewAccount'))->name('add.new.account');
 // });
 
 // Books
-Route::prefix('/books')->group(function() {
+Route::prefix('/books')->group(function () {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
@@ -60,7 +67,7 @@ Route::prefix('/books')->group(function() {
 Route::resource('/books', BookController::class);
 
 // Book Purchase
-Route::prefix('/book-purchases')->group(function() {
+Route::prefix('/book-purchases')->group(function () {
     Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
@@ -70,15 +77,15 @@ Route::resource('/book-purchases', BookPurchaseController::class)->except('store
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class);
+Route::post('/user-chats/search', array(UserChatController::class, 'search'));
 
 Route::resource('/admin-chats', AdminChatController::class);
 
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
-Route::post('/admin-chats/search', array(AdminChatController::class, 'show'));
 
 // Ajax
-Route::prefix('/ajax/request')->group(function() {
+Route::prefix('/ajax/request')->group(function () {
     Route::post('cek-ongkir', array(AjaxController::class, 'cekOngkir'));
     Route::post('first-load', array(AjaxController::class, 'firstLoad'));
     Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
@@ -102,7 +109,7 @@ Route::prefix('/ajax/request')->group(function() {
 });
 
 
-Route::fallback(function($wkwk) {
+Route::fallback(function ($wkwk) {
     return 'gk ada halaman ini';
 });
 
