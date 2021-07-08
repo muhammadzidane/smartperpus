@@ -755,6 +755,7 @@ $(document).ready(function () {
 
         $('.chat-content').show();
         $('.chat-with-admin').show();
+        $('.click-to-the-top').addClass('d-none');
         $(this).hide();
 
         if (btnChatclickedCount == 1) {
@@ -768,7 +769,7 @@ $(document).ready(function () {
         $('.chat-content').hide();
         $('.chat-with-admin').hide();
         $('#btn-chat').show();
-
+        $('.click-to-the-top').removeClass('d-none');
     });
 
     $('#dropdown-navbar').on('click', function() {
@@ -795,6 +796,9 @@ $(document).ready(function () {
         let photoInformation = $('.user-chat-img-information').val();
         let inputValue       = $('.type-message-input').val();
         let userClickedId    = $('.user-chat-active').data('id');
+        $('.user-chat-active').children().last().find('span').text(inputValue);
+
+        $('.user-chats-text').text(inputValue);
 
         if ((inputValue != '' && userClickedId !== undefined) || photoInformation == '') {
             ajaxForm('POST', '#admin-chats-store-form', '/user-chats', response => {
@@ -828,21 +832,34 @@ $(document).ready(function () {
     // Admin melihat chat milik users
     const userChatClick = () => {
         $('.user-chat') .on('click', function() {
-            let dataId = $(this).data('id');
-
+            let dataId        = $(this).data('id');
+            let notifications = $(this).children('div').last().find($('.user-chat-notifications'));
             $(this).prevAll().removeClass('user-chat-active');
             $(this).nextAll().removeClass('user-chat-active');
             $(this).addClass('user-chat-active');
             $('.type-message-input').trigger('focus');
-            $(this).children('div').last().find($('.user-chat-notifications')).remove();
+
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                $('#chat-back').addClass('d-block');
+                $('#user-chats').hide();
+            }
 
             $.ajax({
                 type    : "GET",
                 url     : `/user-chats/${dataId}`,
                 data    : { userId : dataId, adminClickShow : true },
                 dataType: "JSON",
-                success : function (response) {
+                success : response => {
+                    let btnChatUnread = $('.btn-chat-unread');
+                    let text          = btnChatUnread.text() - notifications.children().first().text();
+
                     $('.chattings').html(response.userChatsHtml);
+                    btnChatUnread.text(text);
+                    notifications.remove();
+
+                    if (btnChatUnread.text() == 0) {
+                        btnChatUnread.remove();
+                    }
 
                     setTimeout(() => {
                         $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
@@ -979,7 +996,12 @@ $(document).ready(function () {
         });
     });
 
-    // End of Chat
+    $('#chat-back').on('click', () => {
+        $('#user-chats').show();
+        $('.user-chat').removeClass('user-chat-active');
+        $('#chat-back').removeClass('d-block');
+    });
+    // End Chat
 
     // Book Show
     $('#book-show-delete').on('click', function(e) {

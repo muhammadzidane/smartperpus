@@ -1015,7 +1015,6 @@ footer {
 }
 
 .testt {
-    /* display: none !important; */
     height: 420px;
     overflow: auto;
 }
@@ -1601,8 +1600,20 @@ footer {
 /* Media Medium */
 @media screen and (max-width: 768px)  {
     /* Chatting dengan admin  dan Navbar*/
-    .chat-with-admin > div:last-child > div:first-child, .responsive-navbar, .circle-input {
+    .chat-with-admin > div:last-child > div:first-child , .responsive-navbar, .circle-input {
         display: none;
+    }
+
+    .chat-search-user-input { width: 97% !important; }
+
+    .testt { height: auto; }
+
+    .user-chat-time, .user-chat-notifications { margin-right: 22px; }
+
+    #user-chats {
+        display: block;
+        height: 100vh;
+        overflow-y: scroll;
     }
 
     .chat-content {
@@ -1615,7 +1626,7 @@ footer {
     }
 
     .click-to-the-top {
-        display: none !important;
+        display: none !;
     }
 
     .type-message {

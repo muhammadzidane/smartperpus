@@ -15,52 +15,64 @@ use Illuminate\Support\Facades\Route;
 
 class TestController extends Controller
 {
-    public function test() {
-        // dump(User::firstWhere('first_name', 'Eris')->role);
+    public function test()
+    {
+        $chats = DB::select(
+            'SELECT * FROM user_chats,
+            (SELECT user_id,max(created_at) AS transaction_date
+            FROM user_chats
+            GROUP BY user_id) max_user
+            WHERE user_chats.user_id=max_user.user_id
+            AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC '
+        );
 
-        return view('test');
+        dump($chats);
     }
 
-    public function testPost(Request $request) {
+    public function testPost(Request $request)
+    {
         $request->photo->store('public/test');
         return response()->json(array('photo' => $request->photo));
     }
 
-    public function pagination() {
+    public function pagination()
+    {
         return view('pagination');
     }
 
-    public function ajaxRequestStore() {
+    public function ajaxRequestStore()
+    {
         return 'wkwkwk';
     }
 
-    public function index() {
+    public function index()
+    {
         $msg = 'this is a simple message';
         return response()->json(array('msg' => $msg), 200);
-
     }
 
-    public function testCurl() {
+    public function testCurl()
+    {
         // $curlopt_postfield  = 'origin=' . $request->origin_id . '&originType=' . $request->origin_type;
         // $curlopt_postfield .= '&destination=' . $request->destination_id . '&destinationType=' . $request->destination_type;
         // $curlopt_postfield .= '&weight=' . $request->weight . '&courier=' . $request->courier;
         $curlopt_postfield =
 
-        $curl = curl_init();
+            $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => $curlopt_postfield,
-        CURLOPT_HTTPHEADER => array(
-            "content-type: application/x-www-form-urlencoded",
-            "key: ce496165f4a20bc07d96b6fe3ab41ded"
-        ),
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $curlopt_postfield,
+            CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded",
+                "key: ce496165f4a20bc07d96b6fe3ab41ded"
+            ),
         ));
 
         $response = curl_exec($curl);
@@ -70,8 +82,7 @@ class TestController extends Controller
 
         if ($err) {
             echo "cURL Error #:" . $err;
-        }
-        else {
+        } else {
             echo $response;
         }
     }

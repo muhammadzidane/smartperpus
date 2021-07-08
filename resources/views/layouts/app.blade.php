@@ -290,13 +290,16 @@
         <div class="chat-content" aria-labelledby="triggerId">
             <div class="chat-with-admin">
                 <div class="borbot-gray-0 d-flex justify-content-between">
-                    <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">Tanya pada Admin</h4>
+                    <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">
+                        <i @can('viewAny', App\Models\User::class) id="chat-back" @endcan class="d-none fa fa-arrow-left mr-2"></i>
+                        Tanya pada Admin
+                    </h4>
                     <button id="btn-chat-exit" class="btn-none c-middle mr-2">
                         <i class="fa fa-caret-down" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="row ml-0">
-                    <div class="col-md-4 p-0 overflow-auto">
+                    <div @can('viewAny', App\Models\User::class) id="user-chats" @endcan class="col-md-4 p-0">
                         <div class="borright-gray-0">
                             @can('viewAny', App\Models\User::class)
                             <div class="testt">
@@ -307,15 +310,16 @@
 
                                     @php
                                     $chats = DB::select(
-                                    'select user_chats.* from user_chats,
-                                    (select user_id,max(created_at) as transaction_date
-                                    from user_chats
-                                    group by user_id) max_user
-                                    where user_chats.user_id=max_user.user_id
-                                    and user_chats.created_at=max_user.transaction_date'
+                                    'SELECT user_chats.* FROM user_chats,
+                                    (SELECT user_id,max(created_at) AS transaction_date
+                                    FROM user_chats
+                                    GROUP BY user_id) max_user
+                                    WHERE user_chats.user_id=max_user.user_id
+                                    AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC '
                                     );
 
                                     @endphp
+
                                     @foreach ($chats as $chat)
                                     <div class="user-chat pl-3 pr-2 py-2" data-id="{{ App\Models\User::find($chat->user_id)->id }}">
                                         <div class="d-flex justify-content-between">
@@ -330,7 +334,7 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <span>{{ strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' }}</span>
+                                            <span id="user-chats-text">{{ strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' }}</span>
 
                                             @if (App\Models\UserChat::where('user_id', $chat->user_id)
                                             ->where('read', false)->get()->count() !== 0)
@@ -360,7 +364,7 @@
                     <div class="col-md-8 pl-0">
                         <div>
                             <div class="chat-info">
-                                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                <i class="fa fa-info-circle"></i>
                                 <span class="f-10">
 
                                     <!-- Message error backend - Image only -->
@@ -372,7 +376,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <div class="container position-relative">
+                            <div class="container-md position-relative">
                                 <div id='user-chats-error-image' class="d-none">Hanya bisa mengirim file gambar</div>
                                 <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
                                     @cannot('viewAny', App\Models\User::class)
@@ -403,7 +407,7 @@
                                                 <img class="w-100 d-block mb-3" src="{{ asset('storage/chats/' . $chat->image) }}">
                                                 @if ($chat->text != null)
                                                 <div class="{{ $chat->getTable() == 'user_chats' ? 'chat-text-user'
-                                                                : 'chat-text-admin' }}">
+                                                    : 'chat-text-admin' }}">
                                                     {{ $chat->text }}
                                                 </div>
                                                 @endif

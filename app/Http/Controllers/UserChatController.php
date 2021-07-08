@@ -172,25 +172,13 @@ class UserChatController extends Controller
         $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
         $query .= ' WHERE user_chats.user_id = max_user.user_id';
         $query .= " AND user_chats.created_at = max_user.transaction_date";
-        $query .= " AND concat_ws(' ', users.first_name, users.last_name) LIKE '%$request->searchVal%'";
+        $query .= " AND concat_ws(' ', users.first_name, users.last_name) LIKE '%$request->searchVal%' ORDER BY user_chats.created_at DESC";
 
         $chats = DB::select($query);
 
         $userChatHtml  = "";
 
         foreach ($chats as $chat) {
-            // $userChatHtml .= "<div class='user-chat pl-3 py-2' data-id='" . User::find($chat->user_id)->id . "'>";
-            // $userChatHtml .= "<div class='d-flex justify-content-between'>";
-            // $userChatHtml .= "<div class='tbold text-grey'>" . User::find($chat->user_id)->first_name . " ";
-            // $userChatHtml .= User::find($chat->user_id)->last_name . "</div>";
-            // $userChatHtml .= "<div class='user-chat-time'><small>";
-            // $userChatHtml .=  Carbon::now()->diffInDays(Carbon::parse($chat->created_at)) >= 1 ? Carbon::parse($chat->created_at)->format('y/m/d')
-            //     : Carbon::parse($chat->created_at)->format('h:i');
-            // $userChatHtml .= "</small></div>";
-            // $userChatHtml .= "</div>";
-            // $userChatHtml .= "<div>" . strlen($chat->text) <= 28 ? $chat->text : substr($chat->text, 1, 28) . '..' . "</div>";
-            // $userChatHtml .= "</div>";
-
             $userChatHtml .= "<div class='user-chat pl-3 pr-2 py-2' data-id='" . User::find($chat->user_id)->id . "'>";
             $userChatHtml .= "<div class='d-flex justify-content-between'>";
             $userChatHtml .= "<div class='tbold text-grey'>" . User::find($chat->user_id)->first_name . ' ';
@@ -206,7 +194,8 @@ class UserChatController extends Controller
             $userChatHtml .= "</div>";
             $userChatHtml .= "</div>";
             $userChatHtml .= "<div>";
-            $userChatHtml .= "<span>" . strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' . "</span>";
+            $userChatHtml .= "<span id='user-chats-text'>" . strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18);
+            $userChatHtml .= '...' . "</span>";
 
             if (UserChat::where('user_id', $chat->user_id)->where('read', false)->get()->count() !== 0) {
                 $userChatHtml .= "<span class='user-chat-notifications'>";
