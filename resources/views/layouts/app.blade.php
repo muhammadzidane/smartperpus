@@ -310,12 +310,12 @@
 
                                     @php
                                     $chats = DB::select(
-                                    'SELECT user_chats.* FROM user_chats,
-                                    (SELECT user_id,max(created_at) AS transaction_date
-                                    FROM user_chats
-                                    GROUP BY user_id) max_user
-                                    WHERE user_chats.user_id=max_user.user_id
-                                    AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC'
+                                    'select user_chats.* from user_chats,
+                                    (select user_id,max(created_at) as transaction_date
+                                    from user_chats
+                                    group by user_id) max_user
+                                    where user_chats.user_id=max_user.user_id
+                                    and user_chats.created_at=max_user.transaction_date'
                                     );
 
                                     @endphp
@@ -355,7 +355,7 @@
                             </div>
 
                             @else
-                            <div class="p-2 testt user-chat-active bg-transparent">
+                            <div class="p-2 testt bg-transparent">
                                 <img class="w-100" src="{{ asset('img/admin.png') }}">
                             </div>
                             @endcan

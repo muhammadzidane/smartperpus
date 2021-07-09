@@ -1001,9 +1001,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         let userClickedLength = $('.user-chat-active').length;
-
-
-        let userId            = userClickedLength !== 1 ? $('.user-chat-active').data('id') : $('.chattings').data('id');
+        let userId            = userClickedLength === 0 ?$('.chattings').data('id') : $('.user-chat-active').data('id');
         let text              = 'Apakan anda yakin ingin menghapus semua pesan ?';
         let userData          = userClickedLength !== 0 ? ['userId', userId] : '';
 
