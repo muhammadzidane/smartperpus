@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'coba' => \App\Http\Middleware\CobaMiddleware::class,
         'book_user' => \App\Http\Middleware\BookUserMiddleware::class,
+        'auth.admin.only' => \App\Http\Middleware\AuthAdminOnlyMiddleware::class,
     ];
 }

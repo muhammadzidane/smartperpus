@@ -438,3 +438,14 @@ const ajaxJson = (method, url, data, successResponse) => {
     });
 }
 
+// Show message chatting
+const showMessageChatting = () => {
+    $('#user-chats-error-image').addClass('d-block');
+
+    setTimeout(() => {
+        $('#user-chats-error-image').slideUp(400, () => {
+            $('#user-chats-error-image').removeClass('d-block');
+        });
+    }, 3000);
+}
+

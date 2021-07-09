@@ -18,12 +18,12 @@ class TestController extends Controller
     public function test()
     {
         $chats = DB::select(
-            'SELECT * FROM user_chats,
+            'SELECT user_chats.* FROM user_chats,
             (SELECT user_id,max(created_at) AS transaction_date
             FROM user_chats
             GROUP BY user_id) max_user
             WHERE user_chats.user_id=max_user.user_id
-            AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC '
+            AND user_chats.created_at=max_user.transaction_date'
         );
 
         dump($chats);

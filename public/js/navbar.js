@@ -817,7 +817,6 @@ $(document).ready(function () {
         const userChatStore = () => {
             ajaxForm('POST', '#user-chats-store-form', '/user-chats', response => {
                 responseChats(response);
-                console.log(response.test);
             });
         }
 
@@ -903,13 +902,8 @@ $(document).ready(function () {
                 if($.inArray(ext, ['png','jpg','jpeg']) == -1) {
                     $('#user-send-img-cancel').trigger('click');
                     $('#user-chat-send-photo').val('');
-                    $('#user-chats-error-image').addClass('d-block');
 
-                    setTimeout(() => {
-                        $('#user-chats-error-image').slideUp(400, () => {
-                            $('#user-chats-error-image').removeClass('d-block');
-                        });
-                    }, 3000);
+                    showMessageChatting();
                 }
                 else {
                     let html  = `<div id="user-chat-send-img">`;
@@ -1000,6 +994,32 @@ $(document).ready(function () {
         $('#user-chats').show();
         $('.user-chat').removeClass('user-chat-active');
         $('#chat-back').removeClass('d-block');
+    });
+
+    $('#chat-delete-button').on('click', () => $('.chat-delete-action').toggleClass('d-block'));
+    $('#chat-delete-form').on('submit', e => {
+        e.preventDefault();
+
+        let userClickedLength = $('.user-chat-active').length;
+
+
+        let userId            = userClickedLength !== 1 ? $('.user-chat-active').data('id') : $('.chattings').data('id');
+        let text              = 'Apakan anda yakin ingin menghapus semua pesan ?';
+        let userData          = userClickedLength !== 0 ? ['userId', userId] : '';
+
+        if (confirm(text)) {
+            ajaxForm('POST', '#chat-delete-form', `/user-chats/${userId}`, response => {
+                let text = 'Berhasil menghapus semua pesan';
+
+                $('#user-chats-error-image').text(text);
+                showMessageChatting();
+                $('.chattings > .mt-auto').children().remove();
+
+                console.log(response);
+            }, userData);
+        }
+
+        $('#chat-delete-button').trigger('click');
     });
     // End Chat
 

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\{
-    AdminChatController,
     AjaxController,
     BookController,
     AuthorController,
@@ -76,10 +75,9 @@ Route::prefix('/book-purchases')->group(function () {
 Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user');
 
 // Chat dengan admin
-Route::resource('/user-chats', UserChatController::class);
+Route::resource('/user-chats', UserChatController::class)->except('index', 'edit');
 Route::post('/user-chats/search', array(UserChatController::class, 'search'));
-
-Route::resource('/admin-chats', AdminChatController::class);
+Route::post('/user-chats/{user_chat}', array(UserChatController::class, 'destroyy'))->name('user-chats.destroy');
 
 // Test Ajax
 Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');

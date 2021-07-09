@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\{Auth, Storage, Validator, DB};
 
 class UserChatController extends Controller
 {
+
     public function store(Request $request)
     {
         if (!$request->ajax() && $request->photo) {
@@ -92,6 +93,11 @@ class UserChatController extends Controller
 
     public function show(Request $request)
     {
+        // Jika mengakses route secara langsung di web maka redirect ke halaman home
+        if (!$request->userId && !$request->ajax()) {
+            return redirect()->route('home');
+        }
+
         $user        = User::find($request->userId);
         $admin_chats = AdminChat::where('user_id', $user->id)->get();
 
@@ -208,5 +214,14 @@ class UserChatController extends Controller
         }
 
         return response()->json(compact('userChatHtml'));
+    }
+    // End Search
+
+    public function destroy(User $userChat)
+    {
+        $userChat->user_chats()->delete();
+        $userChat->admin_chats()->delete();
+
+        return response()->json()->status();
     }
 }

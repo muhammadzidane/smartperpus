@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{ User, District, City, Province };
+use App\Models\{User, District, City, Province};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{ Validator, Storage , Auth, Hash};
+use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash};
 
 class UserController extends Controller
 {
@@ -18,7 +18,8 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        return view('user.index',
+        return view(
+            'user.index',
             array(
                 'me'    => Auth::user(),
                 'users' => User::withTrashed()->where('id', '!=', Auth::id())->get(),
@@ -46,7 +47,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
     }
 
     /**
@@ -110,21 +110,17 @@ class UserController extends Controller
 
             if ($validator->fails()) {
                 return response()->json(array('pesan' => $validator->getMessageBag(), 'status' => 'fail'));
-            }
-            else {
+            } else {
                 $user->update($update);
 
                 return response()->json(array('pesan' => $pesan, 'success' => true));
             }
-
-        }
-        else { // non AJAX
+        } else { // non AJAX
             $validate_data = $request->validate($validation);
 
             $user->update($update);
             return redirect()->back()->with('pesan', $pesan);
         }
-
     }
 
     /**
@@ -142,8 +138,7 @@ class UserController extends Controller
 
         if ($request->userDelete !== null) {
             return response()->json(array('pesan' => $pesan)); // AJAX
-        }
-        else {
+        } else {
             return redirect()->back()->with('pesan', $pesan); // non AJAX
         }
     }
@@ -157,13 +152,13 @@ class UserController extends Controller
 
         if ($request->userBlock !== null) {
             return response()->json(array('pesan' => $pesan)); // AJAX
-        }
-        else {
+        } else {
             return redirect()->back()->with('pesan', $pesan); // non AJAX
         }
     }
 
-    public function restore($id, Request $request) {
+    public function restore($id, Request $request)
+    {
         $user = User::withTrashed()->find($id);
 
         $pesan = 'Berhasil melepas blokir user ' . $user->first_name . ' ' . $user->last_name;
@@ -172,13 +167,13 @@ class UserController extends Controller
 
         if ($request->userRestoreBlock !== null) {
             return response()->json(array('pesan' => $pesan)); // AJAX
-        }
-        else {
+        } else {
             return redirect()->back()->with('pesan', $pesan); // non AJAX
         }
     }
 
-    public function photoUpdateOrInsert(Request $request) {
+    public function photoUpdateOrInsert(Request $request)
+    {
         $request->validate(
             array(
                 'foto_profile' => array('nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2000'),
@@ -194,23 +189,24 @@ class UserController extends Controller
             unlink(storage_path('app\public\user\profile\\' . $user->profile_image));
 
             $pesan = 'Berhasil men-edit foto profil ' . $user->first_name . ' ' . $user->last_name;
-        }
-        else {
+        } else {
             $pesan = 'Berhasil menambah foto profil ' . $user->first_name . ' ' . $user->last_name;
         }
 
         User::find(Auth::id())->update(array('profile_image' => $photo_profile));
 
         if (!Storage::exists('public/users/profile/' . $photo_profile)) {
-            $request->foto_profile->storeAs('public/user/profile',
-              str_replace(' ', '_', strtolower($photo_profile)));
-
+            $request->foto_profile->storeAs(
+                'public/user/profile',
+                str_replace(' ', '_', strtolower($photo_profile))
+            );
         }
 
         return redirect()->back()->with('pesan', $pesan);
     }
 
-    public function destroyPhotoProfile(Request $request, User $user) {
+    public function destroyPhotoProfile(Request $request, User $user)
+    {
         $update = array(
             'profile_image' => null
         );
@@ -224,28 +220,31 @@ class UserController extends Controller
 
         if ($request->ajax()) {
             return response()->json(array('pesan' => $pesan));
-        }
-        else {
+        } else {
             return redirect()->back()->with('pesan', $pesan);
         }
     }
 
-    public function showChangePassword(User $user) {
+    public function showChangePassword(User $user)
+    {
         $this->authorize('view', $user);
 
         return view('user.change-password', compact(('user')));
     }
 
-    public function updateChangePassword(Request $request, User $user) {
+    public function updateChangePassword(Request $request, User $user)
+    {
         $update = array('password' => Hash::make($request->password_baru));
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             array(
-                'password_lama'        => array('required', function ($attribute, $value, $fail) use ($user) {
-                    if (!Hash::check($value, $user->password)) {
-                        return $fail(__('Password lama anda salah.'));
+                'password_lama'        => array(
+                    'required', function ($attribute, $value, $fail) use ($user) {
+                        if (!Hash::check($value, $user->password)) {
+                            return $fail(__('Password lama anda salah.'));
+                        }
                     }
-                }
                 ),
                 'password_baru'        => array('required', 'min:6'),
                 'ulangi_password_baru' => array('required', 'min:6', 'same:password_baru'),
@@ -257,27 +256,23 @@ class UserController extends Controller
         if ($request->ajax()) {
             if ($validator->fails()) {
                 return response()->json(array('pesan' => $validator->errors(), 'status' => 'fail'));
-            }
-            else {
+            } else {
                 $user->update($update);
 
                 return response()->json(array('pesan' => $pesan_berhasil, 'status' => 'successful'));
             }
-        }
-        else {
+        } else {
             if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput()->with('pesan_password', $pesan_berhasil);
-            }
-            else {
+            } else {
                 $user->update($update);
 
                 return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan_berhasil);
             }
         }
-
     }
 
-    public function changeAddress(Request $request, User $user) {
-
+    public function changeAddress(Request $request, User $user)
+    {
     }
 }

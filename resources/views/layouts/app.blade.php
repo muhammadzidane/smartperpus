@@ -315,7 +315,7 @@
                                     FROM user_chats
                                     GROUP BY user_id) max_user
                                     WHERE user_chats.user_id=max_user.user_id
-                                    AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC '
+                                    AND user_chats.created_at=max_user.transaction_date ORDER BY user_chats.created_at DESC'
                                     );
 
                                     @endphp
@@ -364,7 +364,6 @@
                     <div class="col-md-8 pl-0">
                         <div>
                             <div class="chat-info">
-                                <i class="fa fa-info-circle"></i>
                                 <span class="f-10">
 
                                     <!-- Message error backend - Image only -->
@@ -372,7 +371,20 @@
                                     <small class="tred">Hanya bisa mengirim file gambar</small>
 
                                     @else
+                                    <i class="fa fa-info-circle"></i>
                                     <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
+                                    <div class="chat-delete" class="bg-dark">
+                                        <button id="chat-delete-button" class="btn-none" class="btn-none mr-4">
+                                            <i class="fa fa-ellipsis-v"></i>
+                                        </button>
+                                        <form id="chat-delete-form" method="POST" action="{{ route('user-chats.destroy',
+                                            array('user_chat' => Illuminate\Support\Facades\Auth::id())) }}">
+
+                                            <button class="chat-delete-action btn-none" type="submit">Hapus pesan</button>
+                                            @method('DELETE')
+                                            @csrf
+                                        </form>
+                                    </div>
                                     @endif
                                 </span>
                             </div>
