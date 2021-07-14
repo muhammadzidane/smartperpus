@@ -981,8 +981,11 @@ footer {
 
 
 #user-chat-img {
+    width: -webkit-fill-available;
     height: 100%;
     object-fit: contain;
+    margin: 0 auto;
+    display: block
 }
 
 .user-chat-img-information {

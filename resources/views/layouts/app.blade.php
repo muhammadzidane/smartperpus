@@ -286,7 +286,7 @@
     </div>
 
     @auth
-    <div class="chat">
+    <div class="chat" data-role="{{ Illuminate\Support\Facades\Auth::user()->role }}">
         <div class="chat-content" aria-labelledby="triggerId">
             <div class="chat-with-admin">
                 <div class="borbot-gray-0 d-flex justify-content-between">
@@ -307,7 +307,6 @@
                                     <input id="chat-search-user" type="text" class="chat-search-user-input" placeholder="Cari user..." autocomplete="off">
                                 </div>
                                 <div class="user-chattings">
-
                                     @php
                                     $chats = DB::select(
                                     'select user_chats.* from user_chats,
@@ -315,7 +314,8 @@
                                     from user_chats
                                     group by user_id) max_user
                                     where user_chats.user_id=max_user.user_id
-                                    and user_chats.created_at=max_user.transaction_date'
+                                    and user_chats.created_at=max_user.transaction_date
+                                    ORDER BY user_chats.created_at DESC'
                                     );
 
                                     @endphp
@@ -334,7 +334,15 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <span id="user-chats-text">{{ strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' }}</span>
+                                            <span id="user-chats-text">
+                                                @if ($chat->text == null)
+                                                <span>Mengirim gambar...</span>
+                                                @endif
+
+                                                <span>
+                                                    {{ strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18) . '...' }}
+                                                </span>
+                                            </span>
 
                                             @if (App\Models\UserChat::where('user_id', $chat->user_id)
                                             ->where('read', false)->get()->count() !== 0)
@@ -391,8 +399,18 @@
                             <div class="container-md position-relative">
                                 <div id='user-chats-error-image' class="d-none">Hanya bisa mengirim file gambar</div>
                                 <div class="chattings" data-id="{{ Illuminate\Support\Facades\Auth::id() }}">
+                                    <div id="user-chat-send-img" class="d-none">
+                                        <div><button id='user-send-img-cancel' class="btn-none mb-3"><i class="fa fa-times"></i></button></div>
+                                        <img id="user-chat-img">
+                                    </div>
+                                    <div id="user-chat-send-img-input" class="d-none">
+                                        <input class="user-chat-img-information" type="text" name="message" placeholder="Tambah keterangan..." autocomplete="off">
+                                        <button id="user-chat-store-send-img" type="button" class="btn-none">
+                                            <i class="type-message-plane fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
                                     @cannot('viewAny', App\Models\User::class)
-                                    <div class="mt-auto w-100">
+                                    <div id="menu-chattings" class="mt-auto w-100">
 
                                         @foreach (App\Models\AdminChat::where('user_id',
                                         Illuminate\Support\Facades\Auth::id())->get(); as $chattings)
@@ -436,6 +454,8 @@
                                         @endforeach
 
                                     </div>
+                                    @else
+                                    <div id="menu-chattings" class="mt-auto w-100"></div>
                                     @endcannot
                                 </div>
                             </div>
@@ -459,7 +479,7 @@
                                 </label>
                             </span>
                             <input class="type-message-input" type="text" name="message" id="" placeholder="Ketik pesan..." autocomplete="off">
-                            <button class="btn-none">
+                            <button id="chats-submit" class="btn-none">
                                 <i class="type-message-plane fas fa-paper-plane"></i>
                             </button>
                             @csrf

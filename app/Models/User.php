@@ -7,26 +7,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
 
     // Relasi antar tabel
-    public function books() {
+    public function books()
+    {
         return $this->belongsToMany('App\Models\Book');
     }
 
-    public function customer() {
+    public function customer()
+    {
         return $this->hasMany('App\Models\Customer');
     }
 
-    public function user_chats() {
-        return $this->hasMany(UserChat::class);
+    public function user_chats()
+    {
+        if (Auth::user()->role !== 'guest') {
+            return $this->hasMany(UserChat::class)->withTrashed();
+        } else {
+            return $this->hasMany(UserChat::class);
+        }
     }
 
-    public function admin_chats() {
+    public function admin_chats()
+    {
         return $this->hasMany(AdminChat::class);
     }
 

@@ -114,28 +114,20 @@ class UserChatController extends Controller
         $html           = '';
 
         foreach ($user->user_chats->sortBy('created_at') as $chat) {
-            if ($request->adminClickShow) {
-                $table_check      = $chat->getTable() != 'user_chats';
-                $text_align       = $table_check ? 'text-right' : 'text-left';
-                $first_name       = $table_check ? 'Admin' : $chat->user->first_name;
-                $last_name        = $table_check ? '' : $chat->user->last_name;
-                $chat_msg         = $table_check ? 'chat-msg-user' : 'chat-msg-admin';
-                $chat_img         = $table_check ? 'chat-img-user' : 'chat-img-admin';
-                $chat_msg_align   = $table_check ? 'chat-text-user' : 'chat-text-admin';
-            } else if ($request->cancelSendPhoto) {
-                $table_check      = $chat->getTable() != 'user_chats';
-                $text_align       = $table_check ? 'text-left' : 'text-right';
-                $first_name       = $table_check ? $chat->user->first_name : 'Admin';
-                $last_name        = $table_check ? $chat->user->last_name : '';
-                $chat_msg         = $table_check ? 'chat-msg-admin' : 'chat-msg-user';
-                $chat_img         = $table_check ? 'chat-img-admin' : 'chat-img-user';
-                $chat_msg_align   = $table_check ? 'chat-text-admin' : 'chat-text-user';
-            }
+            $deleted_chat   = $chat->deleted_at !== null ? 'text-grey' : '';
+            $auth_role      = Auth::user()->role;
+            $table_check    = $chat->getTable() !== 'user_chats';
+            $text_align     = $table_check ? 'text-right' : ($auth_role === 'guest' ? 'text-right' : 'text-left');
+            $first_name     = $table_check ? 'Admin, ' : ($auth_role !== 'guest' ? $chat->user->first_name : '');
+            $last_name      = $table_check ? '' : ($auth_role !== 'guest' ? $chat->user->last_name : '');
+            $chat_msg       = $table_check ? 'chat-msg-user' : ($auth_role !== 'guest' ? 'chat-msg-admin' : '');
+            $chat_img       = $table_check ? 'chat-img-user' : ($auth_role !== 'guest' ? 'chat-img-admin' : 'chat-img-user');
+            $chat_msg_align = $table_check ? 'chat-text-user' : 'chat-text-admin';
 
             $html .= "<div class='mt-4'>";
-            $html .= "<div class='$text_align'>";
+            $html .= "<div class='$text_align $deleted_chat'>";
             $html .= "<small>";
-            $html .= $table_check ? '' : "<span class='tbold'>$first_name $last_name, </span>";
+            $html .= $table_check ? '' : "<span class='tbold'>$first_name $last_name </span>";
             $html .= $chat->created_at->isoFormat('dddd, D MMMM YYYY H:m');
             $html .= "</small>";
             $html .= "</div>";
@@ -156,10 +148,9 @@ class UserChatController extends Controller
             $html .= '</div>';
         }
 
-        $userChatsHtml = "<div class='mt-auto w-100'>$html</div>";
-        $test = true;
+        $userChatsHtml = $html;
 
-        return response()->json(compact('userChatsHtml', 'test'));
+        return response()->json(compact('userChatsHtml'));
     } // End Show
 
     // Update untuk notifikasi chatting
@@ -178,7 +169,8 @@ class UserChatController extends Controller
         $query .= ' (SELECT user_id,max(created_at) AS transaction_date FROM user_chats GROUP BY user_id) max_user';
         $query .= ' WHERE user_chats.user_id = max_user.user_id';
         $query .= " AND user_chats.created_at = max_user.transaction_date";
-        $query .= " AND concat_ws(' ', users.first_name, users.last_name) LIKE '%$request->searchVal%' ORDER BY user_chats.created_at DESC";
+        $query .= " AND concat_ws(' ', users.first_name, users.last_name)";
+        $query .= "  LIKE '%$request->searchVal%' ORDER BY user_chats.created_at DESC";
 
         $chats = DB::select($query);
 
@@ -201,7 +193,7 @@ class UserChatController extends Controller
             $userChatHtml .= "</div>";
             $userChatHtml .= "<div>";
             $userChatHtml .= "<span id='user-chats-text'>" . strlen($chat->text) <= 18 ? $chat->text : substr($chat->text, 1, 18);
-            $userChatHtml .= '...' . "</span>";
+            $userChatHtml .= $chat->text >= 18 ? '...' . "</span>" : "</span>";
 
             if (UserChat::where('user_id', $chat->user_id)->where('read', false)->get()->count() !== 0) {
                 $userChatHtml .= "<span class='user-chat-notifications'>";
@@ -219,8 +211,15 @@ class UserChatController extends Controller
 
     public function destroy(User $userChat)
     {
-        $userChat->user_chats()->delete();
-        $userChat->admin_chats()->delete();
+        $user = Auth::user();
+
+        if ($user->role != "guest") {
+            $userChat->user_chats()->forceDelete();
+            $userChat->admin_chats()->forceDelete();
+        } else {
+            $userChat->user_chats()->delete();
+            $userChat->admin_chats()->delete();
+        }
 
         return response()->json()->status();
     }

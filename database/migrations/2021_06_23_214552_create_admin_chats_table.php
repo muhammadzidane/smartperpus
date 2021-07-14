@@ -20,6 +20,7 @@ class CreateAdminChatsTable extends Migration
             $table->string('image')->nullable();
             $table->boolean('read')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

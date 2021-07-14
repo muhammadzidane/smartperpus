@@ -21,10 +21,10 @@ $(document).ready(function () {
     if (window.location.pathname == '/search/books') {
         $.ajax({
             type: "POST",
-            url : "/ajax/request/first-load",
+            url: "/ajax/request/first-load",
             data: {
                 '_token': csrfToken,
-                'page'  : getUrlParameter('page'),
+                'page': getUrlParameter('page'),
             },
             success: function (response) {
                 $('#book-search').html(response.books);
@@ -37,8 +37,7 @@ $(document).ready(function () {
     $('.keywords').on('keyup', function () {
         if ($(this).val() === '') {
             $('#search-values').hide();
-        }
-        else {
+        } else {
             $('#search-values').show();
             $.ajax({
                 type: 'POST',
@@ -73,18 +72,18 @@ $(document).ready(function () {
         }
     });
 
-    $('.search-form button').on('click', function(e) {
+    $('.search-form button').on('click', function (e) {
         if (window.location.pathname == '/search/books') {
             e.preventDefault();
 
             $.ajax({
-                type    : "POST",
-                url     : "/ajax/request/search",
-                data    : {
-                    '_token'       : csrfToken,
-                    'keywords'     : $('.keywords').val(),
+                type: "POST",
+                url: "/ajax/request/search",
+                data: {
+                    '_token': csrfToken,
+                    'keywords': $('.keywords').val(),
                 },
-                success : function (response) {
+                success: function (response) {
                     $('#book-search').html(response.books);
                     $('#search-text').html($('.keywords').val());
 
@@ -97,14 +96,14 @@ $(document).ready(function () {
 
                     // Merubah parameter URL tanpa reload
                     history.pushState({}, null,
-                      `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${$('.p-active').text()}`);
+                        `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${$('.p-active').text()}`);
                 },
             });
 
         }
     });
 
-    $('.keywords').on('blur', function() {
+    $('.keywords').on('blur', function () {
         $('#search-values').hide();
     });
 
@@ -113,8 +112,7 @@ $(document).ready(function () {
         if ($('#password').is('input[type=password]')) {
             $(this).html('<i class="fas fa-low-vision"></i>');
             $('#password').attr('type', 'text');
-        }
-        else {
+        } else {
             $(this).html('<i class="fas fa-eye"></i>');
             $('#password').attr('type', 'password');
         }
@@ -142,21 +140,20 @@ $(document).ready(function () {
         if ($(this).hasClass('active-login') && checkFormRequiredInputs('.login-form')) {
             $.ajax({
                 type: "POST",
-                url : "/ajax/request/check-login",
+                url: "/ajax/request/check-login",
                 data: {
-                    '_token'  : csrfToken,
-                    'email'   : $('#email').val(),
+                    '_token': csrfToken,
+                    'email': $('#email').val(),
                     'password': $('#password').val(),
                 },
                 success: function (response) {
-                    let errorLogin  = '<div class="error tred small mb-2" role="alert">';
-                        errorLogin += `<strong>${response.message}</strong>`;
-                        errorLogin += '</div>';
+                    let errorLogin = '<div class="error tred small mb-2" role="alert">';
+                    errorLogin += `<strong>${response.message}</strong>`;
+                    errorLogin += '</div>';
 
                     if (!response.success) {
                         $('#error-login').first().html((errorLogin));
-                    }
-                    else {
+                    } else {
                         $('#form-login').trigger('submit');
                     }
                 }
@@ -178,7 +175,7 @@ $(document).ready(function () {
     });
 
     // Menghapus input value login, saat menekan tombol keyboard 'ESC'
-    $(document).on('keyup', function(e) {
+    $(document).on('keyup', function (e) {
         if (e.code == 'Escape') {
             $('#email').val('');
             $('#password').val('');
@@ -192,7 +189,7 @@ $(document).ready(function () {
 
     // Modul ~ Search Book
     // Filter minimum / maksimum harga
-    $('.min-max-value').on('click', function(e) {
+    $('.min-max-value').on('click', function (e) {
         e.preventDefault();
 
         let min_price_val = $('#modal-filter').hasClass('show') ? $('.min-price').last().val() : $('.min-price').val();
@@ -218,7 +215,7 @@ $(document).ready(function () {
     });
 
     // Filter Rating
-    $('.filter-star-search').on('click', function() {
+    $('.filter-star-search').on('click', function () {
         $('.click-to-the-top').trigger('click');
 
         $('#modal-filter').modal('hide');
@@ -233,35 +230,35 @@ $(document).ready(function () {
     // Book Search - Animasi transparan buku buku
     let count = 0;
     $('.book').css('opacity', '0');
-    let bookOpacityLoad = setInterval(function()  {
+    let bookOpacityLoad = setInterval(function () {
         if (count >= 1) {
             clearInterval(bookOpacityLoad);
         }
 
-        $('.book').css('opacity', count+=0.1);
+        $('.book').css('opacity', count += 0.1);
     }, 60);
 
     // Sort buku
-    $('#sort-books').on('change', function() {
-        let min_price_val        = $('.filter-min-price').data('filter-value');
-        let max_price_val        = $('.filter-max-price').data('filter-value');
-        let sortBookVal          = $('#sort-books').val();
+    $('#sort-books').on('change', function () {
+        let min_price_val = $('.filter-min-price').data('filter-value');
+        let max_price_val = $('.filter-max-price').data('filter-value');
+        let sortBookVal = $('#sort-books').val();
         let sortBookSelectedText = $('#sort-books option:checked').text();
 
         appendFilter('.filter-sort',
-            [`${sortBookSelectedText}`, $('#sort-books option:checked').val() , 'filter-sort']
+            [`${sortBookSelectedText}`, $('#sort-books option:checked').val(), 'filter-sort']
         )
 
         $.ajax({
             type: "POST",
-            url : "/ajax/request/filter-search",
+            url: "/ajax/request/filter-search",
             data: {
-                '_token'         : csrfToken,
-                'min_price'      : min_price_val,
-                'max_price'      : max_price_val,
-                'star_value'     : $('.rating-4-plus').length == 0 ? null : $('.filter-star-search').data('filter-star'),
+                '_token': csrfToken,
+                'min_price': min_price_val,
+                'max_price': max_price_val,
+                'star_value': $('.rating-4-plus').length == 0 ? null : $('.filter-star-search').data('filter-star'),
                 'sort_book_value': sortBookVal,
-                'keywords'       : getUrlParameter('keywords'),
+                'keywords': getUrlParameter('keywords'),
             },
             success: function (response) {
                 $('#book-search').html(response.books);
@@ -273,10 +270,10 @@ $(document).ready(function () {
 
     // Pagination
     $.ajax({
-        type   : "POST",
-        url    : "/ajax/request/pagination-data",
-        data   : {
-            '_token' : csrfToken,
+        type: "POST",
+        url: "/ajax/request/pagination-data",
+        data: {
+            '_token': csrfToken,
         },
         success: function (response) {
             response.paginationHtml.forEach(element => {
@@ -304,17 +301,17 @@ $(document).ready(function () {
         }
     });
 
-    $('#pagination-number').on('click', function(e) {
+    $('#pagination-number').on('click', function (e) {
         $('#book-search').html('');
         let pageNumber = $(e.target).text();
 
 
         $.ajax({
             type: "POST",
-            url : "/ajax/request/pagination",
+            url: "/ajax/request/pagination",
             data: {
                 '_token': csrfToken,
-                'page'  : pageNumber,
+                'page': pageNumber,
             },
             success: function (response) {
                 $(e.target).siblings().removeClass('p-active');
@@ -332,20 +329,19 @@ $(document).ready(function () {
             for (let i = 2; i <= 5; i++) {
                 $(`#pagination-number div:nth-child(${i})`).text(i);
             }
-        }
-        else if (pageNumber >= 2) {
+        } else if (pageNumber >= 2) {
             $('#pagination-prev').show();
         }
     });
 
     // Pagination Next
-    $('#pagination-next').on('click', function() {
-        let activePage         = $('.p-active');
-        let paginationNth1     = $('#pagination-number div:nth-child(1)');
-        let paginationNth2     = $('#pagination-number div:nth-child(2)');
-        let paginationNth3     = $('#pagination-number div:nth-child(3)');
-        let paginationNth4     = $('#pagination-number div:nth-child(4)');
-        let lastPagination     = $('#pagination-number').children().last();
+    $('#pagination-next').on('click', function () {
+        let activePage = $('.p-active');
+        let paginationNth1 = $('#pagination-number div:nth-child(1)');
+        let paginationNth2 = $('#pagination-number div:nth-child(2)');
+        let paginationNth3 = $('#pagination-number div:nth-child(3)');
+        let paginationNth4 = $('#pagination-number div:nth-child(4)');
+        let lastPagination = $('#pagination-number').children().last();
 
         if (activePage.text() >= 5 && activePage.text() != lastPagination.text()) {
             paginationNth2.text('...');
@@ -353,8 +349,7 @@ $(document).ready(function () {
 
             if ((paginationNth3.hasClass('p-active') || paginationNth4.hasClass('p-active')) && paginationNth2.text() == '...') {
                 activePage.next().trigger('click');
-            }
-            else {
+            } else {
                 activePage.text(parseInt(activePage.text()) + 1).trigger('click');
                 paginationNth4.text(activePage.text() - 1);
                 paginationNth3.text(activePage.text() - 2);
@@ -364,8 +359,7 @@ $(document).ready(function () {
                 lastPagination.prev().addClass('p-hide').hide();
                 lastPagination.addClass('p-hide').hide();
             }
-        }
-        else {
+        } else {
             activePage.next().trigger('click');
         }
 
@@ -375,8 +369,8 @@ $(document).ready(function () {
 
     });
 
-    $('#pagination-prev').on('click', function() {
-        let activePage     = $('.p-active');
+    $('#pagination-prev').on('click', function () {
+        let activePage = $('.p-active');
         let paginationNth2 = $('#pagination-number div:nth-child(2)');
         let paginationNth3 = $('#pagination-number div:nth-child(3)');
         let paginationNth4 = $('#pagination-number div:nth-child(4)');
@@ -387,9 +381,9 @@ $(document).ready(function () {
         }
 
         if (paginationNth3.hasClass('p-active') && paginationNth2.text() == '...') {
-            paginationNth3.text(parseInt(activePage.text() -  1)).trigger('click');
-            paginationNth4.text(parseInt(paginationNth4.text()) -  1);
-            paginationNth5.text(parseInt(paginationNth5.text()) -  1);
+            paginationNth3.text(parseInt(activePage.text() - 1)).trigger('click');
+            paginationNth4.text(parseInt(paginationNth4.text()) - 1);
+            paginationNth5.text(parseInt(paginationNth5.text()) - 1);
         }
 
         if (paginationNth3.text() == 2 && paginationNth2.text() == '...') {
@@ -410,11 +404,10 @@ $(document).ready(function () {
     });
 
     // Book Buy
-    $('#plus-one-book').on('click', function(e) {
+    $('#plus-one-book').on('click', function (e) {
         if ($('#total-book').text() == 0) {
             e.preventDefault();
-        }
-        else {
+        } else {
             $('#book-needed').text(parseInt($('#book-needed').text()) + 1);
             $('#jumlah-barang').text(parseInt($('#jumlah-barang').text()) + 1);
             $('#total-book').text(parseInt($('#total-book').text()) - 1);
@@ -423,12 +416,11 @@ $(document).ready(function () {
         checkShippingInsurance();
     });
 
-    $('#sub-one-book').on('click', function(e) {
+    $('#sub-one-book').on('click', function (e) {
 
-        if ($('#book-needed').text() == 1 ) {
+        if ($('#book-needed').text() == 1) {
             e.preventDefault();
-        }
-        else {
+        } else {
             $('#jumlah-barang').text(parseInt($('#jumlah-barang').text()) - 1);
             $('#book-needed').text(parseInt($('#book-needed').text()) - 1);
             $('#total-book').text(parseInt($('#total-book').text()) + 1);
@@ -437,26 +429,26 @@ $(document).ready(function () {
         checkShippingInsurance();
     });
 
-    $('#shipping-insurance').on('click', function() {
+    $('#shipping-insurance').on('click', function () {
         checkShippingInsurance();
     });
 
     // Book Buy - Event Change Provinsi
-    $('.provinsi').on('change', function() {
-        let form        = $(this).parents('form')[0];
-        let formData    = new FormData(form);
+    $('.provinsi').on('change', function () {
+        let form = $(this).parents('form')[0];
+        let formData = new FormData(form);
 
         $.ajax({
-            type       : "POST",
-            url        : "/ajax/request/change-province",
-            data       : formData,
-            dataType   : "JSON",
+            type: "POST",
+            url: "/ajax/request/change-province",
+            data: formData,
+            dataType: "JSON",
             processData: false,
-            cache      : false,
+            cache: false,
             contentType: false,
-            success    : function (response) {
+            success: function (response) {
                 let citiesAndDistrictsHtml = '';
-                let districtsHtml          = '';
+                let districtsHtml = '';
 
                 response.cities.forEach(city => {
                     citiesAndDistrictsHtml += `<option value="${city.id}">${city.name}</option>`;
@@ -474,19 +466,19 @@ $(document).ready(function () {
     })
 
     // Book Buy - Event Change City
-    $('.kota-atau-kabupaten').on('change', function() {
-        let form        = $(this).parents('form')[0];
-        let formData    = new FormData(form);
+    $('.kota-atau-kabupaten').on('change', function () {
+        let form = $(this).parents('form')[0];
+        let formData = new FormData(form);
 
         $.ajax({
-            type       : "POST",
-            url        : "/ajax/request/change-city",
-            data       : formData,
-            dataType   : "JSON",
+            type: "POST",
+            url: "/ajax/request/change-city",
+            data: formData,
+            dataType: "JSON",
             processData: false,
-            cache      : false,
+            cache: false,
             contentType: false,
-            success    : function (response) {
+            success: function (response) {
                 let districtsHtml = '';
 
                 response.districts.forEach(district => {
@@ -500,42 +492,42 @@ $(document).ready(function () {
     })
 
     // Show All Synopsis
-    $('#book-synopsis-toggle-button').on('click', function() {
+    $('#book-synopsis-toggle-button').on('click', function () {
         let synopsis = $('#synopsis > p');
 
         $('#book-synopsis-show').toggle();
         $(this).appendTo(synopsis);
-        toggleText(this , 'Lihat Semua....', 'Sembunyikan....');
+        toggleText(this, 'Lihat Semua....', 'Sembunyikan....');
     });
 
     // End of Book Buy
 
     // Tulis Catatan
-    $('#btn-write-notes').on('click', function() {
+    $('#btn-write-notes').on('click', function () {
         $(this).hide();
         $('#input-write-notes').removeClass('d-none');
 
-        $('#write-notes-cancel').on('click', function() {
+        $('#write-notes-cancel').on('click', function () {
             $('#btn-write-notes').show();
             $('#input-write-notes').addClass('d-none');
         });
     });
 
-    $('#write-notes-cancel').on('click', function() {
+    $('#write-notes-cancel').on('click', function () {
         $('#write-note').val('');
     });
 
     // Cek API Rajaongkir
-    $('.courier-choise').on('click', function() {
+    $('.courier-choise').on('click', function () {
 
         let dataCustomerLength = $('.data-customer').length;
 
         if (dataCustomerLength != 0) {
             // Loading Couriers - Membuat loading saat layanan kurir belum muncul
             let courierServices = $('.courier-choise-service').length;
-            let spinnerHtml     = `<div class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
-                spinnerHtml    += `<div class="spin"></div>`;
-                spinnerHtml    += `</div>`;
+            let spinnerHtml = `<div class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
+            spinnerHtml += `<div class="spin"></div>`;
+            spinnerHtml += `</div>`;
 
             $('#courier-choise-name').html('');
             $('#courier-choise-result').html(spinnerHtml);
@@ -546,50 +538,50 @@ $(document).ready(function () {
             $('.courier-choise').removeClass('cc-active');
             $(this).addClass('cc-active');
 
-            let originSubdistictId       = $('#origin').data('subdistrict-id');
-            let originType               = $('#origin').data('origin-type');
+            let originSubdistictId = $('#origin').data('subdistrict-id');
+            let originType = $('#origin').data('origin-type');
             let destinationSubdistrictId = $('#destination').data('subdistrict-id');
-            let destinationType          = $('#destination').data('destination-type');
-            let weight                   = $('#weight').data('weight');
-            let courierChoise            = $('input[name=courier-choise]:checked').val();
+            let destinationType = $('#destination').data('destination-type');
+            let weight = $('#weight').data('weight');
+            let courierChoise = $('input[name=courier-choise]:checked').val();
 
             $.ajax({
                 type: "POST",
-                url : "/ajax/request/cek-ongkir",
+                url: "/ajax/request/cek-ongkir",
                 data: {
-                    '_token'          : csrfToken,
-                    'origin_id'       : originSubdistictId,
-                    'origin_type'     : originType,
-                    'destination_id'  : destinationSubdistrictId,
+                    '_token': csrfToken,
+                    'origin_id': originSubdistictId,
+                    'origin_type': originType,
+                    'destination_id': destinationSubdistrictId,
                     'destination_type': destinationType,
-                    'weight'          : weight,
-                    'courier'         : courierChoise,
+                    'weight': weight,
+                    'courier': courierChoise,
                 },
                 dataType: "JSON",
-                success : function (response) {
+                success: function (response) {
                     let result = response.rajaongkir.results[0];
 
                     $('#courier-choise-name').text(result.name);
                     $('#courier-choise-result').html('');
 
-                    let courierChoiseHtml  = function(description,etd ,costPrice) {
+                    let courierChoiseHtml = function (description, etd, costPrice) {
 
                         // Jika tidak ada string Hari pada etd, maka tambahkan string 'Hari'
-                        let path        = /(HARI|JAM)/i;
+                        let path = /(HARI|JAM)/i;
                         let regexResult = etd.match(path) ?? '';
-                        etd         = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
+                        etd = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
 
-                        let courierChoiseHtml  = `<div>`;
-                            courierChoiseHtml += `<div class="courier-choise-service">`;
-                            courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
-                            courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
-                            courierChoiseHtml += `<span> - </span>`;
-                            courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
-                            courierChoiseHtml += `<div class="ml-4">`;
-                            courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
-                            courierChoiseHtml += `</div>`;
-                            courierChoiseHtml += `</div>`;
-                            courierChoiseHtml += `</div>`;
+                        let courierChoiseHtml = `<div>`;
+                        courierChoiseHtml += `<div class="courier-choise-service">`;
+                        courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
+                        courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
+                        courierChoiseHtml += `<span> - </span>`;
+                        courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
+                        courierChoiseHtml += `<div class="ml-4">`;
+                        courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
+                        courierChoiseHtml += `</div>`;
+                        courierChoiseHtml += `</div>`;
+                        courierChoiseHtml += `</div>`;
 
                         return courierChoiseHtml;
                     }
@@ -600,23 +592,22 @@ $(document).ready(function () {
                         });
                     });
 
-                    $('.courier-choise-service').on('click', function() {
+                    $('.courier-choise-service').on('click', function () {
                         $('.inp-courier-choise-service').removeAttr('checked');
                         $(this).children('input').attr('checked', 'checked');
 
-                        let bookPrice                = $('#book-price').data('book-price');
-                        let shippingCost             = $(this).children('input:checked').val() ?? 0;
-                        let bookNeeded               = parseInt($('#book-needed').text());
-                        let shippingInsurance        = $('#shipping-insurance').is(':checked') ? 1000 : 0;
-                        let courierServicePriceHtml  = `<div class="d-flex justify-content-between">`;
-                            courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
-                            courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
-                            courierServicePriceHtml += `</div>`;
+                        let bookPrice = $('#book-price').data('book-price');
+                        let shippingCost = $(this).children('input:checked').val() ?? 0;
+                        let bookNeeded = parseInt($('#book-needed').text());
+                        let shippingInsurance = $('#shipping-insurance').is(':checked') ? 1000 : 0;
+                        let courierServicePriceHtml = `<div class="d-flex justify-content-between">`;
+                        courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
+                        courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
+                        courierServicePriceHtml += `</div>`;
 
                         if ($('#shipping-cost').length <= 0) {
                             $('#book-payment').append(courierServicePriceHtml);
-                        }
-                        else {
+                        } else {
                             $('#shipping-cost').text(shippingCost);
                         }
 
@@ -628,8 +619,7 @@ $(document).ready(function () {
                     });
                 },
             });
-        }
-        else {
+        } else {
             let errorMsg = `<span class="tred" role="alert"><strong>Harap tambah alamat</strong></span>`;
 
             scrollToElement('#alamat-pengiriman', 500);
@@ -638,17 +628,16 @@ $(document).ready(function () {
         }
     });
 
-    $('#book-payment-form').on('submit', function(e) {
+    $('#book-payment-form').on('submit', function (e) {
         e.preventDefault();
-        let bookId             = $(this).data('id');
+        let bookId = $(this).data('id');
         let courierServiceCost = $('.inp-courier-choise-service:checked').val()
         let courierServiceName = $('.inp-courier-choise-service:checked').next().text();
-        let paymentMethod      = $('.inp-payment-method:checked').val();
-        let address            = $('.customer-address:checked').val();
-        let uniqueCode         = randomIntFromInterval(100, 999);
+        let paymentMethod = $('.inp-payment-method:checked').val();
+        let address = $('.customer-address:checked').val();
+        let uniqueCode = randomIntFromInterval(100, 999);
 
-        if (courierServiceCost === undefined || paymentMethod === undefined || address === undefined) {
-        }
+        if (courierServiceCost === undefined || paymentMethod === undefined || address === undefined) {}
 
         $('#book-amount').val($('#jumlah-barang').text());
         $('#book-courier-name').val($('#courier-choise-name').text());
@@ -660,7 +649,7 @@ $(document).ready(function () {
         $('#book-payment-method').val(paymentMethod);
         $('#book-customer-address').val($('.customer-address:checked').val());
 
-        ajaxForm('POST', this, `/book-purchases/${bookId}`, function(response) {
+        ajaxForm('POST', this, `/book-purchases/${bookId}`, function (response) {
             if (response.errors) {
                 let errorMsgs = '';
 
@@ -675,8 +664,7 @@ $(document).ready(function () {
                 $('#click-to-the-top').trigger('click');
                 $('#pesan').removeClass('d-none');
                 $('#pesan').html(errorMsgs);
-            }
-            else {
+            } else {
                 window.location.href = response.url;
             }
         });
@@ -684,15 +672,15 @@ $(document).ready(function () {
     });
 
     // Book Payment
-    let pathName      = window.location.pathname;
-    let regexMatch    = /\/book-purchases\/[0-9]{1}/;
+    let pathName = window.location.pathname;
+    let regexMatch = /\/book-purchases\/[0-9]{1}/;
     let regexPathName = pathName.match(regexMatch);
 
-    let userId        = $('#payment-limit-date').data('id');
-    let months        = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    let myDays        = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
-    let date          = new Date();
-    let i             = 59;
+    let userId = $('#payment-limit-date').data('id');
+    let months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    let myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
+    let date = new Date();
+    let i = 59;
 
     ajaxBookPurchaseDeadlineDestroy();
 
@@ -705,22 +693,22 @@ $(document).ready(function () {
 
     // Petunjuk Pembayaran
     $('.payment-instructions > div:last-child').hide();
-    $('.payment-instructions').on('click', function() {
+    $('.payment-instructions').on('click', function () {
         let caretRight = $(this).children('div:first-child').children().children();
 
-        let briMobileBankingPaymentInstructions  = `<div class="mt-4 px-15">`;
-            briMobileBankingPaymentInstructions += `<div>`;
-            briMobileBankingPaymentInstructions += `<ul class="text-grey">`;
-            briMobileBankingPaymentInstructions += `<li>1. Log in BRI Mobile Banking (unduh versi terbaru)</li>`;
-            briMobileBankingPaymentInstructions += `<li>2. Pilih menu “PEMBAYARAN”</li>`;
-            briMobileBankingPaymentInstructions += `<li>3. Pilih “BRIVA”</li>`;
-            briMobileBankingPaymentInstructions += `<li>4. Masukan nomor BRI Virtual Account Anda dan jumlah pembayaran</li>`;
-            briMobileBankingPaymentInstructions += `<li>5. Masukan Nomor Pin Anda</li>`;
-            briMobileBankingPaymentInstructions += `<li>6. Tekan “OK” untuk melanjutkan transaksi Anda</li>`;
-            briMobileBankingPaymentInstructions += `<li>7. Transaksi berhasil</li>`;
-            briMobileBankingPaymentInstructions += `<li>8. Konfirmasi sms akan masuk ke nomor telepon Anda</li>`;
-            briMobileBankingPaymentInstructions += '</div>';
-            briMobileBankingPaymentInstructions += `</div>`;
+        let briMobileBankingPaymentInstructions = `<div class="mt-4 px-15">`;
+        briMobileBankingPaymentInstructions += `<div>`;
+        briMobileBankingPaymentInstructions += `<ul class="text-grey">`;
+        briMobileBankingPaymentInstructions += `<li>1. Log in BRI Mobile Banking (unduh versi terbaru)</li>`;
+        briMobileBankingPaymentInstructions += `<li>2. Pilih menu “PEMBAYARAN”</li>`;
+        briMobileBankingPaymentInstructions += `<li>3. Pilih “BRIVA”</li>`;
+        briMobileBankingPaymentInstructions += `<li>4. Masukan nomor BRI Virtual Account Anda dan jumlah pembayaran</li>`;
+        briMobileBankingPaymentInstructions += `<li>5. Masukan Nomor Pin Anda</li>`;
+        briMobileBankingPaymentInstructions += `<li>6. Tekan “OK” untuk melanjutkan transaksi Anda</li>`;
+        briMobileBankingPaymentInstructions += `<li>7. Transaksi berhasil</li>`;
+        briMobileBankingPaymentInstructions += `<li>8. Konfirmasi sms akan masuk ke nomor telepon Anda</li>`;
+        briMobileBankingPaymentInstructions += '</div>';
+        briMobileBankingPaymentInstructions += `</div>`;
 
         // if ($(this).data('bank') == 'bri-mobile-banking') {
         //     $(this).append(briMobileBankingPaymentInstructions);
@@ -732,25 +720,24 @@ $(document).ready(function () {
     });
 
     // Buku
-    $('.book').on('click', function() {
+    $('.book').on('click', function () {
         location.href = `http://smartperpus.com/books/${$(this).data('id')}`;
     });
 
     // Add to wishlist
-    $('.add-to-wishlist').on('click', function(e) {
+    $('.add-to-wishlist').on('click', function (e) {
         e.stopPropagation();
 
         if ($(this).children('i').hasClass('far')) {
             $(this).children('i').removeClass('far').addClass('fas')
-        }
-        else {
+        } else {
             $(this).children('i').removeClass('fas').addClass('far');
         }
     });
 
     // Chat dengan admin
     let btnChatclickedCount = 0;
-    $('#btn-chat').on('click', function() {
+    $('#btn-chat').on('click', function () {
         btnChatclickedCount++;
 
         $('.chat-content').show();
@@ -765,44 +752,41 @@ $(document).ready(function () {
         $('.type-message-input').trigger('focus');
     });
 
-    $('#btn-chat-exit').on('click', function() {
+    $('#btn-chat-exit').on('click', function () {
         $('.chat-content').hide();
         $('.chat-with-admin').hide();
         $('#btn-chat').show();
         $('.click-to-the-top').removeClass('d-none');
     });
 
-    $('#dropdown-navbar').on('click', function() {
+    $('#dropdown-navbar').on('click', function () {
         $('.responsive-navbar').slideToggle('fast');
     })
 
     // Chat
+    // Success Response AJAX
     const responseChats = (response) => {
         $('.type-message-input').val('');
         $('#user-chat-send-photo').val('');
-
-        if (response.image) {
-            $('#user-send-img-cancel').trigger('click');
-        } else {
-            $('.chattings > div').append(response.chat);
-            $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
-        }
+        $('#user-send-img-cancel').trigger('click');
+        $('#menu-chattings').append(response.chat);
+        $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
     }
 
     // Chat dengan user - AdminChat Store
     $('#admin-chats-store-form').on('submit', e => {
         e.preventDefault();
 
-        let photoInformation = $('.user-chat-img-information').val();
-        let inputValue       = $('.type-message-input').val();
-        let userClickedId    = $('.user-chat-active').data('id');
-        $('.user-chat-active').children().last().find('span').text(inputValue);
+        let photoValue       = $('#user-chat-send-photo').val()
+        let inputValue       = $('.type-message-input').val()
+        let imageValueOrText = $('.type-message-input').val() == '' ? 'Mengirim gambar...' : $('.type-message-input').val();
+        let userClickedId    = $('.user-chat-active').length;
 
-        $('.user-chats-text').text(inputValue);
-
-        if ((inputValue != '' && userClickedId !== undefined) || photoInformation == '') {
+        if (inputValue != '' && userClickedId != 0 || photoValue != "") {
             ajaxForm('POST', '#admin-chats-store-form', '/user-chats', response => {
                 responseChats(response);
+                $('.user-chat-active').children().last().find('span').text(imageValueOrText);
+                $('.user-chats-text').text(imageValueOrText);
             }, ['userId', $('.user-chat-active').data('id')]);
         }
     });
@@ -811,8 +795,8 @@ $(document).ready(function () {
     $('#user-chats-store-form').on('submit', e => {
         e.preventDefault();
 
-        let inputValue       = $('.type-message-input').val();
-        let photoInformation = $('.user-chat-img-information').length;
+        let inputValue = $('.type-message-input').val();
+        let photo = $('#user-chat-send-photo').val();
 
         const userChatStore = () => {
             ajaxForm('POST', '#user-chats-store-form', '/user-chats', response => {
@@ -820,18 +804,15 @@ $(document).ready(function () {
             });
         }
 
-        if (inputValue != '') {
-            userChatStore();
-        }
-        else if (photoInformation != 0) {
+        if (inputValue !== '' || photo != "") {
             userChatStore();
         }
     });
 
-    // Admin melihat chat milik users
+    // User Show - Admin melihat chat milik users
     const userChatClick = () => {
-        $('.user-chat') .on('click', function() {
-            let dataId        = $(this).data('id');
+        $('.user-chat').on('click', function () {
+            let dataId = $(this).data('id');
             let notifications = $(this).children('div').last().find($('.user-chat-notifications'));
             $(this).prevAll().removeClass('user-chat-active');
             $(this).nextAll().removeClass('user-chat-active');
@@ -844,15 +825,18 @@ $(document).ready(function () {
             }
 
             $.ajax({
-                type    : "GET",
-                url     : `/user-chats/${dataId}`,
-                data    : { userId : dataId, adminClickShow : true },
+                type: "GET",
+                url: `/user-chats/${dataId}`,
+                data: {
+                    userId: dataId,
+                    adminClickShow: true
+                },
                 dataType: "JSON",
-                success : response => {
+                success: response => {
                     let btnChatUnread = $('.btn-chat-unread');
-                    let text          = btnChatUnread.text() - notifications.children().first().text();
+                    let text = btnChatUnread.text() - notifications.children().first().text();
 
-                    $('.chattings').html(response.userChatsHtml);
+                    $('#menu-chattings').html(response.userChatsHtml);
                     btnChatUnread.text(text);
                     notifications.remove();
 
@@ -864,9 +848,6 @@ $(document).ready(function () {
                         $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
                     }, 10);
                 },
-                error : function(response) {
-                    console.log(response.responseJSON.message);
-                }
             });
         });
     }
@@ -874,7 +855,7 @@ $(document).ready(function () {
     userChatClick();
 
     // Search user
-    $('#chat-search-user').on('keyup', function() {
+    $('#chat-search-user').on('keyup', function () {
         let searchVal = $(this).val();
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
@@ -882,7 +863,10 @@ $(document).ready(function () {
             $('.chattings > div').html('');
         }
 
-        ajaxJson('POST', `/user-chats/search`, { _token : csrfToken, searchVal : searchVal }, (response) => {
+        ajaxJson('POST', `/user-chats/search`, {
+            _token: csrfToken,
+            searchVal: searchVal
+        }, (response) => {
             $('.user-chattings').html(response.userChatHtml);
             userChatClick();
         });
@@ -892,40 +876,32 @@ $(document).ready(function () {
     $('#user-chat-send-photo').on('click', (e) => {
 
         // Jika user tidak di klik, maka tidak bisa kirim gambar
-        if ($('.user-chat-active').length == 0) {
+        let authRole = $('.chat').data('role');
+
+        if ($('.user-chat-active').length == 0 && authRole !== 'guest') {
             e.preventDefault();
-        }
-        else {
+        } else {
             $('#user-chat-send-photo').on('change', () => {
                 let ext = $('#user-chat-send-photo').val().split('.').pop().toLowerCase();
 
-                if($.inArray(ext, ['png','jpg','jpeg']) == -1) {
+
+                if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
                     $('#user-send-img-cancel').trigger('click');
                     $('#user-chat-send-photo').val('');
 
                     showMessageChatting();
-                }
-                else {
-                    let html  = `<div id="user-chat-send-img">`;
-                        html += `<div><button id='user-send-img-cancel' class="btn-none mb-3"><i class="fa fa-times"></i></button></div>`;
-                        html += `<img id="user-chat-img">`;
-                        html += `</div>`;
-                        html += `<div class="d-flex">`;
-                        html += `<input class="user-chat-img-information" type="text" name="message"`;
-                        html += `placeholder="Tambah keterangan..." autocomplete="off">`;
-                        html += `<button id="user-chat-store-send-img" type="button" class="btn-none">`;
-                        html += `<i class="type-message-plane fas fa-paper-plane"></i>`
-                        html += `</button>`;
-                        html += `</div>`;
-
-                    $('.chattings').html(html);
+                } else {
+                    $('#user-chat-send-img').addClass('d-block');
+                    $('#user-chat-send-img-input').addClass('d-flex');
+                    $('#menu-chattings').hide();
                     $('.chats-store-form').parent().hide();
                     $('.user-chat-img-information').trigger('focus');
+                    $('.user-chat-img-information').val('');
 
 
                     let preview = document.getElementById('user-chat-img');
-                    let file    = document.getElementById('user-chat-send-photo').files[0];
-                    let reader  = new FileReader();
+                    let file = document.getElementById('user-chat-send-photo').files[0];
+                    let reader = new FileReader();
 
                     reader.onloadend = () => {
                         preview.src = reader.result;
@@ -933,51 +909,31 @@ $(document).ready(function () {
 
                     if (file) {
                         reader.readAsDataURL(file);
-                    }
-                    else {
+                    } else {
                         preview.src = "";
                     }
 
-                    // Batal mengirim foto
-                    $('#user-send-img-cancel').on('click', () => {
-                        let userRoleCheck = $('.user-chat-active').find('img').length;
-                        let userId = $('.chattings').data('id');
 
-                        $("#user-chat-send-photo").val(""); // Clear image value
-
-                        if (userRoleCheck == 0) {
-                            $('.user-chat-active').trigger('click');
-                        }
-                        else {
-                            ajaxJson('GET', `/user-chats/${userId}`, { userId : userId, cancelSendPhoto : true }, response => {
-                                $('.chattings').html(response.userChatsHtml);
-
-                                setTimeout(() => {
-                                    $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
-                                }, 100);
-                            });
-                        }
-
-                        $('.chats-store-form').parent().show();
-                    });
-
-                    // Mengirim pesan Foto pada database
-                    $('#user-chat-store-send-img').on('click', () => {
-                        let message = $('.user-chat-img-information').val();
-
-                        $('.type-message-input').val(message);
-                        $('.chats-store-form').trigger('submit');
-                    });
-
-                    // Jika menekan tombol 'Enter', maka trigger click kirim photo
-                    $('.user-chat-img-information').on('keypress', (e) => {
-                        if (e.code == 'Enter') {
-                            $('#user-chat-store-send-img').trigger('click');
-                        }
-                    });
                 }
             });
         }
+    });
+
+    // Batal mengirim foto
+    $('#user-send-img-cancel').on('click', () => {
+        $("#user-chat-send-photo").val(""); // Clear image value
+        $('#user-chat-send-img').removeClass('d-block');
+        $('#user-chat-send-img-input').removeClass('d-flex');
+        $('#menu-chattings').show();
+        $('.chattings').scrollTop($('.chattings')[0].scrollHeight);
+        $('.chats-store-form').parent().show();
+    });
+
+    // Mengirim pesan Foto pada database
+    $('#user-chat-store-send-img').on('click', () => {
+        let message = $('.user-chat-img-information').val();
+        $('.type-message-input').val(message);
+        $('.chats-store-form').trigger('submit');
     });
 
     // User Chat Update - Mengupdate status notifikasi chat menjadi terbaca
@@ -986,8 +942,11 @@ $(document).ready(function () {
 
         $('.btn-chat-unread').remove();
 
-        ajaxJson('POST', `/user-chats/${userId}`, { _token : csrfToken, _method : 'PATCH', userId : userId }, () => {
-        });
+        ajaxJson('POST', `/user-chats/${userId}`, {
+            _token: csrfToken,
+            _method: 'PATCH',
+            userId: userId
+        }, () => {});
     });
 
     $('#chat-back').on('click', () => {
@@ -996,25 +955,24 @@ $(document).ready(function () {
         $('#chat-back').removeClass('d-block');
     });
 
+    // Menghapus pesan
     $('#chat-delete-button').on('click', () => $('.chat-delete-action').toggleClass('d-block'));
     $('#chat-delete-form').on('submit', e => {
         e.preventDefault();
 
         let userClickedLength = $('.user-chat-active').length;
-        let userId            = userClickedLength === 0 ?$('.chattings').data('id') : $('.user-chat-active').data('id');
-        let text              = 'Apakan anda yakin ingin menghapus semua pesan ?';
-        let userData          = userClickedLength !== 0 ? ['userId', userId] : '';
+        let userId = userClickedLength === 0 ? $('.chattings').data('id') : $('.user-chat-active').data('id');
+        let text = 'Apakan anda yakin ingin menghapus semua pesan ?';
 
         if (confirm(text)) {
-            ajaxForm('POST', '#chat-delete-form', `/user-chats/${userId}`, response => {
+            ajaxForm('POST', '#chat-delete-form', `/user-chats/${userId}`, () => {
                 let text = 'Berhasil menghapus semua pesan';
 
                 $('#user-chats-error-image').text(text);
                 showMessageChatting();
-                $('.chattings > .mt-auto').children().remove();
-
-                console.log(response);
-            }, userData);
+                $('#menu-chattings').children().remove();
+                $('.user-chat-active').remove();
+            });
         }
 
         $('#chat-delete-button').trigger('click');
@@ -1022,13 +980,13 @@ $(document).ready(function () {
     // End Chat
 
     // Book Show
-    $('#book-show-delete').on('click', function(e) {
+    $('#book-show-delete').on('click', function (e) {
         e.preventDefault();
         confirm('Apakah anda yakin ingin menghapus semua data pada buku ini ?') ? $(this).parent().trigger('submit') : console.log(false);
     });
 
     // User Index - Daftar karyawan
-    $('.user-block').on('click', function(e) {
+    $('.user-block').on('click', function (e) {
 
         let thisButton = $(this);
 
@@ -1040,8 +998,8 @@ $(document).ready(function () {
                     type: "POST",
                     url: `/users/${$(this).parent().data('id')}/block`,
                     data: {
-                        '_token'     : csrfToken,
-                        'userBlock' : true,
+                        '_token': csrfToken,
+                        'userBlock': true,
                     },
                     dataType: "JSON",
                     success: function (response) {
@@ -1051,15 +1009,14 @@ $(document).ready(function () {
                     }
                 });
             }
-        }
-        else {
+        } else {
             if (confirm('Apakah anda yakin ingin melepas blok user tersebut ?')) {
                 $.ajax({
                     type: "POST",
                     url: `/users/${$(this).parent().data('id')}/restore`,
                     data: {
-                        '_token'           : csrfToken,
-                        'userRestoreBlock' : true,
+                        '_token': csrfToken,
+                        'userRestoreBlock': true,
                     },
                     dataType: "JSON",
                     success: function (response) {
@@ -1075,7 +1032,7 @@ $(document).ready(function () {
     });
 
     // User Delete / Destroy
-    $('.user-delete').on('click', function(e) {
+    $('.user-delete').on('click', function (e) {
         e.preventDefault();
 
         if (confirm('Apakah anda yakin ingin menghapus user tersebut secara permanen ?')) {
@@ -1085,9 +1042,9 @@ $(document).ready(function () {
                 type: "POST",
                 url: `/users/${$(this).parent().data('id')}`,
                 data: {
-                    '_token'     : csrfToken,
-                    '_method'    : 'DELETE',
-                    'userDelete' : true,
+                    '_token': csrfToken,
+                    '_method': 'DELETE',
+                    'userDelete': true,
                 },
                 dataType: "JSON",
                 success: function (response) {
@@ -1098,25 +1055,25 @@ $(document).ready(function () {
     });
 
     // User Edit / Update
-    $('#user-edit-form').on('submit', function(e) {
+    $('#user-edit-form').on('submit', function (e) {
         e.preventDefault();
         $('#click-to-the-top').trigger('click');
 
-        let form        = $(this)[0];
-        let formData    = new FormData(form);
+        let form = $(this)[0];
+        let formData = new FormData(form);
 
         let confirmText = 'Apakah anda yakin ingin men-update user tersebut ?';
 
         if (confirm(confirmText)) {
             $.ajax({
-                type       : "POST",
-                url        : `/users/${$(this).data('id')}`,
-                data       : formData,
+                type: "POST",
+                url: `/users/${$(this).data('id')}`,
+                data: formData,
                 processData: false,
-                cache      : false,
+                cache: false,
                 contentType: false,
-                dataType   : "JSON",
-                success    : function (response) {
+                dataType: "JSON",
+                success: function (response) {
                     $('#pesan').removeClass('d-none');
 
 
@@ -1132,8 +1089,7 @@ $(document).ready(function () {
                         }
 
                         $('#pesan strong').html(pesan);
-                    }
-                    else {
+                    } else {
                         $('#pesan strong').text(response.pesan);
                     }
                 }
@@ -1142,28 +1098,28 @@ $(document).ready(function () {
     });
 
     // User Delete Photo Profile
-    $('#user-destroy-photo-profile-form').on('submit', function(e) {
+    $('#user-destroy-photo-profile-form').on('submit', function (e) {
         e.preventDefault();
 
         let confirmText = 'Apakah anda yakin ingin mengapus foto profil anda ?';
-        let userId      = $(this).data('id');
-        let form        = $(this)[0];
-        let formData    = new FormData(form);
+        let userId = $(this).data('id');
+        let form = $(this)[0];
+        let formData = new FormData(form);
 
         if (confirm(confirmText)) {
             $.ajax({
-                type       : "POST",
-                url        : `/users/${userId}/destroyPhotoProfile`,
-                enctype    : 'multipart/form-data',
-                data       : formData,
+                type: "POST",
+                url: `/users/${userId}/destroyPhotoProfile`,
+                enctype: 'multipart/form-data',
+                data: formData,
                 processData: false,
-                cache      : false,
+                cache: false,
                 contentType: false,
-                dataType   : "JSON",
-                success    : function (response) {
+                dataType: "JSON",
+                success: function (response) {
                     console.log(response);
                 },
-                error    : function(errors) {
+                error: function (errors) {
                     console.log(errors);
                 }
             });
@@ -1177,7 +1133,7 @@ $(document).ready(function () {
 
     keyUpToggleFormButton('.book-edit-inp');
 
-    $('#book-edit-submit').on('click', function(e) {
+    $('#book-edit-submit').on('click', function (e) {
         e.preventDefault();
 
         $('#click-to-the-top').trigger('click');
@@ -1186,25 +1142,25 @@ $(document).ready(function () {
             type: "POST",
             url: `/books/${$('#book-edit-form').data('id')}`,
             data: {
-                '_token'              : csrfToken,
-                '_method'             : 'PATCH',
-                'isbn'                : $('#isbn').val(),
-                'nama_penulis'        : $('#nama_penulis').val(),
-                'judul_buku'          : $('#judul_buku').val(),
-                'price'               : $('#price').val(),
-                'tambah_diskon'       : $('#tambah_diskon').val(),
-                'sinopsis'            : $('#sinopsis').val(),
-                'jumlah_barang'       : $('#jumlah_barang').val(),
-                'kategori'            : $('#kategori').val(),
+                '_token': csrfToken,
+                '_method': 'PATCH',
+                'isbn': $('#isbn').val(),
+                'nama_penulis': $('#nama_penulis').val(),
+                'judul_buku': $('#judul_buku').val(),
+                'price': $('#price').val(),
+                'tambah_diskon': $('#tambah_diskon').val(),
+                'sinopsis': $('#sinopsis').val(),
+                'jumlah_barang': $('#jumlah_barang').val(),
+                'kategori': $('#kategori').val(),
                 'tersedia_dalam_ebook': $('#tersedia_dalam_ebook').val(),
-                'jumlah_halaman'      : $('#jumlah_halaman').val(),
-                'tanggal_rilis'       : $('#tanggal_rilis').val(),
-                'penerbit'            : $('#penerbit').val(),
-                'subtitle'            : $('#subtitle').val(),
-                'berat'               : $('#berat').val(),
-                'lebar'               : $('#lebar').val(),
-                'panjang'             : $('#panjang').val(),
-                'gambar_sampul_buku'  : $('#gambar_sampul_buku').val(),
+                'jumlah_halaman': $('#jumlah_halaman').val(),
+                'tanggal_rilis': $('#tanggal_rilis').val(),
+                'penerbit': $('#penerbit').val(),
+                'subtitle': $('#subtitle').val(),
+                'berat': $('#berat').val(),
+                'lebar': $('#lebar').val(),
+                'panjang': $('#panjang').val(),
+                'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
             },
             dataType: "JSON",
             success: function (response) {
@@ -1217,12 +1173,11 @@ $(document).ready(function () {
                         if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
                             const element = response.pesan[key];
 
-                             pesan += `<div>${element[0]}</div>`;
+                            pesan += `<div>${element[0]}</div>`;
                         }
                     }
                     $('#pesan').html(pesan);
-                }
-                else { // Update sukses
+                } else { // Update sukses
                     $('#pesan').html(response.pesan);
                 }
 
@@ -1231,19 +1186,19 @@ $(document).ready(function () {
     })
 
     // User Change Password
-    $('#user-change-password-form').on('submit', function(e) {
+    $('#user-change-password-form').on('submit', function (e) {
         e.preventDefault();
 
-        let userId      = $(this).data('id');
-        let form        = $(this)[0];
-        let formData    = new FormData(form);
+        let userId = $(this).data('id');
+        let form = $(this)[0];
+        let formData = new FormData(form);
 
         $.ajax({
             type: 'POST',
             url: `/users/${userId}/change-password`,
             data: formData,
             processData: false,
-            cache      : false,
+            cache: false,
             contentType: false,
             dataType: "JSON",
             success: function (response) {
@@ -1263,8 +1218,7 @@ $(document).ready(function () {
                     }
 
                     $('#pesan strong').html(pesan);
-                }
-                else {
+                } else {
                     sessionStorage.setItem('pesan', 'Berhasil mengubah password');
                     history.back();
                 }
@@ -1281,26 +1235,8 @@ $(document).ready(function () {
 
     sessionStorage.clear();
 
-    // Book Create
-    // $('#book-create-submit').on('click', function(e) {
-    //     e.preventDefault();
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: `/books`,
-    //         data: {
-    //             '_token'            : csrfToken,
-    //             'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
-    //         },
-    //         dataType: "JSON",
-    //         success: function (response) {
-    //             console.log(response);
-    //         }
-    //     });
-    // });
-
     // Customer Create
-    $('#customer-store').on('submit', function(e) {
+    $('#customer-store').on('submit', function (e) {
         e.preventDefault();
 
         let alamatWajibDisi = $('#customer-store-empty').length;
@@ -1311,7 +1247,7 @@ $(document).ready(function () {
             $('#customer-store-empty').hide();
         }
 
-        ajaxForm('POST', '#customer-store', `/customers`, function(response) {
+        ajaxForm('POST', '#customer-store', `/customers`, function (response) {
 
             if (response.status) {
                 let dataCustomers = $('.data-customer').length + 1;
@@ -1322,16 +1258,14 @@ $(document).ready(function () {
                 if (dataCustomers == 5) {
                     $('#customer-store-modal-trigger').hide();
                     scrollToElement($('.data-customer').last(), 500);
-                }
-                else {
+                } else {
                     $('#alamat-pengiriman > span').remove();
                     scrollToElement($('.data-customer').last(), 500);
                 }
 
                 customerUpdate();
                 customerDestroy();
-            }
-            else {
+            } else {
                 for (const key in response.errorMsg) {
                     if (response.errorMsg.hasOwnProperty.call(response.errorMsg, key)) {
                         const element = response.errorMsg[key];
@@ -1344,8 +1278,8 @@ $(document).ready(function () {
         });
     });
 
-    $('#customer-store-modal-trigger').on('click', function() {
-        $('#customer-store').each(function(){
+    $('#customer-store-modal-trigger').on('click', function () {
+        $('#customer-store').each(function () {
             $(this).find(':input[type=text]').val('');
             $(this).find(':input[type=number]').val('');
         });
