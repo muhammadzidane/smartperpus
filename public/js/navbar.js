@@ -912,8 +912,6 @@ $(document).ready(function () {
                     } else {
                         preview.src = "";
                     }
-
-
                 }
             });
         }
@@ -1291,4 +1289,25 @@ $(document).ready(function () {
     // Customer Destroy
     customerDestroy();
 
+    // Waiting for payment - menunggu pembayaran
+    // Unggah bukti pembayaran
+    $('#upload-payment-file').on('change', function() {
+        let preview = document.getElementById('upload-payment-image');
+        let file    = document.getElementById('upload-payment-file').files[0];
+        let reader  = new FileReader();
+
+        reader.onloadend = () => {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
+
+        $('#upload-payment-image').toggleClass('d-none');
+        $('#upload-payment-plus-logo').toggleClass('d-none');
+        $('#upload-payment-cancel').toggleClass('d-none');
+    });
 }); // End of onload Event

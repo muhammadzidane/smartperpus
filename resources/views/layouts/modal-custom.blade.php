@@ -8,8 +8,13 @@
                 </button>
             </div>
             <div class="modal-body">
+                @switch($modal_content)
+                @case('upload_payment')
+                @include('modal.upload-payment')
+                @break
+
+                @endswitch
             </div>
         </div>
     </div>
 </div>
-

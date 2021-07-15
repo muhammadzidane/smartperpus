@@ -1355,6 +1355,7 @@ footer {
 }
 
 .form-control-custom {
+    background-color: transparent;
     display: block;
     width: 100%;
     border: none;
@@ -1756,6 +1757,41 @@ footer {
     .account-table {
         margin-top: 25px;
     }
+}
+
+/* Upload payment */
+.upload-payment-select-image {
+    border: 2px dashed #444444;
+    padding: 40px 60px;
+}
+
+#upload-payment-file {
+    display: none;
+}
+
+.upload-payment-information {
+    margin-top: 15px;
+}
+
+.upload-payment-image {
+    position: relative;
+    width: 100%;
+}
+
+#upload-payment-plus-logo {
+    font-size: 7.4rem;
+    color: #444444;
+    text-align: center;
+}
+
+#upload-payment-form {
+    text-align: center;
+}
+
+#upload-payment-cancel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
 }
 
 /* Media Small */
