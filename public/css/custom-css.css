@@ -58,6 +58,58 @@ label { cursor: pointer; }
     left: 0s;
 }
 
+/* Navbar */
+.my-navbar {
+    background-color: #fff600;
+    font-family: 'Righteous', cursive;
+    padding: 8px 0;
+}
+
+.center {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* .navbar-grip-line {
+    margin-left: auto;
+    display: none;
+} */
+
+.search-icon,
+.responsive-search-icon {
+    position: absolute;
+    background-color: #ea5455;
+    display: flex;
+    width: 45px;
+    height: 45px;
+    border-radius: 100%;
+    color: white;
+    font-size: 18px;
+}
+
+.search-icon {
+    left: -25px;
+}
+
+.responsive-search-icon {
+    left: 0;
+}
+
+.responsive-search-text {
+    width: 100%;
+    box-sizing: border-box;
+    border: 2px solid #ea5455;
+    height: 45px;
+    text-indent: 53px;
+    border-top-right-radius: 23px;
+    border-bottom-right-radius: 23px;
+    border-top-left-radius: 23px;
+    border-bottom-left-radius: 23px;
+    outline: none;
+}
+
 .btn-grey, .btn-grey:hover {
     background-color: #E2D5D5 !important;
     color: white;
@@ -142,8 +194,6 @@ body {
     font-family: 'Righteous';
 }
 
-.responsive-navbar { display: none; }
-
 .cus-nav {
     width: 55%;
 }
@@ -151,7 +201,7 @@ body {
 .logo {
     margin-top: auto;
     margin-bottom: auto;
-    width: 20%;
+    width: 25%;
 }
 
 .logo-text {
@@ -193,18 +243,6 @@ body {
     border-top-right-radius: 23px;
     border-bottom-right-radius: 23px;
     outline: none;
-}
-
-.search-icon {
-    position: absolute;
-    left: -25px;
-    background-color: red;
-    display: flex;
-    width: 45px;
-    height: 45px;
-    border-radius: 100%;
-    color: white;
-    font-size: 18px;
 }
 
 #keywords:focus {  background-color: #fffdf6; }
@@ -1556,7 +1594,7 @@ footer {
 }
 
 /* Media Large */
-@media screen and (max-width: 992px)  {
+@media screen and (max-width: 992px) {
     /* Halaman Home */
     .carousel-item img {
         height: 280px;
@@ -1571,19 +1609,19 @@ footer {
     }
 
     /* Navbar */
+    /* .navbar-grip-line { display: block !important; } */
     .cus-navbar {
         padding: 10px 20px;
     }
 
     .responsive-navbar {
-        display: none;
         background-color: #f6f6f6;
         padding: 0 10px;
         border-bottom: 3px solid #e2d5d5;
     }
 
-    .cus-nav {
-        display: none;
+    .circle-input, #nav-categories, #nav-login {
+        display: none !important;
     }
 
     .logo {
@@ -1628,7 +1666,7 @@ footer {
 /* Media Medium */
 @media screen and (max-width: 768px)  {
     /* Chatting dengan admin  dan Navbar*/
-    .chat-with-admin > div:last-child > div:first-child , .responsive-navbar, .circle-input {
+    .chat-with-admin > div:last-child > div:first-child, .circle-input {
         display: none;
     }
 
@@ -1736,12 +1774,6 @@ footer {
 
     .ul-nav li:not(.ul-nav li:last-child) {
         margin-right: 12px;
-    }
-
-    .search-icon {
-        left: -20px;
-        width: 35px;
-        height: 35px;
     }
 
     .books { justify-content: center; }

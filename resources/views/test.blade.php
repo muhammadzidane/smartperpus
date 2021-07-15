@@ -23,20 +23,139 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
     <style>
+        .my-navbar {
+            background-color: #fff600;
+            font-family: 'Righteous', cursive;
+            padding: 8px 0;
+        }
+
+        .center {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-grip-line {
+            margin-left: auto;
+            display: none;
+        }
+
+        .search-icon,
+        .responsive-search-icon {
+            position: absolute;
+            background-color: #ea5455;
+            display: flex;
+            width: 45px;
+            height: 45px;
+            border-radius: 100%;
+            color: white;
+            font-size: 18px;
+        }
+
+        .search-icon {
+            left: -25px;
+        }
+
+        .responsive-search-icon {
+            left: 0;
+        }
+
+        .responsive-search-text {
+            width: 100%;
+            box-sizing: border-box;
+            border: 2px solid #ea5455;
+            height: 45px;
+            text-indent: 53px;
+            border-top-right-radius: 23px;
+            border-bottom-right-radius: 23px;
+            border-top-left-radius: 23px;
+            border-bottom-left-radius: 23px;
+            outline: none;
+        }
+
+        @media screen and (max-width: 992px) {
+
+            .navbar-content {
+                display: none;
+            }
+
+            .navbar-grip-line {
+                display: block;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <nav class="my-navbar row px-5">
+        <div class="col-3 w-100">
+            <a href="{{ route('home') }}" class="center"><img class="logo-img mr-auto" src="{{ asset('img/logo.png') }}"></a>
+        </div>
+        <div class="col-7">
+            <div class="row">
+                <div class="col-5">
+                    <div class="circle-input w-100">
+                        <form class="search-form" action="{{ route('search.books') }}" method="GET">
+                            <div>
+                                <div class="search-icon">
+                                    <i class="fas fa-search m-auto"></i>
+                                </div>
+                                <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                                <input type="hidden" name="page" value="1">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-7 my-auto">
+                    <div class="navbar-content">
+                        <span class="mr-3">
+                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </span>
+                        <span class="mr-3">Best Seller</span>
+                        <span class="mr-3">Buku Diskon</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-2 c-middle">
+            <div class="my-auto ml-auto">
+                @guest
+                <button class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                @endguest
 
-    <div id="user-chat-send-img">
-        <div><button id='user-send-img-cancel' class="btn-none mb-3"><i class="fa fa-times"></i></button></div>
-        <img id="user-chat-img" src="{{ asset('img/kategori-pilihan/psikologi.jpg') }}">
-    </div>
-    <div class="d-flex">
-        <input class="user-chat-img-information" type="text" name="message" placeholder="Tambah keterangan..." autocomplete="off">
-        <button id="user-chat-store-send-img" type="button" class="btn-none">
-            <i class="type-message-plane fas fa-paper-plane"></i>
-        </button>
+                @auth
+                @include('layouts.auth-nav-login')
+                @endauth
+            </div>
+            <div class="navbar-grip-line" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <i class="fas fa-grip-lines"></i>
+            </div>
+        </div>
+    </nav>
+    <div class="collapse" id="collapseExample">
+        <div class="responsive-navbar d-lg-none text-righteous">
+            <div class="mt-3">
+                <div class="text-center">
+                    <form class="" action="{{ route('search.books') }}" method="GET">
+                        <div>
+                            <div class="responsive-search-icon">
+                                <i class="fas fa-search m-auto"></i>
+                            </div>
+                            <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="hidden" name="page" value="1">
+                        </div>
+                    </form>
+                    <div class="my-2">
+                        <div class="mr-3">
+                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </div>
+                        <div class="mr-3">Best Seller</div>
+                        <div class="mr-3">Buku Diskon</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 

@@ -42,12 +42,9 @@
                         </div>
                     </form>
                 </div>
-                <div id="dropdown-navbar" class="self-middle ml-auto d-md-none">
-                    <button class="btn-none"><i class="fas fa-grip-lines"></i></button>
-                </div>
                 <div class="cus-nav">
                     <ul class="ul-nav h-100">
-                        <div class="d-flex h-100 align-items-center ml-3">
+                        <div id="nav-categories" class="d-flex h-100 align-items-center ml-3">
                             <li id="categories" class="h-100 c-middle">
                                 Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
                                 <div>
@@ -71,7 +68,7 @@
                             <li>Best Seller</li>
                             <li>Buku Diskon</li>
                         </div>
-                        <div class="d-flex ml-auto align-items-center">
+                        <div id="nav-login" class="d-flex ml-auto align-items-center">
                             @guest
                             <li>
                                 <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
@@ -83,38 +80,40 @@
                             @include('layouts.auth-nav-login')
                             @endauth
                         </div>
+                        <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
                     </ul>
                 </div>
             </nav>
-            <div class="responsive-navbar d-md-none">
-                <ul class="ul-nav d-block text-center">
-                    <li>
-                        <div class="circle-input">
-                            <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                                <div>
-                                    <div class="search-icon">
-                                        <i class="fas fa-search m-auto"></i>
-                                    </div>
-                                    <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                                    <input type="hidden" name="page" value="1">
+            <div class="collapse d-lg-none" id="collapseExample">
+                <div class="mt-3">
+                    <div class="text-center">
+                        <form class="" action="{{ route('search.books') }}" method="GET">
+                            <div>
+                                <div class="responsive-search-icon">
+                                    <i class="fas fa-search m-auto"></i>
                                 </div>
-                            </form>
+                                <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                                <input type="hidden" name="page" value="1">
+                            </div>
+                        </form>
+                        <div class="my-2">
+                            <div>
+                                Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            </div>
+                            <div>Best Seller</div>
+                            <div>Buku Diskon</div>
+                            @guest
+                            <div>
+                                <button class="btn-none text-danger tbold" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                            </div>
+                            @else
+                            @include('layouts.auth-nav-login')
+                            @endguest
                         </div>
-                    </li>
-                    <li class="m-0">Kategori <i class="fa fa-caret-down" aria-hidden="true"></i></li>
-                    <li class="m-0">Best Seller</li>
-                    <li class="m-0">Buku Diskon</li>
-                    @guest
-                    <li>
-                        <button id="login" class="btn-none tred" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                    </li>
-                    </li>
-                    @endguest
-
-                    @auth
-                    @include('layouts.auth-nav-login')
-                    @endauth
-                </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
