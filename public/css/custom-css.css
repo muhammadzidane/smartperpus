@@ -1762,7 +1762,7 @@ footer {
 /* Upload payment */
 .upload-payment-select-image {
     border: 2px dashed #444444;
-    padding: 40px 60px;
+    padding: 30px 20px 30px 20px;
 }
 
 #upload-payment-file {
@@ -1771,6 +1771,10 @@ footer {
 
 .upload-payment-information {
     margin-top: 15px;
+}
+
+.upload-payment-message {
+    position: absolute;
 }
 
 .upload-payment-image {
@@ -1790,8 +1794,18 @@ footer {
 
 #upload-payment-cancel {
     position: absolute;
-    top: 20px;
-    left: 20px;
+    top: 15px;
+    left: 15px;
+}
+
+#upload-payment-form {
+    position: relative;
+}
+
+#upload-payment-submit-button {
+    position: absolute;
+    top: 100%;
+    right: 0;
 }
 
 /* Media Small */

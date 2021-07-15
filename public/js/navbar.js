@@ -1292,22 +1292,72 @@ $(document).ready(function () {
     // Waiting for payment - menunggu pembayaran
     // Unggah bukti pembayaran
     $('#upload-payment-file').on('change', function() {
-        let preview = document.getElementById('upload-payment-image');
-        let file    = document.getElementById('upload-payment-file').files[0];
-        let reader  = new FileReader();
+        let preview      = document.getElementById('upload-payment-image');
+        let file         = document.getElementById('upload-payment-file').files[0];
+        let reader       = new FileReader();
+        let ext          = $('#upload-payment-file').val().split('.').pop().toLowerCase();
+        let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
 
-        reader.onloadend = () => {
-            preview.src = reader.result;
-        }
+        if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+            let text = `Hanya bisa mengirim file gambar`;
+            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+            let uploadPaymentMessageLength = $('#upload-payment-message').length;
 
-        if (file) {
-            reader.readAsDataURL(file);
+            if (uploadPaymentMessageLength == 0) {
+                $('.upload-payment').prepend(html);
+            } else if (uploadPaymentMessageLength == 1) {
+                $('#upload-payment-message').text(text);
+            }
+            console.log(false);
+        } else if (fileSizeInMB > 2) {
+            let text = `File gambar tidak boleh lebih dari 2mb`;
+            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+            let uploadPaymentMessageLength = $('#upload-payment-message').length;
+
+            if (uploadPaymentMessageLength == 0) {
+                $('.upload-payment').prepend(html);
+            }
+            else if (uploadPaymentMessageLength == 1) {
+                $('#upload-payment-message').text(text);
+            }
+            console.log(fileSizeInMB);
         } else {
-            preview.src = "";
+            $('#upload-payment-message').remove();
+
+            reader.onloadend = () => {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+
+            $('#upload-payment-image').toggleClass('d-none');
+            $('#upload-payment-plus-logo').toggleClass('d-none');
+            $('#upload-payment-cancel').removeClass('d-none');
+            $('#upload-payment-submit-button').toggleClass('d-none');
+
         }
 
+    });
+
+    // Batal unggah foto pembayaran
+    $('#upload-payment-cancel').on('click', function() {
+        $('#upload-payment-plus-logo').removeClass('d-none');
+        $('#upload-payment-cancel').addClass('d-none');
+        $('#upload-payment-image').removeAttr('src');
+        $('#upload-payment-file').val('');
         $('#upload-payment-image').toggleClass('d-none');
-        $('#upload-payment-plus-logo').toggleClass('d-none');
-        $('#upload-payment-cancel').toggleClass('d-none');
+        $('#upload-payment-submit-button').toggleClass('d-none');
+    });
+
+    // Upload payment form
+    $('#upload-payment-form').on('submit', function(event) {
+        event.preventDefault();
+
+
+        console.log(true);
     });
 }); // End of onload Event
