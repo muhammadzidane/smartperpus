@@ -7,7 +7,7 @@
                     <div class="{{ $waiting_for_payments ?? '' }}">
                         <div class="d-flex w-maxc position-relative">
                             <a class="text-decoration-none text-grey" href=#">Menunggu pembayaran</a>
-                            <div class="waiting-for-payment">6</div>
+                            <div class="waiting-for-payment">{{ $waiting_for_payments_count }}</div>
                         </div>
                     </div>
                     <div class="">

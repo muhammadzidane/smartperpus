@@ -3,20 +3,14 @@
 
 <div class="row mt-md-4">
     <div class="col-lg-9">
-        <div class="white-content-0">
+        <div class="white-content-0 borbot-gray-bold">
             <div class="white-content-header-2 flex-column">
                 <h4 class="hd-14 m-0">Menungggu Pembayaran <span class="tred">({{ $book_users->count() }})</span></h4>
-                <div class="mt-2">
-                    <div class="wishlist-search">
-                        <span><i class="fa fa-search wishlist-search-icon" aria-hidden="true"></i></span>
-                        <input class="text-righteous hd-12" type="search" placeholder="Cari pembayaran">
-                    </div>
-                </div>
             </div>
         </div>
 
-        @foreach ($book_users as $book_user)
-        <div class="white-content-0 mt-c">
+        @foreach ($book_users->where('payment_status', 'waiting_for_payment')->sortByDesc('created_at') as $book_user)
+        <div class="upload-payment-value white-content-0 mt-c">
             <div class="p-15 borbot-gray-bold">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -25,7 +19,7 @@
                     </div>
                     <div>
                         <span class="text-grey">{{ $book_user->invoice }}</span>
-                        <button class="btn-none tred-bold">Batalkan pembelian</button>
+                        <button class="upload-payment-failed btn-none tred-bold" data-id="{{ $book_user->id }}">Batalkan pembelian</button>
                     </div>
                 </div>
             </div>
@@ -74,7 +68,12 @@
         )
         )
     </div>
-    @include('user.purchases-and-inboxes', array('waiting_for_payments' => 'active-acc'))
+    @include('user.purchases-and-inboxes',
+    array(
+    'waiting_for_payments' => 'active-acc',
+    'waiting_for_payments_count' => $book_users->count(),
+    )
+    )
 </div>
 
 @endsection

@@ -35,18 +35,25 @@
             </div>
             <div>
                 <div class=" position-relative">
-                    <a class="dropdown-item" href="{{ route('waiting.for.payment') }}">Menunggu Pembayaran</a>
+                    <div>
+                        <a class="dropdown-item" href="{{ route('waiting.for.payment') }}">Menunggu Pembayaran</a>
 
-                    @if (\Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() != 0)
-                    <div class="waiting-for-payment">
-                        {{ Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() }}
+                        @if (\Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() != 0)
+                        <div class="waiting-for-payment">
+                            {{ Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() }}
+                        </div>
+                        @endif
                     </div>
-                    @endif
             </div>
         </div>
         <div>
             <a class="dropdown-item" href="#">Keranjang Saya</a>
         </div>
+        @can('viewAny', App\Models\User::class)
+        <div>
+            <a class="dropdown-item" href="#">Unggahan Bukti Pembayaran</a>
+        </div>
+        @endcan
     </div>
     <div>
         <form action="{{ route('logout') }}" method="post">

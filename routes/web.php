@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     HomeController,
     TestController,
     BookPurchaseController,
+    BookUserController,
     CityController,
     CustomerController,
     UserController,
@@ -71,6 +72,9 @@ Route::prefix('/book-purchases')->group(function () {
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
+
+Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
+Route::resource('/book-users', BookUserController::class);
 
 Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user');
 

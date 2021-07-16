@@ -86,6 +86,7 @@
                     </ul>
                 </div>
             </nav>
+
             <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
                 <div class="mt-3">
                     <div class="text-center">

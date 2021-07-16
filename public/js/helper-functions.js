@@ -403,6 +403,7 @@ function getPaymentDeadlineText(userId) {
                 let minutes = response.minutes;
                 let seconds = response.seconds < 10 ? '0' + response.seconds-- : response.seconds--;
                 let hours   = response.hours;
+                console.log(hours);
 
                 let deadlineText = `${hours} : ${minutes} : ${seconds}`;
 

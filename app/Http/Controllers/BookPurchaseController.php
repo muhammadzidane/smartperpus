@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{ Book, BookPurchase, BookUser, User };
+use App\Models\{Book, BookPurchase, BookUser, User};
 use Carbon\Carbon;
-use Illuminate\Support\Facades\{ Auth, Date, Validator, DB};
+use Illuminate\Support\Facades\{Auth, Date, Validator, DB};
 use Faker\Factory as Faker;
 use Illuminate\Http\Request;
 
@@ -38,7 +38,8 @@ class BookPurchaseController extends Controller
      */
     public function store(Request $request, Book $book)
     {
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             array(
                 'pilihan_kurir'     => array('required'),
                 'metode_pembayaran' => array('required'),
@@ -51,12 +52,10 @@ class BookPurchaseController extends Controller
 
             if ($request->ajax()) {
                 return response()->json(compact('errors'));
-            }
-            else {
+            } else {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-        }
-        else {
+        } else {
             $faker = Faker::create('id_ID');
 
             $data = array(
@@ -81,9 +80,8 @@ class BookPurchaseController extends Controller
             $url           = Route('book-purchases.show', array('book_user' => $book_user->id));
 
             if ($request->ajax()) {
-                return response()->json(compact('book_user','url'));
-            }
-            else {
+                return response()->json(compact('book_user', 'url'));
+            } else {
                 return redirect()->route('book-purchases.show', array('book_user' => $book_user));
             }
         }
@@ -97,11 +95,14 @@ class BookPurchaseController extends Controller
      */
     public function show(BookUser $bookUser)
     {
-        if ($bookUser->payment_status == 'failed') {
-            return redirect()->route('home');
-        }
-        else {
-            return view('book.book-payment', compact('bookUser'));
+        if ($bookUser->user_id == Auth::id()) {
+            if ($bookUser->payment_status == 'failed') {
+                return redirect()->route('home');
+            } else {
+                return view('book.book-payment', compact('bookUser'));
+            }
+        } else {
+            return abort(404);
         }
     }
 
@@ -150,7 +151,8 @@ class BookPurchaseController extends Controller
         return response()->json(compact('delete', 'url'));
     }
 
-    public function ajaxPaymentDeadline() {
+    public function ajaxPaymentDeadline()
+    {
         foreach (BookUser::get() as $bookUser) {
             $now           = Carbon::now();
             $deadline      = $bookUser->payment_deadline;
@@ -165,7 +167,8 @@ class BookPurchaseController extends Controller
         return response()->json()->status();
     }
 
-    public function ajaxPaymentDeadlineText(BookUser $bookUser) {
+    public function ajaxPaymentDeadlineText(BookUser $bookUser)
+    {
         $now      = Carbon::now();
         $deadline = $bookUser->payment_deadline;
         $deadline = $now->diffAsCarbonInterval($deadline);

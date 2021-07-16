@@ -1340,7 +1340,6 @@ $(document).ready(function () {
             $('#upload-payment-submit-button').toggleClass('d-none');
 
         }
-
     });
 
     // Batal unggah foto pembayaran
@@ -1360,4 +1359,32 @@ $(document).ready(function () {
 
         console.log(true);
     });
+
+    $('.upload-payment-failed').on('click', function() {
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+        let dataId      = $(this).data('id');
+        let confirmText = 'Apakah anda yakin ingin membatalkan pembayaran ini ?';
+
+        if (confirm(confirmText)) {
+            let datas = {
+                _token: csrfToken,
+                _method: "PATCH",
+            };
+
+            let html = `<div id="message">Berhasil membatalkan pembelian</div>`;
+
+            $('.cus-navbar').append(html);
+
+            ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+                $(this).parents('.upload-payment-value').remove();
+
+                setTimeout(() => {
+                    $('#message').slideUp(500, () => {
+                        $('#message').remove();
+                    });
+                }, 2300);
+            });
+        }
+    })
+    // End, Waiting for payment - menunggu pembayaran
 }); // End of onload Event

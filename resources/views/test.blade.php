@@ -157,6 +157,25 @@
             </div>
         </div>
     </div>
+    <div class="container mt-5">
+        <div class="white-content-0 borbot-gray-bold">
+            <div class="white-content-header-2 flex-column">
+                <h4 class="hd-14 m-0">Unggahan Bukti Pembayaran</h4>
+            </div>
+        </div>
+        <div class="mt-c">
+            <div class="white-content">
+                <div class="row">
+                    <div class="col-3">
+                        <img class="w-100" src="{{ asset('img/form-register.jpg') }}" alt="gambar">
+                    </div>
+                    <div class="col-9">
+                        <h4 class="hd-14">Lara Greyrat</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
