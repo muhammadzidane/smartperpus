@@ -19,8 +19,8 @@ class AuthAdminOnlyMiddleware
     {
         if (Auth::user()->role == 'guest') {
             return redirect()->route('home');
+        } else {
+            return $next($request);
         }
-
-        return $next($request);
     }
 }

@@ -450,3 +450,15 @@ const showMessageChatting = () => {
     }, 3000);
 }
 
+const singleMessage = (messageText) => {
+    let html = `<div id="message">${messageText}</div>`;
+
+    $('.cus-navbar').append(html);
+
+    setTimeout(() => {
+        $('#message').slideUp(500, () => {
+            $('#message').remove();
+        });
+    }, 2300);
+}
+

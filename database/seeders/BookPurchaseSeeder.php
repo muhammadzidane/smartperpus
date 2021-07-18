@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Date;
 use Faker\Factory as Faker;
-use App\Models\{ User, Book };
+use App\Models\{User, Book};
 
 class BookPurchaseSeeder extends Seeder
 {
@@ -18,7 +18,7 @@ class BookPurchaseSeeder extends Seeder
     {
         $faker = Faker::create('id_ID');
 
-        for ($i=1; $i <= 3 ; $i++) {
+        for ($i = 1; $i <= 3; $i++) {
             $book  = Book::find($i);
             $user  = User::find($i);
             $data  = array(
@@ -33,7 +33,7 @@ class BookPurchaseSeeder extends Seeder
                 'unique_code'      => 320,
                 'total_payment'    => 50000,
                 'payment_method'   => 'Transfer Bank BRI',
-                'payment_status'   => 'waiting_for_payment',
+                'payment_status'   => 'waiting_for_confirmation',
                 'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
             );
 

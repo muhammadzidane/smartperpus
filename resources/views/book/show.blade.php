@@ -11,7 +11,7 @@
 <div class="book-show d-sm-flex">
     <div>
         <div class="book-show-cover">
-            <img src="{{ url('storage/books/' . $book->image) }}">
+            <img class="zoom-modal-image" src="{{ url('storage/books/' . $book->image) }}">
             <div class="book-show-images">
                 <div>
                     <img src="{{ url('storage/books/' . $book->image) }}" class="w-100">
@@ -31,18 +31,18 @@
     <div class="book-show-sinopsis">
         <div class="white-content">
             @can('view', $book)
-                <div class="d-flex justify-content-end">
-                    <div class="mr-2">
-                        <a href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
-                    </div>
-                    <div>
-                        <form action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
-                            <button id="book-show-delete" type="button" class="btn btn-danger">Delete</button>
-                            @method('DELETE')
-                            @csrf
-                        </form>
-                    </div>
+            <div class="d-flex justify-content-end">
+                <div class="mr-2">
+                    <a href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
                 </div>
+                <div>
+                    <form action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
+                        <button id="book-show-delete" type="button" class="btn btn-danger">Delete</button>
+                        @method('DELETE')
+                        @csrf
+                    </form>
+                </div>
+            </div>
             @endcan
             <h5>{{ $book->name }}</h5>
             <div class="my-1 d-flex">
@@ -75,16 +75,16 @@
             </h4>
             <div id="synopsis" class="mt-3">
                 @if (strlen($book->synopsis->text) > 500)
-                    <p>
-                        <span>{{ substr($book->synopsis->text, 0, 500) }}</span>
-                        <span>
-                            <button id="book-synopsis-toggle-button" class="btn-none p-0 ml-1 text-primary">Lihat Semua....</button>
-                            <span id="book-synopsis-show" style="display: none;">{{ substr($book->synopsis->text, 500) }}</span>
-                        </span>
-                    </p>
+                <p>
+                    <span>{{ substr($book->synopsis->text, 0, 500) }}</span>
+                    <span>
+                        <button id="book-synopsis-toggle-button" class="btn-none p-0 ml-1 text-primary">Lihat Semua....</button>
+                        <span id="book-synopsis-show" style="display: none;">{{ substr($book->synopsis->text, 500) }}</span>
+                    </span>
+                </p>
 
-                    @else
-                    <p class="synopsis">{{ $book->synopsis->text }}</p>
+                @else
+                <p class="synopsis">{{ $book->synopsis->text }}</p>
                 @endif
             </div>
         </div>
@@ -156,20 +156,17 @@
                         </div>
                         <div>
                             @if ($book->ebook === 0)
-                                <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
+                            <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
                             @else
-                                <a href="{{ route('books.buy', array('book' => $book->name)) }}"
-                                    type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
+                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
                             @endif
 
                             @auth
-                                <a href="{{ route('books.buy', array('book' => $book->name)) }}"
-                                  type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
                             @endauth
 
                             @guest
-                                <a href="{{ route('login') }}"
-                                  type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                            <a href="{{ route('login') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
                             @endguest
                         </div>
                     </div>
@@ -207,31 +204,30 @@
         <button class="btn"><i class="fa fa-star" aria-hidden="true"></i> 1 (0)</button>
     </div>
 
-    @for($i = 0; $i < 3; $i++)
-        <div class="customer-reviews">
+    @for($i = 0; $i < 3; $i++) <div class="customer-reviews">
+        <div>
+            <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
+        </div>
+        <div>
             <div>
-                <img class="customer-reviews-profile" src="{{ url('storage/books/' . $book->image) }}">
+                <span>Muhammad Zidane</span>
+                <span class="purchase-date">1 hari yang lalu</span>
             </div>
             <div>
-                <div>
-                    <span>Muhammad Zidane</span>
-                    <span class="purchase-date">1 hari yang lalu</span>
-                </div>
-                <div>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                    <i class="fa fa-star" aria-hidden="true"></i>
-                </div>
-                <div class="mt-2">
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
-                    </p>
-                </div>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+                <i class="fa fa-star" aria-hidden="true"></i>
+            </div>
+            <div class="mt-2">
+                <p>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab assumenda commodi, maiores animi quaerat est fugiat quo dolorem. Quas, nulla repellendus eaque exercitationem laudantium perspiciatis temporibus quae iure vero ad? lorem
+                </p>
             </div>
         </div>
-    @endfor
+</div>
+@endfor
 </div>
 
 
@@ -335,17 +331,17 @@
 </div>
 
 @include('layouts.book-deals',
-    array(
-        'title' => 'Rekomendasi Komik / Manga',
-        'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
-    )
+array(
+'title' => 'Rekomendasi Komik / Manga',
+'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+)
 )
 
 @include('layouts.book-deals',
-    array(
-        'title' => 'Buku Diskon',
-        'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
-    )
+array(
+'title' => 'Buku Diskon',
+'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+)
 )
 
 <div class="click-to-the-top">

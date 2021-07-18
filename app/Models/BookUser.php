@@ -18,11 +18,13 @@ class BookUser extends Model
     protected $guarded = array();
 
     // Relasi antar tabel
-    public function books() {
+    public function books()
+    {
         return $this->hasMany(Book::class);
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany(User::class);
     }
 }

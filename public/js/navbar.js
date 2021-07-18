@@ -16,6 +16,33 @@ function toggle(selectorTarget) {
 $(document).ready(function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+    // Perbesar gambar
+    $('.zoom-modal-image').on('click', function() {
+        let html =
+        `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-image position-relative">
+                    <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="modal-body">
+                        <div class="w-75 mx-auto">
+                            <img id="image-modal-source" class="w-100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        $(this).after(html);
+        $('#imagemodal').modal('show');
+
+        let clickedImageSource = $(this).attr('src');
+
+        $('#image-modal-source').attr('src', clickedImageSource);
+        console.log(clickedImageSource);
+    });
+
     // Jika /search/books
     // Modul Search Books - First Load
     if (window.location.pathname == '/search/books') {
@@ -1299,7 +1326,7 @@ $(document).ready(function () {
         let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
 
         if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
-            let text = `Hanya bisa mengirim file gambar`;
+            let text = `Hanya bisa mengirim file gambar berupa: png, jpg, jpeg`;
             let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
             let uploadPaymentMessageLength = $('#upload-payment-message').length;
 
@@ -1320,7 +1347,6 @@ $(document).ready(function () {
             else if (uploadPaymentMessageLength == 1) {
                 $('#upload-payment-message').text(text);
             }
-            console.log(fileSizeInMB);
         } else {
             $('#upload-payment-message').remove();
 
@@ -1356,8 +1382,22 @@ $(document).ready(function () {
     $('#upload-payment-form').on('submit', function(event) {
         event.preventDefault();
 
+        let dataId = $('#upload-payment-button').data('id');
 
-        console.log(true);
+        ajaxForm('POST', this, `/book-users/${dataId}`, function (response) {
+            if (response.success) {
+                let messageText = 'Berhasil men-upload bukti pembayaran';
+
+                $('#upload-payment-file').val('');
+                $('.close').trigger('click');
+                $('#upload-payment-cancel').trigger('click');
+                singleMessage(messageText);
+            } else {
+                let errors = response.errors.upload_payment;
+                alert(errors);
+            }
+
+        }, ['paymentMethod', 'uploadImage']);
     });
 
     $('.upload-payment-failed').on('click', function() {
@@ -1368,23 +1408,53 @@ $(document).ready(function () {
         if (confirm(confirmText)) {
             let datas = {
                 _token: csrfToken,
-                _method: "PATCH",
+                _method: 'PATCH',
+                paymentMethod: 'failed',
             };
 
-            let html = `<div id="message">Berhasil membatalkan pembelian</div>`;
-
-            $('.cus-navbar').append(html);
-
-            ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+            ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
                 $(this).parents('.upload-payment-value').remove();
+                let messageText = 'Berhasil membatalkan pembelian';
 
-                setTimeout(() => {
-                    $('#message').slideUp(500, () => {
-                        $('#message').remove();
-                    });
-                }, 2300);
+                singleMessage(messageText);
             });
         }
     })
+
+    // Lihat daftar tagihan
+    $('.see-billing-list').on('click', function() {
+        let dataId = $(this).data('id');
+        let html = '';
+
+        ajaxJson('GET', `/book-users/${dataId}`, {}, response => {
+            $('.bill').html(response.viewRender);
+        });
+    });
+
+    // Konfirmasi pembayaran
+    $('.confirm-payment').on('click', function() {
+        let dataId = $(this).data('id');
+        let datas = {
+            _token: csrfToken,
+            _method: 'PATCH',
+            paymentMethod: 'orderInProcess'
+        }
+
+        let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
+
+        if (confirm(confirmText)) {
+            ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+                let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
+
+                singleMessage(messageText);
+                $(this).parents('.uploaded-payment').remove();
+            });
+        }
+    });
+
+    // Batalkan pembayaran
+    $('.cancel-confirm-payment').on('click', function() {
+        console.log(this);
+    });
     // End, Waiting for payment - menunggu pembayaran
 }); // End of onload Event

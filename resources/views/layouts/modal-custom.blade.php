@@ -13,6 +13,10 @@
                 @include('modal.upload-payment')
                 @break
 
+                @case('bill')
+                <div class="bill"></div>
+                @break
+
                 @endswitch
             </div>
         </div>

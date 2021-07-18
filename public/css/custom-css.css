@@ -58,11 +58,54 @@ label { cursor: pointer; }
     left: 0s;
 }
 
+/* dropdown */
+.nav-dropdown {
+    background-color: #fffdf6;
+    box-shadow: 0 0 1px rgb(68, 68, 68, 0.8);
+}
+
+.nav-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.25rem 1.5rem;
+    clear: both;
+    font-weight: 100;
+    color: #444444;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: #fffdf6;
+    border: 0;
+}
+
+.nav-dropdown-item:hover {
+    background-color: #f6f5f5;
+    color: #444444;
+    text-decoration: none;
+}
+
+.nav-dropdown-waiting {
+    position: absolute;
+    bottom: 15px;
+    right: 8px;
+    background-color: #ee6f57;
+    color: white;
+    font-size: 9px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 100%;
+    text-align: center;
+}
+
 /* Navbar */
 .my-navbar {
     background-color: #fff600;
     font-family: 'Righteous', cursive;
     padding: 8px 0;
+}
+
+.nav-bell {
+    font-size: 17px;
 }
 
 .center {
@@ -1339,6 +1382,23 @@ footer {
     border: none;
 }
 
+#modal-close {
+    position: relative;
+    left: 0 !important;
+}
+
+.modal-image {
+    background-color: transparent;
+}
+
+.modal-close {
+    position: absolute;
+    right: 0;
+    bottom: 100%;
+    font-size: 35px;
+    color: #444444;
+}
+
 .button-submit {
     cursor: not-allowed;
     background-color: #fff600;
@@ -1595,8 +1655,8 @@ footer {
 }
 
 #message {
-    background-color: #ea5455;
-    color: #444444;
+    background-color: rgb(238, 111, 87, 0.8);
+    color: white;
     border-radius: 4px;
     box-shadow: 0 0 2px #444444;
     width: 50%;
@@ -1778,6 +1838,11 @@ footer {
 .upload-payment-select-image {
     border: 2px dashed #444444;
     padding: 30px 20px 30px 20px;
+}
+
+.upload-active {
+    border-bottom: 3px solid rgb(68, 68, 68, 0.85);
+    color: #444444 !important;
 }
 
 #upload-payment-file {

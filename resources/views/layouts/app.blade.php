@@ -67,6 +67,31 @@
 
                             <li>Best Seller</li>
                             <li>Buku Diskon</li>
+                            @auth
+                            <li class="nav-bell">
+                                <div class="dropdown">
+                                    <button class="btn-none" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="far fa-bell"></i>
+                                    </button>
+                                    <div class="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-dropdown-item position-relative" href="{{ route('waiting.for.payment') }}">Menunggu Pembayaran
+                                            @if (Illuminate\Support\Facades\DB::table('book_user')
+                                            ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count() != 0)
+                                            <span class="nav-dropdown-waiting">
+                                                {{
+                                                    Illuminate\Support\Facades\DB::table('book_user')
+                                                    ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count()
+                                                }}
+                                            </span>
+                                            @endif
+                                        </a>
+                                        <a class="nav-dropdown-item" href="#">Sedang Di Proses</a>
+                                        <a class="nav-dropdown-item" href="#">Sedang Di Kirim</a>
+                                        <a class="nav-dropdown-item" href="#">Telah Sampai</a>
+                                    </div>
+                                </div>
+                            </li>
+                            @endauth
                         </div>
                         <div id="nav-login" class="d-flex ml-auto align-items-center">
                             @guest

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{ Book, Author, Category, BookPurchase, User, BookUser };
+use App\Models\{Book, Author, Category, BookPurchase, User, BookUser};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{ Storage, Validator, Auth, Date};
+use Illuminate\Support\Facades\{Storage, Validator, Auth, Date};
 
 class BookController extends Controller
 {
@@ -50,7 +50,8 @@ class BookController extends Controller
     {
         $this->authorize('create', Book::class);
 
-        $validator = Validator::make($request->all(),
+        $validator = Validator::make(
+            $request->all(),
             array(
                 'nama_penulis'       => array('required', 'min:3'),
                 'isbn'               => array('required', 'numeric', 'digits:13', 'unique:books,isbn'),
@@ -98,18 +99,18 @@ class BookController extends Controller
                 $book->categories()->attach(Category::firstWhere('name', $request->kategori));
                 $book->printedStock()->create(array('amount' => $request->jumlah_barang));
                 $book->synopsis()->create(array('text' => $request->sinopsis));
-                $request->gambar_sampul_buku->storeAs('public/books',
-                  str_replace(' ', '_', strtolower($request->gambar_sampul_buku->getClientOriginalName())));
+                $request->gambar_sampul_buku->storeAs(
+                    'public/books',
+                    str_replace(' ', '_', strtolower($request->gambar_sampul_buku->getClientOriginalName()))
+                );
 
                 $pesan = 'Berhasil menambah buku ' . $request->judul_buku;
 
                 return redirect()->back()->with('pesan', $pesan);
-            }
-            else {
+            } else {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
-        }
-        else {
+        } else {
             $gambar_sampul_buku = str_replace('C:\fakepath\\', '', $request->gambar_sampul_buku);
 
             if ($validator->fails()) {
@@ -178,33 +179,33 @@ class BookController extends Controller
         );
 
 
-        function book_update($book) {
+        function book_update($book)
+        {
             global $request;
 
             if ($request->gambar_sampul_buku == null) {
                 $gambar_sampul_buku = $book->image;
-            }
-            else {
+            } else {
                 if (!$request->ajax()) {
                     $gambar_sampul_buku = $request->gambar_sampul_buku->getClientOriginalName();
-                }
-                else {
+                } else {
                     $gambar_sampul_buku = str_replace('C:\fakepath\\', '', $request->gambar_sampul_buku);
                 }
             }
 
             if (!$request->ajax()) {
                 $book_image = $request->gambar_sampul_buku === null ? $book->image : $request->gambar_sampul_buku->getClientOriginalName();
-            }
-            else {
+            } else {
                 $book_image = $gambar_sampul_buku;
             }
 
             if ($book_image !== null) {
                 if (!Storage::exists('public/books/' . $book_image)) {
                     if (!$request->ajax()) {
-                        $request->gambar_sampul_buku->storeAs('public/books',
-                        str_replace(' ', '_', strtolower($book_image)));
+                        $request->gambar_sampul_buku->storeAs(
+                            'public/books',
+                            str_replace(' ', '_', strtolower($book_image))
+                        );
                     }
 
                     Storage::delete($book->image);
@@ -214,8 +215,7 @@ class BookController extends Controller
 
             if (Author::firstWhere('name', $request->nama_penulis) == null) {
                 $author =  $book->author()->create(array('name' => $request->nama_penulis));
-            }
-            else {
+            } else {
                 $author = Author::firstWhere(array('name' => $request->nama_penulis));
             }
 
@@ -248,8 +248,7 @@ class BookController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
-        }
-        else {
+        } else {
             book_update($book);
 
             return redirect()->back()->with('pesan', $pesan);
@@ -275,12 +274,14 @@ class BookController extends Controller
     }
 
     // Search Book
-    public function searchBooks() {
+    public function searchBooks()
+    {
         return view('book/search-books');
     }
 
     // Beli buku
-    public function booksBuy($book) {
+    public function booksBuy($book)
+    {
         $book         = Book::firstWhere('name', $book);
         $user         = Auth::user();
         $book_version = $book->ebook ? 'ebook' : 'hard_cover';
@@ -289,30 +290,33 @@ class BookController extends Controller
     }
 
     // Keranjang Belanja
-    public function shoppingCart() {
+    public function shoppingCart()
+    {
         return view('book/shopping-cart');
     }
 
-    public function wishlist() {
+    public function wishlist()
+    {
         return view('book/wishlist');
     }
 
-    public function addDiscount() {
+    public function addDiscount()
+    {
         return 'diskon diambahkan';
     }
 
-    public function showRegistrationForm() {
+    public function showRegistrationForm()
+    {
         return view('auth.register');
     }
 
     // Menunggu Pembayaran
-    public function waitingForPayments() {
+    public function waitingForPayments()
+    {
         $user      = User::find(Auth::id());
         $book_users = BookUser::where('user_id', $user->id)->get();
 
         // dump($book_users);
         return view('user.waiting-for-payments', compact('user', 'book_users'));
-
     }
 }
-

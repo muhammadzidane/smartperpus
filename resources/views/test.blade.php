@@ -88,89 +88,16 @@
 </head>
 
 <body>
-    <nav class="my-navbar row px-5">
-        <div class="col-3 w-100">
-            <a href="{{ route('home') }}" class="center"><img class="logo-img mr-auto" src="{{ asset('img/logo.png') }}"></a>
-        </div>
-        <div class="col-7">
-            <div class="row">
-                <div class="col-5">
-                    <div class="circle-input w-100">
-                        <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                            <div>
-                                <div class="search-icon">
-                                    <i class="fas fa-search m-auto"></i>
-                                </div>
-                                <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                                <input type="hidden" name="page" value="1">
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-7 my-auto">
-                    <div class="navbar-content">
-                        <span class="mr-3">
-                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        </span>
-                        <span class="mr-3">Best Seller</span>
-                        <span class="mr-3">Buku Diskon</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-2 c-middle">
-            <div class="my-auto ml-auto">
-                @guest
-                <button class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                @endguest
-
-                @auth
-                @include('layouts.auth-nav-login')
-                @endauth
-            </div>
-            <div class="navbar-grip-line" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fas fa-grip-lines"></i>
-            </div>
-        </div>
-    </nav>
-    <div class="collapse" id="collapseExample">
-        <div class="responsive-navbar d-lg-none text-righteous">
-            <div class="mt-3">
-                <div class="text-center">
-                    <form class="" action="{{ route('search.books') }}" method="GET">
-                        <div>
-                            <div class="responsive-search-icon">
-                                <i class="fas fa-search m-auto"></i>
-                            </div>
-                            <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                            <input type="hidden" name="page" value="1">
-                        </div>
-                    </form>
-                    <div class="my-2">
-                        <div class="mr-3">
-                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        </div>
-                        <div class="mr-3">Best Seller</div>
-                        <div class="mr-3">Buku Diskon</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container mt-5">
-        <div class="white-content-0 borbot-gray-bold">
-            <div class="white-content-header-2 flex-column">
-                <h4 class="hd-14 m-0">Unggahan Bukti Pembayaran</h4>
-            </div>
-        </div>
-        <div class="mt-c">
-            <div class="white-content">
-                <div class="row">
-                    <div class="col-3">
-                        <img class="w-100" src="{{ asset('img/form-register.jpg') }}" alt="gambar">
-                    </div>
-                    <div class="col-9">
-                        <h4 class="hd-14">Lara Greyrat</h4>
+    <button data-target="#imagemodal" data-toggle="modal">click me</button>
+    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-image position-relative">
+                <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body">
+                    <div class="w-75 bg-dark mx-auto">
+                        <img class="w-100" src="{{ asset('img/books_test_image/detektif-conan-96.jpg') }}">
                     </div>
                 </div>
             </div>

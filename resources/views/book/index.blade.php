@@ -57,46 +57,44 @@
 
     <div class="books">
 
-        @for($i = 0; $i < 6; $i++)
-        <a>
+        @for($i = 0; $i < 6; $i++) <a>
             <div class="book">
                 <div class='book-cover'>
                     <div class="rating">
-                        @for($j = 1; $j <= 5; $j++)
-                        <div>
+                        @for($j = 1; $j <= 5; $j++) <div>
                             <i class="fa fa-star rating-star" aria-hidden="true"></i>
-                        </div>
-                        @endfor
                     </div>
-                    <div class="gambar-buku">
-                        <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                    </div>
+                    @endfor
                 </div>
-                <div class="desk-book">
-                    <div>Jujutsu Kaisen</div>
-                    <div>
-                        <a href="">Suneo</a>
-                    </div>
-                </div>
-                <div class="book-price">
-                    <div>Rp40.000</div>
+                <div class="gambar-buku">
+                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
                 </div>
             </div>
-        </a>
-        @endfor
-
+            <div class="desk-book">
+                <div>Jujutsu Kaisen</div>
+                <div>
+                    <a href="">Suneo</a>
+                </div>
+            </div>
+            <div class="book-price">
+                <div>Rp40.000</div>
+            </div>
     </div>
+    </a>
+    @endfor
 
-    <!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+</div>
 
-    @can('create', \App\Models\Book::class)
-    <form action="{{ route('books.store') }}" method="post">
-        <div class="row my-3">
-            @csrf
-            <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-        </div>
-    </form>
-    @endcan
+<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+
+@can('create', \App\Models\Book::class)
+<form action="{{ route('books.store') }}" method="post">
+    <div class="row my-3">
+        @csrf
+        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
+    </div>
+</form>
+@endcan
 </div>
 
 <div class="best-seller-books my-5">
@@ -113,46 +111,44 @@
 
     <div class="books">
 
-        @for($i = 0; $i < 6; $i++)
-        <a>
+        @for($i = 0; $i < 6; $i++) <a>
             <div class="book">
                 <div class='book-cover'>
                     <div class="rating">
-                        @for($j = 1; $j <= 5; $j++)
-                        <div>
+                        @for($j = 1; $j <= 5; $j++) <div>
                             <i class="fa fa-star rating-star" aria-hidden="true"></i>
-                        </div>
-                        @endfor
                     </div>
-                    <div class="gambar-buku">
-                        <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                    </div>
+                    @endfor
                 </div>
-                <div class="desk-book">
-                    <div>Jujutsu Kaisen</div>
-                    <div>
-                        <a href="">Suneo</a>
-                    </div>
-                </div>
-                <div class="book-price">
-                    <div>Rp40.000</div>
+                <div class="gambar-buku">
+                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
                 </div>
             </div>
-        </a>
-        @endfor
-
+            <div class="desk-book">
+                <div>Jujutsu Kaisen</div>
+                <div>
+                    <a href="">Suneo</a>
+                </div>
+            </div>
+            <div class="book-price">
+                <div>Rp40.000</div>
+            </div>
     </div>
+    </a>
+    @endfor
 
-    <!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+</div>
 
-    @can('create', \App\Models\Book::class)
-    <form action="{{ route('books.store') }}" method="post">
-        <div class="row my-3">
-            @csrf
-            <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-        </div>
-    </form>
-    @endcan
+<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+
+@can('create', \App\Models\Book::class)
+<form action="{{ route('books.store') }}" method="post">
+    <div class="row my-3">
+        @csrf
+        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
+    </div>
+</form>
+@endcan
 </div>
 
 <div class="best-seller-books my-5">
@@ -169,46 +165,44 @@
 
     <div class="books">
 
-        @for($i = 0; $i < 6; $i++)
-        <a>
+        @for($i = 0; $i < 6; $i++) <a>
             <div class="book">
                 <div class='book-cover'>
                     <div class="rating">
-                        @for($j = 1; $j <= 5; $j++)
-                        <div>
+                        @for($j = 1; $j <= 5; $j++) <div>
                             <i class="fa fa-star rating-star" aria-hidden="true"></i>
-                        </div>
-                        @endfor
                     </div>
-                    <div class="gambar-buku">
-                        <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                    </div>
+                    @endfor
                 </div>
-                <div class="desk-book">
-                    <div>Jujutsu Kaisen</div>
-                    <div>
-                        <a href="">Suneo</a>
-                    </div>
-                </div>
-                <div class="book-price">
-                    <div>Rp40.000</div>
+                <div class="gambar-buku">
+                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
                 </div>
             </div>
-        </a>
-        @endfor
-
+            <div class="desk-book">
+                <div>Jujutsu Kaisen</div>
+                <div>
+                    <a href="">Suneo</a>
+                </div>
+            </div>
+            <div class="book-price">
+                <div>Rp40.000</div>
+            </div>
     </div>
+    </a>
+    @endfor
 
-    <!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+</div>
 
-    @can('create', \App\Models\Book::class)
-    <form action="{{ route('books.store') }}" method="post">
-        <div class="row my-3">
-            @csrf
-            <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-        </div>
-    </form>
-    @endcan
+<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
+
+@can('create', \App\Models\Book::class)
+<form action="{{ route('books.store') }}" method="post">
+    <div class="row my-3">
+        @csrf
+        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
+    </div>
+</form>
+@endcan
 </div>
 
 

@@ -71,7 +71,7 @@ class BookPurchaseController extends Controller
                 'total_payment'    => $request->total_pembayaran + $request->unique_code,
                 'payment_method'   => $request->metode_pembayaran,
                 'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
-                'payment_status'   => 'waiting_for_payment',
+                'payment_status'   => 'waiting_for_confirmation',
             );
 
             $user          = User::find(Auth::id());

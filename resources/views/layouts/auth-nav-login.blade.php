@@ -34,34 +34,23 @@
                 <a class="dropdown-item" href="#"">Daftar Wishlist</a>
             </div>
             <div>
-                <div class=" position-relative">
-                    <div>
-                        <a class="dropdown-item" href="{{ route('waiting.for.payment') }}">Menunggu Pembayaran</a>
-
-                        @if (\Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() != 0)
-                        <div class="waiting-for-payment">
-                            {{ Illuminate\Support\Facades\DB::table('book_user')->where('user_id', Auth::id())->get()->count() }}
-                        </div>
-                        @endif
-                    </div>
+        </div>
+        <div>
+            <a class=" dropdown-item" href="#">Keranjang Saya</a>
             </div>
+            @can('viewAny', App\Models\User::class)
+            <div>
+                <a class="dropdown-item" href="{{ route('uploaded.payments') }}">Unggahan Bukti Pembayaran</a>
+            </div>
+            @endcan
         </div>
         <div>
-            <a class="dropdown-item" href="#">Keranjang Saya</a>
+            <form action="{{ route('logout') }}" method="post">
+                @csrf
+                <button type="submit" class="btn dropdown-item text-right text-righteous">
+                    Logout
+                </button>
+            </form>
         </div>
-        @can('viewAny', App\Models\User::class)
-        <div>
-            <a class="dropdown-item" href="#">Unggahan Bukti Pembayaran</a>
-        </div>
-        @endcan
-    </div>
-    <div>
-        <form action="{{ route('logout') }}" method="post">
-            @csrf
-            <button type="submit" class="btn dropdown-item text-right text-righteous">
-                Logout
-            </button>
-        </form>
-    </div>
     </div>
 </li>

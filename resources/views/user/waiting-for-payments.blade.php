@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        @foreach ($book_users->where('payment_status', 'waiting_for_payment')->sortByDesc('created_at') as $book_user)
+        @foreach ($book_users->where('payment_status', 'waiting_for_confirmation')->sortByDesc('created_at') as $book_user)
         <div class="upload-payment-value white-content-0 mt-c">
             <div class="p-15 borbot-gray-bold">
                 <div class="d-flex justify-content-between">
@@ -42,13 +42,16 @@
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <button class="d-block btn-none p-0 tred-bold">Lihat tagihan</button>
-                                    <div>Total pembayaran : <span class="text-grey tbold">{{ rupiah_format($book_user->total_payment) }}</span></div>
+                                    <button class="see-billing-list d-block btn-none p-0 tred-bold" data-toggle="modal" data-target="#bill" data-id="{{ $book_user->id }}">Lihat tagihan</button>
                                     <div>Metode pembayaran : <span class="text-grey tbold">{{ $book_user->payment_method }}</span></div>
+                                    <div>Nama kurir : <span class="text-grey tbold">{{ $book_user->courier_name }}</span></div>
+                                    <div>Layanan kurir : <span class="text-grey tbold">{{ $book_user->courier_service }}</span></div>
+                                    <div>Ongkos kirim : <span class="text-grey tbold">{{ rupiah_format($book_user->shipping_cost )}}</span></div>
+                                    <div>Total pembayaran : <span class="text-grey tbold">{{ rupiah_format($book_user->total_payment) }}</span></div>
                                 </div>
                                 <div>
                                     <div class="text-right text-righteous">
-                                        <a href="#" class="btn btn-sm-0 btn-red hd-14" data-toggle="modal" data-target="#exampleModalCenter" data-id="{{ $book_user->id }}">Unggah bukti pembayaran</a>
+                                        <button id="upload-payment-button" class="btn btn-sm-0 btn-red hd-14" data-toggle="modal" data-target="#upload_payment" data-id="{{ $book_user->id }}">Unggah bukti pembayaran</button>
                                     </div>
                                 </div>
                             </div>
@@ -61,17 +64,26 @@
 
         @include('layouts.modal-custom',
         array(
-        "modal_trigger_id" => "exampleModalCenter",
+        "modal_trigger_id" => "upload_payment",
         "modal_size_class" => "modal-md",
         "modal_header" => "Unggah bukti pembayaran",
         "modal_content" => "upload_payment"
         )
         )
+
+        @include('layouts.modal-custom',
+        array(
+        "modal_trigger_id" => "bill",
+        "modal_size_class" => "modal-lg",
+        "modal_header" => "Tagihan Anda",
+        "modal_content" => "bill"
+        )
+        )
     </div>
     @include('user.purchases-and-inboxes',
     array(
-    'waiting_for_payments' => 'active-acc',
-    'waiting_for_payments_count' => $book_users->count(),
+    'waiting_for_confirmations' => 'active-acc',
+    'waiting_for_confirmations_count' => $book_users->count(),
     )
     )
 </div>
