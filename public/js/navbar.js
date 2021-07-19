@@ -18,29 +18,45 @@ $(document).ready(function () {
 
     // Perbesar gambar
     $('.zoom-modal-image').on('click', function() {
-        let html =
-        `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content modal-image position-relative">
-                    <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="modal-body">
-                        <div class="w-75 mx-auto">
-                            <img id="image-modal-source" class="w-100">
+        let windowWidth = $(window).width();
+
+        if (windowWidth >= 768) {
+            let html =
+            `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content modal-image position-relative">
+                        <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div class="modal-body">
+                            <div class="w-75 mx-auto">
+                                <img id="image-modal-source" class="w-100">
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
 
-        $(this).after(html);
-        $('#imagemodal').modal('show');
+            let modalLength = $('#imagemodal').length;
 
-        let clickedImageSource = $(this).attr('src');
 
-        $('#image-modal-source').attr('src', clickedImageSource);
-        console.log(clickedImageSource);
+            if (modalLength == 0) {
+                $(this).after(html)
+            }
+
+            $('#imagemodal').modal('show');
+
+            let clickedImageSource = $(this).attr('src');
+
+            $('#image-modal-source').attr('src', clickedImageSource);
+
+            $('.modal-close').on('click', () => {
+                setTimeout(() => {
+                    $('#imagemodal').remove();
+                }, 200);
+            });
+            console.log(true);
+        }
     });
 
     // Jika /search/books
@@ -1442,19 +1458,23 @@ $(document).ready(function () {
 
         let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
 
-        if (confirm(confirmText)) {
-            ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
-                let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
+        modalConfirm(this, confirmText, (accepted) => {
+            if (accepted) {
+                ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+                    let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
 
-                singleMessage(messageText);
-                $(this).parents('.uploaded-payment').remove();
-            });
-        }
+                    singleMessage(messageText);
+                    $(this).parents('.uploaded-payment').remove();
+                });
+            }
+        });
     });
 
     // Batalkan pembayaran
     $('.cancel-confirm-payment').on('click', function() {
-        console.log(this);
+        let messageText = 'Berhasil membatalkan pembayaran';
+
+        singleMessage(messageText);
     });
     // End, Waiting for payment - menunggu pembayaran
 }); // End of onload Event

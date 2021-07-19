@@ -451,14 +451,73 @@ const showMessageChatting = () => {
 }
 
 const singleMessage = (messageText) => {
-    let html = `<div id="message">${messageText}</div>`;
+    let html = `<div id="message"><i class="message-check fas fa-check"></i>${messageText}</div>`;
+    let messageLength = $('#message').length;
 
-    $('.cus-navbar').append(html);
+    if (messageLength == 0) {
+        $('.cus-navbar').append(html);
+    }
 
     setTimeout(() => {
         $('#message').slideUp(500, () => {
             $('#message').remove();
         });
     }, 2300);
+}
+
+// Modal Confirm
+const modalConfirm = (button, text, callback) => {
+    $(button).attr('data-target', '#modal-confirm');
+    $(button).attr('data-toggle', 'modal');
+
+    let html =
+    `<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-confirm-content">
+                <div class="modal-confirm-body">
+                    <div>${text}</div>
+                    <div class="modal-confirm-close"><i class="fa fa-times"></i></div>
+                </div>
+                <div class="modal-confirm-buttons">
+                    <button class="modal-confirm-accept">Ya</button>
+                    <button class="modal-confirm-cancel">Tidak</button>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    let modalConfirmLength = $('#modal-confirm').length;
+
+    if (modalConfirmLength == 0) {
+        $(button).after(html);
+    }
+
+    const closeModalAction = () => {
+        $(button).removeAttr('data-target data-toggle')
+        $('#modal-confirm').modal('hide');
+
+        setTimeout(() => {
+            $('#modal-confirm').remove();
+        }, 200);
+    };
+
+
+    $('.modal-confirm-accept').on('click', () => {
+        closeModalAction();
+
+        callback(true);
+    });
+
+    $('.modal-confirm-cancel').on('click', () => {
+        closeModalAction();
+
+        callback(false);
+    });
+
+    $('.modal-confirm-close').on('click', () => {
+        closeModalAction();
+
+        callback(false);
+    });
 }
 

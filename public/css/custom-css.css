@@ -28,6 +28,8 @@ label { cursor: pointer; }
     }
   }
 
+.zoom-modal-image { cursor: pointer; }
+.d-grid { display: grid; }
 .z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
 .fa-star { color: gold; }
@@ -1443,6 +1445,58 @@ footer {
     border-bottom: 1px solid #e2d5d5;
 }
 
+/* Modal Confirm */
+.modal-confirm-buttons {
+    display: flex;
+}
+
+.modal-confirm-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.modal-confirm-content {
+    border-radius: 2px;
+}
+
+.modal-confirm-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 14px;
+    color: #444444;
+}
+
+.modal-confirm-cancel, .modal-confirm-accept {
+    width: 50%;
+    height: 100%;
+    padding: 14px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: background .2s ease-out;
+    font-weight: 600;
+}
+
+.modal-confirm-cancel {
+    background-color: transparent;
+}
+
+.modal-confirm-accept {
+    background-color: rgb(238, 111, 87, 1);
+    color: #fffdf6;
+}
+
+.modal-confirm-cancel:hover {
+    background-color: rgb(110, 124, 124, 0.2);
+}
+
+.modal-confirm-accept:hover {
+    background-color: rgb(238, 111, 87, 0.92);
+}
+
 /* Register User */
 .register-user {
     display: flex;
@@ -1655,18 +1709,25 @@ footer {
 }
 
 #message {
-    background-color: rgb(238, 111, 87, 0.8);
-    color: white;
+    background-color: #fffdf6;
+    color: #444444;
     border-radius: 4px;
-    box-shadow: 0 0 2px #444444;
+    box-shadow: 0 0 5px #444444;
     width: 50%;
     text-align: center;
-    padding: 0.3rem;
+    padding: 0.7rem;
     position: fixed;
     top: 100px;
     left: 25%;
     right: 25%;
     z-index: 1;
+}
+
+.message-check {
+    color: #444444;
+    font-size: 17px;
+    margin-right: 8px;
+    position: relative;
 }
 
 /* Media Large */

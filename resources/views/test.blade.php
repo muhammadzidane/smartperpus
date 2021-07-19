@@ -88,21 +88,9 @@
 </head>
 
 <body>
-    <button data-target="#imagemodal" data-toggle="modal">click me</button>
-    <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content modal-image position-relative">
-                <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <div class="modal-body">
-                    <div class="w-75 bg-dark mx-auto">
-                        <img class="w-100" src="{{ asset('img/books_test_image/detektif-conan-96.jpg') }}">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <button class="modal-confirm-trigger-test">click me</button>
+    <script src="{{ asset('js/navbar.js') }}"></script>
+    <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>
 
 </html>

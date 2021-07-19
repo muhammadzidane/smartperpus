@@ -73,9 +73,9 @@ Route::prefix('/book-purchases')->group(function () {
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
-Route::prefix('book-users/uploaded-payments')->middleware('auth', 'auth.admin.only')->group(function () {
+Route::prefix('book-users/status')->middleware('auth', 'auth.admin.only')->group(function () {
     Route::get('/', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
-    Route::get('histories', array(BookUserController::class, 'uploadedPaymentHistories'))->name('uploaded.payment.histories');
+    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))->name('confirmed.orders');
 });
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
 Route::resource('/book-users', BookUserController::class);

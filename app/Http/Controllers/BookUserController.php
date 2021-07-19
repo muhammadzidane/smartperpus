@@ -69,14 +69,16 @@ class BookUserController extends Controller
 
     public function uploadedPayments()
     {
-        return view('book_user.upload-payment');
+        return view('book_user.status.upload-payment');
     }
 
-    public function uploadedPaymentHistories()
+    public function confirmedOrders()
     {
         $book_users = BookUser::where('upload_payment_image', '!=', null)
             ->where('payment_status', 'order_in_process')
             ->where('confirmed_payment', true)->get();
-        return view('book_user.upload-payment-histories', compact('book_users'));
+
+        // dd($book_users);
+        return view('book_user.status.confirmed-orders', compact('book_users'));
     }
 }

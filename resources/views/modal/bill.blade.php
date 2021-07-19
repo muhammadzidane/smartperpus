@@ -1,9 +1,9 @@
 @foreach ($book_users as $book_user)
 <div class="row mt-4 borbot-gray-0 pb-2 px-3">
-    <div class="col-3">
+    <div class="col-sm-3 mb-4">
         <img class="w-100" src="{{ asset('storage\books\\' . App\Models\Book::find($book_user->book_id)->image) }}">
     </div>
-    <div class="col-9">
+    <div class="col-sm-9">
         <div>
             <h4 class="hd-14">{{ App\Models\Book::find($book_user->book_id)->name }}</h4>
             <h4 class="hd-14 tred">
