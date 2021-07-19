@@ -73,9 +73,16 @@ Route::prefix('/book-purchases')->group(function () {
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
-Route::prefix('book-users/status')->middleware('auth', 'auth.admin.only')->group(function () {
-    Route::get('/', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
-    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))->name('confirmed.orders');
+Route::prefix('book-users/status')->middleware('auth')->group(function () {
+    Route::get('/', array(BookUserController::class, 'uploadedPayments'))
+        ->name('uploaded.payments');
+    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))
+        ->name('confirmed.orders');
+
+    Route::get('on-delivery', array(BookUserController::class, 'onDelivery'))->name('on.delivery');
+
+    // Lacak paket
+    Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));
 });
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
 Route::resource('/book-users', BookUserController::class);

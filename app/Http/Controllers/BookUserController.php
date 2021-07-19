@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BookUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Storage, Validator};
+use Illuminate\Support\Facades\{Storage, Validator, Auth};
 
 class BookUserController extends Controller
 {
@@ -62,7 +62,14 @@ class BookUserController extends Controller
                 );
 
                 $bookUser->update($update);
-                return response()->json(array('test' => true));
+                return response()->json()->status();
+                break;
+            case 'orderOnDelivery':
+                $update = array('payment_status' => 'being_shipped');
+
+                $bookUser->update($update);
+
+                return response()->json()->status();
                 break;
         }
     }
@@ -78,7 +85,49 @@ class BookUserController extends Controller
             ->where('payment_status', 'order_in_process')
             ->where('confirmed_payment', true)->get();
 
-        // dd($book_users);
         return view('book_user.status.confirmed-orders', compact('book_users'));
+    }
+
+    public function onDelivery()
+    {
+        $auth_id = Auth::id();
+
+        $book_users = BookUser::where('upload_payment_image', '!=', null)
+            ->where('user_id', $auth_id)
+            ->where('payment_status', 'being_shipped')
+            ->get();
+        return view('book_user.status.on-delivery', compact('book_users'));
+    }
+
+    public function trackingPackages()
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/waybill",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "waybill=030200010250720&courier=jne",
+            CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded",
+                "key: ce496165f4a20bc07d96b6fe3ab41ded"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            $response =  "cURL Error #:" . $err;
+            return response()->json(compact('response'));
+        } else {
+            return response()->json(compact('response'));
+        }
     }
 }

@@ -17,7 +17,7 @@
 
                     <div class="d-md-flex justify-content-between mt-auto pt-3">
                         <button class="see-billing-list btn-none p-0 mt-2 tred tred-bold" data-toggle="modal" data-id="{{ $book_user->id }}" data-target="#bill">Lihat Detail</button>
-                        <div class="float-right">
+                        <div class="text-right">
                             <button data-id="{{ $book_user->id }}" class="confirm-shipping btn btn-red">Konfirmasi Pengiriman</button>
                             <button class="cancel-confirm-payment btn-none tred-bold">Batalkan</button>
                         </div>
@@ -29,12 +29,7 @@
 </div>
 
 @empty
-<div class="white-content-0 py-3">
-    <div class="col-5 mx-auto mt-3">
-        <h4 class="hd-18 mb-4 text-center">Tidak ada unggahan foto bukti pembayaran</h4>
-        <img class="w-100" src="{{ asset('img/no-data.png') }}" alt="">
-    </div>
-</div>
+@include('book_user.status.empty-values', array('text' => 'Tidak ada orderan yang terkonfirmasi'))
 
 @endforelse
 

@@ -465,7 +465,7 @@ const singleMessage = (messageText) => {
     }, 2300);
 }
 
-// Modal Confirm
+// Modal Confirm - Jangan pakai arrow function
 const modalConfirm = (button, text, callback) => {
     $(button).attr('data-target', '#modal-confirm');
     $(button).attr('data-toggle', 'modal');
@@ -520,4 +520,48 @@ const modalConfirm = (button, text, callback) => {
         callback(false);
     });
 }
+// End Modal confirm
+
+// Modal zoom image - Click untuk menampilkan modal gambar yang lebih besar
+$('.zoom-modal-image').on('click', function() {
+    let windowWidth = $(window).width();
+
+    if (windowWidth >= 768) {
+        let html =
+        `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-image position-relative">
+                    <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="modal-body">
+                        <div class="w-75 mx-auto">
+                            <img id="image-modal-source" class="w-100">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        let modalLength = $('#imagemodal').length;
+
+
+        if (modalLength == 0) {
+            $(this).after(html)
+        }
+
+        $('#imagemodal').modal('show');
+
+        let clickedImageSource = $(this).attr('src');
+
+        $('#image-modal-source').attr('src', clickedImageSource);
+
+        $('.modal-close').on('click', () => {
+            setTimeout(() => {
+                $('#imagemodal').remove();
+            }, 200);
+        });
+    }
+});
+// End Modal zoom image
 

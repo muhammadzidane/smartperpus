@@ -16,49 +16,6 @@ function toggle(selectorTarget) {
 $(document).ready(function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    // Perbesar gambar
-    $('.zoom-modal-image').on('click', function() {
-        let windowWidth = $(window).width();
-
-        if (windowWidth >= 768) {
-            let html =
-            `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content modal-image position-relative">
-                        <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <div class="modal-body">
-                            <div class="w-75 mx-auto">
-                                <img id="image-modal-source" class="w-100">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-
-            let modalLength = $('#imagemodal').length;
-
-
-            if (modalLength == 0) {
-                $(this).after(html)
-            }
-
-            $('#imagemodal').modal('show');
-
-            let clickedImageSource = $(this).attr('src');
-
-            $('#image-modal-source').attr('src', clickedImageSource);
-
-            $('.modal-close').on('click', () => {
-                setTimeout(() => {
-                    $('#imagemodal').remove();
-                }, 200);
-            });
-            console.log(true);
-        }
-    });
-
     // Jika /search/books
     // Modul Search Books - First Load
     if (window.location.pathname == '/search/books') {
@@ -1447,12 +1404,12 @@ $(document).ready(function () {
         });
     });
 
-    // Konfirmasi pembayaran
+    // Confirmed payment - Konfirmasi pembayaran
     $('.confirm-payment').on('click', function() {
         let dataId = $(this).data('id');
-        let datas = {
-            _token: csrfToken,
-            _method: 'PATCH',
+        let datas  = {
+            _token       : csrfToken,
+            _method      : 'PATCH',
             paymentMethod: 'orderInProcess'
         }
 
@@ -1476,5 +1433,178 @@ $(document).ready(function () {
 
         singleMessage(messageText);
     });
+    // End confirmed payment
+
+    // Confirmed shipped - Konfirmasi pengiriman
+    $('.confirm-shipping').on('click', function () {
+        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman ?';
+        let dataId      = $(this).data('id');
+        let datas       = {
+            _token       : csrfToken,
+            _method      : 'PATCH',
+            paymentMethod: 'orderOnDelivery'
+        }
+
+        modalConfirm(this, confirmText, accepted => {
+            if (accepted) {
+                ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+                    let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
+
+                    singleMessage(messageText);
+                    $(this).parents('.uploaded-payment').remove();
+                    console.log(response);
+                });
+            } else {
+                console.log(false);
+            }
+        })
+    });
+
+    // Tracking packages - Lacak paket
+    $('.tracking-packages').on('click', function() {
+        let dataInvoice = $(this).data('invoice');
+
+        console.log(dataInvoice);
+        let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center pb-4">`;
+            spinnerHtml += `<div class="spin"></div>`;
+            spinnerHtml += `</div>`;
+        let modalLength  = $('#tracking-packages').length;
+        let datas        = {
+            waybill: '030200010250720',
+            courier: 'jne',
+            key    : 'ce496165f4a20bc07d96b6fe3ab41ded',
+        };
+
+        $(this).attr('data-target', '#tracking-packages');
+        $(this).attr('data-toggle', 'modal');
+
+        if (modalLength == 0) {
+            let html =
+            `<div class="modal fade" id="tracking-packages-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div id="tracking-packages-body" class="modal-body">
+                            <div id="tracking-modal-header" class="mb-4 d-flex justify-content-between">
+                                <h5 class="modal-title tred login-header">Lacak Paket</h5>
+                                <button id="tracking-modal-close" type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div id="tracking-modal-content">
+                                ${spinnerHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            $(this).after(html);
+            $('#tracking-packages-modal').modal('show');
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "https://pro.rajaongkir.com/api/waybill",
+            data: datas,
+            dataType: "JSON",
+            success: response => {
+                let trackingPackagesBody =
+                `<div class="mt-4 text-grey">
+                    <div class="d-flex justify-content-between">
+                        <div>Nomer Resi</div>
+                        <div id="tracking-resi"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Nama Penerima</div>
+                        <div id="tracking-receiver-name"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Status</div>
+                        <div id="tracking-status"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Kurir</div>
+                        <div id="tracking-courier-name"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Service</div>
+                        <div id="tracking-service"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Dikirim tanggal</div>
+                        <div id="tracking-date"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Dikirim oleh</div>
+                        <div id="tracking-shipper-name"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Dikirim menuju</div>
+                        <div id="tracking-destination"></div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h5>Manifes</h5>
+                    <div id="tracking-package-manifest" class="text-grey">
+                    </div>
+                </div>`;
+
+                let contentLength = $('#tracking-modal-content').children().length; // Default 1
+
+                if (contentLength == 1) {
+                    $('#tracking-spinner').remove();
+                    $('#tracking-modal-content').append(trackingPackagesBody);
+                }
+
+                let result              = response.rajaongkir.result;
+                let details             = result.details;
+                let manifestChildLength = $('#tracking-package-manifest').children().length;
+
+                const html = (date, description) => {
+                    let html =
+                    `<div class="d-flex justify-content-between">
+                        <div>${date}</div>
+                        <div class="text-right">${description}</div>
+                    </div>`;
+
+                    return html;
+                }
+
+                $('#tracking-resi').text(details.waybill_number);
+                $('#tracking-receiver-name').text(result.summary.receiver_name);
+                $('#tracking-status').text(result.summary.status);
+                $('#tracking-courier-name').text(result.summary.courier_name);
+                $('#tracking-service').text(result.summary.service_code);
+                $('#tracking-date').text(result.summary.waybill_date);
+                $('#tracking-shipper-name').text(result.summary.shipper_name);
+                $('#tracking-destination').text(result.summary.destination);
+
+                if (manifestChildLength == 0) {
+                    result.manifest.map(manifest => {
+                        let dateTime = `${manifest.manifest_date} ${manifest.manifest_time}`;
+
+                        $('#tracking-package-manifest').append(html(dateTime, manifest.manifest_description));
+                    });
+                }
+
+                console.log(response);
+            },
+        });
+
+        const removeModal = () => {
+            setTimeout(() => {
+                $('#tracking-packages-modal').remove();
+                $(this).removeAttr('data-target data-toggle');
+            }, 200);
+        };
+
+        $('.modal').on('keydown', event => {
+            if (event.key == 'Escape') {
+                removeModal();
+            }
+        });
+        $('#tracking-modal-close').on('click', () => removeModal());
+    });
+    // End Tracking packages - Lacak paket
     // End, Waiting for payment - menunggu pembayaran
 }); // End of onload Event

@@ -25,6 +25,10 @@
                 <div>Harga barang</div>
                 <div>{{ rupiah_format(App\Models\Book::find($book_user->book_id)->price) }}</div>
             </div>
+            <div class="d-flex justify-content-between mb-1">
+                <div>Berat barang</div>
+                <div>{{ App\Models\Book::find($book_user->book_id)->weight }}gram</div>
+            </div>
         </div>
     </div>
 </div>

@@ -6,9 +6,21 @@
         <div class="text-grey text-right tbold">{{ $book_user->invoice }}</div>
     </div>
 
-    @if ($book_user->payment_status == 'order_in_process')
+    @switch($book_user->payment_status)
+
+    @case('order_in_process')
     <div>Status: <span class="tred-bold">Terkonfirmasi</div>
-    @endif
+    @break
+
+    @case('being_shipped')
+    <div>Status: <span class="tred-bold">Sedang dikirim</div>
+    @break
+
+    @case('arrived')
+    <div>Status: <span class="tred-bold">Telah sampai</div>
+    @break
+
+    @endswitch
 
     <div class="d-flex justify-content-between">
         <div>Total pembelian</div>

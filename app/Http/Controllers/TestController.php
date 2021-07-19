@@ -22,8 +22,9 @@ class TestController extends Controller
 
     public function testPost(Request $request)
     {
-        $request->photo->store('public/test');
-        return response()->json(array('photo' => $request->photo));
+        // $request->photo->store('public/test');
+        // return response()->json(array('photo' => $request->photo));
+        dd(true);
     }
 
     public function pagination()

@@ -87,8 +87,9 @@
     </style>
 </head>
 
+
 <body>
-    <button class="modal-confirm-trigger-test">click me</button>
+    <button class="tracking-packages">click me</button>
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>

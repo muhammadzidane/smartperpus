@@ -1949,6 +1949,22 @@ footer {
     right: 0;
 }
 
+/* Lacak paket */
+.tracking-package-expeditions {
+    display: flex;
+}
+
+.tracking-package-expedition {
+    margin-right: 10px;
+    width: 120px;
+    height: 45px;
+    border: 2px solid #fff600;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Media Small */
 @media screen and (max-width: 564px)  {
     * {
