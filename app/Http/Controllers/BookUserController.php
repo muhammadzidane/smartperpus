@@ -79,6 +79,15 @@ class BookUserController extends Controller
                 $update = array(
                     'payment_status' => 'waiting_for_confirmation',
                     'confirmed_payment' => false,
+                );
+
+                $bookUser->update($update);
+
+                return response()->json()->status();
+                break;
+
+            case 'cancelUploadImage':
+                $update = array(
                     'upload_payment_image' => null,
                 );
 

@@ -1403,7 +1403,7 @@ $(document).ready(function () {
         });
     });
 
-    // Confirmed payment - Konfirmasi pembayaran
+    //#region  Confirmed payment - Konfirmasi pembayaran
     $('.confirm-payment').on('click', function() {
         let dataId = $(this).data('id');
         let datas  = {
@@ -1420,23 +1420,18 @@ $(document).ready(function () {
                     let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
 
                     singleMessage(messageText);
-                    $(this).parents('.uploaded-payment').remove();
+                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+
+                    addAndSubtractStatusNotification();
                 });
             }
         });
     });
+    //#endregion Confirmed payment - Konfirmasi pembayaran
 
-    // Batalkan pembayaran
-    $('.cancel-confirm-payment').on('click', function() {
-        let messageText = 'Berhasil membatalkan pembayaran';
-
-        singleMessage(messageText);
-    });
-    // End Confirmed payment
-
-    //#region Confirmed shipped - Konfirmasi pembayaran
+    //#region Confirmed shipped - Konfirmasi pengiriman
     $('.confirm-shipping').on('click', function () {
-        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman ?';
+        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman tersebut?';
         let dataId      = $(this).data('id');
         let datas       = {
             _token       : csrfToken,
@@ -1450,12 +1445,14 @@ $(document).ready(function () {
                     let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
 
                     singleMessage(messageText);
-                    $(this).parents('.uploaded-payment').remove();
+                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+
+                    addAndSubtractStatusNotification();
                 });
             }
         })
     });
-    //#endregion  Confirmed shipped
+    //#endregion Confirmed shipped - Konfirmasi pengiriman
 
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
@@ -1605,46 +1602,28 @@ $(document).ready(function () {
     });
     //#endregion Tracking packages - Lacak paket
 
-    const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMessage) => {
-        $(buttonSelector).on('click', function() {
-            let dataId      = $(this).data('id');
-            let confirmText = alertConfirmText;
-            let datas       = {
-                _token : csrfToken,
-                _method: 'PATCH',
-                status : status,
-            };
-
-            console.log(dataId);
-
-            modalConfirm(this, confirmText, (accepted) => {
-                if (accepted) {
-                    ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                        let messageText = successMessage;
-
-                        singleMessage(messageText);
-                        setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
-                    });
-                }
-            });
-        });
-    };
-
     //#region Cancel delivery - Batalkan pengiriman
     let cancelDelivery            = '.cancel-shipping-confirmation';
-    let cancelDeliveryConfirmText = 'Apakah anda yakin ingin membatalkan pengiriman ?';
+    let cancelDeliveryConfirmText = 'Apakah anda yakin ingin membatalkan pengiriman tersebut?';
 
     cancelStatusPayment(cancelDelivery, cancelDeliveryConfirmText, 'orderInProcess', 'Berhasil membatalkan pengiriman');
     //#endregion Cancel delivery
 
     //#region Cancel process confirmation - Batalkan proses konfirmasi
     let cancelProcessConfirmation            = '.cancel-process-confirmation';
-    let cancelProcessConfirmationConfirmText = 'Apakah anda yakin ingin membatalkan proses ?';
+    let cancelProcessConfirmationConfirmText = 'Apakah anda yakin ingin membatalkan proses tersebut?';
 
     cancelStatusPayment(cancelProcessConfirmation, cancelProcessConfirmationConfirmText,
         'cancelProcessConfirmation', 'Berhasil membatalkan proses');
     //#endregion Cancel process confirmation
 
+    //#region Cancel payment - Batalkan pembayaran
+    let cancelUploadImage            = '.cancel-upload-image';
+    let cancelUploadImageConfirmText = 'Apakah anda yakin ingin pembayaran tersebut?';
+
+    cancelStatusPayment(cancelUploadImage, cancelUploadImageConfirmText,
+        'cancelUploadImage', 'Berhasil membatalkan unggahan bukti pembayarn');
+    //#end region cancel payment
 
     // #endregion Waiting for payment - menunggu pembayaran
 }); // End of onload Event

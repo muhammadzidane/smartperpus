@@ -22,7 +22,7 @@
                                 <button class="see-billing-list btn-none p-0 mt-2 tred tred-bold" data-toggle="modal" data-id="{{ $book_user->id }}" data-target="#bill">Lihat Detail</button>
                                 <div class="text-right">
                                     <button data-id="{{ $book_user->id }}" class="confirm-payment btn btn-red">Konfirmasi pembayaran</button>
-                                    <button class="cancel-confirm-payment btn-none tred-bold">Batalkan</button>
+                                    <button class="cancel-upload-image btn-none tred-bold" data-id="{{ $book_user->id }}">Batalkan</button>
                                 </div>
                             </div>
                         </div>

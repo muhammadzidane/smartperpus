@@ -565,3 +565,69 @@ $('.zoom-modal-image').on('click', function() {
 });
 // End Modal zoom image
 
+//#region Add and subtract status notification - Menambah dan menghapus notifikasi status
+const addAndSubtractStatusNotification = () => {
+    let statusActive           = $('.active-acc');
+    let statusActiveNotification     = statusActive.find('.status-circle');
+    let statusActiveNotificationNext = statusActive.next().find('.status-circle');
+
+    if (parseInt(statusActiveNotification.text()) == 1) {
+        statusActiveNotification.remove();
+    } else {
+        statusActiveNotification.text(parseInt(statusActiveNotification.text()) - 1);
+    }
+
+    if (statusActiveNotificationNext.length == 0) {
+        let html = '<div class="status-circle">1</div>';
+
+        statusActive.next().append(html);
+    } else {
+        statusActiveNotificationNext.text(parseInt(statusActiveNotificationNext.text()) + 1);
+    }
+};
+//#endregion Add and subtract status notification - Menambah dan menghapus notifikasi status
+
+//#region Cancel status payment - Membatalkan status pembayaran
+const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMessage) => {
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $(buttonSelector).on('click', function() {
+        let dataId      = $(this).data('id');
+        let confirmText = alertConfirmText;
+        let datas       = {
+            _token : csrfToken,
+            _method: 'PATCH',
+            status : status,
+        };
+
+        modalConfirm(this, confirmText, (accepted) => {
+            if (accepted) {
+                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                    let messageText = successMessage;
+                    let statusActive           = $('.active-acc');
+                    let statusNotification     = statusActive.find('.status-circle');
+                    let statusNotificationPrev = statusActive.prev().find('.status-circle');
+
+                    singleMessage(messageText);
+                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+
+                    statusNotification.text(statusNotification.text() - 1);
+
+                    let html = `<div class="status-circle">1</div>`;
+
+                    if (statusNotificationPrev.length == 0) {
+                        statusActive.prev().append(html);
+                    } else {
+                        statusNotificationPrev.text(parseInt(statusNotificationPrev.text()) + 1);
+                    }
+
+                    if (statusNotification.text() == 0) {
+                        statusNotification.remove();
+                    }
+                });
+            }
+        });
+    });
+};
+//#endregion Cancel status payment - Membatalkan status pembayaran
+
