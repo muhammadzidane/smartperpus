@@ -1308,7 +1308,6 @@ $(document).ready(function () {
             } else if (uploadPaymentMessageLength == 1) {
                 $('#upload-payment-message').text(text);
             }
-            console.log(false);
         } else if (fileSizeInMB > 2) {
             let text = `File gambar tidak boleh lebih dari 2mb`;
             let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
@@ -1370,7 +1369,7 @@ $(document).ready(function () {
                 alert(errors);
             }
 
-        }, ['paymentMethod', 'uploadImage']);
+        }, ['status', 'uploadImage']);
     });
 
     $('.upload-payment-failed').on('click', function() {
@@ -1382,7 +1381,7 @@ $(document).ready(function () {
             let datas = {
                 _token: csrfToken,
                 _method: 'PATCH',
-                paymentMethod: 'failed',
+                status: 'failed',
             };
 
             ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
@@ -1410,7 +1409,7 @@ $(document).ready(function () {
         let datas  = {
             _token       : csrfToken,
             _method      : 'PATCH',
-            paymentMethod: 'orderInProcess'
+            status: 'orderInProcess'
         }
 
         let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
@@ -1433,16 +1432,16 @@ $(document).ready(function () {
 
         singleMessage(messageText);
     });
-    // End confirmed payment
+    // End Confirmed payment
 
-    // Confirmed shipped - Konfirmasi pengiriman
+    //#region Confirmed shipped - Konfirmasi pembayaran
     $('.confirm-shipping').on('click', function () {
         let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman ?';
         let dataId      = $(this).data('id');
         let datas       = {
             _token       : csrfToken,
             _method      : 'PATCH',
-            paymentMethod: 'orderOnDelivery'
+            status: 'orderOnDelivery'
         }
 
         modalConfirm(this, confirmText, accepted => {
@@ -1452,17 +1451,15 @@ $(document).ready(function () {
 
                     singleMessage(messageText);
                     $(this).parents('.uploaded-payment').remove();
-                    console.log(response);
                 });
-            } else {
-                console.log(false);
             }
         })
     });
+    //#endregion  Confirmed shipped
 
-    // Tracking packages - Lacak paket
+    // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
-        let dataInvoice = $(this).data('invoice');
+        let dataInvoice = $(this).data('invoice').toString();
 
         console.log(dataInvoice);
         let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center pb-4">`;
@@ -1586,9 +1583,10 @@ $(document).ready(function () {
                         $('#tracking-package-manifest').append(html(dateTime, manifest.manifest_description));
                     });
                 }
-
-                console.log(response);
             },
+            error: errors => {
+                console.log(errors.responseJSON.rajaongkir.status.description);
+            }
         });
 
         const removeModal = () => {
@@ -1605,6 +1603,48 @@ $(document).ready(function () {
         });
         $('#tracking-modal-close').on('click', () => removeModal());
     });
-    // End Tracking packages - Lacak paket
-    // End, Waiting for payment - menunggu pembayaran
+    //#endregion Tracking packages - Lacak paket
+
+    const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMessage) => {
+        $(buttonSelector).on('click', function() {
+            let dataId      = $(this).data('id');
+            let confirmText = alertConfirmText;
+            let datas       = {
+                _token : csrfToken,
+                _method: 'PATCH',
+                status : status,
+            };
+
+            console.log(dataId);
+
+            modalConfirm(this, confirmText, (accepted) => {
+                if (accepted) {
+                    ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                        let messageText = successMessage;
+
+                        singleMessage(messageText);
+                        setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+                    });
+                }
+            });
+        });
+    };
+
+    //#region Cancel delivery - Batalkan pengiriman
+    let cancelDelivery            = '.cancel-shipping-confirmation';
+    let cancelDeliveryConfirmText = 'Apakah anda yakin ingin membatalkan pengiriman ?';
+
+    cancelStatusPayment(cancelDelivery, cancelDeliveryConfirmText, 'orderInProcess', 'Berhasil membatalkan pengiriman');
+    //#endregion Cancel delivery
+
+    //#region Cancel process confirmation - Batalkan proses konfirmasi
+    let cancelProcessConfirmation            = '.cancel-process-confirmation';
+    let cancelProcessConfirmationConfirmText = 'Apakah anda yakin ingin membatalkan proses ?';
+
+    cancelStatusPayment(cancelProcessConfirmation, cancelProcessConfirmationConfirmText,
+        'cancelProcessConfirmation', 'Berhasil membatalkan proses');
+    //#endregion Cancel process confirmation
+
+
+    // #endregion Waiting for payment - menunggu pembayaran
 }); // End of onload Event

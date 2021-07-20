@@ -309,14 +309,4 @@ class BookController extends Controller
     {
         return view('auth.register');
     }
-
-    // Menunggu Pembayaran
-    public function waitingForPayments()
-    {
-        $user      = User::find(Auth::id());
-        $book_users = BookUser::where('user_id', $user->id)->get();
-
-        // dump($book_users);
-        return view('user.waiting-for-payments', compact('user', 'book_users'));
-    }
 }

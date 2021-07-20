@@ -1,5 +1,5 @@
-<div class="col-md-3">
-    <div class="white-content borbot-gray-bold">
+<div class="col-md-3 mb-4">
+    <div class="white-content borbot-gray-bold {{ $margin_zero ?? '' }}">
         <div class="borbot-gray-0 pb-3">
             <div class="mt-1">
                 <h4 class="hd-16">Status</h4>
@@ -7,27 +7,86 @@
                 @can('viewAny', 'App\\Models\User')
                 <div class="text-grey">
                     <div class="{{ $waiting_for_payment ?? '' }}">
-                        <div class="d-flex w-maxc position-relative">
-                            <a class="text-decoration-none text-grey" href="{{ route('uploaded.payments') }}">Upload-an bukti pembayaran</a>
-                        </div>
+                        <a class="text-decoration-none text-grey" href="{{ route('uploaded.payments') }}">Unggahan bukti pembayaran</a>
+                        @if (App\Models\BookUser::get()
+                        ->where('payment_status', 'waiting_for_confirmation')
+                        ->where('upload_payment_image', '!=' , null)->count() != 0
+                        )
+                        <span class="status-circle">
+                            {{ App\Models\BookUser::get()
+                                ->where('payment_status', 'waiting_for_confirmation')
+                                ->where('upload_payment_image', '!=' , null)->count()
+                            }}
+                        </span>
+                        @endif
                     </div>
-                    <div class="{{ $on_process ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Sedang diproses</a>
+                    <div class="position-relative {{ $on_process ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('confirmed.orders') }}">Sedang diproses</a>
+                        @if (App\Models\BookUser::get()
+                        ->where('upload_payment_image', '!=' , null)
+                        ->where('payment_status', 'order_in_process')
+                        ->count() != 0
+                        )
+                        <span class="status-circle">
+                            {{
+                                App\Models\BookUser::get()->where('upload_payment_image', '!=' , null)
+                                ->where('upload_payment_image', '!=' , null)
+                                ->where('payment_status', 'order_in_process')
+                                ->count()
+                            }}
+                        </span>
+                        @endif
                     </div>
-                    <div class="{{ $on_delivery ?? '' }}">
+                    <div class="position-relative {{ $on_delivery ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Sedang dikirim</a>
+                        @if (App\Models\BookUser::get()
+                        ->where('upload_payment_image', '!=' , null)
+                        ->where('payment_status', 'being_shipped')
+                        ->count() != 0
+                        )
+                        <span class="status-circle">
+                            {{
+                                App\Models\BookUser::get()->where('upload_payment_image', '!=' , null)
+                                ->where('upload_payment_image', '!=' , null)
+                                ->where('payment_status', 'being_shipped')
+                                ->count()
+                            }}
+                        </span>
+                        @endif
                     </div>
-                    <div class="{{ $arrived ?? '' }}">
+                    <div class="position-relative {{ $arrived ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Telah sampai</a>
+                        @if (App\Models\BookUser::get()
+                        ->where('upload_payment_image', '!=' , null)
+                        ->where('payment_status', 'arrived')
+                        ->count() != 0
+                        )
+                        <span class="status-circle">
+                            {{ App\Models\BookUser::get()->where('upload_payment_image', '!=' , null)
+                                ->where('upload_payment_image', '!=' , null)
+                                ->where('payment_status', 'arrived')
+                                ->count()
+                            }}
+                        </span>
+                        @endif
                     </div>
                 </div>
 
                 @else
                 <div class="text-grey">
                     <div class="{{ $waiting_for_payment ?? '' }}">
-                        <div class="d-flex w-maxc position-relative">
-                            <a class="text-decoration-none text-grey" href=#">Menunggu pembayaran</a>
-                        </div>
+                        <a class="text-decoration-none text-grey" href="{{ route('waiting.for.payment') }}">Menunggu pembayaran</a>
+                        @if (App\Models\BookUser::get()
+                        ->where('payment_status', 'waiting_for_confirmation')
+                        ->where('upload_payment_image', '!=' , null)->count() != 0
+                        )
+                        <span class="status-circle">
+                            {{ App\Models\BookUser::get()
+                                ->where('payment_status', 'waiting_for_confirmation')
+                                ->where('upload_payment_image', '!=' , null)->count()
+                            }}
+                        </span>
+                        @endif
                     </div>
                     <div class="{{ $on_process ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Sedang diproses</a>

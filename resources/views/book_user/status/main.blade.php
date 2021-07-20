@@ -44,7 +44,7 @@
     </div>
     <div class="d-flex justify-content-between">
         <div>Ongkos kirim</div>
-        <div class="text-grey text-right">{{ $book_user->shipping_cost }}</div>
+        <div class="text-grey text-right">{{ rupiah_format($book_user->shipping_cost) }}</div>
     </div>
     <div class="d-flex justify-content-between">
         <div>Metode pembayaran</div>

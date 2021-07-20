@@ -1,16 +1,13 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="row mt-md-4">
-    <div class="col-lg-9">
-        <div class="white-content-0 borbot-gray-bold">
-            <div class="white-content-header-2 flex-column">
-                <h4 class="hd-14 m-0">Menungggu Pembayaran <span class="tred">({{ $book_users->count() }})</span></h4>
-            </div>
-        </div>
+<h4>Status Pembayaran</h4>
 
-        @foreach ($book_users->where('payment_status', 'waiting_for_confirmation')->sortByDesc('created_at') as $book_user)
-        <div class="upload-payment-value white-content-0 mt-c">
+<div class="row flex-row-reverse mt-4">
+    @include('book_user.status.sidebar', array('margin_zero' => 'm-0'))
+    <div class="col-md-9">
+        @foreach ($book_users as $book_user)
+        <div class="upload-payment-value white-content-0">
             <div class="p-15 borbot-gray-bold">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -34,7 +31,7 @@
                                 <div class="d-flex justify-content-between">
                                     <div class="text-righteous">
                                         <span>Total Belanja </span>
-                                        <span class="tred-bold">(1)</span>
+                                        <span class="tred-bold">({{ $book_user->amount }})</span>
                                     </div>
                                     <div>
                                         <span>Bayar sebelum - </span>
@@ -80,12 +77,6 @@
         )
         )
     </div>
-    @include('user.purchases-and-inboxes',
-    array(
-    'waiting_for_confirmations' => 'active-acc',
-    'waiting_for_confirmations_count' => $book_users->count(),
-    )
-    )
 </div>
 
 @endsection

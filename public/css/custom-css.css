@@ -1949,6 +1949,19 @@ footer {
     right: 0;
 }
 
+/* Status - Side bar */
+.status-circle {
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 10px;
+    float: right;
+    background-color: #ee6f57;
+    color: #fffdf6;
+    text-align: center;
+    border-radius: 100%;
+}
+
 /* Lacak paket */
 .tracking-package-expeditions {
     display: flex;

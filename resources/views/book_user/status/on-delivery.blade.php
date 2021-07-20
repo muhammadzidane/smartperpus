@@ -25,7 +25,7 @@
                                 </div>
                                 <div class="text-right">
                                     <button data-id="{{ $book_user->id }}" class="confirm-payment btn btn-red">Konfirmasi pengiriman</button>
-                                    <button class="cancel-confirm-payment btn-none tred-bold">Batalkan</button>
+                                    <button class="cancel-shipping-confirmation btn-none tred-bold" data-id="{{ $book_user->id }}">Batalkan</button>
                                 </div>
                             </div>
                         </div>
@@ -35,7 +35,7 @@
         </div>
 
         @empty
-        @include('book_user.status.empty-values', array('text' => 'Tidak ada orderan yang sedang dikirim'))
+        @include('book_user.status.empty-values', array('text' => 'Tidak ada pesanan yang sedang dikirim'))
 
         @endforelse
     </div>

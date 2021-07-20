@@ -21,13 +21,14 @@ class BookUserController extends Controller
 
     public function update(Request $request, BookUser $bookUser)
     {
-        switch ($request->paymentMethod) {
+        switch ($request->status) {
             case 'failed':
                 $update = array('payment_status' => 'failed');
                 $bookUser->update($update);
 
                 return response()->json()->status();
                 break;
+
             case 'uploadImage':
                 $validation_rules = array(
                     'upload_payment' => array('required', 'mimes:jpg,png,jpeg', 'max:2000')
@@ -55,6 +56,7 @@ class BookUserController extends Controller
                     return response()->json(compact('success'));
                 }
                 break;
+
             case 'orderInProcess':
                 $update = array(
                     'payment_status' => 'order_in_process',
@@ -64,8 +66,21 @@ class BookUserController extends Controller
                 $bookUser->update($update);
                 return response()->json()->status();
                 break;
+
             case 'orderOnDelivery':
                 $update = array('payment_status' => 'being_shipped');
+
+                $bookUser->update($update);
+
+                return response()->json()->status();
+                break;
+
+            case 'cancelProcessConfirmation':
+                $update = array(
+                    'payment_status' => 'waiting_for_confirmation',
+                    'confirmed_payment' => false,
+                    'upload_payment_image' => null,
+                );
 
                 $bookUser->update($update);
 
@@ -76,7 +91,9 @@ class BookUserController extends Controller
 
     public function uploadedPayments()
     {
-        return view('book_user.status.upload-payment');
+        $book_users = BookUser::where('upload_payment_image', '!=', null)
+            ->where('payment_status', 'waiting_for_confirmation')->get();
+        return view('book_user.status.upload-payment', compact('book_users'));
     }
 
     public function confirmedOrders()
@@ -92,10 +109,18 @@ class BookUserController extends Controller
     {
         $auth_id = Auth::id();
 
-        $book_users = BookUser::where('upload_payment_image', '!=', null)
-            ->where('user_id', $auth_id)
-            ->where('payment_status', 'being_shipped')
-            ->get();
+        if (Auth::user()->role != "guest") {
+            // Ambil semua data
+            $book_users = BookUser::where('upload_payment_image', '!=', null)
+                ->where('payment_status', 'being_shipped')
+                ->get();
+        } else {
+            $book_users = BookUser::where('upload_payment_image', '!=', null)
+                ->where('user_id', $auth_id)
+                ->where('payment_status', 'being_shipped')
+                ->get();
+        }
+
         return view('book_user.status.on-delivery', compact('book_users'));
     }
 

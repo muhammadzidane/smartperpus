@@ -475,7 +475,7 @@ const modalConfirm = (button, text, callback) => {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-confirm-content">
                 <div class="modal-confirm-body">
-                    <div>${text}</div>
+                    <div class="text-left">${text}</div>
                     <div class="modal-confirm-close"><i class="fa fa-times"></i></div>
                 </div>
                 <div class="modal-confirm-buttons">

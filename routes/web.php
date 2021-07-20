@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     UserController,
     ProvinceController,
     UserChatController,
+    StatusController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -62,7 +63,6 @@ Route::prefix('/books')->group(function () {
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::get('wishlist/', array(BookController::class, 'wishlist'));
-    Route::get('/waiting-for-payments', array(BookController::class, 'waitingForPayments'))->name('waiting.for.payment')->middleware('auth');
 });
 Route::resource('/books', BookController::class);
 
@@ -78,12 +78,16 @@ Route::prefix('book-users/status')->middleware('auth')->group(function () {
         ->name('uploaded.payments');
     Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))
         ->name('confirmed.orders');
-
     Route::get('on-delivery', array(BookUserController::class, 'onDelivery'))->name('on.delivery');
 
     // Lacak paket
     Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));
 });
+
+Route::prefix('status')->middleware('auth')->group(function () {
+    Route::get('/waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('waiting.for.payment');
+});
+
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
 Route::resource('/book-users', BookUserController::class);
 
