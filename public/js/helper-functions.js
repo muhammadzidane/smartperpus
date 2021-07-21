@@ -479,8 +479,8 @@ const modalConfirm = (button, text, callback) => {
                     <div class="modal-confirm-close"><i class="fa fa-times"></i></div>
                 </div>
                 <div class="modal-confirm-buttons">
-                    <button class="modal-confirm-accept">Ya</button>
-                    <button class="modal-confirm-cancel">Tidak</button>
+                    <button class="modal-confirm-accept" type="button">Ya</button>
+                    <button class="modal-confirm-cancel" type="button">Tidak</button>
                 </div>
             </div>
         </div>
@@ -631,3 +631,99 @@ const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMe
 };
 //#endregion Cancel status payment - Membatalkan status pembayaran
 
+//#region Validator - Validasi otomatis menambah message di element input next
+const validator = (validations, success) => {
+    let validationFails = [];
+
+    for (const key in validations) {
+        if (validations.hasOwnProperty.call(validations, key)) {
+            const validation = validations[key];
+
+            let inputForm = validation.input;
+            let inputName = validation.inputName;
+            let rules     = validation.rules;
+
+            let inputValue      = $(inputForm).val();
+            let splitRules      = rules.split(',');
+            splitRules.map(rule => {
+                if (rule == 'required') {
+                    let message = `${inputName} tidak boleh kosong`;
+
+                    if (inputValue == '' || inputValue == 0) {
+                        validationFails.push(message);
+                    } else {
+                        let array = validationFails;
+                        let item = message;
+
+                        let index = array.indexOf(item);
+                        array.splice(index, 1);
+                    }
+                }
+
+                let maxRegex = new RegExp('max:[0-9]');
+
+                if (maxRegex.test(rule)) {
+                    let maxRegexInput = maxRegex.exec(rule).input;
+                    let maxRegexSplit = maxRegexInput.split(':');
+                    let max           = maxRegexSplit[1];
+
+                    let message = `${inputName} Tidak boleh lebih dari ${max}`;
+
+                    if (inputValue.length > max) {
+                        validationFails.push(message);
+                    }
+                }
+
+                let minRegex = new RegExp('min:[0-9]');
+
+                if (minRegex.test(rule)) {
+                    let minRegexInput = minRegex.exec(rule).input;
+                    let minRegexSplit = minRegexInput.split(':');
+                    let min           = minRegexSplit[1];
+
+                    let message = `${inputName} Tidak boleh kurang dari ${min}`;
+
+                    if (inputValue.length < min && inputValue != '' && inputValue != 0) {
+                        console.log(true);
+                        validationFails.push(message);
+                    }
+                }
+
+                if (rule == 'numeric') {
+                    let numberOnlyRegex = /^\d+$/;
+                        numberOnlyRegex = numberOnlyRegex.test(inputValue);
+                    let message         = `${inputName} harus berupa numerik`;
+
+                    if (!numberOnlyRegex && inputValue != '' && inputValue != 0) {
+                        validationFails.push(message);
+                    }
+                }
+            });
+
+            let inputNext = $(inputForm).next('.tred-bold');
+            let checkValidations = validationFails.every(validation => validation == []);
+
+            console.log(validationFails);
+
+            if (!checkValidations) {
+                let html = `<div class="tred-bold"><small>${validationFails.slice(-1).pop()}</small></div>`;
+
+                if (inputNext.length == 0) {
+                    $(inputForm).after(html);
+                } else {
+                    $(inputForm).next().find('small').text(validationFails.slice(-1).pop());
+                }
+
+            } else {
+                inputNext.remove();
+            }
+        }
+    }
+
+    let checkValidations = validationFails.every(validationFail => validationFail == []);
+
+    checkValidations ? success(true) : success(false);
+
+}
+
+//#endregion Validator

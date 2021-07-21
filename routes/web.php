@@ -63,6 +63,7 @@ Route::prefix('/books')->group(function () {
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::get('wishlist/', array(BookController::class, 'wishlist'));
+    Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth', 'auth.admin.only');
 });
 Route::resource('/books', BookController::class);
 

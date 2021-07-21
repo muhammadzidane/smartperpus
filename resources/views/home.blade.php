@@ -1,21 +1,19 @@
 @extends('layouts/app')
 
 @section('carousel')
-    @include('layouts/carousel')
+@include('layouts/carousel')
 @endsection
 
 
 @section('content')
 
 @if (session('pesan'))
-    <div class="alert alert-primary" role="alert">
-        <strong>{{ session('pesan') }}</strong>
-    </div>
+<div class="alert alert-primary" role="alert">
+    <strong>{{ session('pesan') }}</strong>
+</div>
 @endif
 
 <div class="kategori-pilihan px-3">
-
-
     <h3 class="text-righteous p-2">Kategori Pilihan</h3>
 
     <div class="text-righteous overflow-auto">
@@ -39,16 +37,16 @@
 </div>
 
 @include('layouts.book-deals',
-    array(
-        'title' => 'Buku Diskon',
-        'books' => \App\Models\Book::where('discount', '!=', null)->get()
-    )
+array(
+'title' => 'Buku Diskon',
+'books' => \App\Models\Book::where('discount', '!=', null)->get()
+)
 )
 
 @include('layouts.book-deals',
-    array(
-        'title' => 'Rekomendasi Komik / Manga',
-        'books' => \App\Models\Category::where('name', 'komik')->first()->books
-    )
+array(
+'title' => 'Rekomendasi Komik / Manga',
+'books' => \App\Models\Category::where('name', 'komik')->first()->books
+)
 )
 @endsection

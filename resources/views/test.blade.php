@@ -89,7 +89,7 @@
 
 
 <body>
-    <button class="tracking-packages">click me</button>
+    <button id="click-me" data-target="#click-me-modal" data-toggle="modal">click me</button>
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>

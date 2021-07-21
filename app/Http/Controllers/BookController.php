@@ -309,4 +309,9 @@ class BookController extends Controller
     {
         return view('auth.register');
     }
+
+    public function addStock(Book $book)
+    {
+        return response()->json(array('test' => $book));
+    }
 }

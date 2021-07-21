@@ -28,16 +28,17 @@
             </div>
         </div>
     </div>
-    <div class="book-show-sinopsis">
+    <div id="book-show" data-id="{{ $book->id }}" class="book-show-sinopsis">
         <div class="white-content">
             @can('view', $book)
             <div class="d-flex justify-content-end">
+                <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn-none tred-bold">Tambah Stok</button>
                 <div class="mr-2">
                     <a href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
                 </div>
                 <div>
-                    <form action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
-                        <button id="book-show-delete" type="button" class="btn btn-danger">Delete</button>
+                    <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
+                        <button id="book-delete-modal" type="submit" class="btn btn-danger">Hapus</button>
                         @method('DELETE')
                         @csrf
                     </form>

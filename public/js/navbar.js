@@ -978,10 +978,85 @@ $(document).ready(function () {
     // End Chat
 
     // Book Show
-    $('#book-show-delete').on('click', function (e) {
+    $('#book-delete-modal').on('click', function(e) {
         e.preventDefault();
-        confirm('Apakah anda yakin ingin menghapus semua data pada buku ini ?') ? $(this).parent().trigger('submit') : console.log(false);
+        let confirmText = 'Apakah anda yakin ingin menghapus semua data pada buku ini ?';
+
+        modalConfirm(this, confirmText, (accepted) => {
+            if (accepted) {
+                $(this).parent().trigger('submit');
+            }
+        });
     });
+
+    //#region Book add stock - Tambah stok buku
+    $('#book-add-stock').on('click', function() {
+        let html =
+        `<div class="modal fade" id="book-add-stock-modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered p-5" role="document">
+                <div class="modal-content modal-content-login">
+                    <div class="px-3 mb-4 d-flex justify-content-between">
+                        <h5 class="modal-title tred login-header">Tambah Stok</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body pb-0">
+                        <form id="book-add-stock-form" method="post">
+                            <input id="book-add-stock-input" class="form-control-custom" type="text" name="stock" placeholder="Jumlah">
+                            <input id="book-add-stock-input-2" class="form-control-custom" type="text" name="stock-2" placeholder="Jumlah">
+                            <div class="text-right mt-4">
+                                <button class="btn-none tred-bold" data-dismiss="modal" aria-label="Close">Batal</button>
+                                <button class="btn btn-red">Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+        let modalLength = $('#book-add-stock-modal').length;
+
+        if (modalLength == 0) {
+            $(this).after(html);
+        }
+
+        $('#book-add-stock-form').on('submit', function(event) {
+            event.preventDefault();
+
+
+            let validations = [
+                {
+                    input: '#book-add-stock-input',
+                    inputName: 'Jumlah',
+                    rules: 'numeric,max:12',
+                },
+                {
+                    input: '#book-add-stock-input-2',
+                    inputName: 'Jumlah 2',
+                    rules: 'required,numeric,max:5',
+                }
+            ];
+
+            validator(validations, success => {
+                if (success) {
+                    console.log('success');
+
+                    // let datas  = {
+                    //     _token: csrfToken,
+                    //     _method: 'PATCH',
+                    // };
+                    // let dataId = $('#book-show').data('id');
+
+                    // ajaxJson('POST', `/books/${dataId}/add-stock`, datas, response => {
+                    //     console.log(response);
+                    // });
+                };
+            });
+
+        });
+    });
+    //#endregion Book add stock - Tambah stok buku
 
     // User Index - Daftar karyawan
     $('.user-block').on('click', function (e) {
@@ -1441,14 +1516,15 @@ $(document).ready(function () {
 
         modalConfirm(this, confirmText, accepted => {
             if (accepted) {
-                ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
-                    let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
+                console.log(true);
+                // ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
+                //     let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
 
-                    singleMessage(messageText);
-                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+                //     singleMessage(messageText);
+                //     setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
 
-                    addAndSubtractStatusNotification();
-                });
+                //     addAndSubtractStatusNotification();
+                // });
             }
         })
     });
@@ -1619,7 +1695,7 @@ $(document).ready(function () {
 
     //#region Cancel payment - Batalkan pembayaran
     let cancelUploadImage            = '.cancel-upload-image';
-    let cancelUploadImageConfirmText = 'Apakah anda yakin ingin pembayaran tersebut?';
+    let cancelUploadImageConfirmText = 'Apakah anda yakin ingin membatalkan pembayaran tersebut?';
 
     cancelStatusPayment(cancelUploadImage, cancelUploadImageConfirmText,
         'cancelUploadImage', 'Berhasil membatalkan unggahan bukti pembayarn');

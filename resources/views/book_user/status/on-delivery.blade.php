@@ -24,7 +24,7 @@
                                     <button class="tracking-packages btn-none p-0 mt-2 tred tred-bold ml-md-2" data-invoice="{{ $book_user->invoice }}">Lacak Paket</button>
                                 </div>
                                 <div class="text-right">
-                                    <button data-id="{{ $book_user->id }}" class="confirm-payment btn btn-red">Konfirmasi pengiriman</button>
+                                    <button data-id="{{ $book_user->id }}" class="confirm-shipping btn btn-red">Konfirmasi pengiriman</button>
                                     <button class="cancel-shipping-confirmation btn-none tred-bold" data-id="{{ $book_user->id }}">Batalkan</button>
                                 </div>
                             </div>
