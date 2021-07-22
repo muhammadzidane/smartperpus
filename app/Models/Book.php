@@ -13,24 +13,24 @@ class Book extends Model
     protected $guarded = array();
 
     // Relasi antar tabel
-    public function author() {
+    public function author()
+    {
         return $this->belongsTo('App\Models\Author');
     }
 
-    public function users() {
+    public function users()
+    {
         return $this->belongsToMany('App\Models\User')->withTimestamps();
     }
 
-    public function categories() {
+    public function categories()
+    {
         return $this->belongsToMany('App\Models\Category')->withTimestamps();
     }
 
-    public function synopsis() {
+    public function synopsis()
+    {
         return $this->hasOne('App\Models\Synopsis');
-    }
-
-    public function printedStock() {
-        return $this->hasOne('App\Models\PrintedBookStock');
     }
 
     // Accessors
@@ -38,16 +38,19 @@ class Book extends Model
     //     return 'Rp' . number_format($value, null, null, '.');
     // }
 
-    public function getReleaseDateAttribute($value) {
+    public function getReleaseDateAttribute($value)
+    {
         return Carbon::create($value)->isoFormat('D MMMM YYYY');
     }
 
     // Mutators
-    public function setNameAttribute($value) {
+    public function setNameAttribute($value)
+    {
         $this->attributes['name'] = ucwords($value);
     }
 
-    public function setImageAttribute($value) {
+    public function setImageAttribute($value)
+    {
         $this->attributes['image'] = strtolower($value);
     }
 }

@@ -16,6 +16,7 @@ class CreateBooksTable extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->char('isbn', 13)->unique();
+            $table->integer('printed_book_stock');
             $table->string('name')->unique();
             $table->integer('price');
             $table->string('image');

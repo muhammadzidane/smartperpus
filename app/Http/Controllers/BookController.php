@@ -310,8 +310,27 @@ class BookController extends Controller
         return view('auth.register');
     }
 
-    public function addStock(Book $book)
+    public function addStock(Request $request, Book $book)
     {
-        return response()->json(array('test' => $book));
+        $rules = array(
+            'stock' => array('required', 'numeric'),
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+
+            return response()->json(compact('errors'));
+        } else {
+            $stock  = $book->printed_book_stock + $request->stock;
+            $update = array('printed_book_stock' => $stock);
+
+            $book->update($update);
+
+            $stock  = $request->stock;
+
+            return response()->json(compact('stock'));
+        }
     }
 }

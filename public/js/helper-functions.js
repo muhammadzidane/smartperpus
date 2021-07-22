@@ -219,7 +219,16 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
     let formData    = new FormData(form);
 
     if (formDataAppend !== '') {
-        formData.append(formDataAppend[0], formDataAppend[1]);
+        formDataAppend.map(data => {
+            for (const key in data) {
+                if (data.hasOwnProperty.call(data, key)) {
+                    const element = data[key];
+
+                    formData.append(key, element);
+                }
+            }
+        });
+
     }
 
     $.ajax({

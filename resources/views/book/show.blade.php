@@ -119,7 +119,7 @@
             </div>
             <div class="book-payment">
                 <div class="d-flex justify-content-between">
-                    <h5 class="mb-3">Stok Buku Cetak : <span class="tred-bold">{{ $book->printedStock->amount }}</span></h5>
+                    <h5 class="mb-3">Stok Buku Cetak : <span id="book-stock" class="tred-bold">{{ $book->printed_book_stock }}</span></h5>
                     <div class="info-book">
                         <div>
                             <i class="info-book-tooltips fas fa-info-circle"></i>

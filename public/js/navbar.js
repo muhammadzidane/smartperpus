@@ -781,13 +781,19 @@ $(document).ready(function () {
         let inputValue       = $('.type-message-input').val()
         let imageValueOrText = $('.type-message-input').val() == '' ? 'Mengirim gambar...' : $('.type-message-input').val();
         let userClickedId    = $('.user-chat-active').length;
+        let userChatActiveId = $('.user-chat-active').data('id');
+        let datas            = [
+            {
+                userId: userChatActiveId,
+            }
+        ];
 
         if (inputValue != '' && userClickedId != 0 || photoValue != "") {
             ajaxForm('POST', '#admin-chats-store-form', '/user-chats', response => {
                 responseChats(response);
                 $('.user-chat-active').children().last().find('span').text(imageValueOrText);
                 $('.user-chats-text').text(imageValueOrText);
-            }, ['userId', $('.user-chat-active').data('id')]);
+            }, datas);
         }
     });
 
@@ -1003,8 +1009,8 @@ $(document).ready(function () {
                     </div>
                     <div class="modal-body pb-0">
                         <form id="book-add-stock-form" method="post">
-                            <input id="book-add-stock-input" class="form-control-custom" type="text" name="stock" placeholder="Jumlah">
-                            <input id="book-add-stock-input-2" class="form-control-custom" type="text" name="stock-2" placeholder="Jumlah">
+                            <input id="book-add-stock-input" class="form-control-custom"
+                            type="number" name="stock" min="1" placeholder="Jumlah" autocomplete="off">
                             <div class="text-right mt-4">
                                 <button class="btn-none tred-bold" data-dismiss="modal" aria-label="Close">Batal</button>
                                 <button class="btn btn-red">Tambah</button>
@@ -1029,28 +1035,37 @@ $(document).ready(function () {
                 {
                     input: '#book-add-stock-input',
                     inputName: 'Jumlah',
-                    rules: 'numeric,max:12',
+                    rules: 'required,numeric',
                 },
-                {
-                    input: '#book-add-stock-input-2',
-                    inputName: 'Jumlah 2',
-                    rules: 'required,numeric,max:5',
-                }
             ];
 
             validator(validations, success => {
                 if (success) {
-                    console.log('success');
 
-                    // let datas  = {
-                    //     _token: csrfToken,
-                    //     _method: 'PATCH',
-                    // };
-                    // let dataId = $('#book-show').data('id');
+                    let datas = [{
+                        _token: csrfToken,
+                        _method: 'PATCH',
+                    }];
+                    let dataId = $('#book-show').data('id');
 
-                    // ajaxJson('POST', `/books/${dataId}/add-stock`, datas, response => {
-                    //     console.log(response);
-                    // });
+                    ajaxForm('POST', '#book-add-stock-form', `/books/${dataId}/add-stock`, response => {
+                        if (response.errors) {
+                            let errors = response.errors.stock;
+
+                            alert(errors);
+                        } else {
+                            $('.close').trigger('click');
+                            $("#book-add-stock-form")[0].reset();
+
+                            let messageText     = `Berhasil menambah ${response.stock} stock buku`;
+                            let stockBookText   = $('#book-stock').text();
+                            stockBookText       = parseInt(stockBookText) + parseInt(response.stock);
+                            console.log(stockBookText);
+
+                            singleMessage(messageText);
+                            $('#book-stock').text(stockBookText);
+                        }
+                    }, datas);
                 };
             });
 
@@ -1430,6 +1445,11 @@ $(document).ready(function () {
         event.preventDefault();
 
         let dataId = $('#upload-payment-button').data('id');
+        let datas  = [
+            {
+                status: 'uploadImage'
+            }
+        ]
 
         ajaxForm('POST', this, `/book-users/${dataId}`, function (response) {
             if (response.success) {
@@ -1444,7 +1464,7 @@ $(document).ready(function () {
                 alert(errors);
             }
 
-        }, ['status', 'uploadImage']);
+        }, datas);
     });
 
     $('.upload-payment-failed').on('click', function() {
