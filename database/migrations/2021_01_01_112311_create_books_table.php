@@ -16,13 +16,14 @@ class CreateBooksTable extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->char('isbn', 13)->unique();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->integer('printed_book_stock');
             $table->string('name')->unique();
             $table->integer('price');
             $table->string('image');
             $table->foreignId('author_id')->constrained()->onDelete('cascade')->unique();
             $table->float('rating', 2, 1);
-            $table->integer('discount')->nullable();
+            $table->integer('discount')->default(0);
             $table->boolean('ebook');
             $table->string('pages');
             $table->date('release_date');

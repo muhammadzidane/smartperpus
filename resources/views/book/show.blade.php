@@ -46,6 +46,7 @@
             </div>
             @endcan
             <h5>{{ $book->name }}</h5>
+            <div class="tbold">{{ $book->category->name }}</div>
             <div class="my-1 d-flex">
                 <div>
                     <div>
@@ -231,8 +232,6 @@
 @endfor
 </div>
 
-
-
 <div class="mt-c">
     <div class="product-discussion">
         <div class="d-flex justify-content-between">
@@ -248,6 +247,7 @@
 
     <div>
         <p class="tred-bold">{{ $book->name }}.</p>
+        <div>{{ $book->category->name }}</div>
     </div>
 
     <div>
@@ -334,14 +334,14 @@
 @include('layouts.book-deals',
 array(
 'title' => 'Rekomendasi Komik / Manga',
-'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+'books' => \App\Models\Book::where('category_id', 1)->get()->take(6),
 )
 )
 
 @include('layouts.book-deals',
 array(
 'title' => 'Buku Diskon',
-'books' => \App\Models\Category::where('name', 'komik')->first()->books->take(6)
+'books' => \App\Models\Book::where('category_id', 1)->get()->take(6),
 )
 )
 

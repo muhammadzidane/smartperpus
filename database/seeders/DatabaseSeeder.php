@@ -22,10 +22,9 @@ class DatabaseSeeder extends Seeder
 
                 // Seeder bagian Books
                 AuthorSeeder::class,
-                BookSeeder::class,
                 CategorySeeder::class,
+                BookSeeder::class,
                 SynopsisSeeder::class,
-                BookCategorySeeder::class,
                 ProvinceSeeder::class,
                 CitySeeder::class,
                 DistrictSeeder::class,

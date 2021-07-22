@@ -16,10 +16,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $discount_books = Book::where('discount', '!=',null)->orderBy('discount')->get();
-        $comic_books    = Category::where('name', 'Komik')->first()->books->sortByDesc('rating')->take(12);
+        $discount_books = Book::where('discount', '!=', null)->orderBy('discount')->get();
+        $comic_books    = Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12);
 
-        return view('home',
+        return view(
+            'home',
             array(
                 'book_types' =>
                 array(

@@ -161,12 +161,13 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $book_validations = array(
+        $rules = array(
             'isbn'               => array('required', 'digits:13', 'unique:books,isbn,' . $book->id),
-            'nama_penulis'       => array('required', 'min:3', 'unique:authors,name,' . $book->author->id),
+            'nama_penulis'       => array('required'),
             'judul_buku'         => array('required', 'unique:books,name,' . $book->id),
             'sinopsis'           => array('required'),
             'price'              => array('required', 'numeric'),
+            'diskon'             => array('nullable', 'numeric'),
             'jumlah_barang'      => array('required', 'numeric'),
             'penerbit'           => array('required'),
             'jumlah_halaman'     => array('required', 'numeric'),
@@ -175,83 +176,45 @@ class BookController extends Controller
             'berat'              => array('required', 'numeric'),
             'panjang'            => array('required', 'numeric'),
             'lebar'              => array('required', 'numeric'),
-            'gambar_sampul_buku' => array('nullable', 'file', 'image', 'max:2000'),
+            'gambar_sampul_buku' => array('nullable', 'mimes:png,jpg,jpeg', 'max:2000'),
         );
 
+        $book_image_name = $request->gambar_sampul_buku != null ? $request->gambar_sampul_buku->getClientOriginalName() : $book->image;
 
-        function book_update($book)
-        {
-            global $request;
+        $validator = Validator::make($request->all(), $rules);
 
-            if ($request->gambar_sampul_buku == null) {
-                $gambar_sampul_buku = $book->image;
-            } else {
-                if (!$request->ajax()) {
-                    $gambar_sampul_buku = $request->gambar_sampul_buku->getClientOriginalName();
-                } else {
-                    $gambar_sampul_buku = str_replace('C:\fakepath\\', '', $request->gambar_sampul_buku);
-                }
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            return response()->json(compact('errors'));
+        } else {
+            if ($request->gambar_sampul_buku && !Storage::exists('public/books/' . $book_image_name)) {
+                $request->gambar_sampul_buku->storeAs('public/books', $book_image_name);
             }
 
-            if (!$request->ajax()) {
-                $book_image = $request->gambar_sampul_buku === null ? $book->image : $request->gambar_sampul_buku->getClientOriginalName();
-            } else {
-                $book_image = $gambar_sampul_buku;
-            }
-
-            if ($book_image !== null) {
-                if (!Storage::exists('public/books/' . $book_image)) {
-                    if (!$request->ajax()) {
-                        $request->gambar_sampul_buku->storeAs(
-                            'public/books',
-                            str_replace(' ', '_', strtolower($book_image))
-                        );
-                    }
-
-                    Storage::delete($book->image);
-                    unlink(storage_path('app\public\books\\' . $book->image));
-                };
-            }
-
-            if (Author::firstWhere('name', $request->nama_penulis) == null) {
-                $author =  $book->author()->create(array('name' => $request->nama_penulis));
-            } else {
-                $author = Author::firstWhere(array('name' => $request->nama_penulis));
-            }
-
+            $create = array('name' => $request->nama_penulis);
+            $author = Author::firstWhere('name', $request->nama_penulis) ?? Author::create($create);
             $update = array(
-                'isbn'         => $request->isbn,
-                'name'         => $request->judul_buku,
-                'price'        => (int) $request->price,
-                'image'        => $gambar_sampul_buku,
-                'author_id'    => $author->id,
-                'rating'       => $book->rating,
-                'discount'     => $request->tambah_diskon,
-                'ebook'        => $request->tersedia_dalam_ebook,
-                'pages'        => (int) $request->jumlah_halaman,
-                'release_date' => $request->tanggal_rilis,
-                'publisher'    => $request->penerbit,
-                'subtitle'     => $request->subtitle,
-                'weight'       => (int) $request->berat,
-                'width'        => (float) $request->panjang,
-                'height'       => (float) $request->lebar,
+                'isbn'               => $request->isbn,
+                'category_id'        => $request->kategori,
+                'printed_book_stock' => $request->jumlah_barang,
+                'name'               => $request->judul_buku,
+                'price'              => $request->price,
+                'image'              => $book_image_name,
+                'author_id'          => $author->id,
+                'discount'           => $request->diskon,
+                'ebook'              => $request->tersedia_dalam_ebook,
+                'pages'              => $request->jumlah_halaman,
+                'release_date'       => $request->tanggal_rilis,
+                'publisher'          => $request->penerbit,
+                'subtitle'           => $request->subtitle,
+                'weight'             => $request->berat,
+                'width'              => $request->panjang,
+                'height'             => $request->lebar,
             );
 
             $book->update($update);
-            $book->synopsis()->update(array('text' => $request->sinopsis));
-            $book->categories()->update(array('category_id' => Category::firstWhere('name', $request->kategori)->id));
-            $book->printedStock()->update(array('amount' => $request->jumlah_barang));
-        }
 
-        $pesan     = 'Berhasil men-update buku ' . $book->name;
-        $validator = Validator::make($request->all(), $book_validations);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        } else {
-            book_update($book);
-
-            return redirect()->back()->with('pesan', $pesan);
+            return response()->json()->status();
         }
     }
 
@@ -267,7 +230,8 @@ class BookController extends Controller
 
         if ($book->delete()) {
             Storage::delete('public/storage/books/' . $book->image);
-            unlink(storage_path('app/public/books/' . $book->image));
+            unlink(storage_path('app/
+            ' . $book->image));
 
             return redirect()->route('home')->with('pesan', $pesan);
         }

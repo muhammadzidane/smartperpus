@@ -65,7 +65,7 @@
         <label for="kategori">Kategori</label>
         <select name="kategori" id="kategori" class="form-control-custom w-90">
             @foreach (\App\Models\Category::get() as $category)
-            <option value="{{ $category->name }}" @if (isset($book)) @if ($book->categories[0]->name == $category->name)
+            <option value="{{ $category->name }}" @if (isset($book)) @if ($book->category->name == $category->name)
                 {{ 'selected' }}
                 @endif
                 @else

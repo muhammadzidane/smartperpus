@@ -4,6 +4,22 @@ function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+// Huruf pertama uppercase
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const requestMethod = (methodName) => {
+    let csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    return [
+        {
+            _token: csrfToken,
+            _method: methodName
+        }
+    ];
+}
+
 // Cek apakah form input dengan class yg sama, ada valuenya atau tidak
 function checkFormRequiredInputs(classInputs) {
     let flag = [];
@@ -242,6 +258,7 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
+            console.log(errors.responseJSON.message);
         }
     });
 }
@@ -459,8 +476,8 @@ const showMessageChatting = () => {
     }, 3000);
 }
 
-const singleMessage = (messageText) => {
-    let html = `<div id="message"><i class="message-check fas fa-check"></i>${messageText}</div>`;
+const alertMessage = (messageText) => {
+    let html = `<div id="message">${messageText}</div>`;
     let messageLength = $('#message').length;
 
     if (messageLength == 0) {
@@ -641,7 +658,7 @@ const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMe
 //#endregion Cancel status payment - Membatalkan status pembayaran
 
 //#region Validator - Validasi otomatis menambah message di element input next
-const validator = (validations, success) => {
+const validator = (validations, success = '') => {
     let validationFails = [];
 
     for (const key in validations) {
@@ -661,11 +678,13 @@ const validator = (validations, success) => {
                     if (inputValue == '' || inputValue == 0) {
                         validationFails.push(message);
                     } else {
-                        let array = validationFails;
-                        let item = message;
+                        validationFails.push('');
+                    }
+                }
 
-                        let index = array.indexOf(item);
-                        array.splice(index, 1);
+                if (rule == 'nullable') {
+                    if (inputValue == '' || inputValue == 0) {
+                        validationFails.push('');
                     }
                 }
 
@@ -676,7 +695,7 @@ const validator = (validations, success) => {
                     let maxRegexSplit = maxRegexInput.split(':');
                     let max           = maxRegexSplit[1];
 
-                    let message = `${inputName} Tidak boleh lebih dari ${max}`;
+                    let message = `${inputName} tidak boleh lebih dari ${max}`;
 
                     if (inputValue.length > max) {
                         validationFails.push(message);
@@ -689,11 +708,37 @@ const validator = (validations, success) => {
                     let minRegexInput = minRegex.exec(rule).input;
                     let minRegexSplit = minRegexInput.split(':');
                     let min           = minRegexSplit[1];
-
-                    let message = `${inputName} Tidak boleh kurang dari ${min}`;
+                    let message       = `${inputName} Tidak boleh kurang dari ${min}`;
 
                     if (inputValue.length < min && inputValue != '' && inputValue != 0) {
-                        console.log(true);
+                        validationFails.push(message);
+                    }
+                }
+
+                let digitsRegex = new RegExp('digits:[0-9]');
+
+                if (digitsRegex.test(rule)) {
+                    let digitsRegexInput = digitsRegex.exec(rule).input;
+                    let digitsRegexSplit = digitsRegexInput.split(':');
+                    let digits           = digitsRegexSplit[1];
+
+                    let message = `${inputName} harus memiliki ${digits} digit angka`;
+
+                    if (inputValue.length != digits && inputValue != '' && inputValue != 0) {
+                        validationFails.push(message);
+                    }
+                }
+
+                let mimesRegex = new RegExp('mimes:[a-zA-Z]');
+
+                if (mimesRegex.test(rule)) {
+                    let mimesRegexInput = mimesRegex.exec(rule).input;
+                    let typeFiles       = mimesRegexInput.replace('mimes:', '').split('|');
+                    let ext             = $(inputForm).val().split('.').pop().toLowerCase();
+
+                    if ($.inArray(ext, typeFiles) == -1 && inputValue != '') {
+                        let message = `Hanya bisa mengirim file gambar berupa: ${typeFiles}`;
+
                         validationFails.push(message);
                     }
                 }
@@ -712,8 +757,6 @@ const validator = (validations, success) => {
             let inputNext = $(inputForm).next('.tred-bold');
             let checkValidations = validationFails.every(validation => validation == []);
 
-            console.log(validationFails);
-
             if (!checkValidations) {
                 let html = `<div class="tred-bold"><small>${validationFails.slice(-1).pop()}</small></div>`;
 
@@ -731,8 +774,26 @@ const validator = (validations, success) => {
 
     let checkValidations = validationFails.every(validationFail => validationFail == []);
 
-    checkValidations ? success(true) : success(false);
-
+    if (success != '') {
+        checkValidations ? success(true) : success(false);
+    }
 }
-
 //#endregion Validator
+
+//#region Change photo - Mengubah foto
+const changeInputPhoto = (imageId, inputFileId) => {
+    let preview = document.getElementById(imageId);
+    let file    = document.getElementById(inputFileId).files[0];
+    let reader  = new FileReader();
+
+    reader.onloadend = () => {
+        preview.src = reader.result;
+    }
+
+    if (file) {
+        reader.readAsDataURL(file);
+    } else {
+        preview.src = "";
+    }
+};
+//#endregion Change photo

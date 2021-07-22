@@ -23,9 +23,9 @@ class Book extends Model
         return $this->belongsToMany('App\Models\User')->withTimestamps();
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany('App\Models\Category')->withTimestamps();
+        return $this->belongsTo('App\Models\Category');
     }
 
     public function synopsis()

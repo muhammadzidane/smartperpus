@@ -4,7 +4,7 @@
 <div class="home-and-anymore-show">
     <a class="tsmall" href="{{ route('home') }}">Home</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall" href="#">Categories</a><i class="fas fa-caret-right tsmall"></i>
-    <a class="tsmall" href="#">{{ $book->categories[0]->name }}</a><i class="fas fa-caret-right tsmall"></i>
+    <a class="tsmall" href="#">{{ $book->category->name }}</a><i class="fas fa-caret-right tsmall"></i>
     <span class="tsmall tred-bold">{{ $book->name }}</span>
 </div>
 

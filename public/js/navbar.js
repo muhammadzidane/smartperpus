@@ -904,7 +904,6 @@ $(document).ready(function () {
                     $('.user-chat-img-information').trigger('focus');
                     $('.user-chat-img-information').val('');
 
-
                     let preview = document.getElementById('user-chat-img');
                     let file = document.getElementById('user-chat-send-photo').files[0];
                     let reader = new FileReader();
@@ -995,6 +994,7 @@ $(document).ready(function () {
         });
     });
 
+
     //#region Book add stock - Tambah stok buku
     $('#book-add-stock').on('click', function() {
         let html =
@@ -1027,21 +1027,21 @@ $(document).ready(function () {
             $(this).after(html);
         }
 
+        let validations = [
+            {
+                input: '#book-add-stock-input',
+                inputName: 'Jumlah',
+                rules: 'required,numeric',
+            },
+        ];
+
+        $('#book-add-stock-input').on('keyup', () => validator(validations));
         $('#book-add-stock-form').on('submit', function(event) {
+            event.stopImmediatePropagation();
             event.preventDefault();
-
-
-            let validations = [
-                {
-                    input: '#book-add-stock-input',
-                    inputName: 'Jumlah',
-                    rules: 'required,numeric',
-                },
-            ];
 
             validator(validations, success => {
                 if (success) {
-
                     let datas = [{
                         _token: csrfToken,
                         _method: 'PATCH',
@@ -1060,15 +1060,13 @@ $(document).ready(function () {
                             let messageText     = `Berhasil menambah ${response.stock} stock buku`;
                             let stockBookText   = $('#book-stock').text();
                             stockBookText       = parseInt(stockBookText) + parseInt(response.stock);
-                            console.log(stockBookText);
 
-                            singleMessage(messageText);
+                            alertMessage(messageText);
                             $('#book-stock').text(stockBookText);
                         }
                     }, datas);
                 };
             });
-
         });
     });
     //#endregion Book add stock - Tambah stok buku
@@ -1214,64 +1212,121 @@ $(document).ready(function () {
         }
     });
 
-    // Book Edit - Stuck
-    if ($('.book-edit-inp').val() !== '') {
-        $('#book-edit-submit').addClass('active-login');
+    // Book Edit
+    // Keyup input
+    const bookEditCustomValidationCondition = (inputId, data) => {
+        if (inputId == '#isbn') {
+            data['rules'] = 'required,numeric,digits:13';
+        }
+
+        if (inputId == '#diskon') {
+            data['rules'] = 'numeric';
+        }
+
+        if (inputId == '#tersedia_dalam_ebook') {
+            data['rules'] = 'nullable';
+        }
+
+        if (inputId == '#gambar_sampul_buku') {
+            data['rules'] = 'nullable,mimes:png|jpg|jpeg';
+        }
     }
 
-    keyUpToggleFormButton('.book-edit-inp');
+    let inputIdBookEdit = [
+        '#nama_penulis', '#isbn', '#judul_buku', '#sinopsis',
+        '#price', '#kategori', '#tersedia_dalam_ebook',
+        '#jumlah_barang', '#penerbit', '#jumlah_halaman',
+        '#tanggal_rilis', '#subtitle', '#berat', '#panjang',
+        '#lebar', '#diskon',
+    ];
 
-    $('#book-edit-submit').on('click', function (e) {
+    let inputIdBookEditJoin = inputIdBookEdit.join(', ');
+
+    $(inputIdBookEditJoin).on('keyup', function() {
+        let validations     = [];
+
+        inputIdBookEdit.map(inputId => {
+            let data = {
+                input    : inputId,
+                inputName: capitalizeFirstLetter(inputId.replace('#', '').replace('_', ' ')),
+                rules    : 'required',
+            }
+
+            bookEditCustomValidationCondition(inputId, data);
+            validations.push(data);
+            validator(validations);
+        });
+
+    });
+
+    // Submit
+    $('#book-edit-form').on('submit', function (e) {
         e.preventDefault();
+        let dataId      = $(this).data('id');
+        let validations = [];
+        let finds       = 'input[type=number], input[type=text], input[type=date], input[type=file], textarea';
+        let inputs      = $(this).find(finds);
 
-        $('#click-to-the-top').trigger('click');
+        inputs.map((key, input) => {
+            let inputId   = $(input).attr('id');
+            let inputName = capitalizeFirstLetter(inputId.replaceAll('_', ' '));
+            inputId   = `#${inputId}`;
+            let data      = {
+                input    : inputId,
+                inputName: inputName,
+                rules    : 'required',
+            }
 
-        $.ajax({
-            type: "POST",
-            url: `/books/${$('#book-edit-form').data('id')}`,
-            data: {
-                '_token': csrfToken,
-                '_method': 'PATCH',
-                'isbn': $('#isbn').val(),
-                'nama_penulis': $('#nama_penulis').val(),
-                'judul_buku': $('#judul_buku').val(),
-                'price': $('#price').val(),
-                'tambah_diskon': $('#tambah_diskon').val(),
-                'sinopsis': $('#sinopsis').val(),
-                'jumlah_barang': $('#jumlah_barang').val(),
-                'kategori': $('#kategori').val(),
-                'tersedia_dalam_ebook': $('#tersedia_dalam_ebook').val(),
-                'jumlah_halaman': $('#jumlah_halaman').val(),
-                'tanggal_rilis': $('#tanggal_rilis').val(),
-                'penerbit': $('#penerbit').val(),
-                'subtitle': $('#subtitle').val(),
-                'berat': $('#berat').val(),
-                'lebar': $('#lebar').val(),
-                'panjang': $('#panjang').val(),
-                'gambar_sampul_buku': $('#gambar_sampul_buku').val(),
-            },
-            dataType: "JSON",
-            success: function (response) {
-                $('#pesan').removeClass('d-none');
+            bookEditCustomValidationCondition(inputId, data);
+            validations.push(data);
+        });
 
-                if (!response.status) {
-                    let pesan = ``;
+        validator(validations, success => {
+            if (success) {
+                ajaxForm('POST', this, `/books/${dataId}`, response => {
+                    if (!response.errors) {
+                        let message = 'Berhasil mengedit buku';
 
-                    for (const key in response.pesan) {
-                        if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
-                            const element = response.pesan[key];
+                        alertMessage(message);
+                    } else {
+                        let errorMessages = ``;
 
-                            pesan += `<div>${element[0]}</div>`;
+                        for (const key in response.errors) {
+                            if (response.errors.hasOwnProperty.call(response.errors, key)) {
+                                const element = response.errors[key];
+
+                                errorMessages += `<div>${element}</div>`;
+                            }
                         }
-                    }
-                    $('#pesan').html(pesan);
-                } else { // Update sukses
-                    $('#pesan').html(response.pesan);
-                }
 
-            },
+                        alertMessage(errorMessages);
+                    }
+                }, requestMethod('PATCH'));
+            }
         });
     })
+
+    $('#gambar_sampul_buku').on('change', function() {
+        let dataHref = $(this).data('href');
+        let data = [
+            {
+                input    : this,
+                inputName: 'Gambar sampul buku',
+                rules    : 'nullable,mimes:png|jpg|jpeg',
+            }
+        ];
+
+        validator(data,
+            success => {
+                if (success) {
+                    changeInputPhoto('book-show-image', 'gambar_sampul_buku');
+                } else {
+                    $('#book-show-image').attr('src', dataHref);
+                    $(this).val('');
+                }
+            }
+        );
+    });
 
     // User Change Password
     $('#user-change-password-form').on('submit', function (e) {
@@ -1458,7 +1513,7 @@ $(document).ready(function () {
                 $('#upload-payment-file').val('');
                 $('.close').trigger('click');
                 $('#upload-payment-cancel').trigger('click');
-                singleMessage(messageText);
+                alertMessage(messageText);
             } else {
                 let errors = response.errors.upload_payment;
                 alert(errors);
@@ -1483,7 +1538,7 @@ $(document).ready(function () {
                 $(this).parents('.upload-payment-value').remove();
                 let messageText = 'Berhasil membatalkan pembelian';
 
-                singleMessage(messageText);
+                alertMessage(messageText);
             });
         }
     })
@@ -1514,7 +1569,7 @@ $(document).ready(function () {
                 ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
                     let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
 
-                    singleMessage(messageText);
+                    alertMessage(messageText);
                     setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
 
                     addAndSubtractStatusNotification();
@@ -1540,7 +1595,7 @@ $(document).ready(function () {
                 // ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
                 //     let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
 
-                //     singleMessage(messageText);
+                //     alertMessage(messageText);
                 //     setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
 
                 //     addAndSubtractStatusNotification();

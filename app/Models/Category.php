@@ -11,7 +11,8 @@ class Category extends Model
 
     protected $guarded = array();
 
-    public function books() {
-        return $this->belongsToMany('App\Models\Book')->withTimestamps();
+    public function book()
+    {
+        return $this->hasOne('App\Models\Book');
     }
 }

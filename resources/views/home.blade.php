@@ -39,14 +39,14 @@
 @include('layouts.book-deals',
 array(
 'title' => 'Buku Diskon',
-'books' => \App\Models\Book::where('discount', '!=', null)->get()
+'books' => \App\Models\Book::where('discount', '!=', null)->get()->take(12),
 )
 )
 
 @include('layouts.book-deals',
 array(
 'title' => 'Rekomendasi Komik / Manga',
-'books' => \App\Models\Category::where('name', 'komik')->first()->books
+'books' => \App\Models\Book::where('category_id', 1)->get()->take(12),
 )
 )
 @endsection
