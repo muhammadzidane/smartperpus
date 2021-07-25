@@ -46,6 +46,14 @@
             </div>
             @endcan
             <h5>{{ $book->name }}</h5>
+
+            @if ($book->discount)
+            <small class="discount-line-through text-danger">{{ rupiah_format($book->price) }}</small>
+            <span class="tred-bold">{{ rupiah_format($book->price - $book->discount) }}</span>
+            @else
+            <div class="tbold">{{ rupiah_format($book->price - $book->discount ) }}</div>
+            @endif
+
             <div class="tbold">{{ $book->category->name }}</div>
             <div class="my-1 d-flex">
                 <div>

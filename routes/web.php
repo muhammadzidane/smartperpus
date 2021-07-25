@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     ProvinceController,
     UserChatController,
     StatusController,
+    WishlistController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -73,6 +74,10 @@ Route::prefix('/book-purchases')->group(function () {
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
+
+// Wishlist
+Route::post('wishlist', array(WishlistController::class, 'store'));
+Route::delete('wishlist/{id}', array(WishlistController::class, 'destroy'));
 
 Route::prefix('book-users/status')->middleware('auth')->group(function () {
     Route::get('/', array(BookUserController::class, 'uploadedPayments'))

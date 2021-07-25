@@ -754,26 +754,25 @@ footer {
 }
 
 .add-to-wishlist {
-    position: relative;
     color: #ee6f57;
     width: max-content;
     margin-left: auto;
+    transition: transform 130ms;
+}
+
+.add-to-wishlist:hover {
+    transform: scale(1.5);
 }
 
 .wishlist-text {
-    display: none;
     background-color: #625261;
     color: white;
-    position: absolute;
+    position: relative;
     top: -5%;
     left: 186%;
     width: max-content;
     padding: 3px 10px;
     z-index: 1;
-}
-
-.add-to-wishlist:hover > div {
-    display: block;
 }
 
 .btn-wishlist i { color: #ea5455; }
@@ -782,33 +781,23 @@ footer {
 .btn-wishlist:hover .far { display: none; }
 .fa-share-alt { color: #e4d3cf; }
 
-.wishlist-search {
-    position: relative;
-    /* width: max-content; */
-    overflow: hidden;
-}
-.wishlist-search input {
-    width: 40%;
+.wishlist-search-input {
+    width: 50%;
     height: 34px;
     margin: 2px 0;
     border: 2px solid #E7E7DE;
     border-radius: 4px;
     background-color: #F6F5F5;
-    text-indent: 40px;
+    text-indent: 34px;
     outline: none;
 }
-.wishlist-search input:focus {
-    border: 2px solid #686d76;
-    box-shadow: 0 0 2px #686d76;
-}
+
 .wishlist-search-icon {
+    position: absolute;
+    top: 28%;
+    margin-left: 10px;
     font-size: 18px;
     color: #fff600;
-}
-.wishlist-search span {
-    position: absolute;
-    top: 25%;
-    left: 1%;
 }
 
 /* Ulasan Produk */

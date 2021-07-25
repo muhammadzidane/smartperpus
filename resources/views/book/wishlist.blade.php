@@ -21,20 +21,16 @@
 <div class="mt-5">
     <div class="book-deals mt-0 white-content-0">
         <div class="position-relative">
-            <div class="ml-2">
-                <div class="wishlist-search">
-                    <span><i class="fa fa-search wishlist-search-icon" aria-hidden="true"></i></span>
-                    <input type="search" placeholder="Cari wishlist anda">
-                </div>
-            </div>
+            <input class="wishlist-search-input" type="search" placeholder="Cari wishlist anda">
+            <i class="fa fa-search wishlist-search-icon" aria-hidden="true"></i>
         </div>
 
         <div class="my-2">
             @include('layouts.books',
-                array('books' => \App\Models\Book::get())
+            array('books' => \App\Models\Book::get())
             )
         </div>
-</div>
+    </div>
 
 
 </div>

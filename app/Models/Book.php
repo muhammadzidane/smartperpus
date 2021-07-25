@@ -33,6 +33,11 @@ class Book extends Model
         return $this->hasOne('App\Models\Synopsis');
     }
 
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
+
     // Accessors
     // public function getPriceAttribute($value) {
     //     return 'Rp' . number_format($value, null, null, '.');

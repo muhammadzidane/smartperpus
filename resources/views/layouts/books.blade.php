@@ -76,10 +76,13 @@
 </div>
 </div>
 <div class="add-to-wishlist">
-    <i class="far fa-heart"></i>
-    <div class="wishlist-text">
-        <div>Tambahkan pada wishlist</div>
-    </div>
+
+    @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
+    <i class="add-to-my-wishlist fas fa-heart" data-id="{{ $book->id }}"></i>
+    @else
+
+    <i class="add-to-my-wishlist far fa-heart" data-id="{{ $book->id }}"></i>
+    @endif
 </div>
 </div>
 <div class="book-price">

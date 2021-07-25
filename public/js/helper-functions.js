@@ -258,7 +258,6 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
-            console.log(errors.responseJSON.message);
         }
     });
 }
@@ -455,13 +454,16 @@ function getPaymentDeadlineText(userId) {
 }
 
 // Search
-const ajaxJson = (method, url, data, successResponse) => {
+const ajaxJson = (method, url, data, successResponse = '') => {
     $.ajax({
         type: method,
         url: url,
         data: data,
         dataType: "JSON",
-        success: successResponse
+        success: successResponse,
+        error: error => {
+            console.log(error.responseJSON.message);
+        }
     });
 }
 

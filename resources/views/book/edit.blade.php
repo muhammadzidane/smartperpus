@@ -13,8 +13,8 @@
 
 <div class="register-user py-4">
     <div id="book-create" class="form-register w-75 mx-auto">
+        <a class="float-right" href="\books\{{ $book->id }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a>
         <form id="book-edit-form" data-id="{{ $book->id }}" enctype="multipart/form-data" action="{{ route('books.update', array('book' => $book->id)) }}" method="POST">
-            <div class="text-right p-0"><a href="{{ url()->previous() }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
             <div class="mb-4">
                 <h5 class="tred-bold">Edit Buku</h5>
             </div>
@@ -39,11 +39,11 @@
                     </label>
                 </div>
                 <div class="form-group w-50">
-                    <label for="price">Harga</label>
+                    <label for="price">Harga <small>( tanpa diskon )</small></label>
                     <input type="number" name="price" id="price" class="form-control-custom w-90 book-edit-inp" value="{{ old('price') ?? $book->price ?? '' }}">
                 </div>
                 <div class="form-group w-50">
-                    <label for="diskon">Tambah / Edit Diskon</label>
+                    <label for="diskon">Diskon</label>
                     <input type="number" name="diskon" id="diskon" class="form-control-custom w-90 book-edit-inp" value="{{ $book->discount }}">
                 </div>
                 <div class="form-group w-50">
@@ -53,10 +53,14 @@
                         <option value="{{ $category->id }}" @if (isset($book)) @if ($book->category->name == $category->name)
                             {{ 'selected' }}
                             @endif
+
                             @else
+
                             @if ($category->name == old('kategori')))
                             {{ 'selected' }}
+
                             @endif
+
                             @endif
 
                             >{{ $category->name }}

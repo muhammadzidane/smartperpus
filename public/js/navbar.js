@@ -227,17 +227,6 @@ $(document).ready(function () {
         ajaxFilterDataBooks();
     });
 
-    // Book Search - Animasi transparan buku buku
-    let count = 0;
-    $('.book').css('opacity', '0');
-    let bookOpacityLoad = setInterval(function () {
-        if (count >= 1) {
-            clearInterval(bookOpacityLoad);
-        }
-
-        $('.book').css('opacity', count += 0.1);
-    }, 60);
-
     // Sort buku
     $('#sort-books').on('change', function () {
         let min_price_val = $('.filter-min-price').data('filter-value');
@@ -721,17 +710,58 @@ $(document).ready(function () {
 
     // Buku
     $('.book').on('click', function () {
-        location.href = `http://smartperpus.com/books/${$(this).data('id')}`;
+        window.location.href = $(this).find('.book-show-link').attr('href');
     });
 
-    // Add to wishlist
-    $('.add-to-wishlist').on('click', function (e) {
-        e.stopPropagation();
+    //  Wishlist Store - Add to wishlist
+    $('.add-to-my-wishlist').on('click', function (event) {
+        event.stopPropagation();
+        let wishlists = $(document).find('.add-to-my-wishlist');
+        let wishlistTargets    = [];
 
-        if ($(this).children('i').hasClass('far')) {
-            $(this).children('i').removeClass('far').addClass('fas')
+        for (const key in wishlists) {
+            if (wishlists.hasOwnProperty.call(wishlists, key)) {
+                const element = wishlists[key];
+                let wishlist = $(element);
+
+                if (wishlist) {
+                    wishlistTargets.push(wishlist);
+                }
+            }
+        }
+
+        let clickedDataId = $(this).data('id') ?? 0;
+
+        wishlistTargets = wishlistTargets.filter((wishlist) => {
+            return wishlist.data('id') == clickedDataId;
+        });
+
+        let dataId  = $(this).parents('.book').data('id');
+        let datas   = {
+            _token: csrfToken,
+            bookId: dataId,
+        };
+
+        if ($(this).hasClass('far')) {
+            if (wishlistTargets.length != 0) {
+                wishlistTargets.forEach(element => {
+                    element.removeClass('far');
+                    element.addClass('fas');
+                })
+            }
+            console.log(wishlistTargets.length);
+
+            ajaxJson('POST', '/wishlist', datas);
         } else {
-            $(this).children('i').removeClass('fas').addClass('far');
+            if (wishlistTargets.length != 0) {
+                wishlistTargets.forEach(element => {
+                    element.removeClass('fas');
+                    element.addClass('far');
+                })
+            }
+            datas['_method'] = 'DELETE';
+
+            ajaxJson('POST', `/wishlist/${dataId}`, datas);
         }
     });
 
@@ -1270,7 +1300,7 @@ $(document).ready(function () {
         inputs.map((key, input) => {
             let inputId   = $(input).attr('id');
             let inputName = capitalizeFirstLetter(inputId.replaceAll('_', ' '));
-            inputId   = `#${inputId}`;
+            inputId       = `#${inputId}`;
             let data      = {
                 input    : inputId,
                 inputName: inputName,
