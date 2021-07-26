@@ -27,7 +27,7 @@
 
         <div class="my-2">
             @include('layouts.books',
-            array('books' => \App\Models\Book::get())
+            array('books' => $books)
             )
         </div>
     </div>

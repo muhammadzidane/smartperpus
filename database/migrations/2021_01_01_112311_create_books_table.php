@@ -22,7 +22,7 @@ class CreateBooksTable extends Migration
             $table->integer('price');
             $table->string('image');
             $table->foreignId('author_id')->constrained()->onDelete('cascade')->unique();
-            $table->float('rating', 2, 1);
+            $table->float('rating', 2, 1)->nullable()->default(null);
             $table->integer('discount')->default(0);
             $table->boolean('ebook');
             $table->string('pages');

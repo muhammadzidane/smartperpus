@@ -708,8 +708,6 @@ footer {
     color: white;
 }
 
-.fa-heart {  font-size: 14px; }
-
 .tsmall { font-size: 11px; }
 
 .home-and-anymore-show i {
@@ -753,7 +751,8 @@ footer {
     color: #8e7f7f;
 }
 
-.add-to-wishlist {
+.add-to-wishlist, #book-show-wishlist {
+    font-size: 13px;
     color: #ee6f57;
     width: max-content;
     margin-left: auto;
@@ -762,17 +761,6 @@ footer {
 
 .add-to-wishlist:hover {
     transform: scale(1.5);
-}
-
-.wishlist-text {
-    background-color: #625261;
-    color: white;
-    position: relative;
-    top: -5%;
-    left: 186%;
-    width: max-content;
-    padding: 3px 10px;
-    z-index: 1;
 }
 
 .btn-wishlist i { color: #ea5455; }
@@ -796,7 +784,7 @@ footer {
     position: absolute;
     top: 28%;
     margin-left: 10px;
-    font-size: 18px;
+    font-size: 10px;
     color: #fff600;
 }
 

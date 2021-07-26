@@ -13,24 +13,24 @@
 
 <div class="register-user py-4">
     <div id="book-create" class="form-register w-75 mx-auto">
-        <a class="float-right" href="\books\{{ $book->id }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a>
-        <form id="book-edit-form" data-id="{{ $book->id }}" enctype="multipart/form-data" action="{{ route('books.update', array('book' => $book->id)) }}" method="POST">
+        <a class="float-right" href="\books\ {{ isset($book) ? $book->id : '' }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a>
+        <form id="{{ isset($book) ? 'book-edit-form' : 'book-store-form' }}" data-id="{{ isset($book) ? $book->id : '' }}" enctype="multipart/form-data" action="\books\ {{ isset($book) ? $book->id : '' }}" method="POST">
             <div class="mb-4">
-                <h5 class="tred-bold">Edit Buku</h5>
+                <h5 class="tred-bold">{{ isset($book) ? 'Edit Buku' : 'Tambah Buku' }}</h5>
             </div>
 
             <div class="d-flex flex-wrap">
                 <div class="form-group w-50">
                     <label for="nama_penulis">Nama Penulis</label>
-                    <input type="text" name="nama_penulis" id="nama_penulis" class="form-control-custom w-90 book-edit-inp" value="{{ old('nama_penulis') ?? $book->author->name ?? '' }}">
+                    <input type="text" name="nama_penulis" id="nama_penulis" class="form-control-custom w-90 book-edit-inp" value="{{ old('nama_penulis') ?? (isset($book) ? $book->author->name : '') ?? '' }}">
                 </div>
                 <div class="form-group w-50">
                     <label for="isbn">ISBN</label>
-                    <input type="text" name="isbn" id="isbn" class="form-control-custom w-90 book-edit-inp" value="{{ old('isbn') ?? $book->isbn ?? '' }}">
+                    <input type="text" name="isbn" id="isbn" class="form-control-custom w-90 book-edit-inp" value="{{ old('isbn') ?? (isset($book) ? $book->isbn : '') ?? '' }}">
                 </div>
                 <div class="form-group w-50">
                     <label for="judul_buku">Judul Buku</label>
-                    <input type="text" name="judul_buku" id="judul_buku" class="form-control-custom w-90 book-edit-inp" value="{{ old('judul_buku') ?? $book->name ?? '' }}">
+                    <input type="text" name="judul_buku" id="judul_buku" class="form-control-custom w-90 book-edit-inp" value="{{ old('judul_buku') ?? (isset($book) ? $book->name : '') ?? '' }}">
                 </div>
                 <div class="form-group w-50">
                     <label class="d-block mr-2">
@@ -40,11 +40,11 @@
                 </div>
                 <div class="form-group w-50">
                     <label for="price">Harga <small>( tanpa diskon )</small></label>
-                    <input type="number" name="price" id="price" class="form-control-custom w-90 book-edit-inp" value="{{ old('price') ?? $book->price ?? '' }}">
+                    <input type="number" name="price" id="price" class="form-control-custom w-90 book-edit-inp" value="{{ old('price') ?? (isset($book) ? $book->price : '') ?? '' }}">
                 </div>
                 <div class="form-group w-50">
                     <label for="diskon">Diskon</label>
-                    <input type="number" name="diskon" id="diskon" class="form-control-custom w-90 book-edit-inp" value="{{ $book->discount }}">
+                    <input type="number" name="diskon" id="diskon" class="form-control-custom w-90 book-edit-inp" value="{{ isset($book) ? $book->discount : ''}}">
                 </div>
                 <div class="form-group w-50">
                     <label for="kategori">Kategori</label>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="form-group w-50">
-                    <label for="jumlah_barang">Jumlah Buku Cetak</label>
+                    <label for="jumlah_barang">Jumlah Stok Buku Cetak</label>
                     <input type="number" name="jumlah_barang" id="jumlah_barang" class="form-control-custom w-90 book-edit-inp" value="{{ old('jumlah_barang') ?? $book->printed_book_stock ?? '' }}">
                 </div>
                 <div class="form-group w-50">
@@ -118,10 +118,15 @@
                     <div class="w-25 mb-3">
                         <img id="book-show-image" class="w-100" src="{{ asset('storage/books/' . $book->image )  }}">
                     </div>
+
+                    @else
+                    <div class="w-25">
+                        <img id="book-show-image" class="w-100" src="">
+                    </div>
                     @endisset
                     @endif
 
-                    <input type="file" data-href="{{ asset('storage/books/' . $book->image )  }}" name="gambar_sampul_buku" id="gambar_sampul_buku" class="form-control-custom w-90">
+                    <input type="file" data-href="{{ isset($book) ? asset('storage/books/' . $book->image) : '' }}" name="gambar_sampul_buku" id="gambar_sampul_buku" class="form-control-custom w-90">
                 </div>
             </div>
 
@@ -129,9 +134,13 @@
                 <button class="button-submit" type="submit">Edit</button>
             </div>
 
+            @isset($book)
+
             @method('PATCH')
+            @endisset
+
             @csrf
         </form>
     </div>
-
-    @endsection
+</div>
+@endsection

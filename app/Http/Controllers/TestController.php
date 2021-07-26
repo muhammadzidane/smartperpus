@@ -17,7 +17,13 @@ class TestController extends Controller
 {
     public function test()
     {
-        return view('test');
+        $wishlists = Auth::user()->wishlists;
+        $wishlists = $wishlists->map(function ($wishlist) {
+            return Book::find($wishlist->book_id);
+        });
+
+        dump($wishlists);
+        // return view('test');
     }
 
     public function testPost(Request $request)

@@ -15,7 +15,12 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        //
+        $books = Auth::user()->wishlists;
+        $books = $books->map(function ($wishlist) {
+            return Book::find($wishlist->book_id);
+        });
+
+        return view('book/wishlist', compact('books'));
     }
 
     /**

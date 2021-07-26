@@ -144,16 +144,35 @@
                             <div>Buku Cetak</div>
                         </div>
                         <div>
+                            @if ($book->discount)
+
+                            <div class="tred-bold">
+                                <span>
+                                    <small class="discount-line-through d-inline">
+                                        {{ rupiah_format($book->price - $book->discount) }}
+                                    </small>
+                                    {{ rupiah_format($book->price) }}
+                                </span>
+                            </div>
+
+                            @else
+
                             <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
+                            @endif
                         </div>
                     </div>
 
                     <div class="mt-5">
+                        @auth
                         <div class="d-flex justify-content-between">
                             <div>
-                                <button class="btn-none btn-wishlist">
-                                    <i class="far fa-heart"></i>
-                                    <i class="fa fa-heart"></i>
+                                <button id="book-show-wishlist" class="btn-none">
+                                    @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
+                                    <i class="fas fa-heart text-danger"></i>
+                                    @else
+                                    <i class="far fa-heart text-danger"></i>
+
+                                    @endif
                                     <span>Wishlist</span>
                                 </button>
                             </div>
@@ -164,6 +183,7 @@
                                 <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
                             </div>
                         </div>
+                        @endauth
                         <div>
                             @if ($book->ebook === 0)
                             <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>

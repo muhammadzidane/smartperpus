@@ -1024,6 +1024,30 @@ $(document).ready(function () {
         });
     });
 
+    $('#book-show-wishlist').on('click', function() {
+        let unClickedWishlist = $(this).find('i').hasClass('far');
+        let dataId            = $(this).parents('#book-show').data('id');
+        let datas             = {
+            _token: csrfToken,
+            bookId: dataId,
+        };
+
+        if (unClickedWishlist) {
+            $(this).find('i').removeClass('far');
+            $(this).find('i').addClass('fas');
+
+            ajaxJson('POST', '/wishlist', datas);
+        } else {
+            $(this).find('i').removeClass('fas');
+            $(this).find('i').addClass('far');
+            datas['_method'] = 'DELETE';
+
+            ajaxJson('POST', `/wishlist/${dataId}`, datas);
+        }
+    });
+
+    // End Book Show
+
 
     //#region Book add stock - Tambah stok buku
     $('#book-add-stock').on('click', function() {
@@ -1244,13 +1268,9 @@ $(document).ready(function () {
 
     // Book Edit
     // Keyup input
-    const bookEditCustomValidationCondition = (inputId, data) => {
+    const bookEditCustomValidationCondition = (inputId, data, formAction = '') => {
         if (inputId == '#isbn') {
             data['rules'] = 'required,numeric,digits:13';
-        }
-
-        if (inputId == '#diskon') {
-            data['rules'] = 'numeric';
         }
 
         if (inputId == '#tersedia_dalam_ebook') {
@@ -1258,7 +1278,11 @@ $(document).ready(function () {
         }
 
         if (inputId == '#gambar_sampul_buku') {
-            data['rules'] = 'nullable,mimes:png|jpg|jpeg';
+            if (formAction == 'EDIT') {
+                data['rules'] = 'nullable,mimes:png|jpg|jpeg';
+            } else {
+                data['rules'] = 'required,mimes:png|jpg|jpeg';
+            }
         }
     }
 
@@ -1290,12 +1314,13 @@ $(document).ready(function () {
     });
 
     // Submit
-    $('#book-edit-form').on('submit', function (e) {
+    $('#book-edit-form, #book-store-form').on('submit', function (e) {
         e.preventDefault();
-        let dataId      = $(this).data('id');
-        let validations = [];
-        let finds       = 'input[type=number], input[type=text], input[type=date], input[type=file], textarea';
-        let inputs      = $(this).find(finds);
+        let dataId        = $(this).data('id');
+        let validations   = [];
+        let finds         = 'input[type=number], input[type=text], input[type=date], input[type=file], textarea';
+        let inputs        = $(this).find(finds);
+        let bookStoreForm = $(this).attr('id') == 'book-store-form';
 
         inputs.map((key, input) => {
             let inputId   = $(input).attr('id');
@@ -1307,31 +1332,60 @@ $(document).ready(function () {
                 rules    : 'required',
             }
 
-            bookEditCustomValidationCondition(inputId, data);
+            if (bookStoreForm) {
+                bookEditCustomValidationCondition(inputId, data);
+            } else {
+                bookEditCustomValidationCondition(inputId, data, 'EDIT');
+            }
+
             validations.push(data);
         });
 
         validator(validations, success => {
             if (success) {
-                ajaxForm('POST', this, `/books/${dataId}`, response => {
-                    if (!response.errors) {
-                        let message = 'Berhasil mengedit buku';
+                if (bookStoreForm) {
+                    ajaxForm('POST', this , `/books`, response => {
+                        if (!response.errors) {
+                            let message = 'Berhasil menambah buku';
 
-                        alertMessage(message);
-                    } else {
-                        let errorMessages = ``;
+                            alertMessage(message);
+                            $(this).trigger("reset");
+                            $('#book-show-image').attr('src', '');
+                        } else {
+                            let errorMessages = ``;
 
-                        for (const key in response.errors) {
-                            if (response.errors.hasOwnProperty.call(response.errors, key)) {
-                                const element = response.errors[key];
+                            for (const key in response.errors) {
+                                if (response.errors.hasOwnProperty.call(response.errors, key)) {
+                                    const element = response.errors[key];
 
-                                errorMessages += `<div>${element}</div>`;
+                                    errorMessages += `<div>${element}</div>`;
+                                }
                             }
-                        }
 
-                        alertMessage(errorMessages);
-                    }
-                }, requestMethod('PATCH'));
+                            alertMessage(errorMessages);
+                        }
+                    });
+                } else {
+                    ajaxForm('POST', this, `/books/${dataId}`, response => {
+                        if (!response.errors) {
+                            let message = 'Berhasil mengedit buku';
+
+                            alertMessage(message);
+                        } else {
+                            let errorMessages = ``;
+
+                            for (const key in response.errors) {
+                                if (response.errors.hasOwnProperty.call(response.errors, key)) {
+                                    const element = response.errors[key];
+
+                                    errorMessages += `<div>${element}</div>`;
+                                }
+                            }
+
+                            alertMessage(errorMessages);
+                        }
+                    }, requestMethod('PATCH'));
+                }
             }
         });
     })

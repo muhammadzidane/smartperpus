@@ -1,9 +1,9 @@
 <div class="books">
-    @foreach ($books as $book)
+    @forelse ($books as $book)
     <div class="book" data-id="{{ $book->id }}">
-        @isset($book->discount)
+        @if(isset($book->discount) && $book->discount != 0)
         <div class="book-persentage-discount">{{ round(($book->discount / $book->price) * 100) }}%</div>
-        @endisset
+        @endif
         <div class='book-cover'>
             <div class="gambar-buku">
                 <img src="{{ asset('storage/books/' . $book->image )  }}">
@@ -75,6 +75,7 @@
     @endif
 </div>
 </div>
+@auth
 <div class="add-to-wishlist">
 
     @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
@@ -84,6 +85,7 @@
     <i class="add-to-my-wishlist far fa-heart" data-id="{{ $book->id }}"></i>
     @endif
 </div>
+@endauth
 </div>
 <div class="book-price">
     <div>
@@ -95,5 +97,12 @@
 </div>
 <a class="book-show-link" href="{{ route('books.show', array('book' => $book->id)) }}"></a>
 </div>
-@endforeach
+@empty
+
+<div class="w-50 mx-auto mt-4">
+    <h4 class="text-center mb-4">Tidak ada wishlist saat ini</h4>
+    <img class="w-100" src="{{ asset('img/no-data.png') }}">
+</div>
+@endforelse
+
 </div>

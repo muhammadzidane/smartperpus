@@ -59,25 +59,27 @@ Route::resource('/authors', AuthorController::class);
 // });
 
 // Books
-Route::prefix('/books')->group(function () {
+Route::prefix('books')->group(function () {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
-    Route::get('wishlist/', array(BookController::class, 'wishlist'));
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth', 'auth.admin.only');
 });
 Route::resource('/books', BookController::class);
 
 // Book Purchase
-Route::prefix('/book-purchases')->group(function () {
+Route::prefix('book-purchases')->group(function () {
     Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
 // Wishlist
-Route::post('wishlist', array(WishlistController::class, 'store'));
-Route::delete('wishlist/{id}', array(WishlistController::class, 'destroy'));
+Route::prefix('wishlist')->middleware('auth')->group(function () {
+    Route::get('/', array(WishlistController::class, 'index'));
+    Route::post('/', array(WishlistController::class, 'store'));
+    Route::delete('/{id}', array(WishlistController::class, 'destroy'));
+});
 
 Route::prefix('book-users/status')->middleware('auth')->group(function () {
     Route::get('/', array(BookUserController::class, 'uploadedPayments'))
