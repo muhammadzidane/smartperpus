@@ -15,8 +15,6 @@ class BookController extends Controller
      */
     public function index(Book $book)
     {
-        $this->authorize('viewAny', $book);
-        return view('book/index', array('books' => Book::get()));
     }
 
     /**
@@ -184,6 +182,9 @@ class BookController extends Controller
             );
 
             $book->update($update);
+            $data = array('text' => $request->sinopsis);
+
+            $book->synopsis()->update($data);
 
             return response()->json()->status();
         }

@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash};
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $middleware = array('auth', 'auth.admin.only');
+        $this->middleware($middleware)->only('index', 'edit');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,15 +22,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', User::class);
-
-        return view(
-            'user.index',
-            array(
-                'me'    => Auth::user(),
-                'users' => User::withTrashed()->where('id', '!=', Auth::id())->get(),
-            )
-        );
+        $users = User::withTrashed()->where('id', '!=', Auth::id())->where('role', '!=', 'guest')->get();
+        return view('user.index', compact('users'));
     }
 
     /**
@@ -70,8 +69,6 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        $this->authorize('view', $user);
-
         return view('user.edit', compact('user'));
     }
 
@@ -87,10 +84,10 @@ class UserController extends Controller
         $validation = array(
             'nama_awal'       => array('required'),
             'nama_akhir'      => array('required'),
-            'email'           => array('required', 'email:rfc,dns'),
+            'email'           => array('required', 'email:rfc,dns', 'unique:users,email,' . $user->id),
             'tanggal_lahir'   => array('nullable', 'date'),
             'jenis_kelamin'   => array('nullable', 'in:L,P'),
-            'nomer_handphone' => array('nullable', 'min:12', 'max:13'),
+            'nomer_handphone' => array('nullable', 'min:9', 'max:15'),
         );
 
         $update = array(
@@ -109,7 +106,7 @@ class UserController extends Controller
             $validator = Validator::make($request->all(), $validation);
 
             if ($validator->fails()) {
-                return response()->json(array('pesan' => $validator->getMessageBag(), 'status' => 'fail'));
+                return response()->json(array('errors' => $validator->errors(), 'status' => 'fail'));
             } else {
                 $user->update($update);
 

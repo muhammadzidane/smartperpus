@@ -1017,7 +1017,7 @@ $(document).ready(function () {
         e.preventDefault();
         let confirmText = 'Apakah anda yakin ingin menghapus semua data pada buku ini ?';
 
-        modalConfirm(this, confirmText, (accepted) => {
+        modalConfirm(confirmText, (accepted) => {
             if (accepted) {
                 $(this).parent().trigger('submit');
             }
@@ -1175,69 +1175,111 @@ $(document).ready(function () {
     $('.user-delete').on('click', function (e) {
         e.preventDefault();
 
-        if (confirm('Apakah anda yakin ingin menghapus user tersebut secara permanen ?')) {
-            $(this).parent().parent().parent().remove();
+        let confirmText = 'Apakah anda yakin ingin menghapus karyawan tersebut secara permanen ?';
 
-            $.ajax({
-                type: "POST",
-                url: `/users/${$(this).parent().data('id')}`,
-                data: {
-                    '_token': csrfToken,
-                    '_method': 'DELETE',
-                    'userDelete': true,
-                },
-                dataType: "JSON",
-                success: function (response) {
-                    $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
-                }
-            });
-        }
+        modalConfirm(confirmText, accepted => {
+            if (accepted) {
+                $.ajax({
+                    type: "POST",
+                    url: `/users/${$(this).parent().data('id')}`,
+                    data: {
+                        '_token'    : csrfToken,
+                        '_method'   : 'DELETE',
+                        'userDelete': true,
+                    },
+                    dataType: "JSON",
+                    success : response => {
+                        $(this).parent().parent().parent().remove();
+                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
+                    }
+                });
+            }
+        });
+
     });
+
+    let userEditForm = $('#user-edit-form').children().find('input, select').toArray();
+        userEditForm = userEditForm.map(input => '#' + $(input).attr('id'));
 
     // User Edit / Update
     $('#user-edit-form').on('submit', function (e) {
         e.preventDefault();
-        $('#click-to-the-top').trigger('click');
 
-        let form = $(this)[0];
-        let formData = new FormData(form);
+        let userEditForm = $('#user-edit-form').children().find('input, select').toArray();
+        userEditForm     = userEditForm.map(input => {
+            let validations  = {
+                input    : '#' + input.id,
+                inputName: capitalizeFirstLetter(input.id.replace(/_|-/, ' ')),
+                rules    : 'required',
+            };
 
-        let confirmText = 'Apakah anda yakin ingin men-update user tersebut ?';
+            if (input.id == 'nomer_handphone') {
+                validations['rules'] = 'required,numeric,min:9,max:15';
+            }
 
-        if (confirm(confirmText)) {
-            $.ajax({
-                type: "POST",
-                url: `/users/${$(this).data('id')}`,
-                data: formData,
-                processData: false,
-                cache: false,
-                contentType: false,
-                dataType: "JSON",
-                success: function (response) {
-                    $('#pesan').removeClass('d-none');
+            if (input.id == 'user-email') {
+                validations['rules'] = 'required,email';
+            }
 
+            return validations;
+        });
 
+        let validations = userEditForm;
+
+        validator(validations, success => {
+            if (success) {
+                let dataId = $(this).data('id');
+
+                ajaxForm('POST', this, `/users/${dataId}`, response => {
                     if (response.status === 'fail') {
-                        let pesan = '';
+                        let errors = [];
 
-                        for (const key in response.pesan) {
-                            if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
-                                const element = response.pesan[key];
+                        for (const key in response.errors) {
+                            if (response.errors.hasOwnProperty.call(response.errors, key)) {
+                                const error = response.errors[key];
 
-                                pesan += `<div><i class="fas fa-exclamation-triangle"></i> ${element[0]}</div>`;
+                                errors.push(error);
                             }
                         }
 
-                        $('#pesan strong').html(pesan);
+                        errors = errors.map(error => `<div>${error}</div>`).join();
+                        alertMessage(errors);
                     } else {
-                        $('#pesan strong').text(response.pesan);
+                        let message = 'Berhasil mengedit user';
+                        alertMessage(message);
+
                     }
-                }
-            });
-        }
+                })
+            }
+        });
     });
 
-    // User Delete Photo Profile
+    $(userEditForm.join()).on('keyup', function(event) {
+        event.stopPropagation();
+
+        let id      = this.id;
+        let message = capitalizeFirstLetter(id.replace(/_|-/, ' '));
+
+        let validations = [
+            {
+                input: this,
+                inputName: message,
+                rules: 'required',
+            },
+        ];
+
+        if (id == 'nomer_handphone') {
+            validations[0]['rules'] = 'required,numeric,min:9,max:15';
+        }
+
+        if (id == 'user-email') {
+            validations[0]['rules'] = 'required,email';
+        }
+
+        validator(validations);
+    });
+
+    // User Delete Photo Profilea
     $('#user-destroy-photo-profile-form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1291,7 +1333,7 @@ $(document).ready(function () {
         '#price', '#kategori', '#tersedia_dalam_ebook',
         '#jumlah_barang', '#penerbit', '#jumlah_halaman',
         '#tanggal_rilis', '#subtitle', '#berat', '#panjang',
-        '#lebar', '#diskon',
+        '#lebar',
     ];
 
     let inputIdBookEditJoin = inputIdBookEdit.join(', ');
@@ -1342,6 +1384,7 @@ $(document).ready(function () {
         });
 
         validator(validations, success => {
+            console.log(success);
             if (success) {
                 if (bookStoreForm) {
                     ajaxForm('POST', this , `/books`, response => {
@@ -1384,7 +1427,7 @@ $(document).ready(function () {
 
                             alertMessage(errorMessages);
                         }
-                    }, requestMethod('PATCH'));
+                    }, requestMethodName('PATCH'));
                 }
             }
         });
@@ -1410,6 +1453,10 @@ $(document).ready(function () {
                 }
             }
         );
+    });
+
+    $('#tanggal_rilis').on('change', function() {
+        $(this).next().length != 0 ? $(this).next().remove() : '';
     });
 
     // User Change Password
@@ -1648,7 +1695,7 @@ $(document).ready(function () {
 
         let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
 
-        modalConfirm(this, confirmText, (accepted) => {
+        modalConfirm(confirmText, (accepted) => {
             if (accepted) {
                 ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
                     let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
@@ -1673,7 +1720,7 @@ $(document).ready(function () {
             status: 'orderOnDelivery'
         }
 
-        modalConfirm(this, confirmText, accepted => {
+        modalConfirm(confirmText, accepted => {
             if (accepted) {
                 console.log(true);
                 // ajaxJson('POST', `/book-users/${dataId}`, datas, response => {

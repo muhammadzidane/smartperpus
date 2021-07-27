@@ -65,7 +65,7 @@ Route::prefix('books')->group(function () {
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth', 'auth.admin.only');
 });
-Route::resource('/books', BookController::class);
+Route::resource('/books', BookController::class)->except('index');
 
 // Book Purchase
 Route::prefix('book-purchases')->group(function () {

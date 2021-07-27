@@ -46,7 +46,7 @@ array(
 @include('layouts.book-deals',
 array(
 'title' => 'Rekomendasi Komik / Manga',
-'books' => \App\Models\Book::where('category_id', 1)->get()->take(12),
+'books' => \App\Models\Book::where('category_id', 1)->get()->take(9),
 )
 )
 @endsection

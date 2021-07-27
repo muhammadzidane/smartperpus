@@ -84,12 +84,33 @@
                 display: block;
             }
         }
+
+        .books {
+            background-color: pink;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .book-1 {
+            margin: auto;
+            width: 160px;
+            border: 1px solid red;
+        }
     </style>
 </head>
 
 
 <body>
-    <button id="click-me" data-target="#click-me-modal" data-toggle="modal">click me</button>
+    <div class="container">
+        <div class="books">
+            <div class="book-1">book 1</div>
+            <div class="book-1">book 2</div>
+            <div class="book-1">book 3</div>
+            <div class="book-1">book 4</div>
+            <div class="book-1">book 5</div>
+            <div class="book-1">book 6</div>
+        </div>
+    </div>
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>

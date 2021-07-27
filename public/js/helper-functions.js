@@ -494,10 +494,7 @@ const alertMessage = (messageText) => {
 }
 
 // Modal Confirm - Jangan pakai arrow function
-const modalConfirm = (button, text, callback) => {
-    $(button).attr('data-target', '#modal-confirm');
-    $(button).attr('data-toggle', 'modal');
-
+const modalConfirm = (text, callback) => {
     let html =
     `<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -517,18 +514,18 @@ const modalConfirm = (button, text, callback) => {
     let modalConfirmLength = $('#modal-confirm').length;
 
     if (modalConfirmLength == 0) {
-        $(button).after(html);
+        $('body').prepend(html);
     }
 
+    $('#modal-confirm').modal('show');
+
     const closeModalAction = () => {
-        $(button).removeAttr('data-target data-toggle')
         $('#modal-confirm').modal('hide');
 
         setTimeout(() => {
             $('#modal-confirm').remove();
         }, 200);
     };
-
 
     $('.modal-confirm-accept').on('click', () => {
         closeModalAction();
@@ -687,6 +684,16 @@ const validator = (validations, success = '') => {
                 if (rule == 'nullable') {
                     if (inputValue == '' || inputValue == 0) {
                         validationFails.push('');
+                    }
+                }
+
+                if (rule == 'email') {
+                    let emailRegex = /^\S+@\S+\.\S+/;
+                        emailRegex = emailRegex.test(inputValue);
+                    let message    = `${inputName} harus berupa alamat yang benar`;
+
+                    if (!emailRegex) {
+                        validationFails.push(message);
                     }
                 }
 
