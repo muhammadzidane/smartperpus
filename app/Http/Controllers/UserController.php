@@ -180,6 +180,8 @@ class UserController extends Controller
             return response()->json(compact('errors'));
         } else {
             $photo_profile = $request->image != null ? $request->image->getClientOriginalName() : null;
+            $path_store    = "$user->first_name-$user->last_name-$user->email-";
+            $path_store   .= time() . '.' . $request->image->getClientOriginalExtension();
             $user          = Auth::user();
 
             if ($user->profile_image) {
@@ -187,33 +189,29 @@ class UserController extends Controller
                 File::delete($filename);
             }
 
-            $request->image->storeAs('public/users/profiles', $photo_profile);
-            $data = array('profile_image' => $photo_profile);
+            $data = array('profile_image' => $path_store);
 
+            $request->image->storeAs('public/users/profiles', $path_store);
             $user->update($data);
 
-            return response()->json()->status();
+            return response()->json(compact('path_store'));
         }
     }
 
-    public function destroyPhotoProfile(Request $request, User $user)
+    public function destroyPhoto(Request $request, User $user)
     {
         $update = array(
             'profile_image' => null
         );
 
-        $pesan = 'Berhasil menghapus foto profil ' . $user->first_name . ' ' . $user->last_name;
-
-        Storage::delete($user->profile_image);
-        unlink(storage_path('app\public\user\profile\\' . $user->profile_image));
-
-        $user->update($update);
-
-        if ($request->ajax()) {
-            return response()->json(array('pesan' => $pesan));
-        } else {
-            return redirect()->back()->with('pesan', $pesan);
+        if ($user != null) {
+            $filename = 'storage/users/profiles/' . $user->profile_image;
+            File::delete($filename);
         }
+
+        $update = $user->update($update);
+
+        return response()->json(compact('update'));
     }
 
     public function showChangePassword(User $user)

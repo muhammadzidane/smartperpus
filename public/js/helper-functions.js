@@ -230,6 +230,8 @@ function ucwords(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+// Ajax Form
+
 function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend = '') {
     let form        = $(formSelector)[0];
     let formData    = new FormData(form);
@@ -510,7 +512,7 @@ const alertMessage = (messageText) => {
     let messageLength = $('#message').length;
 
     if (messageLength == 0) {
-        $('.cus-navbar').append(html);
+        $('body').append(html);
     }
 
     setTimeout(() => {
@@ -599,6 +601,10 @@ const bootStrapModal = (modalHeader, modalSize, callback) => {
     }
 
     $('#custom-modal').modal('show');
+
+    $("#custom-modal").on("hidden.bs.modal", function() {
+        $(this).remove();
+    });
 };
 //#region Modal
 

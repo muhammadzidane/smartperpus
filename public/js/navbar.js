@@ -1262,22 +1262,58 @@ $(document).ready(function () {
     });
 
 
-    //#region User add photo profile
+    //#region User create / update photo profile
+
+    // User Delete Photo Profile
+    const deletePhotoProfile = () => {
+        $('#user-delete-photo-form').on('submit', function (e) {
+            e.preventDefault();
+
+            let message = 'Apakah anda yakin ingin menghapus foto profile ?';
+
+            modalConfirm(message, accepted => {
+                if (accepted) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.update) {
+                            let origin      = window.location.origin;
+                            let avatarImage = `${origin}/img/avatar-icon.png`;
+                            let html        = '<i class="fas fa-user"></i>';
+                            let message     = 'Berhasil menghapus foto profile';
+                            let userPhoto   = $('#user-circle-fit').length
+
+                            if (userPhoto != 0 && $('.user-circle').find('i').length ==0 ) {
+                                $('#user-circle-fit').remove();
+                                $('#user-add-photo').text('Tambah Foto');
+                                $('#user-show-profile').attr('src', avatarImage );
+                                $('.user-circle').append(html);
+                                alertMessage(message);
+                                $(this).remove();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    }
+
     $('#user-add-photo').on('click', function() {
         let profileImage = $('#user-show-profile').attr('src');
         let dataId       = $(this).data('id');
+        let buttonText   = $(this).text() == 'Edit Foto' ? 'Edit' : 'Tambah';
+        let headerText   = $(this).text() == 'Edit Foto' ? 'Edit Foto' : 'Tambah Foto';
+
         let html         =
         `<div class="text-center">
-        <img id="user-modal-image" class="profile-img" src="${profileImage}">
+            <img id="user-modal-image" class="profile-img" src="${profileImage}">
         </div>
         <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
             <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
-            <button id="user-add-photo-form" class="d-block ml-auto btn btn-red mt-4">Tambah</button>
+            <button id="user-add-photo-form" class="d-block ml-auto btn btn-red mt-4">${buttonText}</button>
             <input type="hidden" name="_method" value="PATCH">
             <input type="hidden" name="_token" value="${csrfToken}">
         </form>`;
 
-        bootStrapModal('Tambah Foto', 'modal-sm', () => html );
+        bootStrapModal(headerText, 'modal-sm', () => html );
 
         $('#user-image').on('change', function() {
             changeInputPhoto('user-modal-image', 'user-image');
@@ -1309,54 +1345,54 @@ $(document).ready(function () {
                             let navbarProfileImage     = $('#user-circle-fit');
                             let navbarProfileImageText = `<img id="user-circle-fit" src=""></img>`;
 
-                            if (navbarProfileImage.length == 0) {
+                            if ($('.user-circle').find('i').length != 0) {
+                                console.log(1346);
                                 $('.user-circle').find('i').remove();
                                 $('.user-circle').append(navbarProfileImageText);
                             }
 
-                            changeInputPhoto('user-show-profile', 'user-image');
+                            let dataId = $('#user-add-photo').data('id');
+                            let addFormDestroyPhoto =
+                            `<div class="mt-2">
+                                <form id="user-delete-photo-form" action="/users/${dataId}/destroy-photo" method="post">
+                                    <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
+                                    <input type="hidden" name="_token" value="${csrfToken}">
+                                </form>
+                            </div>`;
+
+                            let userDeleteFormLength = $('#user-delete-photo-form').length;
+
+                            if (userDeleteFormLength == 0) {
+                                $('#user-change-password').parent().append(addFormDestroyPhoto);
+                            }
+
                             changeInputPhoto('user-circle-fit', 'user-image');
+                            changeInputPhoto('user-show-profile', 'user-image');
+
+                            // if ($('#user-circle-fit').length == 0) {
+                            //     let html = `<img id="user-circle-fit" src="#">`
+
+                            //     $('.user-circle').find('i').remove();
+                            //     $('.user-circle').append(html);
+                            //     changeInputPhoto('user-circle-fit', 'user-image');
+                            // }
+
                             $('#custom-modal').modal('hide');
                             $('#user-image').val('');
-                            $('#user-add-photo').text('Edit Photo')
+                            $('#user-add-photo').text('Edit Foto')
                             alertMessage(message);
+
+                            deletePhotoProfile();
                         }
                     });
                 }
             });
         });
+
     });
-    //#endregion User add photo profile
+    //#endregion User create / update photo profile
 
-
-    // User Delete Photo Profile
-    $('#user-destroy-photo-profile-form').on('submit', function (e) {
-        e.preventDefault();
-
-        let confirmText = 'Apakah anda yakin ingin mengapus foto profil anda ?';
-        let userId = $(this).data('id');
-        let form = $(this)[0];
-        let formData = new FormData(form);
-
-        if (confirm(confirmText)) {
-            $.ajax({
-                type: "POST",
-                url: `/users/${userId}/destroyPhotoProfile`,
-                enctype: 'multipart/form-data',
-                data: formData,
-                processData: false,
-                cache: false,
-                contentType: false,
-                dataType: "JSON",
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function (errors) {
-                    console.log(errors);
-                }
-            });
-        }
-    });
+    deletePhotoProfile();
 
     // Book Edit
     // Keyup input
@@ -1709,7 +1745,7 @@ $(document).ready(function () {
 
         let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
 
-        modalConfirm(confirmText, (accepted) => {
+        modalConfirm(confirmText, accepted => {
             if (accepted) {
                 ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
                     let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';

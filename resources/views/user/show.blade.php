@@ -160,22 +160,31 @@
                     <div class="d-md-flex py-4">
                         <div class="col-md-4 text-center mb-5">
                             @if ($user->profile_image)
-                            <img id="user-show-profile" class="profile-img" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}" alt="">
+                            <img id="user-show-profile" class="profile-img zoom-modal-image" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}" alt="">
 
                             @else
-                            <img id="user-show-profile" class="profile-img" src="{{ asset('img/avatar-icon.png') }}" alt="">
+                            <img id="user-show-profile" class="profile-img zoom-modal-image" src="{{ asset('img/avatar-icon.png') }}" alt="">
                             @endif
 
                             <div class="mt-5">
-                                <button id="user-add-photo" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">
-                                    {{ $user->profile_image ? 'Edit Foto' : 'Tambah Foto' }}
-                                </button>
+                                <button id="user-add-photo" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">{{ $user->profile_image ? 'Edit Foto' : 'Tambah Foto' }}</button>
                             </div>
+                            <div class="mt-3">
+                                <a id="user-change-password" href="#" class="btn btn-outline-yellow w-100">Ubah Password</a>
+                            </div>
+                            @isset ($user->profile_image)
+                            <div class="mt-2">
+                                <form id="user-delete-photo-form" action="/users/{{ $user->id }}/destroy-photo" method="post">
+                                    <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
+                                    @csrf
+                                </form>
+                            </div>
+                            @endisset
                         </div>
                         <div class="col-md-8 mt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <h5>Biodata diri</h5>
-                                <a href="#" class="tred-bold">Ubah</a>
+                                <a href="/users/{{ $user->id }}/edit" class="tred-bold">Ubah</a>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Nama</div>
@@ -187,11 +196,11 @@
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Email</div>
-                                <div class="text-right">Lara Greyrat</div>
+                                <div class="text-right">{{ $user->email }}</div>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Nomer Handphone</div>
-                                <div class="text-right">Lara Greyrat</div>
+                                <div class="text-right">{{ $user->phone_number }}</div>
                             </div>
                         </div>
                     </div>
