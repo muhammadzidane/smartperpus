@@ -16,6 +16,7 @@ use App\Http\Controllers\{
     UserChatController,
     StatusController,
     WishlistController,
+    ValidatorController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -29,7 +30,7 @@ Route::post('/test', array(TestController::class, 'testPost'))->name('test.post'
 Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // User
-Route::prefix('/users')->group(function () {
+Route::prefix('users')->group(function () {
     Route::post('{user}/destroyPhotoProfile', array(UserController::class, 'destroyPhotoProfile'))->name('users.destroy.photo.profile');
     Route::post('add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
     Route::post('{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
@@ -38,7 +39,11 @@ Route::prefix('/users')->group(function () {
     Route::post('{user}/change-password', array(UserController::class, 'updateChangePassword'))->name('users.update.change.password');
     Route::post('{user}/change-address', array(UserController::class, 'changeAddress'))->name('users.update.address');
 });
-Route::resource('/users', UserController::class);
+Route::resource('users', UserController::class);
+
+Route::prefix('validator')->group(function () {
+    Route::get('unique', array(ValidatorController::class, 'unique'));
+});
 
 // Customer / User Address
 Route::post('/customers/{customer}/ajax/request/edit-submit-get-data', array(CustomerController::class, 'ajaxEditSubmitGetData'));
@@ -63,8 +68,9 @@ Route::prefix('books')->group(function () {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
-    Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth', 'auth.admin.only');
+    Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
 });
+
 Route::resource('/books', BookController::class)->except('index');
 
 // Book Purchase
@@ -131,11 +137,6 @@ Route::prefix('/ajax/request')->group(function () {
 
     // Kota / Kabupaten
     Route::post('change-city', array(CityController::class, 'ajaxChangeCity'));
-});
-
-
-Route::fallback(function ($wkwk) {
-    return 'gk ada halaman ini';
 });
 
 // Categories Route

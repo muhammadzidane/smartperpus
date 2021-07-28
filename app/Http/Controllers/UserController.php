@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\{User, District, City, Province};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash};
+use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, DB};
 
 class UserController extends Controller
 {
     public function __construct()
     {
-        $middleware = array('auth', 'auth.admin.only');
-        $this->middleware($middleware)->only('index', 'edit');
+        $this->middleware('auth.admin.only')->only('create', 'index', 'edit', 'update', 'store');
     }
 
     /**
@@ -35,7 +34,7 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        return view('auth.register');
+        return view('user.create');
     }
 
     /**
@@ -267,9 +266,5 @@ class UserController extends Controller
                 return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan_berhasil);
             }
         }
-    }
-
-    public function changeAddress(Request $request, User $user)
-    {
     }
 }

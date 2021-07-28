@@ -9,7 +9,7 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-const requestMethod = (methodName) => {
+const requestMethodName = (methodName) => {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
     return [
@@ -478,8 +478,37 @@ const showMessageChatting = () => {
     }, 3000);
 }
 
+const backendMessage = (selector, errors) => {
+    let errorMessages = ``;
+
+    for (const key in errors) {
+        if (errors.hasOwnProperty.call(errors, key)) {
+            const error = errors[key];
+
+            errorMessages +=
+            `<div class="alert-message">
+                <div class="alert-message-text">${error}</div>
+                <i class="alert-message-icon fas fa-exclamation-triangle"></i>
+            </div>`;
+        }
+    }
+
+    let alertMessageLength = $('.alert-messages').length;
+
+    if (alertMessageLength == 0) {
+        let messages = `<div class="alert-messages">${errorMessages}</div>`;
+        selector.after(messages);
+    } else {
+        $('.alert-messages').remove();
+
+        let messages = `<div class="alert-messages">${errorMessages}</div>`;
+
+        selector.after(messages);
+    }
+} ;
+
 const alertMessage = (messageText) => {
-    let html = `<div id="message">${messageText}</div>`;
+    let html          = `<div id="message">${messageText}</div>`;
     let messageLength = $('#message').length;
 
     if (messageLength == 0) {
@@ -487,7 +516,7 @@ const alertMessage = (messageText) => {
     }
 
     setTimeout(() => {
-        $('#message').slideUp(500, () => {
+        $('#message').hide(0, () => {
             $('#message').remove();
         });
     }, 2300);
@@ -671,29 +700,94 @@ const validator = (validations, success = '') => {
             let inputValue      = $(inputForm).val();
             let splitRules      = rules.split(',');
             splitRules.map(rule => {
-                if (rule == 'required') {
-                    let message = `${inputName} tidak boleh kosong`;
-
-                    if (inputValue == '' || inputValue == 0) {
-                        validationFails.push(message);
-                    } else {
-                        validationFails.push('');
-                    }
-                }
-
                 if (rule == 'nullable') {
                     if (inputValue == '' || inputValue == 0) {
                         validationFails.push('');
                     }
                 }
 
+                if (rule == 'required') {
+                    let message = `${inputName} tidak boleh kosong`;
+
+                    if (inputValue == '' || inputValue == 0) {
+                        validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        }
+                    } else {
+                        $(inputForm).next('.error').remove();
+                    }
+                }
+
+
+                let uniqueRegex = new RegExp('unique:[a-zA-Z]');
+
+                if (uniqueRegex.test(rule)) {
+                    let uniqueRegexInput = uniqueRegex.exec(rule).input;
+                    let typeFiles        = uniqueRegexInput.replace('unique:', '').split('|');
+                    let table            = typeFiles[0];
+                    let row              = typeFiles[1];
+                    let datas            = {
+                        table     : table,
+                        row       : row,
+                        inputValue: inputValue,
+                    }
+
+                    ajaxJson('GET', '/validator/unique', datas, function(response) {
+                        if (response.table) {
+                            let message = `${inputName} sudah ada sebelumya`;
+
+                            validationFails.push(message);
+
+                            if ($(inputForm).next('.error').length == 0) {
+                                $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                            } else {
+                                $(inputForm).next('.error').children('small').text(message);
+                            }
+                        } else if (inputValue != '') {
+                            $(inputForm).next('.error').remove();
+                        }
+                    });
+                }
+
                 if (rule == 'email') {
                     let emailRegex = /^\S+@\S+\.\S+/;
                         emailRegex = emailRegex.test(inputValue);
-                    let message    = `${inputName} harus berupa alamat yang benar`;
+                    let message    = `${inputName} tidak valid`;
 
-                    if (!emailRegex) {
+                    if (!emailRegex && inputValue != '') {
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
+                    }
+                }
+
+                let sameRegex = new RegExp('same:[A-Za-z]');
+
+                if (sameRegex.test(rule)) {
+                    let sameRegexInput = sameRegex.exec(rule).input;
+                    let sameRegexSplit = sameRegexInput.split(':');
+                    let same           = sameRegexSplit[1];
+
+                    let message = `${inputName} harus sama ${same}`;
+
+                    if (inputValue != $('#' + same).val()) {
+                        validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
 
@@ -708,6 +802,14 @@ const validator = (validations, success = '') => {
 
                     if (inputValue.length > max) {
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
 
@@ -721,6 +823,14 @@ const validator = (validations, success = '') => {
 
                     if (inputValue.length < min && inputValue != '' && inputValue != 0) {
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
 
@@ -735,6 +845,14 @@ const validator = (validations, success = '') => {
 
                     if (inputValue.length != digits && inputValue != '' && inputValue != 0) {
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
 
@@ -749,6 +867,14 @@ const validator = (validations, success = '') => {
                         let message = `Hanya bisa mengirim file gambar berupa: ${typeFiles}`;
 
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
 
@@ -759,25 +885,20 @@ const validator = (validations, success = '') => {
 
                     if (!numberOnlyRegex && inputValue != '' && inputValue != 0) {
                         validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
                     }
                 }
             });
 
-            let inputNext = $(inputForm).next('.tred-bold');
+            let inputNext = $(inputForm).next('.error');
             let checkValidations = validationFails.every(validation => validation == []);
-
-            if (!checkValidations) {
-                let html = `<div class="tred-bold"><small>${validationFails.slice(-1).pop()}</small></div>`;
-
-                if (inputNext.length == 0) {
-                    $(inputForm).after(html);
-                } else {
-                    $(inputForm).next().find('small').text(validationFails.slice(-1).pop());
-                }
-
-            } else {
-                inputNext.remove();
-            }
         }
     }
 

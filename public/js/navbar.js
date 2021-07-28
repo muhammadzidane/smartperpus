@@ -1126,46 +1126,62 @@ $(document).ready(function () {
     //#endregion Book add stock - Tambah stok buku
 
     // User Index - Daftar karyawan
-    $('.user-block').on('click', function (e) {
+    $('.user-block').on('click', function (event) {
+        event.preventDefault();
 
         let thisButton = $(this);
-
-        e.preventDefault();
+        let buttonEdit = $(this).parents('td').prev().find('a');
 
         if ($(this).text() == 'Blokir') {
-            if (confirm('Apakah anda yakin ingin menblok user tersebut ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: `/users/${$(this).parent().data('id')}/block`,
-                    data: {
-                        '_token': csrfToken,
-                        'userBlock': true,
-                    },
-                    dataType: "JSON",
-                    success: function (response) {
-                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
-                        $(thisButton).text('Lepas Blokir');
-                        $(thisButton).parent().parent().parent().addClass('text-grey tbold');
-                    }
-                });
-            }
+            let confirmText = 'Apakah anda yakin ingin menblok user tersebut ?';
+            modalConfirm(confirmText, success => {
+                if (success) {
+                    $.ajax({
+                        type: "POST",
+                        url: `/users/${$(this).parent().data('id')}/block`,
+                        data: {
+                            '_token': csrfToken,
+                            'userBlock': true,
+                        },
+                        dataType: "JSON",
+                        success: function (response) {
+                            let message = 'Berhasil memblokir user';
+                            alertMessage(message);
+
+                            $(thisButton).text('Lepas Blokir');
+                            $(thisButton).parent().parent().parent().addClass('text-grey tbold');
+                            buttonEdit.attr('href', '');
+                        }
+                    });
+
+                }
+            });
         } else {
-            if (confirm('Apakah anda yakin ingin melepas blok user tersebut ?')) {
-                $.ajax({
-                    type: "POST",
-                    url: `/users/${$(this).parent().data('id')}/restore`,
-                    data: {
-                        '_token': csrfToken,
-                        'userRestoreBlock': true,
-                    },
-                    dataType: "JSON",
-                    success: function (response) {
-                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
-                        $(thisButton).text('Blokir');
-                        $(thisButton).parent().parent().parent().removeClass('text-grey tbold');
-                    }
-                });
-            }
+            let confirmText = 'Apakah anda yakin ingin melepas blok user tersebut ?';
+
+            modalConfirm(confirmText, success => {
+                let userId = $(this).parent().data('id');
+
+                if (success) {
+                    $.ajax({
+                        type: "POST",
+                        url: `/users/${userId}/restore`,
+                        data: {
+                            '_token': csrfToken,
+                            'userRestoreBlock': true,
+                        },
+                        dataType: "JSON",
+                        success: function (response) {
+                            let message = 'Berhasil melepas blokir user';
+                            alertMessage(message);
+
+                            $(thisButton).text('Blokir');
+                            $(thisButton).parent().parent().parent().removeClass('text-grey tbold');
+                            buttonEdit.attr('href', `/users/${userId}/edit`);
+                        }
+                    });
+                }
+            });
         }
 
 
@@ -1179,19 +1195,17 @@ $(document).ready(function () {
 
         modalConfirm(confirmText, accepted => {
             if (accepted) {
-                $.ajax({
-                    type: "POST",
-                    url: `/users/${$(this).parent().data('id')}`,
-                    data: {
-                        '_token'    : csrfToken,
-                        '_method'   : 'DELETE',
-                        'userDelete': true,
-                    },
-                    dataType: "JSON",
-                    success : response => {
-                        $(this).parent().parent().parent().remove();
-                        $('#pesan').show().removeClass('d-none').addClass('d-block').children('strong').text(response.pesan);
-                    }
+                let datas = {
+                    '_token'    : csrfToken,
+                    '_method'   : 'DELETE',
+                    'userDelete': true,
+                }
+
+                ajaxJson('POST', `/users/${$(this).parent().data('id')}`, datas, success => {
+                    let message = 'Berhasil menghapus karyawan';
+
+                    $(this).parent().parent().parent().remove();
+                    alertMessage(message);
                 });
             }
         });
@@ -1232,51 +1246,19 @@ $(document).ready(function () {
 
                 ajaxForm('POST', this, `/users/${dataId}`, response => {
                     if (response.status === 'fail') {
-                        let errors = [];
+                        let addMessage    = $(this).children(':nth-child(2)');
 
-                        for (const key in response.errors) {
-                            if (response.errors.hasOwnProperty.call(response.errors, key)) {
-                                const error = response.errors[key];
-
-                                errors.push(error);
-                            }
-                        }
-
-                        errors = errors.map(error => `<div>${error}</div>`).join();
-                        alertMessage(errors);
+                        backendMessage(addMessage, response.errors);
+                        $('#click-to-the-top').trigger('click');
                     } else {
                         let message = 'Berhasil mengedit user';
-                        alertMessage(message);
 
+                        $('.alert-messages').remove();
+                        alertMessage(message);
                     }
                 })
             }
         });
-    });
-
-    $(userEditForm.join()).on('keyup', function(event) {
-        event.stopPropagation();
-
-        let id      = this.id;
-        let message = capitalizeFirstLetter(id.replace(/_|-/, ' '));
-
-        let validations = [
-            {
-                input: this,
-                inputName: message,
-                rules: 'required',
-            },
-        ];
-
-        if (id == 'nomer_handphone') {
-            validations[0]['rules'] = 'required,numeric,min:9,max:15';
-        }
-
-        if (id == 'user-email') {
-            validations[0]['rules'] = 'required,email';
-        }
-
-        validator(validations);
     });
 
     // User Delete Photo Profilea
@@ -1312,10 +1294,14 @@ $(document).ready(function () {
     // Keyup input
     const bookEditCustomValidationCondition = (inputId, data, formAction = '') => {
         if (inputId == '#isbn') {
-            data['rules'] = 'required,numeric,digits:13';
+            data['rules'] = 'required,digits:13';
         }
 
         if (inputId == '#tersedia_dalam_ebook') {
+            data['rules'] = 'nullable';
+        }
+
+        if (inputId == '#diskon') {
             data['rules'] = 'nullable';
         }
 
@@ -1327,33 +1313,6 @@ $(document).ready(function () {
             }
         }
     }
-
-    let inputIdBookEdit = [
-        '#nama_penulis', '#isbn', '#judul_buku', '#sinopsis',
-        '#price', '#kategori', '#tersedia_dalam_ebook',
-        '#jumlah_barang', '#penerbit', '#jumlah_halaman',
-        '#tanggal_rilis', '#subtitle', '#berat', '#panjang',
-        '#lebar',
-    ];
-
-    let inputIdBookEditJoin = inputIdBookEdit.join(', ');
-
-    $(inputIdBookEditJoin).on('keyup', function() {
-        let validations     = [];
-
-        inputIdBookEdit.map(inputId => {
-            let data = {
-                input    : inputId,
-                inputName: capitalizeFirstLetter(inputId.replace('#', '').replace('_', ' ')),
-                rules    : 'required',
-            }
-
-            bookEditCustomValidationCondition(inputId, data);
-            validations.push(data);
-            validator(validations);
-        });
-
-    });
 
     // Submit
     $('#book-edit-form, #book-store-form').on('submit', function (e) {
@@ -1391,21 +1350,15 @@ $(document).ready(function () {
                         if (!response.errors) {
                             let message = 'Berhasil menambah buku';
 
+                            $(this)[0].reset();
+                            $('#book-show-image').attr('src', '')
+                            $('.alert-messages').remove();
                             alertMessage(message);
-                            $(this).trigger("reset");
-                            $('#book-show-image').attr('src', '');
                         } else {
-                            let errorMessages = ``;
+                            let addMessage    = $('#book-edit-form, #book-store-form').children().first();
 
-                            for (const key in response.errors) {
-                                if (response.errors.hasOwnProperty.call(response.errors, key)) {
-                                    const element = response.errors[key];
-
-                                    errorMessages += `<div>${element}</div>`;
-                                }
-                            }
-
-                            alertMessage(errorMessages);
+                            backendMessage(addMessage, response.errors);
+                            $('#click-to-the-top').trigger('click');
                         }
                     });
                 } else {
@@ -1413,19 +1366,13 @@ $(document).ready(function () {
                         if (!response.errors) {
                             let message = 'Berhasil mengedit buku';
 
+                            $('.alert-messages').remove();
                             alertMessage(message);
                         } else {
-                            let errorMessages = ``;
+                            let addMessage    = $('#book-edit-form, #book-store-form').children().first();
 
-                            for (const key in response.errors) {
-                                if (response.errors.hasOwnProperty.call(response.errors, key)) {
-                                    const element = response.errors[key];
-
-                                    errorMessages += `<div>${element}</div>`;
-                                }
-                            }
-
-                            alertMessage(errorMessages);
+                            backendMessage(addMessage, response.errors);
+                            $('#click-to-the-top').trigger('click');
                         }
                     }, requestMethodName('PATCH'));
                 }

@@ -7,10 +7,6 @@
 </div>
 @endif
 
-<div id="pesan" class="alert alert-warning d-none" role="alert">
-    <strong></strong>
-</div>
-
 <div class="register-user py-4">
     <div id="book-create" class="form-register w-75 mx-auto">
         <a class="float-right" href="{{ isset($book) ? '\books\\' . $book->id : url()->previous() }}">
@@ -117,18 +113,18 @@
 
                     @if (Route::has('books.edit'))
                     @isset($book)
-                    <div class="w-25 mb-3">
-                        <img id="book-show-image" class="w-100" src="{{ asset('storage/books/' . $book->image )  }}">
+                    <div class="w-50 mb-3">
+                        <img id="book-show-image" class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $book->image )  }}">
                     </div>
 
                     @else
-                    <div class="w-25">
-                        <img id="book-show-image" class="w-100" src="">
+                    <div class="w-50">
+                        <img id="book-show-image" class="zoom-modal-image w-100" src="">
                     </div>
                     @endisset
                     @endif
 
-                    <input type="file" data-href="{{ isset($book) ? asset('storage/books/' . $book->image) : '' }}" name="gambar_sampul_buku" id="gambar_sampul_buku" class="form-control-custom w-90">
+                    <input type="file" data-href="{{ isset($book) ? asset('storage/books/' . $book->image) : '' }}" name="gambar_sampul_buku" id="gambar_sampul_buku" class="form-control-custom w-90" accept="image/png, image/jpeg, image/jpg">
                 </div>
             </div>
 

@@ -17,8 +17,10 @@ class AuthAdminOnlyMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::user()->role == 'guest') {
-            return redirect()->route('home');
+        $authrole = Auth::user() != null ? Auth::user()->role : null;
+
+        if ($authrole == 'guest' || $authrole == null) {
+            return abort(404);
         } else {
             return $next($request);
         }

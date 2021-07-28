@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\{Storage, Validator, Auth, File};
 
 class BookController extends Controller
 {
+    // Middleware
+    public function __construct()
+    {
+        $methods = array('edit', 'create', 'store');
+        $this->middleware('auth.admin.only')->only($methods);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -74,7 +81,7 @@ class BookController extends Controller
                 'price'              => $request->price,
                 'image'              => $book_image_name,
                 'author_id'          => $author->id,
-                'discount'           => $request->diskon,
+                'discount'           => $request->diskon ?? 0,
                 'ebook'              => $request->tersedia_dalam_ebook,
                 'pages'              => $request->jumlah_halaman,
                 'release_date'       => $request->tanggal_rilis,
@@ -170,7 +177,7 @@ class BookController extends Controller
                 'price'              => $request->price,
                 'image'              => $book_image_name,
                 'author_id'          => $author->id,
-                'discount'           => $request->diskon,
+                'discount'           => $request->diskon ?? 0,
                 'ebook'              => $request->tersedia_dalam_ebook,
                 'pages'              => $request->jumlah_halaman,
                 'release_date'       => $request->tanggal_rilis,
