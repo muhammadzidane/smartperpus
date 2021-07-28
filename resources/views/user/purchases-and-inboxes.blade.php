@@ -7,7 +7,7 @@
                     <div class="{{ $waiting_for_confirmations ?? '' }}">
                         <div class="d-flex w-maxc position-relative">
                             <a class="text-decoration-none text-grey" href=#">Menunggu pembayaran</a>
-                            <div class="waiting-for-payment">{{ $waiting_for_confirmations_count }}</div>
+                            <div class="waiting-for-payment">1</div>
                         </div>
                     </div>
                     <div class="">

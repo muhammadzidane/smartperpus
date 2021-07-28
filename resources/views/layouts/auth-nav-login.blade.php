@@ -2,7 +2,12 @@
     <a id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <div class="user">
             <div class="user-circle self-middle">
+                @isset (Illuminate\Support\Facades\Auth::user()->profile_image)
+                <img id="user-circle-fit" src="{{ asset('storage/users/profiles/' . Illuminate\Support\Facades\Auth::user()->profile_image) }}">
+
+                @else
                 <i class="fas fa-user"></i>
+                @endisset
             </div>
             <div class="tred-bold self-middle ml-2">
                 <div>{{ Auth::user()->first_name }}</div>

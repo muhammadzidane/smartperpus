@@ -353,8 +353,6 @@ function customerUpdate() {
         let city         = $(this.kota_atau_kabupaten).find(':selected').text() + '.';
         let province     = $(this.provinsi).find(':selected').text();
 
-        console.log(namaPenerima);
-
         if (confirm('Apakah anda yakin ingin mengedit alamat tersebut ?')) {
 
             let patchMethod = `<input id="method-patch" type="hidden" name="_method" value="PATCH">`;
@@ -575,6 +573,34 @@ const modalConfirm = (text, callback) => {
     });
 }
 // End Modal confirm
+
+//#region Modal
+const bootStrapModal = (modalHeader, modalSize, callback) => {
+    let html =
+    `<div class="modal fade" id="custom-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog ${modalSize} modal-dialog-centered">
+            <div class="modal-content">
+                <div class="p-3 position-relative">
+                    <h5 class="modal-title tred login-header">${modalHeader}</h5>
+                    <button id="modal-exit-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ${callback()}
+                </div>
+            </div>
+        </div>
+    </div>`;
+    let modalLength = $('#custom-modal').length;
+
+    if (modalLength == 0) {
+        $('body').prepend(html);
+    }
+
+    $('#custom-modal').modal('show');
+};
+//#region Modal
 
 // Modal zoom image - Click untuk menampilkan modal gambar yang lebih besar
 $('.zoom-modal-image').on('click', function() {
@@ -865,6 +891,31 @@ const validator = (validations, success = '') => {
 
                     if ($.inArray(ext, typeFiles) == -1 && inputValue != '') {
                         let message = `Hanya bisa mengirim file gambar berupa: ${typeFiles}`;
+
+                        validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    } else if (inputValue != '') {
+                        $(inputForm).next('.error').remove();
+                    }
+                }
+
+                let maxSizeRegex = new RegExp('maxSize:[0-9]');
+
+                if (maxSizeRegex.test(rule)) {
+                    let maxSizeRegexInput = maxSizeRegex.exec(rule).input;
+                    let maxSizeSplit      = maxSizeRegexInput.split(':');
+                    let size              = maxSizeSplit[1] / 1000;
+
+                    let imageSize     = $(inputForm)[0].files[0] != undefined ? $(inputForm)[0].files[0].size : null;
+                    let imageSizeInMb = imageSize /1024/1024;
+
+                    if (imageSizeInMb > size) {
+                        let message = `${inputName} tidak boleh lebih dari 2000 kilobyte (2mb)`;
 
                         validationFails.push(message);
 

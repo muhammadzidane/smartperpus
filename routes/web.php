@@ -32,7 +32,7 @@ Route::get('/pagination', array(TestController::class, 'pagination'));
 // User
 Route::prefix('users')->group(function () {
     Route::post('{user}/destroyPhotoProfile', array(UserController::class, 'destroyPhotoProfile'))->name('users.destroy.photo.profile');
-    Route::post('add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
+    Route::patch('{user}/add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
     Route::post('{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
     Route::post('{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
     Route::get('{user}/change-password', array(UserController::class, 'showChangePassword'))->name('users.show.change.password');

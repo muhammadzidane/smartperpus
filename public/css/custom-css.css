@@ -725,7 +725,7 @@ footer {
     border-radius: 25px;
 }
 
-.user-circle {
+.user-circle, #user-circle-fit {
     background-color: #e2d5d5;
     border: 2px solid #fffdf6;
     color: #fffdf6;
@@ -735,10 +735,23 @@ footer {
     border-radius: 100%;
 }
 
+#user-circle-fit {
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+
 .user-circle i { font-size: 24px; }
 
 .dropdown-user {
     padding: 10px 5px;
+}
+
+.user-icon {
+    color: #6E7C7C;
+    font-size: 28px;
+    margin-left: 2px;
+    margin-right: 0.40rem;
 }
 
 /* Wishlist */
@@ -978,7 +991,11 @@ footer {
     height: max-content;
 }
 
-.active-authbook { box-shadow: 0 5px 0 0 #686d76; }
+/* .active-authbook { box-shadow: 0 10px 0 0 #686d76; } */
+.user-show-active {
+    box-shadow: 0 10px 0 0 #686d76;
+    z-index: 2;
+}
 
 .wkwk1 {display: flex;}
 .wkwk1 > div:first-child {
@@ -1356,6 +1373,14 @@ footer {
   margin-right: -50%;
 }
 
+/* Modal */
+#modal-exit-button {
+    cursor: pointer;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
 /* Modal Login */
 .modal-content {
     border-radius: unset;
@@ -1642,7 +1667,6 @@ footer {
     border-radius: 50%;
     height: 170px;
     width: 170px;
-
 }
 .btn-sm {
     padding: 5px 0;

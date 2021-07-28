@@ -1261,7 +1261,75 @@ $(document).ready(function () {
         });
     });
 
-    // User Delete Photo Profilea
+
+    //#region User add photo profile
+    $('#user-add-photo').on('click', function() {
+        let profileImage = $('#user-show-profile').attr('src');
+        let dataId       = $(this).data('id');
+        let html         =
+        `<div class="text-center">
+        <img id="user-modal-image" class="profile-img" src="${profileImage}">
+        </div>
+        <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
+            <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
+            <button id="user-add-photo-form" class="d-block ml-auto btn btn-red mt-4">Tambah</button>
+            <input type="hidden" name="_method" value="PATCH">
+            <input type="hidden" name="_token" value="${csrfToken}">
+        </form>`;
+
+        bootStrapModal('Tambah Foto', 'modal-sm', () => html );
+
+        $('#user-image').on('change', function() {
+            changeInputPhoto('user-modal-image', 'user-image');
+        });
+
+        $('#user-add-photo-profile-form').on('submit', function(event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+
+            let validation = [
+                {
+                    input    : '#user-image',
+                    inputName: 'Gambar',
+                    rules    : 'required,mimes:jpg|jpeg|png,maxSize:2000',
+                }
+            ];
+
+            validator(validation, success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        // Backend validation
+                        if (response.errors) {
+                            let addMessage = $('#custom-modal').find('.modal-content').children().first();
+
+                            backendMessage(addMessage, response.errors);
+                            $('.alert-messages').addClass('m-auto w-75');
+                        } else {
+                            let message                = 'Berhasil menambah foto profile';
+                            let navbarProfileImage     = $('#user-circle-fit');
+                            let navbarProfileImageText = `<img id="user-circle-fit" src=""></img>`;
+
+                            if (navbarProfileImage.length == 0) {
+                                $('.user-circle').find('i').remove();
+                                $('.user-circle').append(navbarProfileImageText);
+                            }
+
+                            changeInputPhoto('user-show-profile', 'user-image');
+                            changeInputPhoto('user-circle-fit', 'user-image');
+                            $('#custom-modal').modal('hide');
+                            $('#user-image').val('');
+                            $('#user-add-photo').text('Edit Photo')
+                            alertMessage(message);
+                        }
+                    });
+                }
+            });
+        });
+    });
+    //#endregion User add photo profile
+
+
+    // User Delete Photo Profile
     $('#user-destroy-photo-profile-form').on('submit', function (e) {
         e.preventDefault();
 
@@ -1343,7 +1411,6 @@ $(document).ready(function () {
         });
 
         validator(validations, success => {
-            console.log(success);
             if (success) {
                 if (bookStoreForm) {
                     ajaxForm('POST', this , `/books`, response => {

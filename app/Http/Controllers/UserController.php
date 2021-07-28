@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{User, District, City, Province};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, DB};
+use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, File};
 
 class UserController extends Controller
 {
@@ -168,37 +168,32 @@ class UserController extends Controller
         }
     }
 
-    public function photoUpdateOrInsert(Request $request)
+    public function photoUpdateOrInsert(Request $request, User $user)
     {
-        $request->validate(
-            array(
-                'foto_profile' => array('nullable', 'file', 'mimes:jpg,jpeg,png', 'max:2000'),
-            )
+        $rules     = array(
+            'image' => 'required|mimes:jpg,jpeg,png|max:2000',
         );
+        $validator = Validator::make($request->all(), $rules);
+        $errors    = $validator->errors();
 
-        $photo_profile = $request->foto_profile->getClientOriginalName();
-
-        $user = Auth::user();
-
-        if ($user->profile_image !== null) {
-            Storage::delete($user->profile_image);
-            unlink(storage_path('app\public\user\profile\\' . $user->profile_image));
-
-            $pesan = 'Berhasil men-edit foto profil ' . $user->first_name . ' ' . $user->last_name;
+        if ($validator->fails()) {
+            return response()->json(compact('errors'));
         } else {
-            $pesan = 'Berhasil menambah foto profil ' . $user->first_name . ' ' . $user->last_name;
+            $photo_profile = $request->image != null ? $request->image->getClientOriginalName() : null;
+            $user          = Auth::user();
+
+            if ($user->profile_image) {
+                $filename = 'storage/users/profiles/' . $user->profile_image;
+                File::delete($filename);
+            }
+
+            $request->image->storeAs('public/users/profiles', $photo_profile);
+            $data = array('profile_image' => $photo_profile);
+
+            $user->update($data);
+
+            return response()->json()->status();
         }
-
-        User::find(Auth::id())->update(array('profile_image' => $photo_profile));
-
-        if (!Storage::exists('public/users/profile/' . $photo_profile)) {
-            $request->foto_profile->storeAs(
-                'public/user/profile',
-                str_replace(' ', '_', strtolower($photo_profile))
-            );
-        }
-
-        return redirect()->back()->with('pesan', $pesan);
     }
 
     public function destroyPhotoProfile(Request $request, User $user)
