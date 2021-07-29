@@ -170,7 +170,7 @@
                                 <button id="user-add-photo" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">{{ $user->profile_image ? 'Edit Foto' : 'Tambah Foto' }}</button>
                             </div>
                             <div class="mt-3">
-                                <a id="user-change-password" href="#" class="btn btn-outline-yellow w-100">Ubah Password</a>
+                                <a id="user-change-password" href="#" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">Ubah Password</a>
                             </div>
                             @isset ($user->profile_image)
                             <div class="mt-2">

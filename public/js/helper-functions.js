@@ -478,7 +478,7 @@ const showMessageChatting = () => {
     }, 3000);
 }
 
-const backendMessage = (selector, errors) => {
+const backendMessage = (selectorAfter, errors) => {
     let errorMessages = ``;
 
     for (const key in errors) {
@@ -497,7 +497,7 @@ const backendMessage = (selector, errors) => {
 
     if (alertMessageLength == 0) {
         let messages = `<div class="alert-messages">${errorMessages}</div>`;
-        selector.after(messages);
+        selectorAfter.after(messages);
     } else {
         $('.alert-messages').remove();
 
@@ -807,8 +807,9 @@ const validator = (validations, success = '') => {
                     let sameRegexInput = sameRegex.exec(rule).input;
                     let sameRegexSplit = sameRegexInput.split(':');
                     let same           = sameRegexSplit[1];
+                    let sameText       = capitalizeFirstLetter(sameRegexSplit[1].replace(/_|-/, ' '));
 
-                    let message = `${inputName} harus sama ${same}`;
+                    let message = `${inputName} harus sama dengan ${sameText}`;
 
                     if (inputValue != $('#' + same).val()) {
                         validationFails.push(message);
@@ -830,7 +831,7 @@ const validator = (validations, success = '') => {
                     let maxRegexSplit = maxRegexInput.split(':');
                     let max           = maxRegexSplit[1];
 
-                    let message = `${inputName} tidak boleh lebih dari ${max}`;
+                    let message = `${inputName} maksimal ${max} karakter`;
 
                     if (inputValue.length > max) {
                         validationFails.push(message);
@@ -851,7 +852,7 @@ const validator = (validations, success = '') => {
                     let minRegexInput = minRegex.exec(rule).input;
                     let minRegexSplit = minRegexInput.split(':');
                     let min           = minRegexSplit[1];
-                    let message       = `${inputName} Tidak boleh kurang dari ${min}`;
+                    let message       = `${inputName} minimal ${min} karakter`;
 
                     if (inputValue.length < min && inputValue != '' && inputValue != 0) {
                         validationFails.push(message);

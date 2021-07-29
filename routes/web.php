@@ -35,8 +35,7 @@ Route::prefix('users')->group(function () {
     Route::patch('{user}/add-photo-profile', array(UserController::class, 'photoUpdateOrInsert'))->name('users.add.photo.profile');
     Route::post('{user}/block', array(UserController::class, 'softDelete'))->name('users.block');
     Route::post('{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
-    Route::get('{user}/change-password', array(UserController::class, 'showChangePassword'))->name('users.show.change.password');
-    Route::post('{user}/change-password', array(UserController::class, 'updateChangePassword'))->name('users.update.change.password');
+    Route::post('{user}/change-password', array(UserController::class, 'changePassword'));
     Route::post('{user}/change-address', array(UserController::class, 'changeAddress'))->name('users.update.address');
 });
 Route::resource('users', UserController::class);

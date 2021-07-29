@@ -221,10 +221,8 @@ class UserController extends Controller
         return view('user.change-password', compact(('user')));
     }
 
-    public function updateChangePassword(Request $request, User $user)
+    public function changePassword(Request $request, User $user)
     {
-        $update = array('password' => Hash::make($request->password_baru));
-
         $validator = Validator::make(
             $request->all(),
             array(
@@ -235,29 +233,18 @@ class UserController extends Controller
                         }
                     }
                 ),
-                'password_baru'        => array('required', 'min:6'),
-                'ulangi_password_baru' => array('required', 'min:6', 'same:password_baru'),
+                'password_baru'        => array('required', 'min:8'),
             ),
         );
 
-        $pesan_berhasil = 'Berhasil mengganti password ' . $user->first_name . ' ' . $user->last_name;
+        $update = array('password' => Hash::make($request->password_baru));
 
-        if ($request->ajax()) {
-            if ($validator->fails()) {
-                return response()->json(array('pesan' => $validator->errors(), 'status' => 'fail'));
-            } else {
-                $user->update($update);
-
-                return response()->json(array('pesan' => $pesan_berhasil, 'status' => 'successful'));
-            }
+        if ($validator->fails()) {
+            return response()->json(array('errors' => $validator->errors()));
         } else {
-            if ($validator->fails()) {
-                return redirect()->back()->withErrors($validator)->withInput()->with('pesan_password', $pesan_berhasil);
-            } else {
-                $user->update($update);
+            $updated =  $user->update($update);
 
-                return redirect()->route('users.show', array('user' => $user->id))->with('pesan', $pesan_berhasil);
-            }
+            return response()->json(compact('updated'));
         }
     }
 }

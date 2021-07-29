@@ -1261,10 +1261,7 @@ $(document).ready(function () {
         });
     });
 
-
     //#region User create / update photo profile
-
-    // User Delete Photo Profile
     const deletePhotoProfile = () => {
         $('#user-delete-photo-form').on('submit', function (e) {
             e.preventDefault();
@@ -1308,12 +1305,17 @@ $(document).ready(function () {
         </div>
         <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
             <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
-            <button id="user-add-photo-form" class="d-block ml-auto btn btn-red mt-4">${buttonText}</button>
+            <div class="text-right mt-4">
+                <button type="button"
+                data-dismiss="modal" aria-label="Close"
+                class="btn-none tred-bold mr-3">Batal</button>
+                <button id="user-add-photo-form" class="btn btn-red">${buttonText}</button>
+            </div>
             <input type="hidden" name="_method" value="PATCH">
             <input type="hidden" name="_token" value="${csrfToken}">
         </form>`;
 
-        bootStrapModal(headerText, 'modal-sm', () => html );
+        bootStrapModal(headerText, 'modal-md', () => html );
 
         $('#user-image').on('change', function() {
             changeInputPhoto('user-modal-image', 'user-image');
@@ -1339,7 +1341,7 @@ $(document).ready(function () {
                             let addMessage = $('#custom-modal').find('.modal-content').children().first();
 
                             backendMessage(addMessage, response.errors);
-                            $('.alert-messages').addClass('m-auto w-75');
+                            $('.alert-messages').addClass('m-auto w-90');
                         } else {
                             let message                = 'Berhasil menambah foto profile';
                             let navbarProfileImage     = $('#user-circle-fit');
@@ -1390,9 +1392,71 @@ $(document).ready(function () {
         });
 
     });
+    deletePhotoProfile();
     //#endregion User create / update photo profile
 
-    deletePhotoProfile();
+    //#region User change password
+    $('#user-change-password').on('click', function() {
+        let dataId = $(this).data('id');
+
+        bootStrapModal('Ubah Password', 'modal-md', function() {
+            let html   =
+            `<form id="user-change-password" action="/users/${dataId}/change-password" method="POST">
+                <div class="form-group">
+                    <label for="password-lama">Password Lama</label>
+                    <input id="password-lama" name="password_lama" type="password" class="form-control-custom" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password-baru">Password Baru</label>
+                    <input id="password-baru" name="password_baru" type="password" class="form-control-custom" autocomplete="off">
+                </div>
+                <div class="text-right mt-4">
+                    <button class="btn-none tred-bold mr-3"
+                    data-dismiss="modal" aria-label="Close">Batal</button>
+                    <button class="btn btn-red" type="submit">Ubah</button>
+                </div>
+                <input type="hidden" name="_token" value="${csrfToken}">
+            </form>`;
+
+            return html;
+        })
+
+        $('#user-change-password').on('submit', function(event) {
+            event.preventDefault();
+
+            let validations = [
+                {
+                    input: '#password-lama',
+                    inputName: 'Password lama',
+                    rules: 'required',
+                },
+                {
+                    input: '#password-baru',
+                    inputName: 'Password baru',
+                    rules: 'required,min:8',
+                },
+            ];
+
+            validator(validations, success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.errors) {
+                            let element = $(this).parent().prev();
+
+                            backendMessage(element, response.errors);
+                            $('.alert-messages').addClass('mx-auto w-90');
+                        } else if (response.updated){
+                            let message = `Berhasil mengubah password`;
+
+                            $('#custom-modal').modal('hide');
+                            alertMessage(message);
+                        }
+                    });
+                }
+            });
+        });
+    });
+    //#endregion User change password
 
     // Book Edit
     // Keyup input
