@@ -250,25 +250,51 @@ class UserController extends Controller
     public function changeBiodata(Request $request, User $user)
     {
         $rules     = array(
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'gender' => 'required',
-            'address' => 'nullable',
+            'first_name'    => 'required',
+            'last_name'     => 'required',
+            'gender'        => 'required',
+            'address'       => 'nullable',
             'date_of_birth' => 'nullable|date',
-            'phone_number' => 'nullable|numeric|min:9|max:15',
+            'phone_number'  => 'nullable|min:9|max:15',
         );
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $test   = $request->except('_method', '_token');
 
-            return response()->json(compact('errors'));
+            return response()->json(compact('errors', 'test'));
         } else {
             $data      = $request->except('_token', '_method');
             $user->update($data);
 
             return response()->json(compact('user'));
+        }
+    }
+
+    public function changeEmail(Request $request, User $user)
+    {
+        $rules = array(
+            'email'    => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'required|password',
+        );
+
+        $validator      = Validator::make($request->all(), $rules);
+        $errors         = $validator->errors();
+        $check_password =  Hash::check($request->password, $user->password);
+
+        // if (!$check_password && $request->password != '') {
+        //     $errors->add('old_password', 'Password tidak valid');
+        // }
+
+        if ($validator->fails()) {
+            return response()->json(compact('errors'));
+        } else {
+            $data    = array('email' => $request->email);
+            $updated = $user->update($data);
+
+            return response()->json(compact('updated', 'user'));
         }
     }
 }

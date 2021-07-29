@@ -10,7 +10,7 @@
                 @endisset
             </div>
             <div class="tred-bold self-middle ml-2">
-                <div>{{ Auth::user()->first_name }}</div>
+                <div class="navbar-user-first-name">{{ Auth::user()->first_name }}</div>
             </div>
         </div>
     </a>

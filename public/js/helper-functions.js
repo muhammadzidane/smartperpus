@@ -495,17 +495,9 @@ const backendMessage = (selectorAfter, errors) => {
     }
 
     let alertMessageLength = $('.alert-messages').length;
+    let messages           = `<div class="alert-messages">${errorMessages}</div>`;
 
-    if (alertMessageLength == 0) {
-        let messages = `<div class="alert-messages">${errorMessages}</div>`;
-        selectorAfter.after(messages);
-    } else {
-        $('.alert-messages').remove();
-
-        let messages = `<div class="alert-messages">${errorMessages}</div>`;
-
-        selector.after(messages);
-    }
+    alertMessageLength == 0 ? selectorAfter.after(messages) : $('.alert-messages').html(errorMessages);
 } ;
 
 const alertMessage = (messageText) => {

@@ -37,6 +37,7 @@ Route::prefix('users')->group(function () {
     Route::post('{user}/restore', array(UserController::class, 'restore'))->name('users.restore');
     Route::patch('{user}/change-password', array(UserController::class, 'changePassword'));
     Route::patch('{user}/change-biodata', array(UserController::class, 'changeBiodata'));
+    Route::patch('{user}/change-email', array(UserController::class, 'changeEmail'));
 });
 Route::resource('users', UserController::class);
 

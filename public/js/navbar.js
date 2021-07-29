@@ -1345,7 +1345,6 @@ $(document).ready(function () {
                             $('.alert-messages').addClass('m-auto w-90');
                         } else {
                             let message                = 'Berhasil menambah foto profile';
-                            let navbarProfileImage     = $('#user-circle-fit');
                             let navbarProfileImageText = `<img id="user-circle-fit" src=""></img>`;
 
                             if ($('.user-circle').find('i').length != 0) {
@@ -1359,6 +1358,7 @@ $(document).ready(function () {
                             `<div class="mt-2">
                                 <form id="user-delete-photo-form" action="/users/${dataId}/destroy-photo" method="post">
                                     <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
+                                    <input type="hidden" name="_method" value="PATCH">
                                     <input type="hidden" name="_token" value="${csrfToken}">
                                 </form>
                             </div>`;
@@ -1371,14 +1371,6 @@ $(document).ready(function () {
 
                             changeInputPhoto('user-circle-fit', 'user-image');
                             changeInputPhoto('user-show-profile', 'user-image');
-
-                            // if ($('#user-circle-fit').length == 0) {
-                            //     let html = `<img id="user-circle-fit" src="#">`
-
-                            //     $('.user-circle').find('i').remove();
-                            //     $('.user-circle').append(html);
-                            //     changeInputPhoto('user-circle-fit', 'user-image');
-                            // }
 
                             $('#custom-modal').modal('hide');
                             $('#user-image').val('');
@@ -1499,7 +1491,7 @@ $(document).ready(function () {
                 </div>
                 <div class="form-group">
                     <label for="nomer-handphone">Nomer Handphone <small class="text-grey">(boleh kosong)</small></label>
-                    <input id="nomer-handphone" name="phone_number" type="text" class="form-control-custom" value="${userPhoneNumber}">
+                    <input id="nomer-handphone" name="phone_number" type="number" class="form-control-custom" value="${userPhoneNumber}">
                 </div>
                 <div class="text-right mt-4">
                     <button class="btn-none tred-bold mr-3"
@@ -1541,6 +1533,7 @@ $(document).ready(function () {
                 if (success) {
                     ajaxForm('POST', this, this.action, response => {
                         if (response.errors) {
+                            console.log(response);
                             let parentPrev = $(this).parent().prev();
 
                             backendMessage(parentPrev, response.errors);
@@ -1552,6 +1545,7 @@ $(document).ready(function () {
 
                             alertMessage(message);
                             $('#custom-modal').modal('hide');
+                            $('.navbar-user-first-name').text(user.first_name);
                             $('#user-first-name').text(user.first_name);
                             $('#user-last-name').text(user.last_name);
                             $('#user-date-of-birth').text(user.date_of_birth);
@@ -1559,8 +1553,6 @@ $(document).ready(function () {
                             $('#user-address').text(user.address);
                             $('#user-email').text(user.email);
                             $('#user-phone-number').text(user.phone_number);
-
-                            console.log(user);
                         }
                     });
                 }
@@ -1568,6 +1560,81 @@ $(document).ready(function () {
         });
     });
     //#endregion User change biodata
+
+    //#region User change email
+    $('#user-change-email').on('click', function() {
+        let dataId   = $(this).data('id');
+        let oldEmail = $('#user-email').text();
+
+        bootStrapModal('Ubah Email', 'modal-md', () => {
+            let html   =
+            `<form id="user-change-email" action="/users/${dataId}/change-email" method="POST">
+                <div class="form-group">
+                    <label>Email Lama</label>
+                    <input id="user-old-email" type="text" class="form-control-custom disb" value="${oldEmail}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Baru</label>
+                    <input id="email" name="email" type="email" class="form-control-custom" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="password">Masukan Password</label>
+                    <input id="password" name="password" type="password" class="form-control-custom" autocomplete="off">
+                </div>
+                <div class="text-right mt-4">
+                    <button class="btn-none tred-bold mr-3"
+                    data-dismiss="modal" aria-label="Close">Batal</button>
+                    <button class="btn btn-red" type="submit">Ubah</button>
+                </div>
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="_token" value="${csrfToken}">
+            </form>`;
+
+            return html;
+        });
+
+        $('#user-change-email').on('submit', function(event) {
+            event.preventDefault();
+
+            let validations = [
+                {
+                    input: '#email',
+                    inputName: 'Email',
+                    rules: 'nullable,email'
+                },
+                {
+                    input: '#password',
+                    inputName: 'Password',
+                    rules: 'nullable,'
+                },
+            ];
+
+            validator(validations, success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.errors) {
+                            console.log(response.errors);
+                            let parentPrev = $(this).parent().prev();
+
+                            backendMessage(parentPrev, response.errors);
+                            $('.alert-messages').addClass('w-90 mx-auto');
+                        } else if (response.updated) {
+                            let user    = response.user;
+                            let message = 'Berhasil mengubah email';
+
+                            $('#user-old-email').val(user.email);
+                            $('#user-email').text(user.email);
+                            $('.alert-messages').remove();
+                            $('#custom-modal').modal('hide');
+                            alertMessage(message);
+                        }
+                    });
+                }
+            });
+        });
+
+    });
+    //#endregion User change email
 
     // Book Edit
     // Keyup input
