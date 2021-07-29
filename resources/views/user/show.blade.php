@@ -176,6 +176,7 @@
                             <div class="mt-2">
                                 <form id="user-delete-photo-form" action="/users/{{ $user->id }}/destroy-photo" method="post">
                                     <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
+                                    @method('PATCH')
                                     @csrf
                                 </form>
                             </div>
@@ -184,23 +185,34 @@
                         <div class="col-md-8 mt-3">
                             <div class="d-flex justify-content-between mb-2">
                                 <h5>Biodata diri</h5>
-                                <a href="/users/{{ $user->id }}/edit" class="tred-bold">Ubah</a>
+                                <button id="user-change-biodata" class="btn-none tred-bold" type="button" data-id="{{ $user->id }}">Ubah</button>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Nama</div>
-                                <div class="text-right">{{ $user->first_name . ' '. $user->last_name }}</div>
+                                <div class="text-right">
+                                    <span id="user-first-name">{{ $user->first_name }}</span>
+                                    <span id="user-last-name">{{ $user->last_name }}</span>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Tanggal Lahir</div>
-                                <div class="text-right">{{ $user->date_of_birth }}</div>
+                                <div id="user-date-of-birth" class="text-right">{{ $user->date_of_birth }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>Jenis Kelamin</div>
+                                <div id="user-gender" class="text-right">{{ $user->gender == 'L' ? 'Laki-laki' : 'Perempuan  ' }}</div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <div>Alamat</div>
+                                <div id="user-address" class="text-right">{{ $user->address }}</div>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Email</div>
-                                <div class="text-right">{{ $user->email }}</div>
+                                <div id="user-email" class="text-right">{{ $user->email }}</div>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <div>Nomer Handphone</div>
-                                <div class="text-right">{{ $user->phone_number }}</div>
+                                <div id="user-phone-number" class="text-right">{{ $user->phone_number }}</div>
                             </div>
                         </div>
                     </div>

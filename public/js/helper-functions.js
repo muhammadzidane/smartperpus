@@ -260,6 +260,7 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
+            console.log(errors.responseJSON.message ?? null)
         }
     });
 }
@@ -744,14 +745,12 @@ const validator = (validations, success = '') => {
                     if (inputValue == '' || inputValue == 0) {
                         validationFails.push(message);
 
-                        if ($(inputForm).next('.error').length == 0) {
-                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
-                        }
+                        $(inputForm).nextAll('.error').remove();
+                        $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
                     } else {
-                        $(inputForm).next('.error').remove();
+                        $(inputForm).nextAll('.error').remove();
                     }
                 }
-
 
                 let uniqueRegex = new RegExp('unique:[a-zA-Z]');
 
@@ -824,29 +823,8 @@ const validator = (validations, success = '') => {
                     }
                 }
 
-                let maxRegex = new RegExp('max:[0-9]');
-
-                if (maxRegex.test(rule)) {
-                    let maxRegexInput = maxRegex.exec(rule).input;
-                    let maxRegexSplit = maxRegexInput.split(':');
-                    let max           = maxRegexSplit[1];
-
-                    let message = `${inputName} maksimal ${max} karakter`;
-
-                    if (inputValue.length > max) {
-                        validationFails.push(message);
-
-                        if ($(inputForm).next('.error').length == 0) {
-                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
-                        } else {
-                            $(inputForm).next('.error').children('small').text(message);
-                        }
-                    } else if (inputValue != '') {
-                        $(inputForm).next('.error').remove();
-                    }
-                }
-
                 let minRegex = new RegExp('min:[0-9]');
+                let maxRegex = new RegExp('max:[0-9]');
 
                 if (minRegex.test(rule)) {
                     let minRegexInput = minRegex.exec(rule).input;
@@ -862,10 +840,27 @@ const validator = (validations, success = '') => {
                         } else {
                             $(inputForm).next('.error').children('small').text(message);
                         }
-                    } else if (inputValue != '') {
-                        $(inputForm).next('.error').remove();
                     }
                 }
+
+                if (maxRegex.test(rule)) {
+                    let maxRegexInput = maxRegex.exec(rule).input;
+                    let maxRegexSplit = maxRegexInput.split(':');
+                    let max           = maxRegexSplit[1];
+
+                    let message = `${inputName} maksimal ${max} karakter`;
+
+                    if (inputValue.length > max && inputValue != '' && inputValue != 0) {
+                        validationFails.push(message);
+
+                        if ($(inputForm).next('.error').length == 0) {
+                            $(inputForm).after(`<div class="error tred"><small>${message}</small></div>`);
+                        } else {
+                            $(inputForm).next('.error').children('small').text(message);
+                        }
+                    }
+                }
+
 
                 let digitsRegex = new RegExp('digits:[0-9]');
 
@@ -954,9 +949,6 @@ const validator = (validations, success = '') => {
                     }
                 }
             });
-
-            let inputNext = $(inputForm).next('.error');
-            let checkValidations = validationFails.every(validation => validation == []);
         }
     }
 

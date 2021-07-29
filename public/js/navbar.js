@@ -1241,6 +1241,7 @@ $(document).ready(function () {
         let validations = userEditForm;
 
         validator(validations, success => {
+            console.log(success);
             if (success) {
                 let dataId = $(this).data('id');
 
@@ -1415,6 +1416,7 @@ $(document).ready(function () {
                     data-dismiss="modal" aria-label="Close">Batal</button>
                     <button class="btn btn-red" type="submit">Ubah</button>
                 </div>
+                <input type="hidden" name="_method" value="PATCH">
                 <input type="hidden" name="_token" value="${csrfToken}">
             </form>`;
 
@@ -1457,6 +1459,115 @@ $(document).ready(function () {
         });
     });
     //#endregion User change password
+
+    //#region User change biodata
+    $('#user-change-biodata').on('click', function() {
+        bootStrapModal('Ubah Biodata Diri', 'modal-md', () => {
+            let firstName         = $('#user-first-name').text();
+            let lastName          = $('#user-last-name').text();
+            let userDateOfBirth   = $('#user-date-of-birth').text();
+            let userMan           = $('#user-gender').text() == 'Laki-laki' ? 'selected' : '';
+            let userWoman         = $('#user-gender').text() != 'Laki-laki' ? 'selected' : '';
+            let userAddress       = $('#user-address').text();
+            let userPhoneNumber   = $('#user-phone-number').text();
+            let dataId            = $(this).data('id');
+
+            let html =
+            `<form id="user-change-biodata-form" action="/users/${dataId}/change-biodata" method="POST">
+                <div class="form-group">
+                    <label for="nama-awal">Nama Awal</label>
+                    <input id="nama-awal" name="first_name" type="text" class="form-control-custom" value="${firstName}">
+                </div>
+                <div class="form-group">
+                    <label for="nama-akhir">Nama Akhir</label>
+                    <input id="nama-akhir" name="last_name" type="text" class="form-control-custom" value="${lastName}">
+                </div>
+                <div class="form-group">
+                    <label for="tanggal-lahir">Tanggal Lahir</label>
+                    <input id="tanggal-lahir" name="date_of_birth" type="date" class="form-control-custom" value="${userDateOfBirth}">
+                </div>
+                <div class="form-group">
+                    <label for="jenis-kelamin">Jenis Kelamin</label>
+                    <select id="jenis-kelamin" name="gender" class="form-control-custom">
+                        <option value="L" ${userMan}>Laki-laki</option>
+                        <option value="P" ${userWoman}>Perempuan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="alamat">Alamat <small class="text-grey">(boleh kosong)</small></label>
+                    <textarea id="alamat" name="address" class="w-100">${userAddress}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="nomer-handphone">Nomer Handphone <small class="text-grey">(boleh kosong)</small></label>
+                    <input id="nomer-handphone" name="phone_number" type="text" class="form-control-custom" value="${userPhoneNumber}">
+                </div>
+                <div class="text-right mt-4">
+                    <button class="btn-none tred-bold mr-3"
+                    data-dismiss="modal" aria-label="Close">Batal</button>
+                    <button class="btn btn-red" type="submit">Ubah</button>
+                </div>
+                <input type="hidden" name="_method" value="PATCH">
+                <input type="hidden" name="_token" value="${csrfToken}">
+            </form>`;
+
+            return html;
+        });
+
+        $('#user-change-biodata-form').on('submit', function(event) {
+            event.preventDefault();
+
+            let formInputs = $(this).find('input:not([type=hidden])').toArray();
+            let validations = formInputs.map(input => {
+                let inputId    = '#' + input.id;
+                let inputName  = capitalizeFirstLetter(input.id.replace(/_|-/, ' '));
+                let validation = {
+                    input    : inputId,
+                    inputName: inputName,
+                    rules    : 'required',
+                };
+
+                if (inputId == '#tanggal-lahir') {
+                    validation['rules'] = 'nullable';
+                }
+
+                if (inputId == '#nomer-handphone') {
+                    validation['rules'] = 'nullable,numeric,min:9,max:15';
+                }
+
+                return validation;
+            });
+
+            validator(validations, success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.errors) {
+                            let parentPrev = $(this).parent().prev();
+
+                            backendMessage(parentPrev, response.errors);
+                            $('.alert-messages').addClass('w-90 mx-auto')
+                        } else {
+                            let message = 'Berhasil mengedit biodata';
+                            let user    = response.user;
+                            let gender  = user.gender == 'L' ? 'Laki-laki' : 'Perempuan';
+
+                            alertMessage(message);
+                            $('#custom-modal').modal('hide');
+                            $('#user-first-name').text(user.first_name);
+                            $('#user-last-name').text(user.last_name);
+                            $('#user-date-of-birth').text(user.date_of_birth);
+                            $('#user-gender').text(gender);
+                            $('#user-address').text(user.address);
+                            $('#user-email').text(user.email);
+                            $('#user-phone-number').text(user.phone_number);
+
+                            console.log(user);
+                        }
+                    });
+                }
+            });
+        });
+    });
+    //#endregion User change biodata
 
     // Book Edit
     // Keyup input

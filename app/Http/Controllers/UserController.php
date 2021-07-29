@@ -112,7 +112,6 @@ class UserController extends Controller
                 return response()->json(array('pesan' => $pesan, 'success' => true));
             }
         } else { // non AJAX
-            $validate_data = $request->validate($validation);
 
             $user->update($update);
             return redirect()->back()->with('pesan', $pesan);
@@ -245,6 +244,31 @@ class UserController extends Controller
             $updated =  $user->update($update);
 
             return response()->json(compact('updated'));
+        }
+    }
+
+    public function changeBiodata(Request $request, User $user)
+    {
+        $rules     = array(
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'gender' => 'required',
+            'address' => 'nullable',
+            'date_of_birth' => 'nullable|date',
+            'phone_number' => 'nullable|numeric|min:9|max:15',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+
+            return response()->json(compact('errors'));
+        } else {
+            $data      = $request->except('_token', '_method');
+            $user->update($data);
+
+            return response()->json(compact('user'));
         }
     }
 }
