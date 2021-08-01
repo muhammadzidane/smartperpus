@@ -9,7 +9,7 @@
     @switch($book_user->payment_status)
 
     @case('order_in_process')
-    <div>Status: <span class="tred-bold">Terkonfirmasi</div>
+    <div>Status: <span class="tred-bold">Sedang diproses</div>
     @break
 
     @case('being_shipped')
@@ -17,7 +17,7 @@
     @break
 
     @case('arrived')
-    <div>Status: <span class="tred-bold">Telah sampai</div>
+    <div>Status: <span class="tred-bold">Telah sampai</span></div>
     @break
 
     @endswitch
@@ -30,10 +30,12 @@
         <div>Tanggal pembelian</div>
         <div class="text-grey text-right">{{ $book_user->created_at->isoFormat('dddd, D MMMM YYYY H:mm') }}</div>
     </div>
+    @if ($book_user->payment_status == 'arrived')
     <div class="d-flex justify-content-between">
-        <div>Tanggal deadline</div>
+        <div>Tanggal Sampai</div>
         <div class="text-grey text-right">{{ $book_user->payment_deadline->isoFormat('dddd, D MMMM YYYY H:mm') }}</div>
     </div>
+    @endif
     <div class="d-flex justify-content-between">
         <div>Kurir</div>
         <div class="text-grey text-right">{{ $book_user->courier_name }}</div>

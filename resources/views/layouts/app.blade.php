@@ -26,118 +26,164 @@
 
 <body>
     <div id="app">
-        <div>
-            <nav class="cus-navbar">
-                <div class="logo">
-                    <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
-                </div>
-                <div class="circle-input">
-                    <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                        <div>
-                            <div class="search-icon">
-                                <i class="fas fa-search m-auto"></i>
-                            </div>
-                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                            <input type="hidden" name="page" value="1">
+        <nav class="cus-navbar">
+            <div class="logo">
+                <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
+            </div>
+            <div class="circle-input">
+                <form class="search-form" action="{{ route('search.books') }}" method="GET">
+                    <div>
+                        <div class="search-icon">
+                            <i class="fas fa-search m-auto"></i>
                         </div>
-                    </form>
-                </div>
-                <div class="cus-nav">
-                    <ul class="ul-nav h-100">
-                        <div id="nav-categories" class="d-flex h-100 align-items-center ml-3">
-                            <li id="categories" class="h-100 c-middle">
-                                Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                                <div>
-                                    <div class="d-flex">
-                                        <div class="mr-5">
+                        <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                        <input type="hidden" name="page" value="1">
+                    </div>
+                </form>
+            </div>
+            <div class="cus-nav">
+                <ul class="ul-nav h-100">
+                    <div id="nav-categories" class="d-flex h-100 align-items-center ml-3">
+                        <li id="categories" class="h-100 c-middle">
+                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            <div>
+                                <div class="d-flex">
+                                    <div class="mr-5">
 
-                                            @foreach (\App\Models\Category::get()->take(10) as $category)
-                                            <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
-                                            @endforeach
-                                        </div>
-                                        <div>
+                                        @foreach (\App\Models\Category::get()->take(10) as $category)
+                                        <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                        @endforeach
+                                    </div>
+                                    <div>
 
-                                            @foreach (\App\Models\Category::take(10)->skip(10)->get() as $category)
-                                            <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
-                                            @endforeach
-                                        </div>
+                                        @foreach (\App\Models\Category::take(10)->skip(10)->get() as $category)
+                                        <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            </li>
+                            </div>
+                        </li>
 
-                            <li>Best Seller</li>
-                            <li>Buku Diskon</li>
-                            @auth
-                            <li class="nav-bell">
-                                <div class="dropdown">
-                                    <button class="btn-none" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="far fa-bell"></i>
-                                    </button>
-                                    <div class="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton">
-                                        <a class="nav-dropdown-item position-relative" href="{{ route('waiting.for.payment') }}">Menunggu Pembayaran
+                        <li>Best Seller</li>
+                        <li>Buku Diskon</li>
+
+                        @auth
+                        <li class="nav-bell">
+                            <div class="dropdown">
+                                <button class="btn-none" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="far fa-bell"></i>
+                                </button>
+                                <div class="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton">
+                                    <div class="nav-dropdown-status">
+                                        <a class="text-decoration-none" href="{{ route('status.waiting.for.payment') }}">Menunggu Pembayaran
                                             @if (Illuminate\Support\Facades\DB::table('book_user')
                                             ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count() != 0)
                                             <span class="nav-dropdown-waiting">
                                                 {{
-                                                    Illuminate\Support\Facades\DB::table('book_user')
-                                                    ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count()
-                                                }}
+                                                        Illuminate\Support\Facades\DB::table('book_user')
+                                                        ->where('user_id', Auth::id())
+                                                        ->where('confirmed_payment', false)
+                                                        ->where('payment_status', 'waiting_for_confirmation')
+                                                        ->get()->count()
+                                                    }}
                                             </span>
                                             @endif
                                         </a>
-                                        <a class="nav-dropdown-item" href="#">Sedang Di Proses</a>
-                                        <a class="nav-dropdown-item" href="#">Sedang Di Kirim</a>
-                                        <a class="nav-dropdown-item" href="#">Telah Sampai</a>
+                                    </div>
+                                    <div class="nav-dropdown-status">
+                                        <a class="text-decoration-none" href="{{ route('status.on.process') }}">
+                                            Sedang Diproses
+                                            @if (Illuminate\Support\Facades\DB::table('book_user')
+                                            ->where('user_id', Auth::id())->where('payment_status', 'order_in_process')->get()->count() != 0)
+                                            <span class="nav-dropdown-waiting">
+                                                {{
+                                                        Illuminate\Support\Facades\DB::table('book_user')
+                                                        ->where('user_id', Auth::id())
+                                                        ->where('payment_status', 'order_in_process')
+                                                        ->get()->count()
+                                                    }}
+                                            </span>
+                                            @endif
+                                        </a>
+                                    </div>
+                                    <div class="nav-dropdown-status">
+                                        <a class="text-decoration-none" href="{{ route('status.on.delivery') }}">Sedang Dikirim</a>
+                                        @if (Illuminate\Support\Facades\DB::table('book_user')
+                                        ->where('user_id', Auth::id())->where('payment_status', 'being_shipped')->get()->count() != 0)
+                                        <span class="nav-dropdown-waiting">
+                                            {{
+                                                    Illuminate\Support\Facades\DB::table('book_user')
+                                                    ->where('user_id', Auth::id())
+                                                    ->where('payment_status', 'being_shipped')
+                                                    ->get()->count()
+                                                }}
+                                        </span>
+                                        @endif
+                                    </div>
+                                    <div class="nav-dropdown-status">
+                                        <a class="text-decoration-none" href="{{ route('status.success') }}">Telah Sampai</a>
+                                        @if (Illuminate\Support\Facades\DB::table('book_user')
+                                        ->where('user_id', Auth::id())->where('payment_status', 'arrived')->get()->count() != 0)
+                                        <span class="nav-dropdown-waiting">
+                                            {{
+                                                    Illuminate\Support\Facades\DB::table('book_user')
+                                                    ->where('user_id', Auth::id())
+                                                    ->where('payment_status', 'arrived')
+                                                    ->get()->count()
+                                                }}
+                                        </span>
+                                        @endif
                                     </div>
                                 </div>
-                            </li>
-                            @endauth
-                        </div>
-                        <div id="nav-login" class="d-flex ml-auto align-items-center">
-                            @guest
-                            <li>
-                                <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                            </li>
-                            </li>
-                            @endguest
+                            </div>
+                        </li>
+                        @endauth
+                    </div>
+                    <div id="nav-login" class="d-flex ml-auto align-items-center">
+                        @guest
+                        <li>
+                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                        </li>
+                        </li>
+                        @endguest
 
-                            @auth
-                            @include('layouts.auth-nav-login')
-                            @endauth
-                        </div>
-                        <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            <i class="fas fa-grip-lines"></i>
-                        </div>
-                    </ul>
-                </div>
-            </nav>
+                        @auth
+                        @include('layouts.auth-nav-login')
+                        @endauth
+                    </div>
+                    <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        <i class="fas fa-grip-lines"></i>
+                    </div>
+                </ul>
+            </div>
+        </nav>
 
-            <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
-                <div class="mt-3">
-                    <div class="text-center">
-                        <form class="" action="{{ route('search.books') }}" method="GET">
-                            <div>
-                                <div class="responsive-search-icon">
-                                    <i class="fas fa-search m-auto"></i>
-                                </div>
-                                <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                                <input type="hidden" name="page" value="1">
+        <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
+            <div class="mt-3">
+                <div class="text-center">
+                    <form class="" action="{{ route('search.books') }}" method="GET">
+                        <div>
+                            <div class="responsive-search-icon">
+                                <i class="fas fa-search m-auto"></i>
                             </div>
-                        </form>
-                        <div class="my-2">
-                            <div>
-                                Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                            </div>
-                            <div>Best Seller</div>
-                            <div>Buku Diskon</div>
-                            @guest
-                            <div>
-                                <button class="btn-none text-danger tbold" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                            </div>
-                            @else
-                            @include('layouts.auth-nav-login')
-                            @endguest
+                            <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="hidden" name="page" value="1">
                         </div>
+                    </form>
+                    <div class="my-2">
+                        <div>
+                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                        </div>
+                        <div>Best Seller</div>
+                        <div>Buku Diskon</div>
+                        @guest
+                        <div>
+                            <button class="btn-none text-danger tbold" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                        </div>
+
+                        @else
+                        @include('layouts.auth-nav-login')
+                        @endguest
                     </div>
                 </div>
             </div>

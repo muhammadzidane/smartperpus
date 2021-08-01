@@ -29,6 +29,7 @@ class CreateBookUserTable extends Migration
             $table->integer('total_payment');
             $table->enum('payment_method', array('Transfer Bank BRI', 'Transfer Bank BNI', 'Transfer Bank BCA'));
             $table->enum('payment_status', array('failed', 'waiting_for_confirmation', 'order_in_process', 'being_shipped', 'arrived'));
+            $table->datetime('completed_date')->nullable();
             $table->dateTime('payment_deadline');
             $table->string('upload_payment_image')->nullable()->default(null);
             $table->boolean('confirmed_payment')->default(false);

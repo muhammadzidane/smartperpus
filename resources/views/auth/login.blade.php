@@ -24,35 +24,24 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
 </head>
-j
+
 <body>
     <div class="register-user container py-4">
         <div class="form-register">
-            <form action="{{ route('login') }}" method="POST">
+            <form id="login-form" action="{{ route('login') }}" method="POST">
                 <h5 class="tred-bold mb-4">Login</h5>
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" name="email" id="email" class="form-control-custom">
-                    @error('email')
-                    <span class="tred small small" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
                 </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <div class="d-flex">
-                        <input type="password" name="password" id="password" class="form-control-custom"
-                            aria-describedby="helpId" autocomplete="off">
-                        <button id="toggle-password" type="button" class="show-password">
-                            <i class="fa fa-eye" aria-hidden="true"></i>
-                        </button>
+                <div class="form-group position-relative">
+                    <div>
+                        <label for="password">Password</label>
+                        <input type="password" name="password" id="password" class="form-control-custom" aria-describedby="helpId" autocomplete="off">
                     </div>
-                    @error('password')
-                    <span class="tred small" role="alert">
-                        <strong>{{ $message }}</strong>
-                    </span>
-                    @enderror
+                    <button id="toggle-password" type="button" class="show-password user-login">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </button>
                 </div>
                 <div class="form-group">
                     <button id="button-login" class="button-submit" type="submit">Login</button>
@@ -84,6 +73,8 @@ j
     </div>
 
     <script src="{{ asset('js/navbar.js') }}"></script>
+    <script src="{{ asset('js/helper-functions.js') }}"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
 </body>
 
 </html>

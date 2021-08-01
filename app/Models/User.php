@@ -16,7 +16,7 @@ class User extends Authenticatable
     // Relasi antar tabel
     public function books()
     {
-        return $this->belongsToMany('App\Models\Book');
+        return $this->belongsToMany(Book::class);
     }
 
     public function customer()

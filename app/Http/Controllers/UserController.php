@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, District, City, Province};
+use App\Models\{User, BookUser};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, File};
@@ -57,7 +57,11 @@ class UserController extends Controller
     {
         $this->authorize('view', $user);
 
-        return view('user.show', compact('user'));
+        $book_user = BookUser::where('user_id', $user->id)
+            ->where('payment_status', 'waiting_for_confirmation')
+            ->get();
+
+        return view('user.show', compact('user', 'book_user'));
     }
 
     /**
@@ -283,10 +287,6 @@ class UserController extends Controller
         $validator      = Validator::make($request->all(), $rules);
         $errors         = $validator->errors();
         $check_password =  Hash::check($request->password, $user->password);
-
-        // if (!$check_password && $request->password != '') {
-        //     $errors->add('old_password', 'Password tidak valid');
-        // }
 
         if ($validator->fails()) {
             return response()->json(compact('errors'));

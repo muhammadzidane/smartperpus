@@ -17,7 +17,10 @@ class TestController extends Controller
 {
     public function test()
     {
-        return view('test');
+        $ran = array(1, 4);
+        $randomElement = $ran[array_rand($ran, 1)];
+
+        dump($randomElement);
     }
 
     public function testPost(Request $request)

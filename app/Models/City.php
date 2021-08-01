@@ -11,11 +11,18 @@ class City extends Model
 
     protected $guarded = array();
 
-    public function province() {
-        return $this->belongsToMany('App\Models\Province');
+    public function province()
+    {
+        return $this->belongsTo('App\Models\Province');
     }
 
-    public function districts() {
+    public function districts()
+    {
         return $this->hasMany('App\Models\District');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
     }
 }

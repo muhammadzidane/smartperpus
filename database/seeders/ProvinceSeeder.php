@@ -14,85 +14,39 @@ class ProvinceSeeder extends Seeder
      */
     public function run()
     {
-        $provinces = [
-            'ID' => [
-                [
-                    'name' => 'Aceh'],
-                [
-                    'name' => 'Bali'],
-                [
-                    'name' => 'Banten'],
-                [
-                    'name' => 'Bengkulu'],
-                [
-                    'name' => 'DKI Jakarta'],
-                [
-                    'name' => 'Gorontalo'],
-                [
-                    'name' => 'Jambi'],
-                [
-                    'name' => 'Jawa Barat'],
-                [
-                    'name' => 'Jawa Tengah'],
-                [
-                    'name' => 'Jawa Timur'],
-                [
-                    'name' => 'Kalimantan Barat'],
-                [
-                    'name' => 'Kalimantan Selatan'],
-                [
-                    'name' => 'Kalimantan Tengah'],
-                [
-                    'name' => 'Kalimantan Timur'],
-                [
-                    'name' => 'Kalimantan Utara'],
-                [
-                    'name' => 'Kepulauan Bangka Belitung'],
-                [
-                    'name' => 'Kepulauan Riau'],
-                [
-                    'name' => 'Lampung'],
-                [
-                    'name' => 'Maluku'],
-                [
-                    'name' => 'Maluku Utara'],
-                [
-                    'name' => 'Nusa Tenggara Barat'],
-                [
-                    'name' => 'Nusa Tenggara Timur'],
-                [
-                    'name' => 'Papua'],
-                [
-                    'name' => 'Papua Barat'],
-                [
-                    'name' => 'Riau'],
-                [
-                    'name' => 'Sulawesi Barat'],
-                [
-                    'name' => 'Sulawesi Selatan'],
-                [
-                    'name' => 'Sulawesi Tengah'],
-                [
-                    'name' => 'Sulawesi Tenggara'],
-                [
-                    'name' => 'Sulawesi Utara'],
-                [
-                    'name' => 'Sumatera Barat'],
-                [
-                    'name' => 'Sumatera Selatan'],
-                [
-                    'name' => 'Sumatera Utara'],
-                [
-                    'name' => 'Yogyakarta'],
-            ]
-        ];
+        $curl = curl_init();
 
-        foreach ($provinces['ID'] as  $province) {
-            Province::create(
-                array(
-                    'name'     => $province['name']
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/province?key=ce496165f4a20bc07d96b6fe3ab41ded",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                "key: ce496165f4a20bc07d96b6fe3ab41ded"
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            $provinces = json_decode($response);
+            $results   = $provinces->rajaongkir->results;
+
+            foreach ($results as $result) {
+                Province::create(
+                    array(
+                        'name'     => $result->province,
                     )
-            );
+                );
+            }
         }
     }
 }

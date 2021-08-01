@@ -8,14 +8,14 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between">
                 <h4 class="hd-14">Hari ini</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
+                <div id="income-today" class="btn-none tred-bold">Lihat Detail</div>
             </div>
-            <div>Kamis, 15 Januari 2022</div>
+            <div>{{ $now->isoFormat('dddd, D MMMM YYYY') }}</div>
         </div>
         <div class="row">
             <div class="col-4">
                 <div class="text-center">
-                    <div class="income-book-amount">10</div>
+                    <div class="income-book-amount">{{ $today['count'] }}</div>
                     <div class="tbold">Buku Terjual</div>
                 </div>
             </div>
@@ -23,7 +23,7 @@
                 <h4 class="hd-14">Total</h4>
                 <div class="income-money">
                     <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
+                    <span>{{ rupiah_format($today['total_payments']) }}</span>
                 </div>
             </div>
         </div>
@@ -31,15 +31,16 @@
     <div class="income-box">
         <div class="mb-4">
             <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Bulan ini</h4>
+                <div>
+                    <h4 class="hd-14">Bulan {{ $now->isoFormat('MMMM') }}</h4>
+                </div>
                 <div class="btn-none tred-bold">Lihat Detail</div>
             </div>
-            <div>Kamis, 15 Januari 2022</div>
         </div>
-        <div class="row">
+        <div class="row mt-auto">
             <div class="col-4">
                 <div class="text-center">
-                    <div class="income-book-amount">10</div>
+                    <div class="income-book-amount">{{ $this_month['book_users']->count() }}</div>
                     <div class="tbold">Buku Terjual</div>
                 </div>
             </div>
@@ -47,7 +48,7 @@
                 <h4 class="hd-14">Total</h4>
                 <div class="income-money">
                     <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
+                    <span>{{ rupiah_format($this_month['total_payments']) }}</span>
                 </div>
             </div>
         </div>
@@ -58,12 +59,11 @@
                 <h4 class="hd-14">Semua</h4>
                 <div class="btn-none tred-bold">Lihat Detail</div>
             </div>
-            <div>Kamis, 15 Januari 2022</div>
         </div>
-        <div class="row">
+        <div class="row mt-auto">
             <div class="col-4">
                 <div class="text-center">
-                    <div class="income-book-amount">10</div>
+                    <div class="income-book-amount">{{ $all['book_users']->count() }}</div>
                     <div class="tbold">Buku Terjual</div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 <h4 class="hd-14">Total</h4>
                 <div class="income-money">
                     <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
+                    <span>{{ rupiah_format($all['total_payments']) }}</span>
                 </div>
             </div>
         </div>

@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Validator;
 
 class AjaxController extends Controller
 {
-    public function firstLoad(Request $request) {
+    public function firstLoad(Request $request)
+    {
         $j = 1;
 
-        for ($i=0; $i <= Book::get()->count(); $i+=5) {
+        for ($i = 0; $i <= Book::get()->count(); $i += 5) {
             if ($j == $request->page) {
-                $books = view('layouts.books',
+                $books = view(
+                    'layouts.books',
                     array(
                         'books' => Book::take(5)->skip($i)->get()
                     )
@@ -27,12 +29,13 @@ class AjaxController extends Controller
         return response()->json(compact('books'));
     }
 
-    public function ajaxRequestStore(Request $request) {
-        $authors = Author::where('name', 'like', '%' .$request->search_value . '%')
-        ->orderBy('name')->get(array('id', 'name'))->take(5);
+    public function ajaxRequestStore(Request $request)
+    {
+        $authors = Author::where('name', 'like', '%' . $request->search_value . '%')
+            ->orderBy('name')->get(array('id', 'name'))->take(5);
 
-        $books   = Book::where('name', 'like', '%' .$request->search_value . '%')
-        ->orderBy('name')->get(array('id', 'name'))->take(5);
+        $books   = Book::where('name', 'like', '%' . $request->search_value . '%')
+            ->orderBy('name')->get(array('id', 'name'))->take(5);
 
         return response()->json(
             array(
@@ -43,12 +46,13 @@ class AjaxController extends Controller
     }
 
     // Validasi untuk mengecek user
-    public function checkLogin(Request $request) {
+    public function checkLogin(Request $request)
+    {
         $user     = User::where(
             array(
                 array('email', $request->email),
             )
-        )->first( array('email', 'password'));
+        )->first(array('email', 'password'));
 
         $check_password = $user !== null ? Hash::check($request->password, $user->password) : '';
 
@@ -59,8 +63,7 @@ class AjaxController extends Controller
                     'success' => false,
                 )
             );
-        }
-        else {
+        } else {
             return response()->json(
                 array(
                     'success' => true,
@@ -70,8 +73,10 @@ class AjaxController extends Controller
     }
 
     // Validasi register
-    public function register(Request $request) {
-        $validator = Validator::make($request->all(),
+    public function register(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
             array(
                 'nama_awal'           => 'required|string',
                 'nama_akhir'          => 'required|string',
@@ -86,8 +91,7 @@ class AjaxController extends Controller
             return response()->json(
                 array('errors' => $validator->errors())
             );
-        }
-        else {
+        } else {
             return response()->json(
                 array('errors' => '')
             );
@@ -98,7 +102,8 @@ class AjaxController extends Controller
 
 
     // Filter minimal dan maksimal harga
-    public function filterSearch(Request $request) {
+    public function filterSearch(Request $request)
+    {
         $min_price = $request->min_price != 0 ? $request->min_price : 0;
         $max_price = $request->max_price != '' ? $request->max_price : 9999999999;
 
@@ -114,7 +119,7 @@ class AjaxController extends Controller
         $books = array(
             'books' =>
             \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-            ->where($where_queries)->get()
+                ->where($where_queries)->get()
         );
 
         if ($request->sort_book_value) {
@@ -123,36 +128,38 @@ class AjaxController extends Controller
                     $books = array(
                         'books' =>
                         \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-                        ->where($where_queries)->orderBy('rating', 'DESC')->get()
+                            ->where($where_queries)->orderBy('rating', 'DESC')->get()
                     );
-                break;
+                    break;
                 case 'highest-price':
                     $books = array(
                         'books' =>
                         \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-                        ->where($where_queries)->orderBy('price', 'DESC')->get()
+                            ->where($where_queries)->orderBy('price', 'DESC')->get()
                     );
-                break;
+                    break;
                 case 'lowest-price':
                     $books = array(
                         'books' =>
                         \App\Models\Book::whereBetween('price', array($min_price, $max_price))
-                        ->where($where_queries)->orderBy('price', 'ASC')->get()
+                            ->where($where_queries)->orderBy('price', 'ASC')->get()
                     );
-                break;
+                    break;
             }
         }
 
         $view = view('layouts.books', $books)->render();
 
         return response()->json(
-            array('books' => $view , 'page' => $request->page)
+            array('books' => $view, 'page' => $request->page)
         );
     }
 
     // Filter rating 4 ke atas
-    public function filterStar(Request $request) {
-        $view = view('layouts.books',
+    public function filterStar(Request $request)
+    {
+        $view = view(
+            'layouts.books',
             array(
                 'books' =>
                 \App\Models\Book::where('rating', '>=', (int) $request->star_value)->get()
@@ -164,10 +171,12 @@ class AjaxController extends Controller
         );
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $books = Book::where('name', 'LIKE', '%' . $request->keywords . '%')->get();
 
-        $view = view('layouts.books',
+        $view = view(
+            'layouts.books',
             array(
                 'books' => $books,
             )
@@ -189,20 +198,22 @@ class AjaxController extends Controller
         );
     }
 
-    public function sortBooks(Request $request) {
+    public function sortBooks(Request $request)
+    {
         switch ($request->sort_book_value) {
             case 'highest-rating':
                 $books = Book::orderBy('rating', 'DESC')->get();
-            break;
+                break;
             case 'highest-price':
                 $books = Book::orderBy('price', 'DESC')->get();
-            break;
+                break;
             case 'lowest-price':
                 $books = Book::orderBy('price', 'ASC')->get();
-            break;
+                break;
         }
 
-        $view = view('layouts.books',
+        $view = view(
+            'layouts.books',
             array(
                 'books' => $books,
             )
@@ -215,17 +226,18 @@ class AjaxController extends Controller
 
 
     // Pagination
-    public function paginationData() {
+    public function paginationData()
+    {
         $book_count = Book::get()->count();
 
-        $pagination_html     = function($value) {
+        $pagination_html     = function ($value) {
             return '<div id=\'page-' . $value . '\'>'  . $value .  '</div>';
         };
 
         $i                   = 1;
         $arr_pagination_html = array();
 
-        for ($j=1; $j <= $book_count; $j+=5) {
+        for ($j = 1; $j <= $book_count; $j += 5) {
             array_push($arr_pagination_html, $pagination_html($i++));
         }
 
@@ -234,14 +246,16 @@ class AjaxController extends Controller
         );
     }
 
-    public function pagination(Request $request) {
+    public function pagination(Request $request)
+    {
         $book_count = Book::get()->count();
 
-        $i= 1;
+        $i = 1;
 
-        for ($j=0; $j < $book_count; $j+=5) {
+        for ($j = 0; $j < $book_count; $j += 5) {
             if ($request->page == $i) {
-                $view = view('layouts.books',
+                $view = view(
+                    'layouts.books',
                     array(
                         'books' => Book::take(5)->skip($j)->get()
                     )
@@ -258,7 +272,8 @@ class AjaxController extends Controller
     }
 
 
-    public function cekOngkir(Request $request) {
+    public function cekOngkir(Request $request)
+    {
         $curlopt_postfield  = 'origin=' . $request->origin_id . '&originType=' . $request->origin_type;
         $curlopt_postfield .= '&destination=' . $request->destination_id . '&destinationType=' . $request->destination_type;
         $curlopt_postfield .= '&weight=' . $request->weight . '&courier=' . $request->courier;
@@ -266,18 +281,18 @@ class AjaxController extends Controller
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-        CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => $curlopt_postfield,
-        CURLOPT_HTTPHEADER => array(
-            "content-type: application/x-www-form-urlencoded",
-            "key: ce496165f4a20bc07d96b6fe3ab41ded"
-        ),
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => $curlopt_postfield,
+            CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded",
+                "key: ce496165f4a20bc07d96b6fe3ab41ded"
+            ),
         ));
 
         $response = curl_exec($curl);
@@ -287,19 +302,20 @@ class AjaxController extends Controller
 
         if ($err) {
             echo "cURL Error #:" . $err;
-        }
-        else {
+        } else {
             echo $response;
         }
     }
 
-    public function responsiveFilters() {
+    public function responsiveFilters()
+    {
         $data = view('book.modal-filters')->render();
 
         return response()->json(compact('data'));
     }
 
-    public function checkLoginForm() {
+    public function checkLoginForm()
+    {
         $data = 'berhasil request';
 
         return response()->json(compact('data'));

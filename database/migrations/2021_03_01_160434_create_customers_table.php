@@ -18,10 +18,10 @@ class CreateCustomersTable extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('address');
-            $table->string('district');
-            $table->string('city');
-            $table->string('province');
-            $table->string('phone_number', 13);
+            $table->foreignId('district_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+            $table->string('province_id')->constrained();
+            $table->string('phone_number', 15);
             $table->timestamps();
         });
     }

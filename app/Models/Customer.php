@@ -11,12 +11,30 @@ class Customer extends Model
 
     protected $guarded = array();
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsToMany('App\Models\User');
     }
 
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+
     // Mutators
-    public function setNameAttribute($value) {
+    public function setNameAttribute($value)
+    {
         $this->attributes['name'] = ucwords($value);
     }
 }

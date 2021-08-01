@@ -97,7 +97,7 @@ class BookPurchaseController extends Controller
     {
         if ($bookUser->user_id == Auth::id()) {
             if ($bookUser->payment_status == 'failed') {
-                return redirect()->route('home');
+                return abort(404);
             } else {
                 return view('book.book-payment', compact('bookUser'));
             }
@@ -157,7 +157,7 @@ class BookPurchaseController extends Controller
             $now           = Carbon::now();
             $deadline      = $bookUser->payment_deadline;
 
-            if ($now->greaterThan($deadline)) {
+            if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation') {
                 $update     = array('payment_status' => 'failed');
 
                 $bookUser->update($update);

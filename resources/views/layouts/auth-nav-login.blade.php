@@ -16,39 +16,40 @@
     </a>
 
     <div class="dropdown-user dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-        <div class="mb-3">
-            @can('viewAny', \App\Models\Book::class)
-            <div>
-                <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
-            </div>
-
-            @can('viewAny', \App\Models\User::class)
-            <div>
-                <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Akun</a>
-            </div>
-            <div>
-                <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>
-            </div>
-            @endcan
-            @endcan
-
-            <div>
-                <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
-            </div>
-            <div>
-                <a class="dropdown-item" href="#"">Daftar Wishlist</a>
-            </div>
-            <div>
+        <div>
+            <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
+        </div>
+        @cannot('viewAny', App\Models\User::class)
+        <div>
+            <a class="dropdown-item" href="{{ route('status.waiting.for.payment') }}">Pembelian</a>
+        </div>
+        @endcannot
+        @cannot('viewAny', App\Models\User::class)
+        <div>
+            <a class="dropdown-item" href="#"">Daftar Wishlist</a>
         </div>
         <div>
             <a class=" dropdown-item" href="#">Keranjang Saya</a>
-            </div>
-            @can('viewAny', App\Models\User::class)
-            <div>
-                <a class="dropdown-item" href="{{ route('uploaded.payments') }}">Unggahan Bukti Pembayaran</a>
-            </div>
-            @endcan
         </div>
+        @endcannot
+        @can('viewAny', App\Models\User::class)
+        <div>
+            <a class="dropdown-item" href="{{ route('uploaded.payments') }}">Status</a>
+        </div>
+        <div>
+            <a class="dropdown-item" href="{{ route('book.users.status.income') }}">Penghasilan</a>
+        </div>
+        <div>
+            <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
+        </div>
+        <div>
+            <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Akun</a>
+        </div>
+        <div>
+            <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>
+        </div>
+        @endcan
+
         <div>
             <form action="{{ route('logout') }}" method="post">
                 @csrf

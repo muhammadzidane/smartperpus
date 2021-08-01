@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
-use App\Models\Author;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,7 +25,8 @@ class DatabaseSeeder extends Seeder
                 SynopsisSeeder::class,
                 ProvinceSeeder::class,
                 CitySeeder::class,
-                DistrictSeeder::class,
+                BookUserSeeder::class,
+                // DistrictSeeder::class,
             )
         );
     }

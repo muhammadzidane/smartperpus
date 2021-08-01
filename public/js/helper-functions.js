@@ -260,7 +260,6 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
         success    : successFunction,
         error : function(errors) {
             console.log(errors.responseJSON);
-            console.log(errors.responseJSON.message ?? null)
         }
     });
 }
@@ -282,23 +281,24 @@ function customerDestroy(){
         let customerId         = $(this).data('id');
         let dataCustomer       = $(this).closest($('.data-customer'));
         let dataCustomers      = $('.data-customer');
+        let confirmText        = 'Apakah anda yakin ingin menghapus alamat tersebut ?';
 
-        if (confirm('Apakah anda yakin ingin menghapus alamat tersebut ?')) {
-            ajaxForm('POST', this, `/customers/${customerId}`, function() {;
-                scrollToElement(dataCustomers, 500);
-                dataCustomer.remove();
+        modalConfirm(confirmText, accepted => {
+            if (accepted) {
+                ajaxForm('POST', this, `/customers/${customerId}`, function() {;
+                    scrollToElement(dataCustomers, 500);
+                    dataCustomer.remove();
 
-                if (dataCustomerLength < 5) {
-                    $('#customer-store-modal-trigger').show();
-                }
+                    if (dataCustomerLength < 5) {
+                        $('#customer-store-modal-trigger').show();
+                    }
 
-                if (dataCustomerLength == 0) {
-                    $('#customer-store-empty').show();
-                }
-            });
-        }
-
-
+                    if (dataCustomerLength == 0) {
+                        $('#customer-store-empty').show();
+                    }
+                });
+            }
+        });
     });
     //#endregion - Customer Destroy
 }
@@ -429,7 +429,6 @@ function getPaymentDeadlineText(userId) {
                 let minutes = response.minutes;
                 let seconds = response.seconds < 10 ? '0' + response.seconds-- : response.seconds--;
                 let hours   = response.hours;
-                console.log(hours);
 
                 let deadlineText = `${hours} : ${minutes} : ${seconds}`;
 
@@ -463,8 +462,8 @@ const ajaxJson = (method, url, data, successResponse = '') => {
         dataType: "JSON",
         success: successResponse,
         error: error => {
-            console.log(error.responseJSON.message);
-        }
+            console.log(error.responseJSON);
+        },
     });
 }
 
@@ -523,11 +522,11 @@ const modalConfirm = (text, callback) => {
             <div class="modal-content modal-confirm-content">
                 <div class="modal-confirm-body">
                     <div class="text-left">${text}</div>
-                    <div class="modal-confirm-close"><i class="fa fa-times"></i></div>
+                    <div class="modal-confirm-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></div>
                 </div>
                 <div class="modal-confirm-buttons">
                     <button class="modal-confirm-accept" type="button">Ya</button>
-                    <button class="modal-confirm-cancel" type="button">Tidak</button>
+                    <button class="modal-confirm-cancel" type="button" data-dismiss="modal" aria-label="Close">Tidak</button>
                 </div>
             </div>
         </div>
@@ -541,39 +540,26 @@ const modalConfirm = (text, callback) => {
 
     $('#modal-confirm').modal('show');
 
-    const closeModalAction = () => {
+    $("#modal-confirm").on("hidden.bs.modal", function() {
+        $(this).remove();
+    });
+
+    $('.modal-confirm-accept').on('click', () => {
         $('#modal-confirm').modal('hide');
 
         setTimeout(() => {
             $('#modal-confirm').remove();
         }, 200);
-    };
-
-    $('.modal-confirm-accept').on('click', () => {
-        closeModalAction();
-
         callback(true);
-    });
-
-    $('.modal-confirm-cancel').on('click', () => {
-        closeModalAction();
-
-        callback(false);
-    });
-
-    $('.modal-confirm-close').on('click', () => {
-        closeModalAction();
-
-        callback(false);
     });
 }
 // End Modal confirm
 
 //#region Modal
-const bootStrapModal = (modalHeader, modalSize, callback) => {
+const bootStrapModal = (modalHeader, modalSizeClass, callback) => {
     let html =
     `<div class="modal fade" id="custom-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog ${modalSize} modal-dialog-centered">
+        <div class="modal-dialog ${modalSizeClass} modal-dialog-centered">
             <div class="modal-content">
                 <div class="p-3 position-relative">
                     <h5 class="modal-title tred login-header">${modalHeader}</h5>
@@ -587,6 +573,7 @@ const bootStrapModal = (modalHeader, modalSize, callback) => {
             </div>
         </div>
     </div>`;
+
     let modalLength = $('#custom-modal').length;
 
     if (modalLength == 0) {
@@ -670,7 +657,9 @@ const addAndSubtractStatusNotification = () => {
 const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMessage) => {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+
     $(buttonSelector).on('click', function() {
+        console.log(buttonSelector);
         let dataId      = $(this).data('id');
         let confirmText = alertConfirmText;
         let datas       = {
@@ -679,15 +668,15 @@ const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMe
             status : status,
         };
 
-        modalConfirm(this, confirmText, (accepted) => {
+        modalConfirm(confirmText, accepted => {
             if (accepted) {
                 ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                    let messageText = successMessage;
+                    let messageText            = successMessage;
                     let statusActive           = $('.active-acc');
                     let statusNotification     = statusActive.find('.status-circle');
                     let statusNotificationPrev = statusActive.prev().find('.status-circle');
 
-                    singleMessage(messageText);
+                    alertMessage(messageText);
                     setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
 
                     statusNotification.text(statusNotification.text() - 1);

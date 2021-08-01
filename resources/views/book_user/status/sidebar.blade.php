@@ -1,12 +1,13 @@
-<div class="col-md-3 mb-4">
-    <div class="white-content borbot-gray-bold {{ $margin_zero ?? '' }}">
+<div class="col-sm-3 mb-4">
+    <div class="white-content m-0 borbot-gray-bold {{ $margin_zero ?? '' }}">
         <div class="borbot-gray-0 pb-3">
             <div class="mt-1">
                 <h4 class="hd-16">Status</h4>
 
+                <!-- Penjual -->
                 @can('viewAny', 'App\\Models\User')
                 <div class="text-grey">
-                    <div class="position-relative {{ $waiting_for_payment ?? '' }}">
+                    <div class="py-1 position-relative {{ $waiting_for_payment ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('uploaded.payments') }}">
                             Unggahan bukti pembayaran
 
@@ -23,7 +24,7 @@
                             @endif
                         </a>
                     </div>
-                    <div class="position-relative {{ $on_process ?? '' }}">
+                    <div class="py-1 position-relative {{ $on_process ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('confirmed.orders') }}">
                             Sedang diproses
 
@@ -43,7 +44,7 @@
                             @endif
                         </a>
                     </div>
-                    <div class="position-relative {{ $on_delivery ?? '' }}">
+                    <div class="py-1 position-relative {{ $on_delivery ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">
                             Sedang dikirim
                             @if (App\Models\BookUser::get()
@@ -62,9 +63,9 @@
                             @endif
                         </a>
                     </div>
-                    <div class="position-relative {{ $arrived ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">
-                            Telah sampai
+                    <div class="py-1 position-relative {{ $arrived ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('book.users.status.arrived') }}">
+                            Berhasil
 
                             @if (App\Models\BookUser::get()
                             ->where('upload_payment_image', '!=' , null)
@@ -83,30 +84,48 @@
                     </div>
                 </div>
 
+                <!-- Pembeli -->
                 @else
                 <div class="text-grey">
-                    <div class="{{ $waiting_for_payment ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('waiting.for.payment') }}">Menunggu pembayaran</a>
-                        @if (App\Models\BookUser::get()
-                        ->where('payment_status', 'waiting_for_confirmation')
-                        ->where('upload_payment_image', '!=' , null)->count() != 0
-                        )
-                        <span class="status-circle">
-                            {{ App\Models\BookUser::get()
-                                ->where('payment_status', 'waiting_for_confirmation')
-                                ->where('upload_payment_image', '!=' , null)->count()
-                            }}
-                        </span>
+                    <div class="py-1 position-relative {{ $failed ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Tidak berhasil</a>
+                        @isset($counts['failed'])
+                        @if ($counts['failed'] != 0)
+                        <span class="status-circle">{{ $counts['failed'] }}</span>
                         @endif
+                        @endisset
                     </div>
-                    <div class="{{ $on_process ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Sedang diproses</a>
+                    <div class="py-1 position-relative {{ $waiting_for_payment ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('status.waiting.for.payment') }}">Menunggu pembayaran</a>
+                        @isset($counts['waiting_for_payment'])
+                        @if ($counts['waiting_for_payment'] != 0)
+                        <span class="status-circle">{{ $counts['waiting_for_payment'] }}</span>
+                        @endif
+                        @endisset
                     </div>
-                    <div class="{{ $on_delivery ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Sedang dikirim</a>
+                    <div class="py-1 position-relative {{ $on_process ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('status.on.process') }}">Sedang diproses</a>
+                        @isset($counts['on_process'])
+                        @if ($counts['on_process'] != 0)
+                        <span class="status-circle">{{ $counts['on_process'] }}</span>
+                        @endif
+                        @endisset
                     </div>
-                    <div class="{{ $arrived ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('on.delivery') }}">Telah sampai</a>
+                    <div class="py-1 position-relative {{ $on_delivery ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('status.on.delivery') }}">Sedang dikirim</a>
+                        @isset($counts['on_delivery'])
+                        @if ($counts['on_delivery'] != 0)
+                        <span class="status-circle">{{ $counts['on_delivery'] }}</span>
+                        @endif
+                        @endisset
+                    </div>
+                    <div class="py-1 position-relative {{ $arrived ?? '' }}">
+                        <a class="text-decoration-none text-grey" href="{{ route('status.success') }}">Berhasil</a>
+                        @isset($counts['arrived'])
+                        @if ($counts['arrived'] != 0)
+                        <span class="status-circle">{{ $counts['arrived'] }}</span>
+                        @endif
+                        @endisset
                     </div>
                 </div>
                 @endcan

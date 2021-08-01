@@ -10,7 +10,17 @@
 <div>
     <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold mt-c w-75 mx-auto">
         <div class="white-content-header-2">
+            @switch($bookUser->payment_method)
+            @case('Transfer Bank BRI')
             <h4 class="hd-18">Transfer Bank BRI</h4>
+            @break
+            @case('Transfer Bank BNI')
+            <h4 class="hd-18">Transfer Bank BNI</h4>
+            @break
+            @case('Transfer Bank BCA')
+            <h4 class="hd-18">Transfer Bank BCA</h4>
+            @break
+            @endswitch
         </div>
         <div class="mt-4">
             <div class="container text-center borbot-gray-0 pb-4">
@@ -284,7 +294,7 @@
         </div>
         <div class="payment-instructions borbot-gray-0" data-bank="bri-internet-banking">
             <div class="p-15">
-                <h4 class="hd-18">BNI - Internet Banking / Click BCA <i class="payment-instructions-caret fa fa-caret-right ml-2" aria-hidden="true"></i></h4>
+                <h4 class="hd-18">BCA - Internet Banking / Click BCA <i class="payment-instructions-caret fa fa-caret-right ml-2" aria-hidden="true"></i></h4>
             </div>
             <div class="mt-4 px-15">
                 <div>
@@ -301,7 +311,7 @@
         </div>
         <div class="payment-instructions borbot-gray-0" data-bank="bri-mobile-banking">
             <div class="p-15">
-                <h4 class="hd-18">BNI - Mobile Banking <i class="fa fa-caret-down ml-2" aria-hidden="true"></i></h4>
+                <h4 class="hd-18">BCA - Mobile Banking <i class="fa fa-caret-down ml-2" aria-hidden="true"></i></h4>
             </div>
             <div class="mt-4 px-15">
                 <div>

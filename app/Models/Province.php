@@ -11,7 +11,13 @@ class Province extends Model
 
     protected $guarded = array();
 
-    public function cities() {
+    public function cities()
+    {
         return $this->hasMany('App\Models\City');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
     }
 }

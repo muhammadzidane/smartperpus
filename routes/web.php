@@ -81,25 +81,32 @@ Route::prefix('book-purchases')->group(function () {
 });
 
 // Wishlist
-Route::prefix('wishlist')->middleware('auth')->group(function () {
+Route::prefix('wishlists')->middleware('auth')->group(function () {
     Route::get('/', array(WishlistController::class, 'index'));
     Route::post('/', array(WishlistController::class, 'store'));
     Route::delete('/{id}', array(WishlistController::class, 'destroy'));
 });
 
 Route::prefix('book-users/status')->middleware('auth')->group(function () {
-    Route::get('/', array(BookUserController::class, 'uploadedPayments'))
-        ->name('uploaded.payments');
-    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))
-        ->name('confirmed.orders');
+    Route::get('/', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
+    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))->name('confirmed.orders');
     Route::get('on-delivery', array(BookUserController::class, 'onDelivery'))->name('on.delivery');
+    Route::get('success', array(BookUserController::class, 'arrived'))->name('book.users.status.arrived');
+    Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
+
+    // Ajax request
+    Route::get('ajax/today', array(BookUserController::class, 'ajaxToday'));
 
     // Lacak paket
     Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));
 });
 
 Route::prefix('status')->middleware('auth')->group(function () {
-    Route::get('/waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('waiting.for.payment');
+    Route::get('/failed', array(StatusController::class, 'failed'))->name('status.failed');
+    Route::get('/waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('status.waiting.for.payment');
+    Route::get('/on-process', array(StatusController::class, 'onProcess'))->name('status.on.process');
+    Route::get('/on-delivery', array(StatusController::class, 'onDelivery'))->name('status.on.delivery');
+    Route::get('/success', array(StatusController::class, 'success'))->name('status.success');
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));

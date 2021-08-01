@@ -39,7 +39,7 @@
                 <div class="book-buy-desc d-sm-flex">
                     <div class="mw-17 mr-sm-4">
                         <div>
-                            <img class="w-100" src="{{ asset('storage/books/' . $book->image) }}">
+                            <img class="w-100 zoom-modal-image" src="{{ asset('storage/books/' . $book->image) }}">
                         </div>
                     </div>
                     <div class="d-flex flex-wrap">
@@ -137,11 +137,11 @@
                                         <div class="destination">
                                             <i class="fas fa-circle-notch text-grey mr-1"></i>
                                             <span class="tbold">Alamat Tujuan</span>
-                                            <div id="destination" class="text-grey" data-destination-id="22" data-subdistrict-id="317" data-destination-type="subdistrict">
+                                            <div class="destination-datas" class="text-grey" data-destination-id="{{ $customer->district->id }}" data-destination-type="subdistrict">
                                                 <span class="customer-address">{{ $customer->address . ', ' }}</span>
-                                                <span class="customer-district">{{ $customer->district . ', ' }}</span>
-                                                <span class="customer-city">{{ $customer->city  . '. ' }}</span>
-                                                <span class="customer-province">{{ $customer->province }}</span>
+                                                <span class="customer-district">{{ $customer->district->name . ', ' }}</span>
+                                                <span class="customer-city">{{ $customer->city->name  . '. ' }}</span>
+                                                <span class="customer-province">{{ $customer->province->name }}</span>
                                             </div>
                                         </div>
                                         <div class="mt-3">

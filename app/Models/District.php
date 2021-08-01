@@ -11,7 +11,13 @@ class District extends Model
 
     protected $guarded = array();
 
-    public function city() {
-        return $this->belongsToMany('App\Models\City');
+    public function city()
+    {
+        return $this->belongsTo('App\Models\City');
+    }
+
+    public function customers()
+    {
+        return $this->hasMany(Customer::class);
     }
 }

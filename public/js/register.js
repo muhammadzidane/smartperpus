@@ -17,11 +17,11 @@ $('#form-register').on('submit', function(event) {
         }
 
         if (input.id == 'password') {
-            validations['rules'] = 'required,min:6';
+            validations['rules'] = 'required,min:8';
         }
 
         if (input.id == 'konfirmasi_password') {
-            validations['rules'] = 'required,min:6,same:password';
+            validations['rules'] = 'required,min:8,same:password';
         }
 
         return validations;

@@ -440,7 +440,7 @@ $(document).ready(function () {
                 let districtsHtml = '';
 
                 response.cities.forEach(city => {
-                    citiesAndDistrictsHtml += `<option value="${city.id}">${city.name}</option>`;
+                    citiesAndDistrictsHtml += `<option value="${city.id}">${city.type} ${city.name}</option>`;
                 });
 
                 $('.kota-atau-kabupaten').html(citiesAndDistrictsHtml);
@@ -507,124 +507,132 @@ $(document).ready(function () {
     });
 
     // Cek API Rajaongkir
-    $('.courier-choise').on('click', function () {
+    const checkOngkir = () => {
+        $('.courier-choise').on('click', function (event) {
+            event.stopImmediatePropagation();
 
-        let dataCustomerLength = $('.data-customer').length;
+            let dataCustomerLength = $('.data-customer').length;
+            let addressChecked     = $('.customer-address').is(':checked');
 
-        if (dataCustomerLength != 0) {
-            // Loading Couriers - Membuat loading saat layanan kurir belum muncul
-            let courierServices = $('.courier-choise-service').length;
-            let spinnerHtml = `<div class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
-            spinnerHtml += `<div class="spin"></div>`;
-            spinnerHtml += `</div>`;
+            if (dataCustomerLength != 0 && addressChecked) {
+                // Loading Couriers - Membuat loading saat layanan kurir belum muncul
+                let spinnerHtml = `<div class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
+                spinnerHtml += `<div class="spin"></div>`;
+                spinnerHtml += `</div>`;
 
-            $('#courier-choise-name').html('');
-            $('#courier-choise-result').html(spinnerHtml);
-            // End of Loading Couriers
+                $('#courier-choise-name').html('');
+                $('#courier-choise-result').html(spinnerHtml);
+                // End of Loading Couriers
 
-            $('input[name=courier-choise]').removeAttr('checked');
-            $(this).children('input').attr('checked', 'checked');
-            $('.courier-choise').removeClass('cc-active');
-            $(this).addClass('cc-active');
+                $('input[name=courier-choise]').removeAttr('checked');
+                $(this).children('input').attr('checked', 'checked');
+                $('.courier-choise').removeClass('cc-active');
+                $(this).addClass('cc-active');
 
-            let originSubdistictId = $('#origin').data('subdistrict-id');
-            let originType = $('#origin').data('origin-type');
-            let destinationSubdistrictId = $('#destination').data('subdistrict-id');
-            let destinationType = $('#destination').data('destination-type');
-            let weight = $('#weight').data('weight');
-            let courierChoise = $('input[name=courier-choise]:checked').val();
+                let destination              = $('.customer-address:checked').parents('.row').find('.destination-datas');
+                console.log($('.customer-address:checked').parents('.row'));
+                let originSubdistictId       = $('#origin').data('subdistrict-id');
+                let originType               = $('#origin').data('origin-type');
+                let destinationSubdistrictId = destination.data('destination-id');
+                let destinationType          = destination.data('destination-type');
+                let weight                   = $('#weight').data('weight');
+                let courierChoise            = $('input[name=courier-choise]:checked').val();
 
-            $.ajax({
-                type: "POST",
-                url: "/ajax/request/cek-ongkir",
-                data: {
-                    '_token': csrfToken,
-                    'origin_id': originSubdistictId,
-                    'origin_type': originType,
-                    'destination_id': destinationSubdistrictId,
-                    'destination_type': destinationType,
-                    'weight': weight,
-                    'courier': courierChoise,
-                },
-                dataType: "JSON",
-                success: function (response) {
-                    let result = response.rajaongkir.results[0];
+                $.ajax({
+                    type: "POST",
+                    url: "/ajax/request/cek-ongkir",
+                    data: {
+                        '_token': csrfToken,
+                        'origin_id': originSubdistictId,
+                        'origin_type': originType,
+                        'destination_id': destinationSubdistrictId,
+                        'destination_type': destinationType,
+                        'weight': weight,
+                        'courier': courierChoise,
+                    },
+                    dataType: "JSON",
+                    success: function (response) {
+                        let result = response.rajaongkir.results[0];
 
-                    $('#courier-choise-name').text(result.name);
-                    $('#courier-choise-result').html('');
+                        $('#courier-choise-name').text(result.name);
+                        $('#courier-choise-result').html('');
 
-                    let courierChoiseHtml = function (description, etd, costPrice) {
+                        let courierChoiseHtml = function (description, etd, costPrice) {
 
-                        // Jika tidak ada string Hari pada etd, maka tambahkan string 'Hari'
-                        let path = /(HARI|JAM)/i;
-                        let regexResult = etd.match(path) ?? '';
-                        etd = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
+                            // Jika tidak ada string Hari pada etd, maka tambahkan string 'Hari'
+                            let path = /(HARI|JAM)/i;
+                            let regexResult = etd.match(path) ?? '';
+                            etd = regexResult ? etd.replace(path, ucwords(regexResult[0].toLowerCase())) : etd = etd + ' Hari';
 
-                        let courierChoiseHtml = `<div>`;
-                        courierChoiseHtml += `<div class="courier-choise-service">`;
-                        courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
-                        courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
-                        courierChoiseHtml += `<span> - </span>`;
-                        courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
-                        courierChoiseHtml += `<div class="ml-4">`;
-                        courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
-                        courierChoiseHtml += `</div>`;
-                        courierChoiseHtml += `</div>`;
-                        courierChoiseHtml += `</div>`;
+                            let courierChoiseHtml = `<div>`;
+                            courierChoiseHtml += `<div class="courier-choise-service">`;
+                            courierChoiseHtml += `<input value="${costPrice}" type="radio" name="courier-service" class="inp-courier-choise-service">`;
+                            courierChoiseHtml += `<span class="courier-service-name tbold">${description}</span>`;
+                            courierChoiseHtml += `<span> - </span>`;
+                            courierChoiseHtml += `<span class="text-grey">${etd}</span>`;
+                            courierChoiseHtml += `<div class="ml-4">`;
+                            courierChoiseHtml += `<span>${rupiahFormat(costPrice)}</span>`;
+                            courierChoiseHtml += `</div>`;
+                            courierChoiseHtml += `</div>`;
+                            courierChoiseHtml += `</div>`;
 
-                        return courierChoiseHtml;
-                    }
-
-                    result.costs.forEach(element => {
-                        element.cost.forEach(costElement => {
-                            $('#courier-choise-result').append(courierChoiseHtml(element.description, costElement.etd, costElement.value));
-                        });
-                    });
-
-                    $('.courier-choise-service').on('click', function () {
-                        $('.inp-courier-choise-service').removeAttr('checked');
-                        $(this).children('input').attr('checked', 'checked');
-
-                        let bookPrice = $('#book-price').data('book-price');
-                        let shippingCost = $(this).children('input:checked').val() ?? 0;
-                        let bookNeeded = parseInt($('#book-needed').text());
-                        let shippingInsurance = $('#shipping-insurance').is(':checked') ? 1000 : 0;
-                        let courierServicePriceHtml = `<div class="d-flex justify-content-between">`;
-                        courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
-                        courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
-                        courierServicePriceHtml += `</div>`;
-
-                        if ($('#shipping-cost').length <= 0) {
-                            $('#book-payment').append(courierServicePriceHtml);
-                        } else {
-                            $('#shipping-cost').text(shippingCost);
+                            return courierChoiseHtml;
                         }
 
-                        let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
+                        result.costs.forEach(element => {
+                            element.cost.forEach(costElement => {
+                                $('#courier-choise-result').append(courierChoiseHtml(element.description, costElement.etd, costElement.value));
+                            });
+                        });
 
-                        $('#total-payment').attr('data-total-payment', totalPayment);
-                        $('#total-payment').text(rupiahFormat(totalPayment));
-                        $('#book-total-payment').val(totalPayment);
-                    });
-                },
-            });
-        } else {
-            let errorMsg = `<span class="tred" role="alert"><strong>Harap tambah alamat</strong></span>`;
+                        $('.courier-choise-service').on('click', function () {
+                            $('.inp-courier-choise-service').removeAttr('checked');
+                            $(this).children('input').attr('checked', 'checked');
 
-            scrollToElement('#alamat-pengiriman', 500);
-            $('#alamat-pengiriman > span').remove();
-            $('#alamat-pengiriman').append(errorMsg);
-        }
-    });
+                            let bookPrice                = $('#book-price').data('book-price');
+                            let shippingCost             = $(this).children('input:checked').val() ?? 0;
+                            let bookNeeded               = parseInt($('#book-needed').text());
+                            let shippingInsurance        = $('#shipping-insurance').is(':checked') ? 1000 : 0;
+                            let courierServicePriceHtml  = `<div class="d-flex justify-content-between">`;
+                                courierServicePriceHtml += `<div>Ongkos Kirim</div>`;
+                                courierServicePriceHtml += `<div id="shipping-cost">${rupiahFormat(shippingCost)}</div>`;
+                                courierServicePriceHtml += `</div>`;
+
+                            if ($('#shipping-cost').length <= 0) {
+                                $('#book-payment').append(courierServicePriceHtml);
+                            } else {
+                                $('#shipping-cost').text(shippingCost);
+                            }
+
+                            let totalPayment = (bookPrice * bookNeeded) + parseInt(shippingCost) + shippingInsurance;
+
+                            $('#total-payment').attr('data-total-payment', totalPayment);
+                            $('#total-payment').text(rupiahFormat(totalPayment));
+                            $('#book-total-payment').val(totalPayment);
+                        });
+                    },
+                });
+            } else {
+                let errorMsg = `<span class="tred" role="alert"><strong>Harap tambah alamat</strong></span>`;
+
+                scrollToElement('#alamat-pengiriman', 500);
+                $('#alamat-pengiriman > span').remove();
+                $('#alamat-pengiriman').append(errorMsg);
+            }
+        });
+    } ;
+
+    checkOngkir();
 
     $('#book-payment-form').on('submit', function (e) {
         e.preventDefault();
-        let bookId = $(this).data('id');
+
+        let bookId             = $(this).data('id');
         let courierServiceCost = $('.inp-courier-choise-service:checked').val()
         let courierServiceName = $('.inp-courier-choise-service:checked').next().text();
-        let paymentMethod = $('.inp-payment-method:checked').val();
-        let address = $('.customer-address:checked').val();
-        let uniqueCode = randomIntFromInterval(100, 999);
+        let paymentMethod      = $('.inp-payment-method:checked').val();
+        let address            = $('.customer-address:checked').val();
+        let uniqueCode         = randomIntFromInterval(100, 999);
 
         if (courierServiceCost === undefined || paymentMethod === undefined || address === undefined) {}
 
@@ -640,19 +648,9 @@ $(document).ready(function () {
 
         ajaxForm('POST', this, `/book-purchases/${bookId}`, function (response) {
             if (response.errors) {
-                let errorMsgs = '';
+                let appendElement = $('.home-and-anymore-show');
 
-                for (const key in response.errors) {
-                    if (response.errors.hasOwnProperty.call(response.errors, key)) {
-                        const error = response.errors[key][0];
-
-                        errorMsgs += `<div><strong>${error}</strong></div>`;
-                    }
-                }
-
-                $('#click-to-the-top').trigger('click');
-                $('#pesan').removeClass('d-none');
-                $('#pesan').html(errorMsgs);
+                backendMessage(appendElement, response.errors);
             } else {
                 window.location.href = response.url;
             }
@@ -665,11 +663,14 @@ $(document).ready(function () {
     let regexMatch = /\/book-purchases\/[0-9]{1}/;
     let regexPathName = pathName.match(regexMatch);
 
-    let userId = $('#payment-limit-date').data('id');
-    let months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    let myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
-    let date = new Date();
-    let i = 59;
+    let userId   = $('#payment-limit-date').data('id');
+    let months   = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    let myDays   = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'];
+    let today    = new Date();
+    let tomorrow = new Date(today);
+    let i        = 59;
+
+    tomorrow.setDate(today.getDate() + 1);
 
     ajaxBookPurchaseDeadlineDestroy();
 
@@ -677,7 +678,7 @@ $(document).ready(function () {
         getPaymentDeadlineText(userId);
     }
 
-    let paymentLimitText = `${myDays[date.getDay() + 1] ?? myDays[0]}, ${date.getDate() + 1} ${months[date.getMonth()]} ${date.getFullYear()}`;
+    let paymentLimitText = `${myDays[tomorrow.getDay()] ?? myDays[0]}, ${tomorrow.getDate()} ${months[tomorrow.getMonth()]} ${tomorrow.getFullYear()}`;
     $('#payment-limit-date').text(paymentLimitText);
 
     // Petunjuk Pembayaran
@@ -1460,7 +1461,7 @@ $(document).ready(function () {
             let userDateOfBirth   = $('#user-date-of-birth').text();
             let userMan           = $('#user-gender').text() == 'Laki-laki' ? 'selected' : '';
             let userWoman         = $('#user-gender').text() != 'Laki-laki' ? 'selected' : '';
-            let userAddress       = $('#user-address').text();
+            let userAddress       = $('#user-address').text() == '-' ? '' : $('#user-address').text();
             let userPhoneNumber   = $('#user-phone-number').text();
             let dataId            = $(this).data('id');
 
@@ -1600,12 +1601,12 @@ $(document).ready(function () {
                 {
                     input: '#email',
                     inputName: 'Email',
-                    rules: 'nullable,email'
+                    rules: 'required,email'
                 },
                 {
                     input: '#password',
                     inputName: 'Password',
-                    rules: 'nullable,'
+                    rules: 'required,'
                 },
             ];
 
@@ -1814,7 +1815,6 @@ $(document).ready(function () {
         }
 
         ajaxForm('POST', '#customer-store', `/customers`, function (response) {
-
             if (response.status) {
                 let dataCustomers = $('.data-customer').length + 1;
 
@@ -1829,6 +1829,7 @@ $(document).ready(function () {
                     scrollToElement($('.data-customer').last(), 500);
                 }
 
+                checkOngkir();
                 customerUpdate();
                 customerDestroy();
             } else {
@@ -1858,112 +1859,145 @@ $(document).ready(function () {
     customerDestroy();
 
     // Waiting for payment - menunggu pembayaran
-    // Unggah bukti pembayaran
-    $('#upload-payment-file').on('change', function() {
-        let preview      = document.getElementById('upload-payment-image');
-        let file         = document.getElementById('upload-payment-file').files[0];
-        let reader       = new FileReader();
-        let ext          = $('#upload-payment-file').val().split('.').pop().toLowerCase();
-        let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
-
-        if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
-            let text = `Hanya bisa mengirim file gambar berupa: png, jpg, jpeg`;
-            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
-            let uploadPaymentMessageLength = $('#upload-payment-message').length;
-
-            if (uploadPaymentMessageLength == 0) {
-                $('.upload-payment').prepend(html);
-            } else if (uploadPaymentMessageLength == 1) {
-                $('#upload-payment-message').text(text);
-            }
-        } else if (fileSizeInMB > 2) {
-            let text = `File gambar tidak boleh lebih dari 2mb`;
-            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
-            let uploadPaymentMessageLength = $('#upload-payment-message').length;
-
-            if (uploadPaymentMessageLength == 0) {
-                $('.upload-payment').prepend(html);
-            }
-            else if (uploadPaymentMessageLength == 1) {
-                $('#upload-payment-message').text(text);
-            }
-        } else {
-            $('#upload-payment-message').remove();
-
-            reader.onloadend = () => {
-                preview.src = reader.result;
-            }
-
-            if (file) {
-                reader.readAsDataURL(file);
-            } else {
-                preview.src = "";
-            }
-
-            $('#upload-payment-image').toggleClass('d-none');
-            $('#upload-payment-plus-logo').toggleClass('d-none');
-            $('#upload-payment-cancel').removeClass('d-none');
-            $('#upload-payment-submit-button').toggleClass('d-none');
-
-        }
-    });
-
-    // Batal unggah foto pembayaran
-    $('#upload-payment-cancel').on('click', function() {
-        $('#upload-payment-plus-logo').removeClass('d-none');
-        $('#upload-payment-cancel').addClass('d-none');
-        $('#upload-payment-image').removeAttr('src');
-        $('#upload-payment-file').val('');
-        $('#upload-payment-image').toggleClass('d-none');
-        $('#upload-payment-submit-button').toggleClass('d-none');
-    });
-
     // Upload payment form
-    $('#upload-payment-form').on('submit', function(event) {
-        event.preventDefault();
+    $('.upload-payment-button').on('click', function() {
+        let buttonModalUpload = $(this);
 
-        let dataId = $('#upload-payment-button').data('id');
-        let datas  = [
-            {
-                status: 'uploadImage'
-            }
-        ]
+        bootStrapModal('Upload Bukti Pembayaran', 'modal-sm', () => {
+            let html =
+            `<div class="upload-payment">
+                <form id="upload-payment-form" action="{{ route('book-users.update', array('book_user' => 3)) }}" enctype="multipart/form-data" data-id="" method="post">
+                    <div class="upload-payment-select-image">
+                        <button type="button" id="upload-payment-cancel" class="btn-none d-none"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        <label>
+                            <input id="upload-payment-file" type="file" class="d-none" name="upload_payment" accept=".jpg, .jpeg, .png">
+                            <i id="upload-payment-plus-logo" class="fa fa-plus" aria-hidden="true"></i>
+                            <input type="hidden" name="_method" value="PATCH">
+                            <input type="hidden" name="_token" value="${csrfToken}">
+                        </label>
+                        <div>
+                            <img id="upload-payment-image" class="w-100 d-none" src="" alt="gambar">
+                        </div>
+                        <button id="upload-payment-submit-button" class="btn btn-red d-none mt-3" type="submit">Kirim</button>
+                    </div>
+                </form>
+                <div class="upload-payment-information">
+                    <div class="text-grey bold">
+                        <div>File harus berupa jpg, jpeg, png</div>
+                        <div>Maksimal 2mb</div>
+                    </div>
+                </div>
+            </div>`;
 
-        ajaxForm('POST', this, `/book-users/${dataId}`, function (response) {
-            if (response.success) {
-                let messageText = 'Berhasil men-upload bukti pembayaran';
+            return html;
+        });
 
-                $('#upload-payment-file').val('');
-                $('.close').trigger('click');
-                $('#upload-payment-cancel').trigger('click');
-                alertMessage(messageText);
+        $('#upload-payment-file').on('change', function() {
+            let preview      = document.getElementById('upload-payment-image');
+            let file         = document.getElementById('upload-payment-file').files[0];
+            let reader       = new FileReader();
+            let ext          = $('#upload-payment-file').val().split('.').pop().toLowerCase();
+            let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
+
+            if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+                let text = `Hanya bisa mengirim file gambar berupa: png, jpg, jpeg`;
+                let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+                let uploadPaymentMessageLength = $('#upload-payment-message').length;
+
+                if (uploadPaymentMessageLength == 0) {
+                    $('.upload-payment').prepend(html);
+                } else if (uploadPaymentMessageLength == 1) {
+                    $('#upload-payment-message').text(text);
+                }
+            } else if (fileSizeInMB > 2) {
+                let text = `File gambar tidak boleh lebih dari 2mb`;
+                let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+                let uploadPaymentMessageLength = $('#upload-payment-message').length;
+
+                if (uploadPaymentMessageLength == 0) {
+                    $('.upload-payment').prepend(html);
+                }
+                else if (uploadPaymentMessageLength == 1) {
+                    $('#upload-payment-message').text(text);
+                }
             } else {
-                let errors = response.errors.upload_payment;
-                alert(errors);
-            }
+                $('#upload-payment-message').remove();
 
-        }, datas);
+                reader.onloadend = () => {
+                    preview.src = reader.result;
+                }
+
+                if (file) {
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = "";
+                }
+
+                $('#upload-payment-image').toggleClass('d-none');
+                $('#upload-payment-plus-logo').toggleClass('d-none');
+                $('#upload-payment-cancel').removeClass('d-none');
+                $('#upload-payment-submit-button').toggleClass('d-none');
+            }
+        });
+
+        // Batal unggah foto pembayaran
+        $('#upload-payment-cancel').on('click', function() {
+            $('#upload-payment-plus-logo').removeClass('d-none');
+            $('#upload-payment-cancel').addClass('d-none');
+            $('#upload-payment-image').removeAttr('src');
+            $('#upload-payment-file').val('');
+            $('#upload-payment-image').toggleClass('d-none');
+            $('#upload-payment-submit-button').toggleClass('d-none');
+        });
+
+        $('#upload-payment-form').on('submit', function(event) {
+            event.preventDefault();
+
+            let dataId = buttonModalUpload.data('id');
+            let datas  = [{status: 'uploadImage'}];
+
+            ajaxForm('POST', this, `/book-users/${dataId}`, function (response) {
+                if (response.success) {
+                    let messageText = 'Berhasil mengupload bukti pembayaran';
+                    let html        = `<span class="btn btn-grey btn-sm-0 hd-14">Sudah mengirim bukti</span>`;
+
+                    $('#upload-payment-file').val('');
+                    $('.close').trigger('click');
+                    $('#upload-payment-cancel').trigger('click');
+                    alertMessage(messageText);
+                    buttonModalUpload.parents('.borbot-gray-bold').prev().find('.upload-payment-failed').remove();
+                    buttonModalUpload.parent().append(html);
+                    buttonModalUpload.remove();
+                } else {
+                    let errors = response.errors.upload_payment;
+                    alert(errors);
+                }
+            }, datas);
+        });
     });
+
 
     $('.upload-payment-failed').on('click', function() {
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
         let dataId      = $(this).data('id');
         let confirmText = 'Apakah anda yakin ingin membatalkan pembayaran ini ?';
 
-        if (confirm(confirmText)) {
-            let datas = {
-                _token: csrfToken,
-                _method: 'PATCH',
-                status: 'failed',
-            };
+        modalConfirm(confirmText, accepted => {
+            if (accepted) {
+                let datas = {
+                    _token: csrfToken,
+                    _method: 'PATCH',
+                    status: 'failed',
+                };
 
-            ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                $(this).parents('.upload-payment-value').remove();
-                let messageText = 'Berhasil membatalkan pembelian';
+                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                    $(this).parents('.upload-payment-value').remove();
+                    let messageText = 'Berhasil membatalkan pembelian';
 
-                alertMessage(messageText);
-            });
-        }
+                    alertMessage(messageText);
+                });
+            }
+        });
     })
 
     // Lihat daftar tagihan
@@ -2003,40 +2037,60 @@ $(document).ready(function () {
     //#endregion Confirmed payment - Konfirmasi pembayaran
 
     //#region Confirmed shipped - Konfirmasi pengiriman
-    $('.confirm-shipping').on('click', function () {
+    $('.confirm-process').on('click', function () {
         let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman tersebut?';
         let dataId      = $(this).data('id');
         let datas       = {
-            _token       : csrfToken,
-            _method      : 'PATCH',
-            status: 'orderOnDelivery'
+            _token : csrfToken,
+            _method: 'PATCH',
+            status : 'orderOnDelivery'
         }
 
         modalConfirm(confirmText, accepted => {
             if (accepted) {
-                console.log(true);
-                // ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
-                //     let messageText = 'Berhasil menkonfirmasi pengiriman dan akan di proses';
+                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                    let messageText = 'Berhasil menkonfirmasi pengiriman dan telah sampai';
 
-                //     alertMessage(messageText);
-                //     setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
-
-                //     addAndSubtractStatusNotification();
-                // });
+                    alertMessage(messageText);
+                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+                    addAndSubtractStatusNotification();
+                });
             }
         })
     });
     //#endregion Confirmed shipped - Konfirmasi pengiriman
 
+    $('.confirm-shipping').on('click', function () {
+        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman tersebut?';
+        let dataId      = $(this).data('id');
+        let datas       = {
+            _token : csrfToken,
+            _method: 'PATCH',
+            status : 'arrived'
+        }
+
+        modalConfirm(confirmText, accepted => {
+            if (accepted) {
+                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                    let messageText = 'Berhasil menkonfirmasi pengiriman dan telah sampai';
+
+                    alertMessage(messageText);
+                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+                    addAndSubtractStatusNotification();
+                });
+            }
+        })
+    });
+
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
         let dataInvoice = $(this).data('invoice').toString();
 
-        console.log(dataInvoice);
         let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center pb-4">`;
             spinnerHtml += `<div class="spin"></div>`;
             spinnerHtml += `</div>`;
-        let modalLength  = $('#tracking-packages').length;
+        let modalLength  = $('tracking-packages-modal').length;
+
         let datas        = {
             waybill: '030200010250720',
             courier: 'jne',
@@ -2046,29 +2100,27 @@ $(document).ready(function () {
         $(this).attr('data-target', '#tracking-packages');
         $(this).attr('data-toggle', 'modal');
 
-        if (modalLength == 0) {
-            let html =
-            `<div class="modal fade" id="tracking-packages-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div id="tracking-packages-body" class="modal-body">
-                            <div id="tracking-modal-header" class="mb-4 d-flex justify-content-between">
-                                <h5 class="modal-title tred login-header">Lacak Paket</h5>
-                                <button id="tracking-modal-close" type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div id="tracking-modal-content">
-                                ${spinnerHtml}
-                            </div>
+        let html =
+        `<div class="modal fade" id="tracking-packages-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div id="tracking-packages-body" class="modal-body">
+                        <div id="tracking-modal-header" class="mb-4 d-flex justify-content-between">
+                            <h5 class="modal-title tred login-header">Lacak Paket</h5>
+                            <button id="tracking-modal-close" type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div id="tracking-modal-content">
+                            ${spinnerHtml}
                         </div>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
 
-            $(this).after(html);
-            $('#tracking-packages-modal').modal('show');
-        }
+        $(this).after(html);
+        $('#tracking-packages-modal').modal('show');
 
         $.ajax({
             type: "POST",
@@ -2196,8 +2248,60 @@ $(document).ready(function () {
     let cancelUploadImageConfirmText = 'Apakah anda yakin ingin membatalkan pembayaran tersebut?';
 
     cancelStatusPayment(cancelUploadImage, cancelUploadImageConfirmText,
-        'cancelUploadImage', 'Berhasil membatalkan unggahan bukti pembayarn');
+        'cancelUploadImage', 'Berhasil membatalkan unggahan bukti pembayaran');
     //#end region cancel payment
 
     // #endregion Waiting for payment - menunggu pembayaran
+
+    //#region Income
+    $('#income-today').on('click', function() {
+        ajaxJson('GET', `/book-users/status/ajax/today`, {}, response => {
+
+            console.log(response.today.book_users);
+
+            bootStrapModal('Penghasilan Hari Ini', 'modal-md', () => {
+                let bookUsers = response.today.book_users;
+                let html = '';
+
+                bookUsers.forEach((bookUser) => {
+                    console.log(bookUser);
+                    html += `<div class="row mt-4 borbot-gray-0 pb-2 px-3">
+                        <div class="col-sm-3 mb-4">
+                            <img class="w-100" src="#">
+                        </div>
+                        <div class="col-sm-9 d-flex flex-column">
+                            <div>
+                                <div>
+                                    <div class="d-flex justify-content-between">
+                                        <h4 class="hd-14"></h4>
+                                    </div>
+                                    <h4 class="hd-14 tred">
+                                        <span>Buku Cetak</span>
+                                    </h4>
+                                </div>
+                                <div class="text-grey">
+                                    <div class="tbold mb-3">${bookUser.invoice}</div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>Jumlah barang</div>
+                                        <div>12</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>Harga barang</div>
+                                        <div>Rp2.000</div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <div>Berat barang</div>
+                                        <div>300gram</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+                });
+
+                return html;
+            });
+        });
+    });
+    //#endregion Income
 }); // End of onload Event

@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\BookUser;
+use Carbon\Carbon;
+use Facade\Ignition\DumpRecorder\DumpRecorder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Storage, Validator, Auth};
 
 class BookUserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth.admin.only');
+    }
+
     public function show(BookUser $bookUser)
     {
         $bookUsers = BookUser::where('invoice', $bookUser->invoice)->get();
@@ -33,8 +40,8 @@ class BookUserController extends Controller
                 $validation_rules = array(
                     'upload_payment' => array('required', 'mimes:jpg,png,jpeg', 'max:2000')
                 );
-                $validator = Validator::make($request->all(), $validation_rules);
 
+                $validator = Validator::make($request->all(), $validation_rules);
 
                 if ($validator->fails()) {
                     $errors = $validator->errors();
@@ -42,13 +49,15 @@ class BookUserController extends Controller
                     $success = false;
                     return response()->json(compact('errors', 'success'));
                 } else {
-                    $upload_file_name = $request->upload_payment ? $request->upload_payment->getClientOriginalName() : null;
+                    $user          = Auth::user();
+                    $path_store    = "$user->first_name-$user->last_name-$user->email-";
+                    $path_store   .= time() . '.' . $request->upload_payment->getClientOriginalExtension();
+                    $update           = array('upload_payment_image' => $path_store);
 
-                    $update           = array('upload_payment_image' => $upload_file_name);
                     $bookUser->update($update);
 
-                    if ($request->upload_payment && !Storage::exists('public/uploaded_payment/' . $upload_file_name)) {
-                        $request->upload_payment->storeAs('public/uploaded_payment', $upload_file_name);
+                    if ($request->upload_payment && !Storage::exists('public/uploaded_payment/' . $path_store)) {
+                        $request->upload_payment->storeAs('public/uploaded_payment', $path_store);
                     }
 
                     $success = true;
@@ -69,6 +78,19 @@ class BookUserController extends Controller
 
             case 'orderOnDelivery':
                 $update = array('payment_status' => 'being_shipped');
+
+                $bookUser->update($update);
+
+                return response()->json()->status();
+                break;
+
+            case 'arrived':
+                $now = Carbon::now();
+
+                $update = array(
+                    'payment_status' => 'arrived',
+                    'completed_date' => $now->format('Y-m-d H:i:s'),
+                );
 
                 $bookUser->update($update);
 
@@ -133,6 +155,12 @@ class BookUserController extends Controller
         return view('book_user.status.on-delivery', compact('book_users'));
     }
 
+    public function arrived()
+    {
+        $book_users = BookUser::where('payment_status', 'arrived')->get();
+        return view('book_user.status.arrived', compact('book_users'));
+    }
+
     public function trackingPackages()
     {
         $curl = curl_init();
@@ -163,5 +191,111 @@ class BookUserController extends Controller
         } else {
             return response()->json(compact('response'));
         }
+    }
+
+    public function income()
+    {
+        $now = Carbon::now();
+        $book_users = BookUser::where('payment_status', 'arrived')->get();
+
+        // Penghasilan Hari ini
+        $today_book_users = $book_users->map(function ($book_user) {
+            $now           = Carbon::now();
+            $nowStartOfDay = $now->startOfDay()->format('Y-m-d H:i:s');
+            $nowEndOfDay   = $now->endOfDay()->format('Y-m-d H:i:s');
+
+            $results = BookUser::whereBetween(
+                'completed_date',
+                [$nowStartOfDay, $nowEndOfDay]
+            )
+                ->where('id', $book_user->id)
+                ->first();
+
+            return $results;
+        });
+
+        $today_total_payments = $today_book_users->reduce(function ($carry, $item) {
+            return $item == null ? 0 : $carry + $item->total_payment;
+        });
+
+        $today = array(
+            'book_users' => $today_book_users,
+            'count' => $today_total_payments == 0 ? 0 : $today_book_users->count(),
+            'total_payments' => $today_total_payments,
+        );
+
+        // Penghasilan bulan ini
+        $this_month_book_users = $book_users->map(function ($book_user) {
+            $now             = Carbon::now();
+            $nowStartOfMonth = $now->startOfMonth()->format('Y-m-d H:i:s');
+            $nowEndOfMonth   = $now->endOfMonth()->format('Y-m-d H:i:s');
+
+            return $book_user
+                ->whereBetween(
+                    'completed_date',
+                    [
+                        $nowStartOfMonth, $nowEndOfMonth
+                    ]
+                )
+                ->first();
+        });
+
+        $this_month_total_payments = $this_month_book_users->reduce(function ($carry, $item) {
+            return $item == null ? 0 : $carry + $item->total_payment;
+        });
+
+        $this_month = array(
+            'book_users' => $this_month_book_users,
+            'count' => $this_month_total_payments == 0 ? 0 : $this_month_book_users->count(),
+            'total_payments' => $this_month_total_payments,
+        );
+
+        $all_total_payments = $book_users->reduce(function ($carry, $item) {
+            return $carry + $item->total_payment;
+        });
+
+        // Semua pembayaran
+        $all = array(
+            'book_users' => $book_users,
+            'total_payments' => $all_total_payments,
+        );
+
+        return view('book_user.status.income', compact('now', 'all', 'today', 'this_month'));
+    }
+
+    // Ajax GET
+    // Penghasilan Hari ini
+    public function ajaxToday()
+    {
+        $now        = Carbon::now();
+        $book_users = BookUser::where('payment_status', 'arrived')->get();
+
+        // Penghasilan Hari ini
+        $today_book_users = $book_users->map(function ($book_user) {
+            $now           = Carbon::now();
+            $nowStartOfDay = $now->startOfDay()->format('Y-m-d H:i:s');
+            $nowEndOfDay   = $now->endOfDay()->format('Y-m-d H:i:s');
+
+            $results = BookUser::whereBetween(
+                'completed_date',
+                [$nowStartOfDay, $nowEndOfDay]
+            )
+                ->where('id', $book_user->id)
+                ->first();
+
+            return $results;
+        });
+
+        $today_total_payments = $today_book_users->reduce(function ($carry, $item) {
+            return $item == null ? 0 : $carry + $item->total_payment;
+        });
+
+        $today = array(
+            'book_users' => $today_book_users,
+            'count' => $today_total_payments == 0 ? 0 : $today_book_users->count(),
+            'total_payments' => $today_total_payments,
+        );
+
+        return response()->json(compact('today'));
     }
 }
