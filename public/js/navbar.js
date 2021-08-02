@@ -2254,20 +2254,53 @@ $(document).ready(function () {
     // #endregion Waiting for payment - menunggu pembayaran
 
     //#region Income
-    $('#income-today').on('click', function() {
-        ajaxJson('GET', `/book-users/status/ajax/today`, {}, response => {
+    $('#income-today, #income-this-month, #income-all').on('click', function() {
+        let data;
 
-            console.log(response.today.book_users);
+        switch (this.id) {
+            case 'income-today':
+                data = { income: 'today' };
+            break;
 
-            bootStrapModal('Penghasilan Hari Ini', 'modal-md', () => {
-                let bookUsers = response.today.book_users;
+            case 'income-this-month':
+                data = { income: 'thisMonth' };
+            break;
+
+            case 'income-all':
+                data = { income: 'all' };
+            break;
+        }
+
+        let path = `/book-users/status/ajax/income-detail`;
+
+        ajaxJson('GET', path, data, response => {
+            let requestIncome = response.request_income;
+            let modalHeader;
+
+            switch (requestIncome) {
+                case 'today':
+                    modalHeader = 'Pengasilan Hari ini';
+                break;
+
+                case 'thisMonth':
+                    modalHeader = 'Pengasilan Bulan ini';
+                break;
+
+                case 'all':
+                    modalHeader = 'Semua Penghasilan';
+                break;
+            }
+
+            bootStrapModal(modalHeader, 'modal-md', () => {
+                let bookUsers = response.results;
                 let html = '';
 
                 bookUsers.forEach((bookUser) => {
-                    console.log(bookUser);
+                    let bookVersi = bookUser.book_users.book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book';
+
                     html += `<div class="row mt-4 borbot-gray-0 pb-2 px-3">
                         <div class="col-sm-3 mb-4">
-                            <img class="w-100" src="#">
+                            <img class="w-100" src="${bookUser.book_src}">
                         </div>
                         <div class="col-sm-9 d-flex flex-column">
                             <div>
@@ -2276,22 +2309,22 @@ $(document).ready(function () {
                                         <h4 class="hd-14"></h4>
                                     </div>
                                     <h4 class="hd-14 tred">
-                                        <span>Buku Cetak</span>
+                                        <span>${bookVersi}</span>
                                     </h4>
                                 </div>
                                 <div class="text-grey">
-                                    <div class="tbold mb-3">${bookUser.invoice}</div>
+                                    <div class="tbold mb-3">${bookUser.book_users.invoice}</div>
                                     <div class="d-flex justify-content-between mb-1">
                                         <div>Jumlah barang</div>
-                                        <div>12</div>
+                                        <div>${bookUser.book_users.amount}</div>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
                                         <div>Harga barang</div>
-                                        <div>Rp2.000</div>
+                                        <div>${rupiahFormat(bookUser.books.price)}</div>
                                     </div>
                                     <div class="d-flex justify-content-between mb-1">
                                         <div>Berat barang</div>
-                                        <div>300gram</div>
+                                        <div>${bookUser.books.weight}gram</div>
                                     </div>
                                 </div>
                             </div>

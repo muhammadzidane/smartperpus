@@ -95,7 +95,7 @@ Route::prefix('book-users/status')->middleware('auth')->group(function () {
     Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
 
     // Ajax request
-    Route::get('ajax/today', array(BookUserController::class, 'ajaxToday'));
+    Route::get('ajax/income-detail', array(BookUserController::class, 'incomeDetail'));
 
     // Lacak paket
     Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));

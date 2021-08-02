@@ -34,7 +34,7 @@
                 <div>
                     <h4 class="hd-14">Bulan {{ $now->isoFormat('MMMM') }}</h4>
                 </div>
-                <div class="btn-none tred-bold">Lihat Detail</div>
+                <div id="income-this-month" class="btn-none tred-bold">Lihat Detail</div>
             </div>
         </div>
         <div class="row mt-auto">
@@ -57,7 +57,7 @@
         <div class="mb-4">
             <div class="d-flex justify-content-between">
                 <h4 class="hd-14">Semua</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
+                <div id="income-all" class="btn-none tred-bold">Lihat Detail</div>
             </div>
         </div>
         <div class="row mt-auto">

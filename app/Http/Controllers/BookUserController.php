@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BookUser;
+use App\Models\{BookUser, Book};
 use Carbon\Carbon;
 use Facade\Ignition\DumpRecorder\DumpRecorder;
 use Illuminate\Http\Request;
@@ -265,37 +265,51 @@ class BookUserController extends Controller
 
     // Ajax GET
     // Penghasilan Hari ini
-    public function ajaxToday()
+    public function incomeDetail(Request $request)
     {
         $now        = Carbon::now();
         $book_users = BookUser::where('payment_status', 'arrived')->get();
 
-        // Penghasilan Hari ini
-        $today_book_users = $book_users->map(function ($book_user) {
-            $now           = Carbon::now();
-            $nowStartOfDay = $now->startOfDay()->format('Y-m-d H:i:s');
-            $nowEndOfDay   = $now->endOfDay()->format('Y-m-d H:i:s');
+        switch ($request->income) {
+            case 'today':
+                $nowFirstBetween = $now->startOfDay()->format('Y-m-d H:i:s');
+                $nowSecondBetween   = $now->endOfDay()->format('Y-m-d H:i:s');
+                break;
 
-            $results = BookUser::whereBetween(
-                'completed_date',
-                [$nowStartOfDay, $nowEndOfDay]
-            )
-                ->where('id', $book_user->id)
-                ->first();
+            case 'thisMonth':
+                $nowFirstBetween = $now->startOfMonth()->format('Y-m-d H:i:s');
+                $nowSecondBetween   = $now->endOfMonth()->format('Y-m-d H:i:s');
+                break;
+        }
+
+        // Penghasilan Hari ini
+        $results = $book_users->map(function ($book_user) {
+            global $request;
+
+            $now                = Carbon::now();
+            $now_first_between  = $now->startOfDay()->format('Y-m-d H:i:s');
+            $now_second_between = $now->endOfDay()->format('Y-m-d H:i:s');
+            $date_between       = array($now_first_between, $now_second_between);
+
+            if ($request->income != 'all') {
+                $book_users = BookUser::whereBetween('completed_date', $date_between)->where('id', $book_user->id)->first();
+                $books      = Book::where('id', $book_users->book_id)->first();
+            } else { // today | thisMonth
+                $book_users = BookUser::where('completed_date', '!=', null)->first();
+                $books      = Book::where('id', $book_users->book_id)->first();
+            }
+
+            $results = array(
+                'book_src'   => asset('storage/books/' . $books->image),
+                'books'      => $books,
+                'book_users' => $book_users,
+            );
 
             return $results;
         });
 
-        $today_total_payments = $today_book_users->reduce(function ($carry, $item) {
-            return $item == null ? 0 : $carry + $item->total_payment;
-        });
+        $request_income = $request->income;
 
-        $today = array(
-            'book_users' => $today_book_users,
-            'count' => $today_total_payments == 0 ? 0 : $today_book_users->count(),
-            'total_payments' => $today_total_payments,
-        );
-
-        return response()->json(compact('today'));
+        return response()->json(compact('results', 'request_income'));
     }
 }
