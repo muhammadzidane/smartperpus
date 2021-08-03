@@ -195,24 +195,13 @@ class BookUserController extends Controller
 
     public function income()
     {
-        $now = Carbon::now();
-        $book_users = BookUser::where('payment_status', 'arrived')->get();
+        $now              = Carbon::now();
 
-        // Penghasilan Hari ini
-        $today_book_users = $book_users->map(function ($book_user) {
-            $now           = Carbon::now();
-            $nowStartOfDay = $now->startOfDay()->format('Y-m-d H:i:s');
-            $nowEndOfDay   = $now->endOfDay()->format('Y-m-d H:i:s');
-
-            $results = BookUser::whereBetween(
-                'completed_date',
-                [$nowStartOfDay, $nowEndOfDay]
-            )
-                ->where('id', $book_user->id)
-                ->first();
-
-            return $results;
-        });
+        $nowStartOfDay    = $now->startOfDay()->format('Y-m-d H:i:s');
+        $nowEndOfDay      = $now->endOfDay()->format('Y-m-d H:i:s');
+        $today_book_users = BookUser::where('payment_status', 'arrived')
+            ->whereBetween('completed_date', [$nowStartOfDay, $nowEndOfDay])
+            ->get();
 
         $today_total_payments = $today_book_users->reduce(function ($carry, $item) {
             return $item == null ? 0 : $carry + $item->total_payment;
@@ -225,20 +214,11 @@ class BookUserController extends Controller
         );
 
         // Penghasilan bulan ini
-        $this_month_book_users = $book_users->map(function ($book_user) {
-            $now             = Carbon::now();
-            $nowStartOfMonth = $now->startOfMonth()->format('Y-m-d H:i:s');
-            $nowEndOfMonth   = $now->endOfMonth()->format('Y-m-d H:i:s');
-
-            return $book_user
-                ->whereBetween(
-                    'completed_date',
-                    [
-                        $nowStartOfMonth, $nowEndOfMonth
-                    ]
-                )
-                ->first();
-        });
+        $nowStartOfMonth       = $now->startOfMonth()->format('Y-m-d H:i:s');
+        $nowEndOfMonth         = $now->endOfMonth()->format('Y-m-d H:i:s');
+        $this_month_book_users = BookUser::where('payment_status', 'arrived')
+            ->whereBetween('completed_date', [$nowStartOfMonth, $nowEndOfMonth])
+            ->get();
 
         $this_month_total_payments = $this_month_book_users->reduce(function ($carry, $item) {
             return $item == null ? 0 : $carry + $item->total_payment;
@@ -250,13 +230,17 @@ class BookUserController extends Controller
             'total_payments' => $this_month_total_payments,
         );
 
-        $all_total_payments = $book_users->reduce(function ($carry, $item) {
+        $all_income_book_users = BookUser::where('completed_date', '!=', null)
+            ->where('payment_status', 'arrived')
+            ->get();
+
+        $all_total_payments = $all_income_book_users->reduce(function ($carry, $item) {
             return $carry + $item->total_payment;
         });
 
         // Semua pembayaran
         $all = array(
-            'book_users' => $book_users,
+            'book_users' => $all_income_book_users,
             'total_payments' => $all_total_payments,
         );
 
@@ -272,41 +256,36 @@ class BookUserController extends Controller
 
         switch ($request->income) {
             case 'today':
-                $nowFirstBetween = $now->startOfDay()->format('Y-m-d H:i:s');
-                $nowSecondBetween   = $now->endOfDay()->format('Y-m-d H:i:s');
+                $now_first_between = $now->startOfDay()->format('Y-m-d H:i:s');
+                $now_second_between   = $now->endOfDay()->format('Y-m-d H:i:s');
                 break;
 
             case 'thisMonth':
-                $nowFirstBetween = $now->startOfMonth()->format('Y-m-d H:i:s');
-                $nowSecondBetween   = $now->endOfMonth()->format('Y-m-d H:i:s');
+                $now_first_between = $now->startOfMonth()->format('Y-m-d H:i:s');
+                $now_second_between   = $now->endOfMonth()->format('Y-m-d H:i:s');
                 break;
         }
 
         // Penghasilan Hari ini
-        $results = $book_users->map(function ($book_user) {
-            global $request;
+        $date_between = array($now_first_between, $now_second_between);
+        $book_users   = $book_users = BookUser::whereBetween('completed_date', $date_between)
+            ->where('payment_status', 'arrived')
+            ->get();
 
-            $now                = Carbon::now();
-            $now_first_between  = $now->startOfDay()->format('Y-m-d H:i:s');
-            $now_second_between = $now->endOfDay()->format('Y-m-d H:i:s');
-            $date_between       = array($now_first_between, $now_second_between);
-
-            if ($request->income != 'all') {
-                $book_users = BookUser::whereBetween('completed_date', $date_between)->where('id', $book_user->id)->first();
-                $books      = Book::where('id', $book_users->book_id)->first();
-            } else { // today | thisMonth
-                $book_users = BookUser::where('completed_date', '!=', null)->first();
-                $books      = Book::where('id', $book_users->book_id)->first();
-            }
+        $book_users = $book_users->map(function ($book_user) {
+            $book = Book::find($book_user->id);
 
             $results = array(
-                'book_src'   => asset('storage/books/' . $books->image),
-                'books'      => $books,
-                'book_users' => $book_users,
+                $book_user,
+                $book,
             );
 
             return $results;
         });
+
+        $results = array(
+            'book_users' => $book_users,
+        );
 
         $request_income = $request->income;
 

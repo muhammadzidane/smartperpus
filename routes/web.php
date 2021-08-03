@@ -11,6 +11,7 @@ use App\Http\Controllers\{
     BookUserController,
     CityController,
     CustomerController,
+    ContentSearchFilterController,
     UserController,
     ProvinceController,
     UserChatController,
@@ -69,9 +70,15 @@ Route::prefix('books')->group(function () {
     Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
+    Route::get('search', array(BookController::class, 'search'));
 });
 
-Route::resource('/books', BookController::class)->except('index');
+// Ajax search Filter
+Route::prefix('search')->group(function () {
+    Route::get('book-filter', array(ContentSearchFilterController::class, 'bookFilter'));
+});
+
+Route::resource('/books', BookController::class);
 
 // Book Purchase
 Route::prefix('book-purchases')->group(function () {

@@ -36,12 +36,14 @@
     </div>
 </div>
 
-@include('layouts.book-deals',
-array(
-'title' => 'Buku Diskon',
-'books' => \App\Models\Book::where('discount', '!=', null)->get()->take(12),
-)
-)
+<div>
+    @include('layouts.book-deals',
+    array(
+    'title' => 'Buku Diskon',
+    'books' => \App\Models\Book::where('discount', '!=', null)->get()->take(12),
+    )
+    )
+</div>
 
 @include('layouts.book-deals',
 array(

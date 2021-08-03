@@ -4,6 +4,5 @@
         <a class="show-all" href="#">Lihat Semua</a>
     </div>
 
-    @include('layouts.books')
+    @include('layouts.books', array('class_books' => 'justify-content-center'))
 </div>
-

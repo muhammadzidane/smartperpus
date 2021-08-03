@@ -1,146 +1,63 @@
-@extends('layouts.app')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
 
-<h4>Penghasilan</h4>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="d-md-flex mt-4">
-    <div class="income-box">
-        <div class="mb-4">
-            <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Hari ini</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
-            </div>
-            <div>Kamis, 15 Januari 2022</div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="text-center">
-                    <div class="income-book-amount">10</div>
-                    <div class="tbold">Buku Terjual</div>
-                </div>
-            </div>
-            <div class="col-8 m-auto text-center">
-                <h4 class="hd-14">Total</h4>
-                <div class="income-money">
-                    <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="income-box">
-        <div class="mb-4">
-            <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Bulan ini</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
-            </div>
-            <div>Kamis, 15 Januari 2022</div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="text-center">
-                    <div class="income-book-amount">10</div>
-                    <div class="tbold">Buku Terjual</div>
-                </div>
-            </div>
-            <div class="col-8 m-auto text-center">
-                <h4 class="hd-14">Total</h4>
-                <div class="income-money">
-                    <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="income-box">
-        <div class="mb-4">
-            <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Semua</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
-            </div>
-            <div>Kamis, 15 Januari 2022</div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <div class="text-center">
-                    <div class="income-book-amount">10</div>
-                    <div class="tbold">Buku Terjual</div>
-                </div>
-            </div>
-            <div class="col-8 m-auto text-center">
-                <h4 class="hd-14">Total</h4>
-                <div class="income-money">
-                    <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="d-md-flex mt-4">
-    <div class="income-box borbot-gray-bold">
-        <div class="mb-4">
-            <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Lihat berdasarkan bulan</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
-            </div>
-            <div class="mt-4">
-                <form action="#" method="get">
-                    <input type="month" class="form-control-custom">
-                    <div class="text-right mt-3">
-                        <button class="btn btn-red">Cari</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="row income-search">
-            <div class="col-4">
-                <div class="text-center">
-                    <div class="income-book-amount">10</div>
-                    <div class="tbold">Buku Terjual</div>
-                </div>
-            </div>
-            <div class="col-8 m-auto text-center">
-                <h4 class="hd-14">Total</h4>
-                <div class="income-money">
-                    <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="income-box borbot-gray-bold">
-        <div class="mb-4">
-            <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Lihat berdasarkan hari</h4>
-                <div class="btn-none tred-bold">Lihat Detail</div>
-            </div>
-            <div class="mt-4">
-                <form action="#" method="get">
-                    <input type="month" class="form-control-custom">
-                    <div class="text-right mt-3">
-                        <button class="btn btn-red">Cari</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="row income-search">
-            <div class="col-4">
-                <div class="text-center">
-                    <div class="income-book-amount">10</div>
-                    <div class="tbold">Buku Terjual</div>
-                </div>
-            </div>
-            <div class="col-8 m-auto text-center">
-                <h4 class="hd-14">Total</h4>
-                <div class="income-money">
-                    <i class="fas fa-money-bill"></i>
-                    <span>Rp2.000.000</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <title>Smartperpus</title>
 
-@endsection
+    <!-- Scripts -->
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .book {
+            background-color: red;
+            width: 100%;
+        }
+
+        .boxes {
+            background-color: hotpink;
+            display: grid;
+            gap: 25px;
+            grid-template-columns: repeat(auto-fit, 160px);
+            justify-content: center;
+        }
+
+        .box {
+            background: red;
+            display: block;
+            height: 160px;
+        }
+
+        .test {
+            background-color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container bg-info">
+        <div class="boxes">
+            <div class="box">1</div>
+            <div class="box">1</div>
+            <div class="box">1</div>
+            <div class="box">1</div>
+            <div class="box">1</div>
+            <div class="box">1</div>
+        </div>
+    </div>
+</body>
+
+</html>

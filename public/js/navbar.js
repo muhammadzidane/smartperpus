@@ -16,92 +16,30 @@ function toggle(selectorTarget) {
 $(document).ready(function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    // Jika /search/books
-    // Modul Search Books - First Load
-    if (window.location.pathname == '/search/books') {
-        $.ajax({
-            type: "POST",
-            url: "/ajax/request/first-load",
-            data: {
-                '_token': csrfToken,
-                'page': getUrlParameter('page'),
-            },
-            success: function (response) {
-                $('#book-search').html(response.books);
-                $('.book').css('width', '22.52%');
-            },
-        });
-    }
-
     // Search Buku dan Author ( ada di Navbar )
     $('.keywords').on('keyup', function () {
-        if ($(this).val() === '') {
-            $('#search-values').hide();
+        let value = $(this).val();
+
+        if (value == '') {
+            $('.nav-book-search').hide();
         } else {
-            $('#search-values').show();
-            $.ajax({
-                type: 'POST',
-                url: '/ajax/request/store',
-                data: {
-                    '_token': csrfToken,
-                    'search_value': $('.keywords').val()
-                },
-                success: function (response) {
-                    response.books.length == 0 ? $('#search-books').prev().hide() : $('#search-books').prev().show();
-                    response.authors.length == 0 ? $('#search-authors').prev().hide() : $('#search-authors').prev().show();
+            $('.nav-book-search').show();
 
-                    if (response.books.length == 0 && response.authors.length == 0) {
-                        $('#search-values > div:first-child()').hide();
-                    } else {
-                        $('#search-values > div:first-child()').show();
-                    }
+            let data = { keywords: value };
 
-                    $('#search-books').html('');
-                    response.books.forEach(element => {
-                        $('#search-books').append(
-                            '<li><a href=\'#\' class="text-decoration-none text-body">' + element.name + '</a></li>'
-                        );
-                    });
+            ajaxJson('GET', '/books/navbar-search', data, response => {
+                let html = '';
 
-                    $('#search-authors').html('');
-                    response.authors.forEach(element => {
-                        $('#search-authors').append('<li><a href=\'#\' class="text-decoration-none text-body">' + element.name + '</a></li>');
-                    });
-                }
+                response.books.forEach(book => {
+                    html += `<a href="/books/${book.id}" class="nav-book-search-link">${book.name} 01</a>`;
+                });
+
+                $('.nav-book-search-values').html(html);
             });
         }
     });
 
-    $('.search-form button').on('click', function (e) {
-        if (window.location.pathname == '/search/books') {
-            e.preventDefault();
-
-            $.ajax({
-                type: "POST",
-                url: "/ajax/request/search",
-                data: {
-                    '_token': csrfToken,
-                    'keywords': $('.keywords').val(),
-                },
-                success: function (response) {
-                    $('#book-search').html(response.books);
-                    $('#search-text').html($('.keywords').val());
-
-                    for (const key in response.bookCategory) {
-                        if (response.bookCategory.hasOwnProperty.call(response.bookCategory, key)) {
-                            const value = response.bookCategory[key];
-                            $('#book-categories').html(`<div class="c-p">${key} (${value})</div>`);
-                        }
-                    }
-
-                    // Merubah parameter URL tanpa reload
-                    history.pushState({}, null,
-                        `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${$('.p-active').text()}`);
-                },
-            });
-
-        }
-    });
+    $('')
 
     $('.keywords').on('blur', function () {
         $('#search-values').hide();
@@ -187,33 +125,6 @@ $(document).ready(function () {
         $('.error-backend').trigger('click');
     }
 
-    // Modul ~ Search Book
-    // Filter minimum / maksimum harga
-    $('.min-max-value').on('click', function (e) {
-        e.preventDefault();
-
-        let min_price_val = $('#modal-filter').hasClass('show') ? $('.min-price').last().val() : $('.min-price').val();
-        let max_price_val = $('#modal-filter').hasClass('show') ? $('.max-price').last().val() : $('.max-price').val();
-
-        $('#modal-filter').modal('hide');
-
-        if (min_price_val != '') {
-            appendFilter('.filter-min-price',
-                [`Min Rp ${(numberFormat(min_price_val, 0, 0, `.`))}`, min_price_val, 'filter-min-price']
-            )
-        }
-
-        if (max_price_val != '') {
-            appendFilter('.filter-max-price',
-                [`Max Rp ${(numberFormat(max_price_val, 0, 0, `.`))}`, max_price_val, 'filter-max-price']
-            )
-        }
-
-        $('.click-to-the-top').trigger('click');
-
-        ajaxFilterDataBooks();
-    });
-
     // Filter Rating
     $('.filter-star-search').on('click', function () {
         $('.click-to-the-top').trigger('click');
@@ -227,170 +138,98 @@ $(document).ready(function () {
         ajaxFilterDataBooks();
     });
 
-    // Sort buku
-    $('#sort-books').on('change', function () {
-        let min_price_val = $('.filter-min-price').data('filter-value');
-        let max_price_val = $('.filter-max-price').data('filter-value');
-        let sortBookVal = $('#sort-books').val();
-        let sortBookSelectedText = $('#sort-books option:checked').text();
+    //#region Filter Hasil pencarian buku
+    const filterDatas = () => {
+        let minPrice   = $('input[name=min_price]').val();
+        let maxPrice   = $('input[name=max_price]').val();
+            minPrice   = minPrice != '' ? minPrice : 0;
+            maxPrice   = maxPrice != '' ? maxPrice : 99999999;
 
-        appendFilter('.filter-sort',
-            [`${sortBookSelectedText}`, $('#sort-books option:checked').val(), 'filter-sort']
-        )
+        let url_string    = window.location.href
+        let url           = new URL(url_string);
+        let page          = url.searchParams.get('page');
+        let keywords      = url.searchParams.get('keywords');
+        let sortBookValue = $('#sort-books').val();
 
-        $.ajax({
-            type: "POST",
-            url: "/ajax/request/filter-search",
-            data: {
-                '_token': csrfToken,
-                'min_price': min_price_val,
-                'max_price': max_price_val,
-                'star_value': $('.rating-4-plus').length == 0 ? null : $('.filter-star-search').data('filter-star'),
-                'sort_book_value': sortBookVal,
-                'keywords': getUrlParameter('keywords'),
-            },
-            success: function (response) {
-                $('#book-search').html(response.books);
-                $('.book').css('width', '22.52%');
-                exitFilters();
-            }
-        });
-    });
+        let datas = {
+            page    : page,
+            filter  : sortBookValue,
+            min     : minPrice,
+            max     : maxPrice,
+            keywords: keywords,
+        };
 
-    // Pagination
-    $.ajax({
-        type: "POST",
-        url: "/ajax/request/pagination-data",
-        data: {
-            '_token': csrfToken,
-        },
-        success: function (response) {
-            response.paginationHtml.forEach(element => {
-                $('#pagination-number').append(element);
-            });
+        return datas;
+    }
 
-            if (response.paginationHtml.length > 5) {
-                $('#pagination-number').children().eq(5).text('...').css('pointer-events', 'none');
-                $('#pagination-number').children().eq(6).nextAll().remove();
-                $('#pagination-number').children().last().text(response.paginationHtml.length);
-            }
+    const appendRectangleFilterHtml = (text, classFilter, filterEvent) => {
+        let filterHtml =
+        `<div class="search-filter ${classFilter}">
+            <span>${text}</span>
+            <i class="close-filter fa fa-times text-grey ml-1" aria-hidden="true"></i>
+        </div>`;
 
-            $('#pagination-number').children().first().addClass('p-active');
-            $('#pagination-prev').hide();
+        let filterClassLength = $(`.${classFilter}`).length;
 
-
-            let paginationLength = $('#pagination-number').children().length;
-
-            for (let i = 1; i <= paginationLength; i++) {
-                if (getUrlParameter('page') == i) {
-                    $('.p-active').removeClass();
-                    $(`#page-${i}`).addClass('p-active');
-                }
-            }
-        }
-    });
-
-    $('#pagination-number').on('click', function (e) {
-        $('#book-search').html('');
-        let pageNumber = $(e.target).text();
-
-
-        $.ajax({
-            type: "POST",
-            url: "/ajax/request/pagination",
-            data: {
-                '_token': csrfToken,
-                'page': pageNumber,
-            },
-            success: function (response) {
-                $(e.target).siblings().removeClass('p-active');
-                $(e.target).addClass('p-active');
-                $('.click-to-the-top').trigger('click');
-                $('#book-search').html(response.books);
-                ajaxFilterDataBooks();
-            }
-        });
-
-        if (pageNumber == 1) {
-            $('.p-hide').show();
-            $('#pagination-prev').hide();
-
-            for (let i = 2; i <= 5; i++) {
-                $(`#pagination-number div:nth-child(${i})`).text(i);
-            }
-        } else if (pageNumber >= 2) {
-            $('#pagination-prev').show();
-        }
-    });
-
-    // Pagination Next
-    $('#pagination-next').on('click', function () {
-        let activePage = $('.p-active');
-        let paginationNth1 = $('#pagination-number div:nth-child(1)');
-        let paginationNth2 = $('#pagination-number div:nth-child(2)');
-        let paginationNth3 = $('#pagination-number div:nth-child(3)');
-        let paginationNth4 = $('#pagination-number div:nth-child(4)');
-        let lastPagination = $('#pagination-number').children().last();
-
-        if (activePage.text() >= 5 && activePage.text() != lastPagination.text()) {
-            paginationNth2.text('...');
-            paginationNth1.text(1);
-
-            if ((paginationNth3.hasClass('p-active') || paginationNth4.hasClass('p-active')) && paginationNth2.text() == '...') {
-                activePage.next().trigger('click');
-            } else {
-                activePage.text(parseInt(activePage.text()) + 1).trigger('click');
-                paginationNth4.text(activePage.text() - 1);
-                paginationNth3.text(activePage.text() - 2);
-            }
-
-            if (activePage.text() == lastPagination.text()) {
-                lastPagination.prev().addClass('p-hide').hide();
-                lastPagination.addClass('p-hide').hide();
-            }
+        if (filterClassLength == 0) {
+            $('#search-filters').append(filterHtml);
         } else {
-            activePage.next().trigger('click');
+            $(`.${classFilter}`).find('span').text(text);
         }
 
-        window.history.pushState({}, null,
-            `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${parseInt(activePage.text()) + 1}`
-        );
+        // Close Filter
+        $('.close-filter').on('click', function() {
+            let attrType = $(filterEvent).attr('type');
+            if (attrType == 'number' || attrType == 'text') {
+                $(filterEvent).val('');
+            } else {
+                $('#sort-books').val('relevan').trigger('change');
+            }
 
+            ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
+                $('#books-search-value').html(response.view);
+                $(this).parent().remove();
+            });
+        });
+    }
+
+    // Select filter
+    $('#sort-books').on('change', function (event) {
+
+        ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
+            let sortText   = $('#sort-books option:selected').text();
+            let thisChange = $(this);
+            let relevan    = thisChange.children('option');
+                relevan    = relevan.filter((key, element) => $(element).val() == 'relevan');
+
+            appendRectangleFilterHtml(sortText, 'filter-select', this);
+
+            $('#books-search-value').html(response.view);
+        });
     });
 
-    $('#pagination-prev').on('click', function () {
-        let activePage = $('.p-active');
-        let paginationNth2 = $('#pagination-number div:nth-child(2)');
-        let paginationNth3 = $('#pagination-number div:nth-child(3)');
-        let paginationNth4 = $('#pagination-number div:nth-child(4)');
-        let paginationNth5 = $('#pagination-number div:nth-child(5)');
+    // Min / Max price filter
+    $('#min-max-filter-button').on('click', function() {
+        ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
+            let minPrice = $('input[name=min_price]').val();
+            let maxPrice = $('input[name=max_price]').val();
 
-        if (paginationNth4.hasClass('p-active') || paginationNth5.hasClass('p-active')) {
-            activePage.prev().trigger('click');
-        }
+            if (minPrice != '') {
+                let sortText   = `Minimal ${rupiahFormat(minPrice)}`;
 
-        if (paginationNth3.hasClass('p-active') && paginationNth2.text() == '...') {
-            paginationNth3.text(parseInt(activePage.text() - 1)).trigger('click');
-            paginationNth4.text(parseInt(paginationNth4.text()) - 1);
-            paginationNth5.text(parseInt(paginationNth5.text()) - 1);
-        }
+                appendRectangleFilterHtml(sortText, 'filter-min', 'input[name=min_price]');
+                $('#books-search-value').html(response.view);
+            }
 
-        if (paginationNth3.text() == 2 && paginationNth2.text() == '...') {
-            paginationNth2.text(2);
-            paginationNth3.text(3);
-            paginationNth4.text(4);
-            paginationNth5.text(5);
-        }
+            if (maxPrice != '') {
+                let sortText   = `Maximal ${rupiahFormat(maxPrice)}`;
+                appendRectangleFilterHtml(sortText, 'filter-max', 'input[name=max_price]');
 
-        if (activePage.text() <= 3) {
-            activePage.prev().trigger('click');
-        }
-
-        window.history.pushState({}, null,
-            `http://smartperpus.com/search/books?keywords=${$('.keywords').val()}&page=${parseInt(activePage.text()) - 1}`
-        );
-
+                $('#books-search-value').html(response.view);
+            }
+        });
     });
+    //#endregion Filter Hasil pencarian buku
 
     // Book Buy
     $('#plus-one-book').on('click', function (e) {
@@ -2255,86 +2094,9 @@ $(document).ready(function () {
 
     //#region Income
     $('#income-today, #income-this-month, #income-all').on('click', function() {
-        let data;
-
-        switch (this.id) {
-            case 'income-today':
-                data = { income: 'today' };
-            break;
-
-            case 'income-this-month':
-                data = { income: 'thisMonth' };
-            break;
-
-            case 'income-all':
-                data = { income: 'all' };
-            break;
-        }
-
-        let path = `/book-users/status/ajax/income-detail`;
-
-        ajaxJson('GET', path, data, response => {
-            let requestIncome = response.request_income;
-            let modalHeader;
-
-            switch (requestIncome) {
-                case 'today':
-                    modalHeader = 'Pengasilan Hari ini';
-                break;
-
-                case 'thisMonth':
-                    modalHeader = 'Pengasilan Bulan ini';
-                break;
-
-                case 'all':
-                    modalHeader = 'Semua Penghasilan';
-                break;
-            }
-
-            bootStrapModal(modalHeader, 'modal-md', () => {
-                let bookUsers = response.results;
-                let html = '';
-
-                bookUsers.forEach((bookUser) => {
-                    let bookVersi = bookUser.book_users.book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book';
-
-                    html += `<div class="row mt-4 borbot-gray-0 pb-2 px-3">
-                        <div class="col-sm-3 mb-4">
-                            <img class="w-100" src="${bookUser.book_src}">
-                        </div>
-                        <div class="col-sm-9 d-flex flex-column">
-                            <div>
-                                <div>
-                                    <div class="d-flex justify-content-between">
-                                        <h4 class="hd-14"></h4>
-                                    </div>
-                                    <h4 class="hd-14 tred">
-                                        <span>${bookVersi}</span>
-                                    </h4>
-                                </div>
-                                <div class="text-grey">
-                                    <div class="tbold mb-3">${bookUser.book_users.invoice}</div>
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <div>Jumlah barang</div>
-                                        <div>${bookUser.book_users.amount}</div>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <div>Harga barang</div>
-                                        <div>${rupiahFormat(bookUser.books.price)}</div>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-1">
-                                        <div>Berat barang</div>
-                                        <div>${bookUser.books.weight}gram</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`
-                });
-
-                return html;
-            });
-        });
+        $('html, body').animate({
+            scrollTop: $("#income-results-header").offset().top
+        }, 800);
     });
     //#endregion Income
 }); // End of onload Event

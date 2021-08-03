@@ -31,15 +31,24 @@
                 <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
             </div>
             <div class="circle-input">
-                <form class="search-form" action="{{ route('search.books') }}" method="GET">
-                    <div>
-                        <div class="search-icon">
-                            <i class="fas fa-search m-auto"></i>
+                <div>
+                    <form class="search-form" action="{{ route('books.index') }}" method="GET">
+                        <div>
+                            <div class="search-icon">
+                                <i class="fas fa-search m-auto"></i>
+                            </div>
+                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off" required>
+                            <input type="hidden" name="page" value="1">
                         </div>
-                        <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                        <input type="hidden" name="page" value="1">
+                    </form>
+                </div>
+                <div class="nav-book-search">
+                    <div class="ml-2 pb-1">Buku</div>
+                    <div class="nav-book-search-values">
+
                     </div>
-                </form>
+                    <!-- <a href="#" class="nav-book-search-link">Jujutsu kaisen 01</a> -->
+                </div>
             </div>
             <div class="cus-nav">
                 <ul class="ul-nav h-100">
@@ -167,7 +176,6 @@
                                 <i class="fas fa-search m-auto"></i>
                             </div>
                             <input type="text" name="keywords" class="keywords responsive-search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                            <input type="hidden" name="page" value="1">
                         </div>
                     </form>
                     <div class="my-2">

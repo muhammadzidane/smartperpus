@@ -4,23 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat};
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Date;
-use Faker\Factory as Faker;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
-
 
 class TestController extends Controller
 {
     public function test()
     {
-        $ran = array(1, 4);
-        $randomElement = $ran[array_rand($ran, 1)];
+        $page = 10;
 
-        dump($randomElement);
+        $books = Book::where('name', 'LIKE', "%a%")
+            ->get()
+            ->skip($page)
+            ->take(10)
+            ->whereBetween('price', [0, 100000]);
+
+
+        dump($books);
+
+        foreach ($books as $book) {
+            dump($book->name);
+        }
     }
 
     public function testPost(Request $request)

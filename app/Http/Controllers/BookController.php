@@ -20,8 +20,28 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Book $book)
+    public function index(Request $request)
     {
+        $books      = Book::where('name', 'LIKE', "%$request->keywords%")->paginate(10);
+        $keywords   = $request->keywords;
+        $categories = Book::where('name', 'LIKE', "%$request->keywords%")->get();
+
+        $categories = $categories->map(function ($book) {
+            global $request;
+
+            $book_count = Book::where('name', 'LIKE', "%$request->keywords%")->where('category_id', $book->category->id)->get()->count();
+
+            $results = array(
+                'name'       => $book->category->name,
+                'book_count' => $book_count,
+            );
+
+            return $results;
+        });
+
+        $categories = $categories->unique();
+
+        return view('book/search-books', compact('books', 'keywords', 'categories'));
     }
 
     /**
@@ -270,5 +290,14 @@ class BookController extends Controller
 
             return response()->json(compact('stock'));
         }
+    }
+
+    public function search(Request $request)
+    {
+        $value = $request->keywords;
+        $get   = array('id', 'name');
+        $books = Book::where('name', 'LIKE', "%$value%")->get($get)->take(8);
+
+        return response()->json(compact('books'));
     }
 }
