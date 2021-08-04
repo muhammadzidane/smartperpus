@@ -87,12 +87,18 @@
 @endauth
 </div>
 <div class="book-price">
+    @if(isset($book->discount) && $book->discount != 0)
     <div>
-        @isset($book->discount)
         <small class="discount-line-through text-success">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
-        @endisset
         <span>Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
     </div>
+
+    @else
+    <div class="text-left">
+        <span class="ml-2">Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
+    </div>
+    @endif
+
 </div>
 <a class="book-show-link" href="{{ route('books.show', array('book' => $book->id)) }}"></a>
 </div>

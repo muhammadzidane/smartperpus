@@ -9,19 +9,21 @@ class TestController extends Controller
 {
     public function test()
     {
-        $page = 10;
+        $page = 0;
 
         $books = Book::where('name', 'LIKE', "%a%")
             ->get()
             ->skip($page)
             ->take(10)
-            ->whereBetween('price', [0, 100000]);
-
+            ->sortByDesc(function ($book) {
+                return $book->price - $book->discount;
+            })
+            ->whereBetween('price', [0, 2000000]);
 
         dump($books);
 
         foreach ($books as $book) {
-            dump($book->name);
+            dump($book->name . ', non diskon: ' . $book->price . ' , Diskon : ' . $book->discount . ', Harga dikurangi diskon : ' . ($book->price - $book->discount));
         }
     }
 

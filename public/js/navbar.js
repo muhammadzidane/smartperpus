@@ -139,7 +139,7 @@ $(document).ready(function () {
     });
 
     //#region Filter Hasil pencarian buku
-    const filterDatas = () => {
+    const filterDatas = (customFilter = '') => {
         let minPrice   = $('input[name=min_price]').val();
         let maxPrice   = $('input[name=max_price]').val();
             minPrice   = minPrice != '' ? minPrice : 0;
@@ -151,15 +151,27 @@ $(document).ready(function () {
         let keywords      = url.searchParams.get('keywords');
         let sortBookValue = $('#sort-books').val();
 
-        let datas = {
-            page    : page,
-            filter  : sortBookValue,
-            min     : minPrice,
-            max     : maxPrice,
-            keywords: keywords,
-        };
+        if (customFilter != '') {
+            let datas = {
+                page    : page,
+                filter  : customFilter.filter ?? sortBookValue,
+                min     : customFilter.min ?? minPrice,
+                max     : customFilter.max ?? maxPrice,
+                keywords: keywords,
+            };
 
-        return datas;
+            return datas;
+        } else {
+            let datas = {
+                page    : page,
+                filter  : sortBookValue,
+                min     : minPrice,
+                max     : maxPrice,
+                keywords: keywords,
+            };
+
+            return datas;
+        }
     }
 
     const appendRectangleFilterHtml = (text, classFilter, filterEvent) => {
@@ -178,30 +190,57 @@ $(document).ready(function () {
         }
 
         // Close Filter
-        $('.close-filter').on('click', function() {
+        $('.close-filter').on('click', function(event) {
+            event.stopImmediatePropagation();
+
             let attrType = $(filterEvent).attr('type');
             if (attrType == 'number' || attrType == 'text') {
-                $(filterEvent).val('');
-            } else {
-                $('#sort-books').val('relevan').trigger('change');
-            }
+                let sortBookLength = $('.filter-select').length
+                let customFilters;
 
-            ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
-                $('#books-search-value').html(response.view);
-                $(this).parent().remove();
-            });
+                if (sortBookLength == 0) {
+                    $(filterEvent).val('');
+
+                    customFilters = filterDatas();
+                } else {
+                    $(filterEvent).val('');
+
+                    let minPrice = $('input[name=min_price]').val() == '' ? 0 : $('input[name=min_price]').val();
+                    let maxPrice = $('input[name=max_price]').val() == '' ? 99999999 : $('input[name=max_price]').val();
+
+                    let datas = {
+                        min: minPrice,
+                        max: maxPrice,
+                    };
+
+                    customFilters = filterDatas(datas);
+                }
+
+                ajaxJson('GET', '/search/book-filter', customFilters, response => {
+                    $('#books-search-value').html(response.view);
+                    $(this).parent().remove();
+                });
+            } else {
+                // Select Element - Kembali ke relavan
+                let customFilters = {
+                    filter: 'relevan',
+                };
+
+                ajaxJson('GET', '/search/book-filter', filterDatas(customFilters), response => {
+                    $('#books-search-value').html(response.view);
+                    $(this).parent().remove();
+                });
+            }
         });
     }
 
     // Select filter
-    $('#sort-books').on('change', function (event) {
-
+    $('#sort-books').on('change', function () {
         ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
             let sortText   = $('#sort-books option:selected').text();
             let thisChange = $(this);
             let relevan    = thisChange.children('option');
                 relevan    = relevan.filter((key, element) => $(element).val() == 'relevan');
-
             appendRectangleFilterHtml(sortText, 'filter-select', this);
 
             $('#books-search-value').html(response.view);
@@ -369,7 +408,6 @@ $(document).ready(function () {
                 $(this).addClass('cc-active');
 
                 let destination              = $('.customer-address:checked').parents('.row').find('.destination-datas');
-                console.log($('.customer-address:checked').parents('.row'));
                 let originSubdistictId       = $('#origin').data('subdistrict-id');
                 let originType               = $('#origin').data('origin-type');
                 let destinationSubdistrictId = destination.data('destination-id');
@@ -589,7 +627,6 @@ $(document).ready(function () {
                     element.addClass('fas');
                 })
             }
-            console.log(wishlistTargets.length);
 
             ajaxJson('POST', '/wishlist', datas);
         } else {
@@ -1081,7 +1118,6 @@ $(document).ready(function () {
         let validations = userEditForm;
 
         validator(validations, success => {
-            console.log(success);
             if (success) {
                 let dataId = $(this).data('id');
 
@@ -1188,7 +1224,6 @@ $(document).ready(function () {
                             let navbarProfileImageText = `<img id="user-circle-fit" src=""></img>`;
 
                             if ($('.user-circle').find('i').length != 0) {
-                                console.log(1346);
                                 $('.user-circle').find('i').remove();
                                 $('.user-circle').append(navbarProfileImageText);
                             }
@@ -1373,7 +1408,6 @@ $(document).ready(function () {
                 if (success) {
                     ajaxForm('POST', this, this.action, response => {
                         if (response.errors) {
-                            console.log(response);
                             let parentPrev = $(this).parent().prev();
 
                             backendMessage(parentPrev, response.errors);
@@ -1453,7 +1487,6 @@ $(document).ready(function () {
                 if (success) {
                     ajaxForm('POST', this, this.action, response => {
                         if (response.errors) {
-                            console.log(response.errors);
                             let parentPrev = $(this).parent().prev();
 
                             backendMessage(parentPrev, response.errors);

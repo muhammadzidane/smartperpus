@@ -9,24 +9,33 @@ class ContentSearchFilterController extends Controller
 {
     public function bookFilter(Request $request)
     {
-        $page   = ($request->page * 10) - 10;
-        $books  = Book::where('name', 'LIKE', "%$request->keywords%")->get()->skip($page)->take(10); // Return Collection Object
+        $page    = ($request->page * 10) - 10;
+        $books   = Book::where('name', 'LIKE', "%$request->keywords%")->get()->skip($page)->take(10); // Return Collection Object
+        $between = array($request->min, $request->max);
 
         switch ($request->filter) {
             case 'relevan':
-                $books = $books->whereBetween('price', [$request->min, $request->max]);
+                $books = $books->whereBetween('price', $between);
                 break;
             case 'lowest-rating':
-                $books = $books->sortBy('rating')->whereBetween('price', [$request->min, $request->max]);
+                $books = $books->sortBy('rating')->whereBetween('price', $between);
                 break;
             case 'highest-rating':
-                $books = $books->sortByDesc('rating')->whereBetween('price', [$request->min, $request->max]);
+                $books = $books->sortByDesc('rating')->whereBetween('price', $between);
                 break;
             case 'lowest-price':
-                $books = $books->sortBy('price')->whereBetween('price', [$request->min, $request->max]);
+                $books = $books
+                    ->sortBy(function ($book) {
+                        return $book->price - $book->discount;
+                    })
+                    ->whereBetween('price', $between);
                 break;
             case 'highest-price':
-                $books = $books->sortByDesc('price')->whereBetween('price', [$request->min, $request->max]);
+                $books = $books
+                    ->sortByDesc(function ($book) {
+                        return $book->price - $book->discount;
+                    })
+                    ->whereBetween('price', $between);
                 break;
         }
 
