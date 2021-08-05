@@ -1,3 +1,15 @@
+.form-reset {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+    color: #ea5455;
+    font-weight: 600;
+    outline: none;
+}
+
 ul li {
     list-style-type: none;
     cursor: pointer;
@@ -540,13 +552,11 @@ footer {
     color: #f8fafc;
 }
 
-.book-cover {
-    display: flex;
-    width: 100% !important;
-}
-
-.gambar-buku, .gambar-buku img {
-    width: 100%;
+.book-image {
+    float: left;
+    width:  100%;
+    height: 230px;
+    object-fit:contain;
 }
 
 .rating {

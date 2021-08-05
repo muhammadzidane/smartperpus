@@ -12,7 +12,9 @@ class BookController extends Controller
     public function __construct()
     {
         $methods = array('edit', 'create', 'store');
+
         $this->middleware('auth.admin.only')->only($methods);
+        $this->middleware('strip.empty.param')->only('index');
     }
 
     /**
@@ -22,7 +24,54 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        $books      = Book::where('name', 'LIKE', "%$request->keywords%")->paginate(10);
+        // Filter
+        $filters = array(
+            'category_id' => $request->category,
+            'min_price'   => $request->min_price,
+            'max_price'   => $request->max_price,
+        );
+
+        $filters = collect($filters);
+
+        $check_empty_filters = $filters->every(function ($filter) {
+            return empty($filter);
+        });
+
+        if (!$check_empty_filters) {
+            $condition  = array();
+            $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+            $books      = $request->category
+                ? Book::where('name',   'LIKE', "%$request->keywords%")->whereIn('category_id', $request->category)
+                : Book::where('name',   'LIKE', "%$request->keywords%");
+
+            switch ($request->sort) {
+                case 'relevan':
+                    $books = $books->whereBetween('price', $between);
+                    break;
+                case 'lowest-rating':
+                    $books = $books->orderBy('rating')->whereBetween('price', $between);
+                    break;
+                case 'highest-rating':
+                    $books = $books->orderByDesc('rating')->whereBetween('price', $between);
+                    break;
+                case 'lowest-price':
+                    $books = $books
+                        ->orderBy('price')
+                        ->whereBetween('price', $between);
+                    break;
+                case 'highest-price':
+                    $books = $books
+                        ->orderByDesc('price')
+                        ->whereBetween('price', $between);
+                    break;
+            }
+
+            $books = $books->paginate(10)->withQueryString();
+        } else {
+            $books = Book::where('name', 'LIKE', "%$request->keywords%")->paginate(10)->withQueryString();
+        }
+
+        // End Filter
         $keywords   = $request->keywords;
         $categories = Book::where('name', 'LIKE', "%$request->keywords%")->get();
 
@@ -32,6 +81,7 @@ class BookController extends Controller
             $book_count = Book::where('name', 'LIKE', "%$request->keywords%")->where('category_id', $book->category->id)->get()->count();
 
             $results = array(
+                'id'         => $book->category->id,
                 'name'       => $book->category->name,
                 'book_count' => $book_count,
             );
@@ -40,6 +90,7 @@ class BookController extends Controller
         });
 
         $categories = $categories->unique();
+        session()->flashInput($request->input());
 
         return view('book/search-books', compact('books', 'keywords', 'categories'));
     }

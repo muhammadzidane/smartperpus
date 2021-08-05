@@ -37,7 +37,7 @@
                             <div class="search-icon">
                                 <i class="fas fa-search m-auto"></i>
                             </div>
-                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off" required>
+                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
                             <input type="hidden" name="page" value="1">
                         </div>
                     </form>

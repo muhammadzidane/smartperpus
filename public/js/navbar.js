@@ -1,48 +1,22 @@
 // JS untuk Navbar
 "use strict";
 
-function removeContent(element) {
-    $(element).remove();
-}
-
-function alertError(message) {
-    alert(message)
-}
-
-function toggle(selectorTarget) {
-    $(selectorTarget).toggle();
-}
-
 $(document).ready(function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    // Search Buku dan Author ( ada di Navbar )
-    $('.keywords').on('keyup', function () {
-        let value = $(this).val();
-
-        if (value == '') {
-            $('.nav-book-search').hide();
-        } else {
-            $('.nav-book-search').show();
-
-            let data = { keywords: value };
-
-            ajaxJson('GET', '/books/navbar-search', data, response => {
-                let html = '';
-
-                response.books.forEach(book => {
-                    html += `<a href="/books/${book.id}" class="nav-book-search-link">${book.name} 01</a>`;
-                });
-
-                $('.nav-book-search-values').html(html);
-            });
-        }
+    $('.form-reset').on('click', function() {
+        $(this).parents('form').trigger('reset');
+        $(this).parents('form').find('input').val('');
     });
 
-    $('')
+    $('.search-form').on('submit', function(event) {
+        let searchValue = $(this).find('input[name=keywords]').val();
 
-    $('.keywords').on('blur', function () {
-        $('#search-values').hide();
+        if (searchValue == "" || searchValue == 0) {
+            event.preventDefault();
+        } else {
+            $(this).trigger('submit');
+        }
     });
 
     // Modal Login
@@ -125,148 +99,166 @@ $(document).ready(function () {
         $('.error-backend').trigger('click');
     }
 
-    // Filter Rating
-    $('.filter-star-search').on('click', function () {
-        $('.click-to-the-top').trigger('click');
-
-        $('#modal-filter').modal('hide');
-
-        appendFilter('.rating-4-plus',
-            [`Bintang 4 Keatas`, 4, 'rating-4-plus']
-        )
-
-        ajaxFilterDataBooks();
-    });
-
     //#region Filter Hasil pencarian buku
-    const filterDatas = (customFilter = '') => {
-        let minPrice   = $('input[name=min_price]').val();
-        let maxPrice   = $('input[name=max_price]').val();
-            minPrice   = minPrice != '' ? minPrice : 0;
-            maxPrice   = maxPrice != '' ? maxPrice : 99999999;
+    // const filterDatas = (customFilter = '') => {
+    //     let minPrice   = $('input[name=min_price]').val();
+    //     let maxPrice   = $('input[name=max_price]').val();
+    //         minPrice   = minPrice != '' ? minPrice : 0;
+    //         maxPrice   = maxPrice != '' ? maxPrice : 99999999;
 
-        let url_string    = window.location.href
-        let url           = new URL(url_string);
-        let page          = url.searchParams.get('page');
-        let keywords      = url.searchParams.get('keywords');
-        let sortBookValue = $('#sort-books').val();
+    //     let url_string    = window.location.href
+    //     let url           = new URL(url_string);
+    //     let page          = url.searchParams.get('page');
+    //     let keywords      = url.searchParams.get('keywords');
+    //     let sortBookValue = $('#sort-books').val();
 
-        if (customFilter != '') {
-            let datas = {
-                page    : page,
-                filter  : customFilter.filter ?? sortBookValue,
-                min     : customFilter.min ?? minPrice,
-                max     : customFilter.max ?? maxPrice,
-                keywords: keywords,
-            };
+    //     if (customFilter != '') {
+    //         let datas = {
+    //             filter  : customFilter.filter ?? sortBookValue,
+    //             min     : customFilter.min ?? minPrice,
+    //             max     : customFilter.max ?? maxPrice,
+    //             keywords: keywords,
+    //         };
 
-            return datas;
-        } else {
-            let datas = {
-                page    : page,
-                filter  : sortBookValue,
-                min     : minPrice,
-                max     : maxPrice,
-                keywords: keywords,
-            };
+    //         return datas;
+    //     } else {
+    //         let datas = {
+    //             filter  : sortBookValue,
+    //             min     : minPrice,
+    //             max     : maxPrice,
+    //             keywords: keywords,
+    //         };
 
-            return datas;
-        }
-    }
+    //         return datas;
+    //     }
+    // }
 
-    const appendRectangleFilterHtml = (text, classFilter, filterEvent) => {
-        let filterHtml =
-        `<div class="search-filter ${classFilter}">
-            <span>${text}</span>
-            <i class="close-filter fa fa-times text-grey ml-1" aria-hidden="true"></i>
-        </div>`;
+    // const appendRectangleFilterHtml = (text, classFilter, filterEvent) => {
+    //     let filterHtml =
+    //     `<div class="search-filter ${classFilter}">
+    //         <span>${text}</span>
+    //         <i class="close-filter fa fa-times text-grey ml-1" aria-hidden="true"></i>
+    //     </div>`;
 
-        let filterClassLength = $(`.${classFilter}`).length;
+    //     let filterClassLength = $(`.${classFilter}`).length;
 
-        if (filterClassLength == 0) {
-            $('#search-filters').append(filterHtml);
-        } else {
-            $(`.${classFilter}`).find('span').text(text);
-        }
+    //     if (filterClassLength == 0) {
+    //         $('#search-filters').append(filterHtml);
+    //     } else {
+    //         $(`.${classFilter}`).find('span').text(text);
+    //     }
 
-        // Close Filter
-        $('.close-filter').on('click', function(event) {
-            event.stopImmediatePropagation();
+    //     // Close Filter
+    //     $('.close-filter').on('click', function(event) {
+    //         event.stopImmediatePropagation();
 
-            let attrType = $(filterEvent).attr('type');
-            if (attrType == 'number' || attrType == 'text') {
-                let sortBookLength = $('.filter-select').length
-                let customFilters;
+    //         let attrType = $(filterEvent).attr('type');
+    //         if (attrType == 'number' || attrType == 'text') {
+    //             let sortBookLength = $('.filter-select').length
+    //             let customFilters;
 
-                if (sortBookLength == 0) {
-                    $(filterEvent).val('');
+    //             if (sortBookLength == 0) {
+    //                 $(filterEvent).val('');
 
-                    customFilters = filterDatas();
-                } else {
-                    $(filterEvent).val('');
+    //                 customFilters = filterDatas();
+    //             } else {
+    //                 $(filterEvent).val('');
 
-                    let minPrice = $('input[name=min_price]').val() == '' ? 0 : $('input[name=min_price]').val();
-                    let maxPrice = $('input[name=max_price]').val() == '' ? 99999999 : $('input[name=max_price]').val();
+    //                 let minPrice = $('input[name=min_price]').val() == '' ? 0 : $('input[name=min_price]').val();
+    //                 let maxPrice = $('input[name=max_price]').val() == '' ? 99999999 : $('input[name=max_price]').val();
 
-                    let datas = {
-                        min: minPrice,
-                        max: maxPrice,
-                    };
+    //                 let datas = {
+    //                     min: minPrice,
+    //                     max: maxPrice,
+    //                 };
 
-                    customFilters = filterDatas(datas);
-                }
+    //                 customFilters = filterDatas(datas);
+    //             }
 
-                ajaxJson('GET', '/search/book-filter', customFilters, response => {
-                    $('#books-search-value').html(response.view);
-                    $(this).parent().remove();
-                });
-            } else {
-                // Select Element - Kembali ke relavan
-                let customFilters = {
-                    filter: 'relevan',
-                };
+    //             ajaxJson('GET', '/search/book-filter', customFilters, response => {
+    //                 $('#books-search-value').html(response.view);
+    //                 $(this).parent().remove();
+    //             });
+    //         } else {
+    //             // Select Element - Kembali ke relavan
+    //             let customFilters = {
+    //                 filter: 'relevan',
+    //             };
 
-                ajaxJson('GET', '/search/book-filter', filterDatas(customFilters), response => {
-                    $('#books-search-value').html(response.view);
-                    $(this).parent().remove();
-                });
-            }
-        });
-    }
+    //             ajaxJson('GET', '/search/book-filter', filterDatas(customFilters), response => {
+    //                 $('#books-search-value').html(response.view);
+    //                 $(this).parent().remove();
+    //             });
+    //         }
+    //     });
+    // }
 
     // Select filter
-    $('#sort-books').on('change', function () {
-        ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
-            let sortText   = $('#sort-books option:selected').text();
-            let thisChange = $(this);
-            let relevan    = thisChange.children('option');
-                relevan    = relevan.filter((key, element) => $(element).val() == 'relevan');
-            appendRectangleFilterHtml(sortText, 'filter-select', this);
+    // $('#sort-books').on('change', function () {
+    //     ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
+    //         let sortText   = $('#sort-books option:selected').text();
+    //         let thisChange = $(this);
+    //         let relevan    = thisChange.children('option');
+    //             relevan    = relevan.filter((key, element) => $(element).val() == 'relevan');
 
-            $('#books-search-value').html(response.view);
-        });
-    });
+    //         appendRectangleFilterHtml(sortText, 'filter-select', this);
+    //         $('#books-search-value').html(response.view);
+    //     });
+    // });
 
     // Min / Max price filter
-    $('#min-max-filter-button').on('click', function() {
-        ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
-            let minPrice = $('input[name=min_price]').val();
-            let maxPrice = $('input[name=max_price]').val();
+    // $('#min-max-filter-button').on('click', function() {
+    //     ajaxJson('GET', '/search/book-filter', filterDatas(), response => {
+    //         let minPrice = $('input[name=min_price]').val();
+    //         let maxPrice = $('input[name=max_price]').val();
 
-            if (minPrice != '') {
-                let sortText   = `Minimal ${rupiahFormat(minPrice)}`;
+    //         if (minPrice != '') {
+    //             let sortText   = `Minimal ${rupiahFormat(minPrice)}`;
 
-                appendRectangleFilterHtml(sortText, 'filter-min', 'input[name=min_price]');
-                $('#books-search-value').html(response.view);
-            }
+    //             appendRectangleFilterHtml(sortText, 'filter-min', 'input[name=min_price]');
+    //             $('#books-search-value').html(response.view);
+    //         }
 
-            if (maxPrice != '') {
-                let sortText   = `Maximal ${rupiahFormat(maxPrice)}`;
-                appendRectangleFilterHtml(sortText, 'filter-max', 'input[name=max_price]');
+    //         if (maxPrice != '') {
+    //             let sortText   = `Maximal ${rupiahFormat(maxPrice)}`;
+    //             appendRectangleFilterHtml(sortText, 'filter-max', 'input[name=max_price]');
 
-                $('#books-search-value').html(response.view);
-            }
-        });
+    //             $('#books-search-value').html(response.view);
+    //         }
+    //     });
+    // });
+
+    // Filter by categories
+    $('#book-categories-button').on('click', function(event) {
+        // let checkedCategories = $('#filter-categories').find('input:checked');
+        //     checkedCategories = checkedCategories.toArray().map(checkedCategory => {
+        //         return $(checkedCategory).val();
+        //     });
+
+        // let minPrice   = $('input[name=min_price]').val();
+        // let maxPrice   = $('input[name=max_price]').val();
+        //     minPrice   = minPrice != '' ? minPrice : 0;
+        //     maxPrice   = maxPrice != '' ? maxPrice : 99999999;
+
+        // let url_string    = window.location.href
+        // let url           = new URL(url_string);
+        // let page          = url.searchParams.get('page');
+        // let keywords      = url.searchParams.get('keywords');
+        // let sortBookValue = $('#sort-books').val();
+
+        // let datas = {
+        //     page      : page,
+        //     filter    : sortBookValue,
+        //     min       : minPrice,
+        //     max       : maxPrice,
+        //     categories: checkedCategories,
+        //     keywords  : keywords,
+        // };
+
+        // console.log(true);
+        // ajaxJson('GET', '/search/book-filter', datas, response => {
+        //     console.log(response);
+        // });
     });
     //#endregion Filter Hasil pencarian buku
 

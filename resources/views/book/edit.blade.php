@@ -12,7 +12,7 @@
         <a class="float-right" href="{{ isset($book) ? '\books\\' . $book->id : url()->previous() }}">
             <i class="fas fa-long-arrow-alt-left text-body"></i>
         </a>
-        <form id="{{ isset($book) ? 'book-edit-form' : 'book-store-form' }}" data-id="{{ isset($book) ? $book->id : '' }}" enctype="multipart/form-data" action="\books\{{ isset($book) ? $book->id : '' }}" method="POST">
+        <form id="{{ isset($book) ? 'book-edit-form' : 'book-store-form' }}" data-id="{{ isset($book) ? $book->id : '' }}" enctype="multipart/form-data" action="/books/{{ isset($book) ? $book->id : '' }}" method="POST">
             <div class="mb-4">
                 <h5 class="tred-bold">{{ isset($book) ? 'Edit Buku' : 'Tambah Buku' }}</h5>
             </div>
@@ -129,7 +129,7 @@
             </div>
 
             <div class="form-group mt-4">
-                <button class="button-submit" type="submit">Edit</button>
+                <button class="button-submit" type="submit">{{ isset($book) ? 'Edit' : 'Tambah' }}</button>
             </div>
 
             @isset($book)

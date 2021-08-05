@@ -10,6 +10,7 @@ class ContentSearchFilterController extends Controller
     public function bookFilter(Request $request)
     {
         $page    = ($request->page * 10) - 10;
+
         $books   = Book::where('name', 'LIKE', "%$request->keywords%")->get()->skip($page)->take(10); // Return Collection Object
         $between = array($request->min, $request->max);
 
@@ -26,6 +27,13 @@ class ContentSearchFilterController extends Controller
             case 'lowest-price':
                 $books = $books
                     ->sortBy(function ($book) {
+                        return $book->price - $book->discount;
+                    })
+                    ->whereBetween('price', $between);
+                break;
+            case 'highest-price':
+                $books = $books
+                    ->sortByDesc(function ($book) {
                         return $book->price - $book->discount;
                     })
                     ->whereBetween('price', $between);

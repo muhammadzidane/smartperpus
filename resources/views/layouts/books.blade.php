@@ -4,10 +4,8 @@
         @if(isset($book->discount) && $book->discount != 0)
         <div class="book-persentage-discount">{{ round(($book->discount / $book->price) * 100) }}%</div>
         @endif
-        <div class='book-cover'>
-            <div class="gambar-buku">
-                <img src="{{ asset('storage/books/' . $book->image )  }}">
-            </div>
+        <div class="text-center">
+            <img class="book-image" src="{{ asset('storage/books/' . $book->image )  }}">
         </div>
         <div class="desk-book">
             <div>

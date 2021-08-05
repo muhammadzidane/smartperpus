@@ -3,28 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat};
+use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category};
 
 class TestController extends Controller
 {
-    public function test()
+    public function test(Request $request)
     {
-        $page = 0;
-
-        $books = Book::where('name', 'LIKE', "%a%")
-            ->get()
-            ->skip($page)
-            ->take(10)
-            ->sortByDesc(function ($book) {
-                return $book->price - $book->discount;
-            })
-            ->whereBetween('price', [0, 2000000]);
-
-        dump($books);
-
-        foreach ($books as $book) {
-            dump($book->name . ', non diskon: ' . $book->price . ' , Diskon : ' . $book->discount . ', Harga dikurangi diskon : ' . ($book->price - $book->discount));
-        }
+        return view('test');
     }
 
     public function testPost(Request $request)

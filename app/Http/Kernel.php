@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'coba' => \App\Http\Middleware\CobaMiddleware::class,
         'book_user' => \App\Http\Middleware\BookUserMiddleware::class,
         'auth.admin.only' => \App\Http\Middleware\AuthAdminOnlyMiddleware::class,
+        'strip.empty.param' => \App\Http\Middleware\StripEmptyParamMiddleware::class,
     ];
 }

@@ -11,8 +11,8 @@ class Category extends Model
 
     protected $guarded = array();
 
-    public function book()
+    public function books()
     {
-        return $this->hasOne('App\Models\Book');
+        return $this->hasMany('App\Models\Book');
     }
 }

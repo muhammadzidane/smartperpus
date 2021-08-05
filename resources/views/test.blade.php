@@ -22,42 +22,13 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
-        .book {
-            background-color: red;
-            width: 100%;
-        }
-
-        .boxes {
-            background-color: hotpink;
-            display: grid;
-            gap: 25px;
-            grid-template-columns: repeat(auto-fit, 160px);
-            justify-content: center;
-        }
-
-        .box {
-            background: red;
-            display: block;
-            height: 160px;
-        }
-
-        .test {
-            background-color: red;
-        }
     </style>
 </head>
 
 <body>
-    <div class="container bg-info">
-        <div class="boxes">
-            <div class="box">1</div>
-            <div class="box">1</div>
-            <div class="box">1</div>
-            <div class="box">1</div>
-            <div class="box">1</div>
-            <div class="box">1</div>
-        </div>
-    </div>
+    <h1>wkwk</h1>
+    <button>click me</button>
 </body>
+
 
 </html>
