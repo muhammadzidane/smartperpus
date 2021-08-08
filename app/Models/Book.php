@@ -38,6 +38,11 @@ class Book extends Model
         return $this->hasMany(Wishlist::class);
     }
 
+
+    public function book_images()
+    {
+        return $this->hasMany(BookImage::class);
+    }
     // Accessors
     // public function getPriceAttribute($value) {
     //     return 'Rp' . number_format($value, null, null, '.');

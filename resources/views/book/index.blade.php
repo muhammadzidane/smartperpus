@@ -1,254 +1,188 @@
 @extends('layouts/app')
 @section('content')
 
-<div class="container-fluid">
-    @include('layouts/carousel')
+<div>Hasil Pencarian
+    <span id="search-text" class="tbold">
+        "{{ $keywords ?? 'Semua Buku' }}"
+    </span>
 </div>
 
-<div class="book-index-recommended px-3">
-
-    <h3 class="text-righteous p-2">Kategori Pilihan</h3>
-
-    <div class="text-righteous">
-        <div class="red">
-            <h5>Komik</h5>
-            <img src="{{ url('img/kategori-pilihan/komik.jpg') }}">
-        </div>
-        <div class="blue">
-            <h5>Pendidikan</h5>
-            <img src="{{ url('img/kategori-pilihan/pendidikan.jpg') }}">
-        </div>
-        <div class="red">
-            <h5>Biografi</h5>
-            <img src="{{ url('img/kategori-pilihan/biografi.jpg') }}">
-        </div>
-        <div class="blue">
-            <h5>Sejarah</h5>
-            <img src="{{ url('img/kategori-pilihan/sejarah.jpg') }}">
-        </div>
-        <div class="red">
-            <h5>Fantasi</h5>
-            <img src="{{ url('img/kategori-pilihan/fantasi.jpg') }}">
-        </div>
-        <div class="blue">
-            <h5>Novel</h5>
-            <img src="{{ url('img/kategori-pilihan/novel.jpg') }}">
-        </div>
-    </div>
-</div>
-
-<div class="best-seller-books">
-    <div>
-        <h3 class="mr-3">Buku Diskon</h3>
-        <div class="discount-time">
-            <div>00</div>
-            <div>00</div>
-            <div>00</div>
-        </div>
-        <a class="show-all" href="#">Lihat Semua <i class="far fa-arrow-alt-circle-right"></i></a>
-    </div>
-
-
-    @if(session('pesan'))
-    <div class="alert alert-primary" role="alert">
-        <strong>{{ session('pesan') }}</strong>
-    </div>
-    @endif
-
-    <div class="books">
-
-        @for($i = 0; $i < 6; $i++) <a>
-            <div class="book">
-                <div class='book-cover'>
-                    <div class="rating">
-                        @for($j = 1; $j <= 5; $j++) <div>
-                            <i class="fa fa-star rating-star" aria-hidden="true"></i>
-                    </div>
-                    @endfor
-                </div>
-                <div class="gambar-buku">
-                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                </div>
-            </div>
-            <div class="desk-book">
-                <div>Jujutsu Kaisen</div>
+<form action="{{ route('books.index') }}" method="GET">
+    <div class="row py-4">
+        <div class="col-md-3 d-md-block d-none">
+            <div class="d-flex justify-content-between">
+                <h4 class="hd-14">Filter <i class="fas fa-filter"></i></h4>
                 <div>
-                    <a href="">Suneo</a>
+                    <button type="submit" class="form-reset">Reset</button>
                 </div>
             </div>
-            <div class="book-price">
-                <div>Rp40.000</div>
-            </div>
-    </div>
-    </a>
-    @endfor
+            <div class="white-content">
+                <h6 class="tbold borbot-gray-0 pb-3">Berdasarkan Kategori</h6>
+                <button class="btn btn-none pl-0" type="button" data-toggle="collapse" data-target="#categories-filter" aria-expanded="false" aria-controls="categories-filter">
+                    Lihat Semua
+                </button>
 
-</div>
+                <div class="collapse" id="categories-filter">
+                    @forelse ($categories as $category)
 
-<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
-
-@can('create', \App\Models\Book::class)
-<form action="{{ route('books.store') }}" method="post">
-    <div class="row my-3">
-        @csrf
-        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-    </div>
-</form>
-@endcan
-</div>
-
-<div class="best-seller-books my-5">
-    <div>
-        <h3>Best Seller</h3>
-        <a class="show-all" href="#">Lihat Semua <i class="far fa-arrow-alt-circle-right"></i></a>
-    </div>
-
-    @if(session('pesan'))
-    <div class="alert alert-primary" role="alert">
-        <strong>{{ session('pesan') }}</strong>
-    </div>
-    @endif
-
-    <div class="books">
-
-        @for($i = 0; $i < 6; $i++) <a>
-            <div class="book">
-                <div class='book-cover'>
-                    <div class="rating">
-                        @for($j = 1; $j <= 5; $j++) <div>
-                            <i class="fa fa-star rating-star" aria-hidden="true"></i>
+                    @if ($category['book_count'] != 0)
+                    <div id="filter-categories">
+                        <label>
+                            <div class="d-flex">
+                                <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
+                                <span class="tbold">{{ $category['name'] }} ({{ $category['book_count'] }})</span>
+                            </div>
+                        </label>
                     </div>
-                    @endfor
-                </div>
-                <div class="gambar-buku">
-                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                </div>
-            </div>
-            <div class="desk-book">
-                <div>Jujutsu Kaisen</div>
-                <div>
-                    <a href="">Suneo</a>
+                    @endif
+
+                    @empty
+                    <button class="btn-none text-grey tbold">Pencarian kosong</button>
+                    @endforelse
                 </div>
             </div>
-            <div class="book-price">
-                <div>Rp40.000</div>
-            </div>
-    </div>
-    </a>
-    @endfor
-
-</div>
-
-<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
-
-@can('create', \App\Models\Book::class)
-<form action="{{ route('books.store') }}" method="post">
-    <div class="row my-3">
-        @csrf
-        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-    </div>
-</form>
-@endcan
-</div>
-
-<div class="best-seller-books my-5">
-    <div>
-        <h3>Rekomendasi Komik</h3>
-        <a class="show-all" href="#">Lihat Semua <i class="far fa-arrow-alt-circle-right"></i></a>
-    </div>
-
-    @if(session('pesan'))
-    <div class="alert alert-primary" role="alert">
-        <strong>{{ session('pesan') }}</strong>
-    </div>
-    @endif
-
-    <div class="books">
-
-        @for($i = 0; $i < 6; $i++) <a>
-            <div class="book">
-                <div class='book-cover'>
-                    <div class="rating">
-                        @for($j = 1; $j <= 5; $j++) <div>
-                            <i class="fa fa-star rating-star" aria-hidden="true"></i>
+            <div class="white-content mt-4">
+                <h6 class="tbold borbot-gray-0 pb-2">Minimum Harga</h6>
+                <div class="form-group">
+                    <div class="d-flex">
+                        <label class="tbold mt-2 mr-2" for="">Rp</label>
+                        <input type="number" class="form-control m-0 min-price" name="min_price" placeholder="Mininum" value="{{ old('min_price') }}">
                     </div>
-                    @endfor
                 </div>
-                <div class="gambar-buku">
-                    <img src="{{ url('img/book/jujutsu-kaisen-02.jpg') }}">
-                </div>
-            </div>
-            <div class="desk-book">
-                <div>Jujutsu Kaisen</div>
-                <div>
-                    <a href="">Suneo</a>
+
+                <h6 class="tbold borbot-gray-0 pb-2 mt-4">Maksimum Harga</h6>
+                <div class="form-group">
+                    <div class="d-flex">
+                        <label class="tbold mt-2 mr-2" for="">Rp</label>
+                        <input type="number" class="form-control m-0 max-price" name="max_price" placeholder="Maksimal" value="{{ old('max_price') }}">
+                    </div>
                 </div>
             </div>
-            <div class="book-price">
-                <div>Rp40.000</div>
+            <div>
+                <button type="submit" class="d-flex btn btn-primary mt-4 ml-auto w-100">
+                    <span class="mx-auto">Terapkan</span>
+                </button>
             </div>
-    </div>
-    </a>
-    @endfor
+        </div>
 
-</div>
+        <div class="col-md-9">
+            <div class="d-sm-flex justify-content-between borbot-gray-bold">
+                <div class="search-value d-flex">
+                    <div class="mr-2 tred-bold search-content-active">
+                        <a href="{{ route('books.index') }}">Buku ({{ $books->total() }})</a>
+                    </div>
+                    <div class="tred-bold">
+                        <a href="/authors/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $authors->count() }})</a>
+                    </div>
+                </div>
+                <div class="mt-4 mt-sm-0">
+                    <span class="mr-2 text-grey">Ukutkan</span>
+                    <select id="sort-books" name="sort">
+                        <option value="relevan" {{ old('sort') == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
+                        <option value="highest-rating" {{ old('sort') == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>
+                        <option value="lowest-rating" {{ old('sort') == 'lowest-rating' ? 'selected' : '' }}>Rating Terendah</option>
+                        <option value="lowest-price" {{ old('sort') == 'lowest-price' ? 'selected' : '' }}>Harga Terendah</option>
+                        <option value="highest-price" {{ old('sort') == 'highest-price' ? 'selected' : '' }}>Harga Tertinggi</option>
+                    </select>
+                </div>
+            </div>
+            <div class="d-md-none mt-4">
+                <button type="button" class="w-50 btn btn-outline-yellow" data-toggle="modal" data-target="#modal-filter">Filter</button>
+            </div>
+            <div class="mt-2">
+                @if(empty($books->total()) || $books->isEmpty())
+                <div class="w-50 mx-auto mt-4">
+                    <h4 class="text-center mb-4">Hasil pencarian tidak ditemukan </h4>
+                    <img class="w-100" src="{{ asset('img/no-data.png') }}">
+                </div>
 
-<!-- <a class="btn btn-primary float-right my-3" href="{{ route('books.create') }}" role="button">Buat Buku</a> -->
-
-@can('create', \App\Models\Book::class)
-<form action="{{ route('books.store') }}" method="post">
-    <div class="row my-3">
-        @csrf
-        <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
-    </div>
-</form>
-@endcan
-</div>
-
-
-<!-- <table class="table">
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Nama</th>
-            <th>Harga</th>
-            <th>Author</th>
-            <th>Kategori</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($books as $book)
-        <tr>
-            <td>{{ $book->id }}</td>
-            <td>
-                <a href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name }}</a>
-            </td>
-            <td>{{ $book->price }}</td>
-
-            @foreach($book->authors as $author)
-            <td>
-                <a href="{{ route('authors.show', array('author' => $book->author->id)) }}">{{ $author->name }}</a>
-                    </td>
-                @endforeach
-
-                @if(count($book->categories) > 1)
-                    <td>
-                        @foreach($book->categories as $categories)
-                            {{ $categories->name }},
-                        @endforeach
-                    </td>
                 @else
-                    <td>
-                        @foreach($book->categories as $categories)
-                            {{ $categories->name }}
-                        @endforeach
-                    </td>
+                <div id="books-search-value">
+                    @include('layouts.books', compact('books'))
+                </div>
                 @endif
+            </div>
 
-            </tr>
-        @endforeach
+            @if ($books->isNotEmpty())
+            <div class="row">
+                <div class="ml-auto mt-4">
+                    {{ $books->links() }}
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+    <input type="hidden" name="keywords" value="{{ $keywords }}">
+    <input type="hidden" name="page" value="1">
+</form>
 
-    </tbody>
-</table> -->
+<div class="modal fade" id="modal-filter" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content modal-content-login">
+            <div class="px-3 mb-3 d-flex justify-content-between">
+                <h5 class="modal-title tred login-header">Filter</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('books.index') }}" method="GET">
+                    <div>
+                        <div class="text-right mb-3">
+                            <button type="submit" class="form-reset">Reset</button>
+                        </div>
+                        <h6 class="tbold borbot-gray-0 pb-3">Berdasarkan Kategori</h6>
+                        <button class="btn btn-none pl-0" type="button" data-toggle="collapse" data-target="#categories-filter" aria-expanded="false" aria-controls="categories-filter">
+                            Lihat Semua
+                        </button>
+
+                        <div class="collapse" id="categories-filter">
+                            @forelse ($categories as $category)
+
+                            @if ($category['book_count'] != 0)
+                            <div id="filter-categories">
+                                <label>
+                                    <div class="d-flex">
+                                        <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
+                                        <span class="tbold">{{ $category['name'] }} ({{ $category['book_count'] }})</span>
+                                    </div>
+                                </label>
+                            </div>
+                            @endif
+
+                            @empty
+                            <button class="btn-none text-grey tbold">Pencarian kosong</button>
+                            @endforelse
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="tbold borbot-gray-0 pb-2">Minimum Harga</h6>
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <label class="tbold mt-2 mr-2" for="">Rp</label>
+                                <input type="number" class="form-control m-0 min-price" name="min_price" placeholder="Mininum" value="{{ old('min_price') }}">
+                            </div>
+                        </div>
+
+                        <h6 class="tbold borbot-gray-0 pb-2 mt-4">Maksimum Harga</h6>
+                        <div class="form-group">
+                            <div class="d-flex">
+                                <label class="tbold mt-2 mr-2" for="">Rp</label>
+                                <input type="number" class="form-control m-0 max-price" name="max_price" placeholder="Maksimal" value="{{ old('max_price') }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="d-flex btn btn-primary mt-4 ml-auto w-100">
+                            <span class="mx-auto">Terapkan</span>
+                        </button>
+                        <input type="hidden" name="keywords" value="{{ $keywords }}">
+                        <input type="hidden" name="page" value="1">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 @endsection

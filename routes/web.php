@@ -53,7 +53,8 @@ Route::resource('/customers', CustomerController::class);
 // Search
 Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
 
-Route::resource('/authors', AuthorController::class);
+Route::resource('authors', AuthorController::class)->except('index', 'edit');
+Route::get('authors', array(AuthorController::class, 'index'))->name('authors.index');
 
 // My Account
 // Route::get('/account', array(AccountController::class, 'index'));
@@ -71,6 +72,7 @@ Route::prefix('books')->group(function () {
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
     Route::get('search', array(BookController::class, 'search'));
+    Route::post('add-book-images/{book}', array(BookController::class, 'addBookImages'))->name('add.book.images');
 });
 
 // Ajax search Filter

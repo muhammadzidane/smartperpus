@@ -18,22 +18,22 @@
     <h3 class="text-righteous p-2">Kategori Pilihan</h3>
 
     <div class="text-righteous overflow-auto">
-        <div class="kp-1">
+        <a href="{{ route('books.index', array('category' => array(1))) }}" class="kp-1">
             <h5>Komik</h5>
             <img src="{{ url('img/kategori-pilihan/komik.jpg') }}">
-        </div>
-        <div class="kp-2">
+        </a>
+        <a href="{{ route('books.index', array('category' => array(12))) }}" class="kp-2">
             <h5>Pendidikan</h5>
             <img src="{{ url('img/kategori-pilihan/pendidikan.jpg') }}">
-        </div>
-        <div class="kp-1">
+        </a>
+        <a href="{{ route('books.index', array('category' => array(6))) }}" class="kp-1">
             <h5>Sejarah</h5>
             <img src="{{ url('img/kategori-pilihan/sejarah.jpg') }}">
-        </div>
-        <div class="kp-2">
+        </a>
+        <a href="{{ route('books.index', array('category' => array(2))) }}" class="kp-2">
             <h5>Novel</h5>
             <img src="{{ url('img/kategori-pilihan/novel.jpg') }}">
-        </div>
+        </a>
     </div>
 </div>
 

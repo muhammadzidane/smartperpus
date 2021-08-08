@@ -45,9 +45,7 @@
                 <div class="nav-book-search">
                     <div class="ml-2 pb-1">Buku</div>
                     <div class="nav-book-search-values">
-
                     </div>
-                    <!-- <a href="#" class="nav-book-search-link">Jujutsu kaisen 01</a> -->
                 </div>
             </div>
             <div class="cus-nav">
@@ -58,23 +56,16 @@
                             <div>
                                 <div class="d-flex">
                                     <div class="mr-5">
-
-                                        @foreach (\App\Models\Category::get()->take(10) as $category)
-                                        <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
-                                        @endforeach
-                                    </div>
-                                    <div>
-
-                                        @foreach (\App\Models\Category::take(10)->skip(10)->get() as $category)
-                                        <div><a href="#" class="text-decoration-none text-body">{{ $category->name }}</a></div>
+                                        @foreach (App\Models\Category::has('books')->get() as $category)
+                                        <div><a href="{{ route('books.index', array('category' => array($category->id))) }}" class="text-decoration-none text-body">{{ $category->name }}</a></div>
                                         @endforeach
                                     </div>
                                 </div>
                             </div>
                         </li>
 
-                        <li>Best Seller</li>
-                        <li>Buku Diskon</li>
+                        <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
+                        <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
 
                         @auth
                         <li class="nav-bell">
@@ -170,7 +161,7 @@
         <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
             <div class="mt-3">
                 <div class="text-center">
-                    <form class="" action="{{ route('search.books') }}" method="GET">
+                    <form class="" action="{{ route('books.index') }}" method="GET">
                         <div>
                             <div class="responsive-search-icon">
                                 <i class="fas fa-search m-auto"></i>
@@ -197,9 +188,8 @@
             </div>
         </div>
 
-        @if ($errors->any())
-
         <!-- Error messages from backend -->
+        @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             @foreach ($errors->all() as $error)
             <div>
@@ -554,7 +544,7 @@
                             <span class="mt-2">
                                 <label>
                                     <i class="type-message-camera fa fa-camera-retro" aria-hidden="true"></i>
-                                    <input id="user-chat-send-photo" type="file" name="photo" class="d-none">
+                                    <input id="user-chat-send-photo" type="file" name="photo" class="d-none" accept="image/png, image/jpeg, image/jpg">
                                 </label>
                             </span>
                             <input class="type-message-input" type="text" name="message" id="" placeholder="Ketik pesan..." autocomplete="off">

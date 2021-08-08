@@ -20,8 +20,14 @@
             </div>
         </div>
         <div class="rating-and-author">
+            @if (strlen($book->author->name) > 40)
+            <small>{{ substr($book->author->name, 0, 40) }}...</small>
+
+            @else
+            <small>{{ $book->author->name }}</small>
+            @endif
             <div>
-                <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}"><small>{{ $book->author->name  }}</small></a>
+                <a class="text-grey" href="{{ route('books.show', array('book' => $book->id)) }}"><small></small></a>
             </div>
             <div class="d-flex">
                 <div class="rating">

@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Author;
+use App\Models\{Author, Book, Category};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -12,9 +13,215 @@ class AuthorController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('author.index', array('authors' => Author::get()));
+        $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+        $category   = Category::get();
+
+        switch ($request->sort) {
+            case 'relevan':
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+                });
+                break;
+            case 'lowest-rating':
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->whereBetween('price', $between)
+                        ->orderBy('rating')
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->orderBy('rating')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->orderBy('rating')
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+                });
+                break;
+            case 'highest-rating':
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->orderByDesc('rating')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->orderByDesc('rating')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->orderByDesc('rating')
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+                });
+                break;
+            case 'lowest-price':
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->orderBy('price')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->orderBy('price')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->orderBy('price')
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+                });
+                break;
+            case 'highest-price':
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->orderByDesc('price')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->orderByDesc('price')
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->orderByDesc('price')
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+                });
+                break;
+
+            default:
+                if ($request->category) {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereIn('category_id', $request->category ?? [1, $category->count()])
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                } else {
+                    $book_count = Book::where('name',   'LIKE', "%$request->keywords%")
+                        ->whereBetween('price', $between)
+                        ->get()
+                        ->count();
+                }
+
+                $authors = Author::whereHas('books', function (Builder $query) {
+                    global $request;
+                    $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+                    if ($request->category) {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereIn('category_id', $request->category)
+                            ->whereBetween('price', $between);
+                    } else {
+                        $query
+                            ->where('name',   'LIKE', "%$request->keywords%")
+                            ->whereBetween('price', $between);
+                    }
+
+                    $query->where('name', 'LIKE', "%$request->keywords%")->whereBetween('price', $between);
+                });
+
+                break;
+        }
+
+        $authors = $authors->paginate(12)->withQueryString();
+
+        return view('author.index', compact('authors', 'book_count'));
     }
 
     /**
@@ -76,7 +283,9 @@ class AuthorController extends Controller
      */
     public function show(Author $author)
     {
-        return view('author.show', compact('author'));
+        $paginate = Book::where('author_id', $author->id)->paginate(36);
+
+        return view('author.show', compact('author', 'paginate'));
     }
 
     /**
@@ -115,7 +324,6 @@ class AuthorController extends Controller
 
         $pesan = 'Berhasil edit author ' . $author->name;
         return redirect()->route('authors.index')->with('pesan', $pesan);
-
     }
 
     /**

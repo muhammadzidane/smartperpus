@@ -19,15 +19,12 @@ class HomeController extends Controller
         $discount_books = Book::where('discount', '!=', null)->orderBy('discount')->get();
         $comic_books    = Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12);
 
-        return view(
-            'home',
-            array(
-                'book_types' =>
-                array(
-                    'Buku Diskon'               => $discount_books,
-                    'Rekomendasi Komik / Manga' => $comic_books,
-                ),
-            )
+        $books = array(
+            'komik' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
+            'pendidikan' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
+            'komik' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
         );
+
+        return view('home');
     }
 }

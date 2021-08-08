@@ -1,57 +1,49 @@
 @extends('layouts/app')
 @section('content')
 
-@include('layouts/carousel')
+<div>Hasil Pencarian
+    <span id="search-text" class="tbold">
+        "{{ request('keywords') ?? 'Semua Buku' }}"
+    </span>
+</div>
 
-<h1 class="my-5 text-center">Author Index</h1>
-
-@can('create', \App\Models\Author::class)
-    <form action="{{ route('authors.store') }}" method="post">
-        <div class="row my-3">
-            @csrf
-            <button class="btn btn-primary ml-auto" type="submit">Buat Baru</button>
+<div class="py-4">
+    <div class="borbot-gray-bold">
+        <div class="search-value d-flex">
+            <div class="mr-2 tred-bold">
+                <a href="/books/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Buku ({{ $book_count }})</a>
+            </div>
+            <div class="tred-bold search-content-active pb-2">
+                <a href="{{ url()->full() }}">Penulis ({{ $authors->total() }})</a>
+            </div>
         </div>
-    </form>
-@endcan
-
-<table class="table">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Nama Pengarang</th>
-        <th>Karya</th>
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach($authors as $author)
-            <tr>
-                <td>{{ $author->id }}</td>
-                <td>
-                    <a href="{{ route('authors.show', array('author' => $author->id)) }}">{{ $author->name }}</a>
-                </td>
-
-                @if(count($author->books) > 1)
-                    <td>
-
-                        @foreach($author->books as $book)
-                            <a href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name }}</a>,
-                        @endforeach
-
-                    </td>
-
-                    @else
-
-                    <td>
-                        <a href="{{ route('books.show', array('book' => $author->books[0]->id)) }}">{{ $author->books[0]->name  }}</a>
-                    </td>
-
-                @endif
-
-            </tr>
+    </div>
+    <div class="row mt-2">
+        @foreach ($authors as $author)
+        <div class="col-lg-3 col-sm-6">
+            <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
+                <div class="row white-content">
+                    <div class="col px-0">
+                        <div>
+                            <div class="w-50 mx-auto">
+                                <img src="{{ asset('img/avatar-icon.png') }}" class="w-100">
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <div>Nama : <span class="text-grey">{{ $author->name }}</span></div>
+                            <div>Jumlah Buku : <span class="text-grey">{{ $author->books->count() }}</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
         @endforeach
-
-    </tbody>
-</table>
+    </div>
+    <div class="row">
+        <div class="ml-auto mt-4">
+            {{ $authors->links() }}
+        </div>
+    </div>
+</div>
 
 @endsection

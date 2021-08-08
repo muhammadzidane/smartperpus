@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, Author, Category, Synopsis};
+use App\Models\{Book, Author, Category, BookImage};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Storage, Validator, Auth, File};
 
@@ -37,48 +37,115 @@ class BookController extends Controller
             return empty($filter);
         });
 
-        if (!$check_empty_filters) {
-            $condition  = array();
-            $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
-            $books      = $request->category
-                ? Book::where('name',   'LIKE', "%$request->keywords%")->whereIn('category_id', $request->category)
-                : Book::where('name',   'LIKE', "%$request->keywords%");
+        $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+        $books      = $request->category
+            ? Book::where('name',   'LIKE', "%$request->keywords%")->whereIn('category_id', $request->category)
+            : Book::where('name',   'LIKE', "%$request->keywords%");
 
-            switch ($request->sort) {
-                case 'relevan':
-                    $books = $books->whereBetween('price', $between);
-                    break;
-                case 'lowest-rating':
-                    $books = $books->orderBy('rating')->whereBetween('price', $between);
-                    break;
-                case 'highest-rating':
-                    $books = $books->orderByDesc('rating')->whereBetween('price', $between);
-                    break;
-                case 'lowest-price':
-                    $books = $books
-                        ->orderBy('price')
-                        ->whereBetween('price', $between);
-                    break;
-                case 'highest-price':
-                    $books = $books
-                        ->orderByDesc('price')
-                        ->whereBetween('price', $between);
-                    break;
-            }
+        switch ($request->sort) {
+            case 'relevan':
+                $authors = $books
+                    ->whereBetween('price', $between)
+                    ->get();;
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
 
-            $books = $books->paginate(10)->withQueryString();
-        } else {
-            $books = Book::where('name', 'LIKE', "%$request->keywords%")->paginate(10)->withQueryString();
+                $books = $books->whereBetween('price', $between)
+                    ->paginate(50)
+                    ->withQueryString();
+
+                break;
+            case 'lowest-rating':
+                $authors = $books
+                    ->orderBy('rating')
+                    ->whereBetween('price', $between)
+                    ->get();
+
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
+
+                $books = $books->orderBy('rating')->whereBetween('price', $between)
+                    ->paginate(50)
+                    ->withQueryString();
+                break;
+            case 'highest-rating':
+                $authors = $books
+                    ->orderByDesc(
+                        'rating'
+                    )->whereBetween('price', $between)
+                    ->get();
+
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
+
+                $books = $books->orderByDesc('rating')->whereBetween('price', $between)
+                    ->paginate(50)
+                    ->withQueryString();
+                break;
+            case 'lowest-price':
+                $authors = $books
+                    ->orderBy('price')
+                    ->whereBetween('price', $between)
+                    ->get();
+
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
+
+                $books = $books
+                    ->orderBy('price')
+                    ->whereBetween('price', $between)
+                    ->paginate(50)
+                    ->withQueryString();
+                break;
+            case 'highest-price':
+                $authors = $books
+                    ->orderByDesc('price')
+                    ->whereBetween('price', $between)
+                    ->get();
+
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
+
+                $books = $books
+                    ->orderByDesc('price')
+                    ->whereBetween('price', $between)
+                    ->paginate(50)
+                    ->withQueryString();
+                break;
+
+            default:
+                $authors = $books->get();
+
+                $authors = $authors->map(function ($book) {
+                    return $book->author;
+                });
+
+                $books = $books
+                    ->paginate(50)
+                    ->withQueryString();
+                break;
         }
 
+        $authors = $authors->unique();
         // End Filter
+
         $keywords   = $request->keywords;
         $categories = Book::where('name', 'LIKE', "%$request->keywords%")->get();
-
         $categories = $categories->map(function ($book) {
             global $request;
 
-            $book_count = Book::where('name', 'LIKE', "%$request->keywords%")->where('category_id', $book->category->id)->get()->count();
+            $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
+
+            $book_count = Book::where('name', 'LIKE', "%$request->keywords%")
+                ->where('category_id', $book->category->id)
+                ->whereBetween('price', $between)
+                ->get()
+                ->count();
 
             $results = array(
                 'id'         => $book->category->id,
@@ -92,7 +159,7 @@ class BookController extends Controller
         $categories = $categories->unique();
         session()->flashInput($request->input());
 
-        return view('book/search-books', compact('books', 'keywords', 'categories'));
+        return view('book.index', compact('books', 'authors', 'keywords', 'categories'));
     }
 
     /**
@@ -347,8 +414,33 @@ class BookController extends Controller
     {
         $value = $request->keywords;
         $get   = array('id', 'name');
-        $books = Book::where('name', 'LIKE', "%$value%")->get($get)->take(8);
+        $books = Book::where('name', 'LIKE', "%$value%")->get($get)->take(10);
 
         return response()->json(compact('books'));
+    }
+
+    public function addBookImages(Request $request, Book $book)
+    {
+        $rules = array(
+            'image' => 'required|mimes:png,jpg,jpeg|max:2000',
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        $request->validate($rules);
+
+        if (!$validator->fails()) {
+            $image  = $request->image->getClientOriginalName();
+            $create = array('image' => $image);
+            $book->book_images()->create($create);
+
+            $request->image->storeAs('public/books/book_images', $image);
+
+            return response()->json(compact('image'));
+        } else {
+            $errors = $validator->errors();
+
+            return response()->json(compact('errors'));
+        }
     }
 }

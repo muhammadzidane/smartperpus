@@ -502,11 +502,12 @@ footer {
 .books {
     padding: 0.75rem 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, 175px);
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, 165px);
 }
 
 .book {
-    margin: 25px 5px;
+    margin-bottom: 25px;
     box-shadow: 0 0 1.2px black;
     display: flex;
     flex-direction: column;
@@ -613,22 +614,17 @@ footer {
     color: #212529;
 }
 
-.book-show-cover {
-    margin-bottom: 45px;
+.primary-book {
+    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
-.book-show-cover > img {
-    max-width: 70%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 15px 0;
+#primary-book-image {
+    width: 70%;
 }
 
 .book-show-images {
     display: flex;
-    margin: 20px 7px;
-    width: 100%;
 }
 
 .book-show-images div {
@@ -636,15 +632,21 @@ footer {
     width: 25%;
     transition: transform .2s;
     cursor: pointer;
+    outline: 1px solid #6E7C7C;
 }
 
-.book-show-images div:first-child {
-    transform: scale(1.1);
-    outline: 1.70px solid #ea5455;
-    /* margin-right: /s; */
+.book-show-images div:not(:last-child) {
+    margin-right: 0.70rem;
 }
 
-.book-show-images div:hover, .book-show-images div:first-child{
+.book-show-image {
+    width: 100% !important;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.book-show-image-active{
     transform: scale(1.1);
 }
 
@@ -871,12 +873,18 @@ footer {
 .filter-star button i { color: gold; }
 .rating-product-star h5 { font-size: 45px; }
 
+
+.search-content-active {
+    box-shadow: 0 5px 0 0 #6E7C7C;
+}
+
 .search-filter {
     background-color: #fffdf6;
-    margin: 9px 10px 9px 0;
+    margin: 100px 10px 9px 0;
     border: 2px solid #686d76;
     padding: 5px 12px;
     border-radius: 4px;
+    width: max-content;
 }
 
 .border-yellow {
@@ -963,15 +971,21 @@ footer {
 }
 
 .kp-2, .kp-1 {
+    text-decoration: none;
+    cursor: pointer;
     width: 250px;
     text-align: center;
-    cursor: pointer;
     padding: 0 9px;
+}
+
+.kp-2:hover, .kp-1:hover {
+    color: #444444;
+    text-decoration: none;
 }
 
 .kp-1 {
     background-color: #f6f5f5;
-    color: black;
+    color: #444444;
 }
 .kp-2 {
     background-color: #ee6f57;

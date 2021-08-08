@@ -942,6 +942,7 @@ const validator = (validations, success = '') => {
 //#endregion Validator
 
 //#region Change photo - Mengubah foto
+
 const changeInputPhoto = (imageId, inputFileId) => {
     let preview = document.getElementById(imageId);
     let file    = document.getElementById(inputFileId).files[0];

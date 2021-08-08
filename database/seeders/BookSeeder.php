@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Book;
+use App\Models\{Book, Author, Synopsis};
 
 class BookSeeder extends Seeder
 {
@@ -611,6 +611,36 @@ class BookSeeder extends Seeder
                     'height'             => $book['height'],
                 )
             );
+        }
+
+        for ($i = 0; $i < 200; $i++) {
+            $author_count = Author::get()->count();
+            $realese_date = $faker->dateTime()->format('Y-m-d');
+            $subtitle     = $faker->country();
+
+            $book =  Book::create(
+                array(
+                    'isbn'               => $faker->unique()->isbn13(),
+                    'category_id'        => $faker->numberBetween(1, 22), // Sesuai dengan jumlah kategori
+                    'printed_book_stock' => $faker->numberBetween(1, 100),
+                    'name'               => $faker->sentence(),
+                    'price'              => $faker->numberBetween(25000, 200000),
+                    'image'              => 'book-example-' . $faker->numberBetween(1, 25) . '.jpg',
+                    'author_id'          => $faker->numberBetween(1, $author_count),
+                    'rating'             => null,
+                    'discount'           => 0,
+                    'ebook'              => false,
+                    'pages'              => $faker->numberBetween(200, 700),
+                    'release_date'       => $realese_date,
+                    'publisher'          => $faker->sentence(),
+                    'subtitle'           => $subtitle,
+                    'weight'             => $faker->numberBetween(200, 500),
+                    'width'              => $faker->numberBetween(20, 25),
+                    'height'             => $faker->numberBetween(25, 29),
+                )
+            );
+
+            $book->synopsis()->create(array('text' => $faker->paragraph()));
         }
     }
 }
