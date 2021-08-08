@@ -4,6 +4,7 @@ use App\Http\Controllers\{
     AjaxController,
     BookController,
     AuthorController,
+    BookImageController,
     CategoryController,
     HomeController,
     TestController,
@@ -74,6 +75,8 @@ Route::prefix('books')->group(function () {
     Route::get('search', array(BookController::class, 'search'));
     Route::post('add-book-images/{book}', array(BookController::class, 'addBookImages'))->name('add.book.images');
 });
+
+Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
 
 // Ajax search Filter
 Route::prefix('search')->group(function () {

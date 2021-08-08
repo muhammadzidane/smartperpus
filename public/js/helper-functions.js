@@ -246,7 +246,6 @@ function ajaxForm(method, formSelector, ajaxUrl, successFunction, formDataAppend
                 }
             }
         });
-
     }
 
     $.ajax({

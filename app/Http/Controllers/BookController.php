@@ -430,7 +430,10 @@ class BookController extends Controller
         $request->validate($rules);
 
         if (!$validator->fails()) {
-            $image  = $request->image->getClientOriginalName();
+            $user   = Auth::user();
+            $time   = time();
+            $image  = $user->first_name . '-' . $user->last_name . '-' . $user->email . '-' . $time;
+            $image  = '.' . $request->image->getClientOriginalExtension();
             $create = array('image' => $image);
             $book->book_images()->create($create);
 
