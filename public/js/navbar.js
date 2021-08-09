@@ -758,7 +758,7 @@ $(document).ready(function () {
     });
     // End Chat
 
-    // Book Show
+    //#region Book Show
     $('#book-delete-modal').on('click', function(e) {
         e.preventDefault();
         let confirmText = 'Apakah anda yakin ingin menghapus semua data pada buku ini ?';
@@ -802,7 +802,7 @@ $(document).ready(function () {
             $('#primary-book-image').attr('src', clickedSrc);
         });
     }
-    //#end Function - Book show click
+    //#endregion Function - Book show click
 
     bookShowClick();
 
@@ -919,9 +919,63 @@ $(document).ready(function () {
     bookImageDelete();
     //#endregion Delete Book Images
 
-    // End Book Show
+    //#region Cart
+    //#region Cart Delete
+    const cartDelete = () => {
+        $('#cart-delete').on('click', function() {
+            let dataId = $(this).data('id');
 
+            let datas = {
+                _token: csrfToken,
+                _method: 'DELETE',
+            };
 
+            ajaxJson('POST', `/carts/${dataId}`, datas, response => {
+                if (response.delete) {
+                    let message = 'Berhasil menghapus buku dari keranjang';
+                    let html = `<button id="cart-store" class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>`;
+
+                    alertMessage(message);
+                    $(this)[0].outerHTML = html;
+                    cartStore();
+                }
+            });
+        });
+    }
+
+    cartDelete();
+    //#region Cart Delete
+
+    //#region Cart Store
+    const cartStore = () => {
+        $('#cart-store').on('click', function() {
+            let bookId = $('#book-show').data('id');
+            let userId = $('#app').data('user-id');
+
+            let datas = {
+                _token: csrfToken,
+                user_id: userId,
+                book_id: bookId,
+            };
+
+            ajaxJson('POST', '/carts', datas, response => {
+                if (response.cart) {
+                    let message = 'Berhasil memasukannya ke keranjang';
+                    let html    = `<button id="cart-delete" class="btn-none tred" data-id="${response.cart.id}">Hapus dari keranjang</button>`;
+
+                    $(this)[0].outerHTML = html;
+                    alertMessage(message);
+
+                    cartDelete();
+                }
+            });
+        });
+    }
+
+    cartStore();
+    //#endregion Cart Store
+    //#endregion Cart
+    //#endregion Book Show
 
     //#region Book add stock - Tambah stok buku
     $('#book-add-stock').on('click', function() {

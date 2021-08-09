@@ -10,6 +10,7 @@ use App\Http\Controllers\{
     TestController,
     BookPurchaseController,
     BookUserController,
+    CartController,
     CityController,
     CustomerController,
     ContentSearchFilterController,
@@ -69,12 +70,14 @@ Route::get('authors', array(AuthorController::class, 'index'))->name('authors.in
 // Books
 Route::prefix('books')->group(function () {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
-    Route::get('shopping-cart/', array(BookController::class, 'shoppingCart'))->name('shopping.cart');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
     Route::get('search', array(BookController::class, 'search'));
     Route::post('add-book-images/{book}', array(BookController::class, 'addBookImages'))->name('add.book.images');
 });
+
+// Cart
+Route::resource('carts', CartController::class);
 
 Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
 Route::delete('book_images/{book_image}/delete', array(BookImageController::class, 'destroy'))->name('book.images.destroy');

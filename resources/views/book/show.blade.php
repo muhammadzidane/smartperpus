@@ -217,7 +217,11 @@
                             </button>
                         </div>
                         <div>
-                            <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
+                            @if (auth()->user()->carts->where('book_id', $book->id)->isNotEmpty())
+                            <button id="cart-delete" class="btn-none tred" data-id="{{ auth()->user()->carts->where('book_id', $book->id)->first()->id }}">Hapus dari keranjang</button>
+                            @else
+                            <button id="cart-store" class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
+                            @endif
                         </div>
                     </div>
                     @endauth

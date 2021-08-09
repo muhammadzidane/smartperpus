@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div id="app" data-user-id="{{ auth()->user()->id }}">
         <nav class="cus-navbar">
             <div class="logo">
                 <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
@@ -67,6 +67,7 @@
                         <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
                         <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
 
+                        @auth
                         @cannot('viewAny', 'App\\Models\User')
                         <li class="nav-bell">
                             <div class="dropdown">
@@ -138,6 +139,7 @@
                             </div>
                         </li>
                         @endcannot
+                        @endauth
                     </div>
                     <div id="nav-login" class="d-flex ml-auto align-items-center">
                         @guest

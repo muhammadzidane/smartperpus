@@ -3,43 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category};
+use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category, Cart};
 use Faker\Factory as Faker;
 
 class TestController extends Controller
 {
     public function test(Request $request)
     {
-        $faker = \Faker\Factory::create('id_ID');
-        $author_count = Author::get()->count();
-        $realese_date = $faker->dateTime()->format('Y-m-d');
-        $subtitle     = $faker->country();
+        $user = User::find(4);
+        $book = Book::find(1);
 
-        $book =  Book::create(
-            array(
-                'isbn'               => $faker->unique()->isbn13(),
-                'category_id'        => $faker->numberBetween(1, 22), // Sesuai dengan jumlah kategori
-                'printed_book_stock' => $faker->numberBetween(1, 100),
-                'name'               => $faker->sentence(),
-                'price'              => $faker->numberBetween(25000, 200000),
-                'image'              => 'book-example-' . $faker->numberBetween(1, 25) . '.jpg',
-                'author_id'          => $faker->numberBetween(1, $author_count),
-                'rating'             => null,
-                'discount'           => 0,
-                'ebook'              => false,
-                'pages'              => $faker->numberBetween(200, 700),
-                'release_date'       => $realese_date,
-                'publisher'          => $faker->sentence(),
-                'subtitle'           => $subtitle,
-                'weight'             => $faker->numberBetween(200, 500),
-                'width'              => $faker->numberBetween(20, 25),
-                'height'             => $faker->numberBetween(25, 29),
-            )
+        $data = array(
+            'user_id' => $user->id,
+            'book_id' => $book->id,
         );
 
-        $create = array('text' => $faker->paragraphs(9));
+        $cart = Cart::create($data);
 
-        $book->synopsis()->create($create);
+        dump($cart);
     }
 
     public function testPost(Request $request)
