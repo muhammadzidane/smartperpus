@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
+use App\Models\{Cart, Book};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +20,11 @@ class CartController extends Controller
      */
     public function index()
     {
-        return view('cart.index');
+        $books = Book::whereHas('carts', function (Builder $query) {
+            $query->where('user_id', auth()->id());
+        })->get();
+
+        return view('cart.index', compact('books'));
     }
 
     /**

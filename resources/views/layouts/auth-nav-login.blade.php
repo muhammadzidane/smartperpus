@@ -29,7 +29,7 @@
             <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
         </div>
         <div>
-            <a class=" dropdown-item" href="#">Keranjang Saya</a>
+            <a class=" dropdown-item" href="{{ route('carts.index') }}">Keranjang Saya</a>
         </div>
         @endcannot
         @can('viewAny', App\Models\User::class)

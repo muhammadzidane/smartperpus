@@ -44,6 +44,11 @@ class Book extends Model
         return $this->hasMany(BookImage::class);
     }
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     // Accessors
     public function getReleaseDateAttribute($value)
     {

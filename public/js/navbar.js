@@ -1052,6 +1052,7 @@ $(document).ready(function () {
         });
     });
     //#endregion Book add stock - Tambah stok buku
+    //#endregion Cart
 
     // User Index - Daftar karyawan
     $('.user-block').on('click', function (event) {
