@@ -1,13 +1,13 @@
 @extends('layouts/app')
 @section('content')
 
+<!-- {{ dump($book->book_images) }} -->
+
 <div class="home-and-anymore-show">
     <a class="tsmall mr-1" href="{{ route('home') }}">Home</a><i class="fas fa-caret-right tsmall"></i>
     <a class="tsmall mr-1" href="{{ route('books.index', array('category' => array($book->category->id))) }}">{{ $book->category->name }}</a><i class="fas fa-caret-right tsmall"></i>
     <span class="tsmall mr-1 tred-bold">{{ $book->name }}</span>
 </div>
-
-<h1>Test</h1>
 
 <div class="d-md-flex mt-4">
     <div class="col-md-3">
@@ -22,6 +22,7 @@
                 @foreach ($book->book_images as $image)
                 <div class="book-show-click" data-id="{{ $image->id }}">
                     <img src="{{ asset('storage/books/book_images/' . $image->image) }}" class="book-show-image">
+                    <button class="book-image-delete btn-none"><i class="fa fa-times" aria-hidden="true"></i></button>
                 </div>
                 @endforeach
             </div>
@@ -37,201 +38,207 @@
                         @csrf
                     </form>
                 </div>
-                @if ($book->book_images->count() == 3) <div class="mb-2">
-                    <button id="book-image-store" type="submit" class="btn btn-danger w-100">Tambah Gambar</button>
-                </div>
-                @endif
-
-            </div>
-            @endcan
-        </div>
-    </div>
-    <div id="book-show" data-id="{{ $book->id }}" class="col-md-9 pl-md-5">
-        <div class="white-content m-0">
-            @can('view', $book)
-            <div class="d-flex justify-content-end">
-                <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn-none tred-bold">Tambah Stok</button>
-                <div class="mr-2">
-                    <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
-                </div>
-                <div>
-                    <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
-                        <button id="book-delete-modal" type="submit" class="btn btn-danger">Hapus</button>
-                        @method('DELETE')
+                @if ($book->book_images->count() < 3) <div class="mt-3">
+                    <form id="add-book-image-form" action="{{ route('add.book.images', array('book' => $book->id)) }}" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100">Tambah Gambar</button>
                         @csrf
                     </form>
-                </div>
             </div>
-            @endcan
-
-            <h5>{{ $book->name }}</h5>
-
-            @if ($book->discount)
-            <small class="discount-line-through text-danger">{{ rupiah_format($book->price) }}</small>
-            <span class="tred-bold">{{ rupiah_format($book->price - $book->discount) }}</span>
-            @else
-            <div class="tbold">{{ rupiah_format($book->price - $book->discount ) }}</div>
             @endif
 
-            <div class="tbold">{{ $book->category->name }}</div>
-            <div class="my-1 d-flex">
-                <div>
-                    <div>
-                        <a href="#rating" class="text-decoration-none">
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <i class="fa fa-star" aria-hidden="true"></i>
-                            <span class="ml-1">{{ $book->rating }}</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="d-flex ml-2">
-                    <div class="ml-1">
-                        <div>Terjual (103) <span class="tbold">|</span></div>
-                    </div>
-                    <div class="ml-1">
-                        <div>Ulasan (103) <span class="tbold">|</span></div>
-                    </div>
-                    <div class="ml-1">
-                        <div>Diskusi (20)</div>
-                    </div>
-                </div>
+        </div>
+        @endcan
+    </div>
+</div>
+<div id="book-show" data-id="{{ $book->id }}" class="col-md-9 pl-md-5">
+    <div class="white-content m-0">
+        @can('view', $book)
+        <div class="d-flex justify-content-end">
+            <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn-none tred-bold">Tambah Stok</button>
+            <div class="mr-2">
+                <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
             </div>
-            <h4 class="hd-14">
-                <a class="text-grey" href="{{ route('authors.show', array('author' => $book->author->id )) }}">{{ $book->author->name }}</a>
-            </h4>
-            <div id="synopsis" class="mt-3">
-                @if (strlen($book->synopsis->text) > 500)
-                <p>
-                    <span>{{ substr($book->synopsis->text, 0, 500) }}</span>
-                    <span>
-                        <button id="book-synopsis-toggle-button" class="btn-none p-0 ml-1 text-primary">Lihat Semua....</button>
-                        <span id="book-synopsis-show" style="display: none;">{{ substr($book->synopsis->text, 500) }}</span>
-                    </span>
-                </p>
-
-                @else
-                <p class="synopsis">{{ $book->synopsis->text }}</p>
-                @endif
+            <div>
+                <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
+                    <button id="book-delete-modal" type="submit" class="btn btn-danger">Hapus</button>
+                    @method('DELETE')
+                    @csrf
+                </form>
             </div>
         </div>
-        <div class="detail-and-buy mt-5">
-            <div class="book-show-detail">
+        @endcan
+
+        <h5>{{ $book->name }}</h5>
+
+        @if ($book->discount)
+        <small class="discount-line-through text-danger">{{ rupiah_format($book->price) }}</small>
+        <span class="tred-bold">{{ rupiah_format($book->price - $book->discount) }}</span>
+        @else
+        <div class="tbold">{{ rupiah_format($book->price - $book->discount ) }}</div>
+        @endif
+
+        <div class="tbold">{{ $book->category->name }}</div>
+        <div class="my-1 d-flex">
+            <div>
                 <div>
-                    <h5 class="title-border-red">Detail</h5>
-                    <div class="pr-4">
-                        <div class="d-flex justify-content-between">
-                            <div>ISBN</div>
-                            <div>{{ $book->isbn }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Subtitle</div>
-                            <div>{{ $book->subtitle }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Halaman</div>
-                            <div>{{ $book->pages }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Penerbit</div>
-                            <div>{{ $book->publisher }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Tanggal Rilis</div>
-                            <div>{{ $book->release_date }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Berat</div>
-                            <div>{{ $book->weight }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Panjang</div>
-                            <div>{{ $book->width }}</div>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <div>Lebar</div>
-                            <div>{{ $book->height }}</div>
-                        </div>
+                    <a href="#rating" class="text-decoration-none">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <span class="ml-1">{{ $book->rating }}</span>
+                    </a>
+                </div>
+            </div>
+            <div class="d-flex ml-2">
+                <div class="ml-1">
+                    <div>Terjual (103) <span class="tbold">|</span></div>
+                </div>
+                <div class="ml-1">
+                    <div>Ulasan (103) <span class="tbold">|</span></div>
+                </div>
+                <div class="ml-1">
+                    <div>Diskusi (20)</div>
+                </div>
+            </div>
+        </div>
+        <h4 class="hd-14">
+            <a class="text-grey" href="{{ route('authors.show', array('author' => $book->author->id )) }}">{{ $book->author->name }}</a>
+        </h4>
+        <div id="synopsis" class="mt-3">
+            @if (strlen($book->synopsis->text) > 500)
+            <p>
+                <span>{{ substr($book->synopsis->text, 0, 500) }}</span>
+                <span>
+                    <button id="book-synopsis-toggle-button" class="btn-none p-0 ml-1 text-primary">Lihat Semua....</button>
+                    <span id="book-synopsis-show" style="display: none;">{{ substr($book->synopsis->text, 500) }}</span>
+                </span>
+            </p>
+
+            @else
+            <p class="synopsis">{{ $book->synopsis->text }}</p>
+            @endif
+        </div>
+    </div>
+    <div class="detail-and-buy mt-5">
+        <div class="book-show-detail">
+            <div>
+                <h5 class="title-border-red">Detail</h5>
+                <div class="pr-4">
+                    <div class="d-flex justify-content-between">
+                        <div>ISBN</div>
+                        <div>{{ $book->isbn }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Subtitle</div>
+                        <div>{{ $book->subtitle }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Halaman</div>
+                        <div>{{ $book->pages }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Penerbit</div>
+                        <div>{{ $book->publisher }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Tanggal Rilis</div>
+                        <div>{{ $book->release_date }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Berat</div>
+                        <div>{{ $book->weight }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Panjang</div>
+                        <div>{{ $book->width }}</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Lebar</div>
+                        <div>{{ $book->height }}</div>
                     </div>
                 </div>
             </div>
-            <div class="book-payment">
-                <div class="d-flex justify-content-between">
-                    <h5 class="mb-3">Stok Buku Cetak : <span id="book-stock" class="tred-bold">{{ $book->printed_book_stock }}</span></h5>
-                    <div class="info-book">
-                        <div>
-                            <i class="info-book-tooltips fas fa-info-circle"></i>
-                        </div>
-                        <div class="info-book-text">
-                            <div>Pembelian E-Book hanya bisa satu per akun</div>
-                        </div>
+        </div>
+        <div class="book-payment">
+            <div class="d-flex justify-content-between">
+                <h5 class="mb-3">Stok Buku Cetak : <span id="book-stock" class="tred-bold">{{ $book->printed_book_stock }}</span></h5>
+                <div class="info-book">
+                    <div>
+                        <i class="info-book-tooltips fas fa-info-circle"></i>
+                    </div>
+                    <div class="info-book-text">
+                        <div>Pembelian E-Book hanya bisa satu per akun</div>
                     </div>
                 </div>
-                <div>
+            </div>
+            <div>
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div>Buku Cetak</div>
+                    </div>
+                    <div>
+                        @if ($book->discount)
+
+                        <div class="tred-bold">
+                            <span>
+                                <small class="discount-line-through d-inline">
+                                    {{ rupiah_format($book->price - $book->discount) }}
+                                </small>
+                                {{ rupiah_format($book->price) }}
+                            </span>
+                        </div>
+
+                        @else
+
+                        <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="mt-5">
+                    @auth
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div>Buku Cetak</div>
+                            <button id="book-show-wishlist" class="btn-none">
+                                @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
+                                <i class="fas fa-heart text-danger"></i>
+                                @else
+                                <i class="far fa-heart text-danger"></i>
+
+                                @endif
+                                <span>Wishlist</span>
+                            </button>
                         </div>
                         <div>
-                            @if ($book->discount)
-
-                            <div class="tred-bold">
-                                <span>
-                                    <small class="discount-line-through d-inline">
-                                        {{ rupiah_format($book->price - $book->discount) }}
-                                    </small>
-                                    {{ rupiah_format($book->price) }}
-                                </span>
-                            </div>
-
-                            @else
-
-                            <div class="tred-bold">{{ rupiah_format($book->price) }}</div>
-                            @endif
+                            <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
                         </div>
                     </div>
+                    @endauth
+                    <div>
+                        @if ($book->ebook === 0)
+                        <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
+                        @else
+                        <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
+                        @endif
 
-                    <div class="mt-5">
                         @auth
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <button id="book-show-wishlist" class="btn-none">
-                                    @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
-                                    <i class="fas fa-heart text-danger"></i>
-                                    @else
-                                    <i class="far fa-heart text-danger"></i>
-
-                                    @endif
-                                    <span>Wishlist</span>
-                                </button>
-                            </div>
-                            <div>
-                                <button class="btn-none"><i class="add-shop fa fa-plus" aria-hidden="true"></i> Keranjang</button>
-                            </div>
-                        </div>
+                        <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
                         @endauth
-                        <div>
-                            @if ($book->ebook === 0)
-                            <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
-                            @else
-                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
-                            @endif
 
-                            @auth
-                            <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
-                            @endauth
-
-                            @guest
-                            <a href="{{ route('login') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
-                            @endguest
-                        </div>
+                        @guest
+                        <a href="{{ route('login') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                        @endguest
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <div id="rating" class="white-content p-4 mt-c">

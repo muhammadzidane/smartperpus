@@ -10,10 +10,8 @@ class BookImageController extends Controller
 {
     public function edit(Request $request, BookImage $bookImage)
     {
-        $user     = Auth::user();
         $time     = time();
-        $image    = $user->first_name . '-' . $user->last_name . '-' . $user->email . '-' . $time;
-        $image   .= '.' . $request->image->getClientOriginalExtension();
+        $image    = $time . '.' . $request->image->getClientOriginalExtension();
         $filename = 'storage/books/book_images/' . $bookImage->image;
         $data     = array('image' => $image);
 
@@ -24,5 +22,12 @@ class BookImageController extends Controller
         $src    = $image;
 
         return response()->json(compact('update', 'src'));
+    }
+
+    public function destroy(BookImage $bookImage)
+    {
+        $delete = $bookImage->delete();
+
+        return response()->json(compact('delete'));
     }
 }

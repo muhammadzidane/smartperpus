@@ -793,81 +793,47 @@ $(document).ready(function () {
     bookShowClick();
 
     //#region Tambah gambar buku
-    $('#book-image-store').on('click', function() {
-        let secondImages    = $('.book-show-images').children(':not(:first-child)').find('img');
-        let secondImageHtml = [];
+    $('#add-book-image-form').on('submit', function(event) {
+        event.preventDefault();
 
-        for (const key in secondImages) {
-            if (secondImages.hasOwnProperty.call(secondImages, key)) {
-                const element = secondImages[key];
-
-                let src  = $(element).attr('src');
-                let html = `<div class="col-3"><img src="${$(element).attr('src')}" class="book-show-image"></div>`;
-
-                if (src != undefined) {
-                    secondImageHtml.push(html);
-                }
+        let validation = [
+            {
+                input: '#image',
+                inputName: 'Gambar',
+                rules: 'required,mimes:jpg|jpeg|png,maxSize:2000',
             }
-        }
+        ];
 
-        bootStrapModal('Tambah Gambar Buku', 'modal-md', () => {
-            let primaryImageBook = $('#primary-book-image').attr('src');
-            let html =
-            `
-            <div class="book-modal-image row mb-4">
-                <div class="col-3"><img src="${primaryImageBook}" class="w-100"></div>
-                ${secondImageHtml}
-            </div>
-            <form id="add-book-image-form" action="{{ route('add.book.images', array('book' => $book->id)) }}" enctype="multipart/form-data" method="POST">
-                <div class="form-group">
-                    <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
-                </div>
-                <button type="submit" class="btn btn-red">Tambah Foto</button>
-                <input type="hidden" name="_token" value="${csrfToken}">
-            </form>
-            `;
+        validator(validation, success => {
+            if (success) {
+                ajaxForm('POST', this, `/books/add-book-images/${$('#book-show').data('id')}`, response => {
+                    if (!response.errors) {
+                        $(this).trigger('reset');
 
-            return html;
-        });
+                        let messageText         = 'Berhasil menambah gambar buku';
+                        let src                 = `${window.location.origin}/storage/books/book_images/${response.image}`;
+                        let html                =
+                        `<div class="book-show-click" data-id="${response.book_image.id}">
+                            <img src="${src}" class="book-show-image">
+                            <button class="book-image-delete btn-none"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        </div>`;
+                        let bookShowImageLength = $('.book-show-click').length + 1;
 
-        $('#add-book-image-form').on('submit', function(event) {
-            event.preventDefault();
+                        $('#custom-modal').modal('hide');
+                        alertMessage(messageText);
+                        $('.book-show-images').append(html);
 
-            let validation = [
-                {
-                    input: '#image',
-                    inputName: 'Gambar',
-                    rules: 'required,mimes:jpg|jpeg|png,maxSize:2000',
-                }
-            ];
+                        console.log(bookShowImageLength);
 
-            validator(validation, success => {
-                if (success) {
-                    console.log('success');
-                    ajaxForm('POST', this, `/books/add-book-images/${$('#book-show').data('id')}`, response => {
-                        if (!response.errors) {
-                            $(this).trigger('reset');
-
-                            let messageText         = 'Berhasil menambah gambar buku';
-                            let src                 = `${window.location.origin}/storage/books/book_images/${response.image}`;
-                            let html                = `<div class="book-show-click"><img src="${src}" class="book-show-image"></div>`;
-                            let bookShowImageLength = $('.book-show-click').length + 1;
-
-                            $('#custom-modal').modal('hide');
-                            alertMessage(messageText);
-                            $('.book-show-images').append(html);
-
-                            console.log(bookShowImageLength);
-
-                            if (bookShowImageLength > 3) {
-                                $('#book-image-store').parent().remove();
-                            }
-
-                            bookShowClick();
+                        if (bookShowImageLength > 3) {
+                            $('#add-book-image-form').parent().remove();
                         }
-                    })
-                }
-            });
+
+                        bookShowClick();
+                        bookImageDelete();
+                    }
+                })
+            }
         });
     });
     //#endregion Tambah gambar buku
@@ -877,6 +843,8 @@ $(document).ready(function () {
         event.preventDefault();
 
         const clickedDataId = () => $('.book-show-image-active').data('id');
+
+        console.log(clickedDataId());
 
         let checkBookImageFirst = $('.book-show-images').children().first().hasClass('book-show-image-active');
 
@@ -905,11 +873,39 @@ $(document).ready(function () {
             });
         } else {
             console.log($('#book-edit'));
-            $('#book-edit').trigger('click');
+            $('#book-edit')[0].click();;
         }
     });
     //#endregion Edit gambar
+
+    //#region Delete Book Images
+    const bookImageDelete = () => {
+        $('.book-image-delete').on('click', function() {
+            let dataId  = $(this).parent().data('id');
+            let message = 'Apakah anda yakin ingin menghapus gambar buku?';
+
+            modalConfirm(message, accepted => {
+                if (accepted) {
+                    ajaxJson('POST', `/book_images/${dataId}/delete`, requestMethodName('DELETE')[0], response => {
+                        if (response.delete) {
+                            let message = 'Berhasil menghapus gambar buku';
+
+                            alertMessage(message);
+                            $(this).parent().siblings().removeClass('book-show-image-active');
+                            $(this).parent().prev().addClass('book-show-image-active');
+                            $(this).parent().remove();
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    bookImageDelete();
+    //#endregion Delete Book Images
+
     // End Book Show
+
 
 
     //#region Book add stock - Tambah stok buku

@@ -77,6 +77,7 @@ Route::prefix('books')->group(function () {
 });
 
 Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
+Route::delete('book_images/{book_image}/delete', array(BookImageController::class, 'destroy'))->name('book.images.destroy');
 
 // Ajax search Filter
 Route::prefix('search')->group(function () {

@@ -247,6 +247,7 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
+        // dd($book->book_images);
         return view('book.show', compact('book'));
     }
 
@@ -430,16 +431,14 @@ class BookController extends Controller
         $request->validate($rules);
 
         if (!$validator->fails()) {
-            $user   = Auth::user();
-            $time   = time();
-            $image  = $user->first_name . '-' . $user->last_name . '-' . $user->email . '-' . $time;
-            $image  = '.' . $request->image->getClientOriginalExtension();
-            $create = array('image' => $image);
-            $book->book_images()->create($create);
+            $time       = time();
+            $image      = $time . '.' . $request->image->getClientOriginalExtension();
+            $create     = array('image' => $image);
+            $book_image = $book->book_images()->create($create);
 
             $request->image->storeAs('public/books/book_images', $image);
 
-            return response()->json(compact('image'));
+            return response()->json(compact('image', 'book_image'));
         } else {
             $errors = $validator->errors();
 
