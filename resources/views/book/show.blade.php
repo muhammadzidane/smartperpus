@@ -7,6 +7,8 @@
     <span class="tsmall mr-1 tred-bold">{{ $book->name }}</span>
 </div>
 
+<h1>Test</h1>
+
 <div class="d-md-flex mt-4">
     <div class="col-md-3">
         <div>

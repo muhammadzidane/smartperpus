@@ -873,42 +873,39 @@ $(document).ready(function () {
     //#endregion Tambah gambar buku
 
     //#region Edit gambar
-    $('#book-image-edit').on('click', function() {
+    $('#book-image-edit-form').on('submit', function(event) {
+        event.preventDefault();
+
         const clickedDataId = () => $('.book-show-image-active').data('id');
 
         let checkBookImageFirst = $('.book-show-images').children().first().hasClass('book-show-image-active');
 
         if (!checkBookImageFirst) {
-            $('#book-image-edit-form').on('submit', function(event) {
-                event.stopImmediatePropagation();
-                event.preventDefault();
+            let validations = [
+                {
+                    input: '#book-image-edit-file',
+                    inputName: 'Gambar',
+                    rules: 'required,mimes:jpg|jpeg|png,max:2000'
+                }
+            ];
 
-                let validations = [
-                    {
-                        input: '#book-image-edit-file',
-                        inputName: 'Gambar',
-                        rules: 'required,mimes:jpg|jpeg|png,max:2000'
-                    }
-                ];
+            validator(validations, success => {
+                if (success) {
+                    ajaxForm('POST', this, `/book_images/${clickedDataId()}/edit`, response => {
+                        if (response.update) {
+                            let message = 'Berhasil mengedit gambar buku';
+                            let src     = `${window.location.origin}/storage/books/book_images/${response.src}`;
 
-                validator(validations, success => {
-                    if (success) {
-                        ajaxForm('POST', this, `/book_images/${clickedDataId()}/edit`, response => {
-                            if (response.update) {
-                                let message = 'Berhasil mengedit gambar buku';
-                                let src     = `${window.location.origin}/storage/books/book_images/${response.src}`;
-
-                                alertMessage(message);
-                                $('.book-show-image-active').find('img').attr('src', src);
-                            }
-                        });
-                    }
-                });
+                            alertMessage(message);
+                            $(this).trigger('reset');
+                            $('.book-show-image-active').find('img').attr('src', src);
+                        }
+                    });
+                }
             });
         } else {
-            let href = $('#book-edit').attr('href');
-
-            window.location.href = href;
+            console.log($('#book-edit'));
+            $('#book-edit').trigger('click');
         }
     });
     //#endregion Edit gambar
