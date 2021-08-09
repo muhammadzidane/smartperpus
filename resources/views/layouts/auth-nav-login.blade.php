@@ -26,7 +26,7 @@
         @endcannot
         @cannot('viewAny', App\Models\User::class)
         <div>
-            <a class="dropdown-item" href="#"">Daftar Wishlist</a>
+            <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
         </div>
         <div>
             <a class=" dropdown-item" href="#">Keranjang Saya</a>

@@ -584,6 +584,12 @@ footer {
     margin: 5px 0;
 }
 
+.author-review {
+    overflow: hidden;
+    width: auto;
+    height: 220px;
+}
+
 .desk-book {
     background-color:transparent;
     height: 100%;

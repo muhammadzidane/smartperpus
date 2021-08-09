@@ -67,7 +67,7 @@
                         <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
                         <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
 
-                        @auth
+                        @cannot('viewAny', 'App\\Models\User')
                         <li class="nav-bell">
                             <div class="dropdown">
                                 <button class="btn-none" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -137,7 +137,7 @@
                                 </div>
                             </div>
                         </li>
-                        @endauth
+                        @endcannot
                     </div>
                     <div id="nav-login" class="d-flex ml-auto align-items-center">
                         @guest

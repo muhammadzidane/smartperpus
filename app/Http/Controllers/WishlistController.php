@@ -15,8 +15,8 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        $books = Auth::user()->wishlists;
-        $books = $books->map(function ($wishlist) {
+        $wishlists = Auth::user()->wishlists;
+        $books     = $wishlists->map(function ($wishlist) {
             return Book::find($wishlist->book_id);
         });
 
@@ -99,5 +99,29 @@ class WishlistController extends Controller
         $wishlists = Wishlist::where('user_id', $user->id)->where('book_id', $book->id)->delete();
 
         return response()->json()->status();
+    }
+
+    public function search(Request $request)
+    {
+        $wishlists = Auth::user()->wishlists;
+        $books     = $wishlists->map(function ($wishlist) {
+            global $request;
+
+            $conditions = array(
+                array('id', $wishlist->book_id),
+                array('name', 'LIKE', "%$request->keywords%"),
+            );
+
+            return Book::where($conditions)->first();
+        });
+
+        $books = $books->filter(function ($books) {
+            return $books != null;
+        });
+
+        $data   = compact('books');
+        $render = view('layouts.books', $data)->render();
+
+        return response()->json(compact('render'));
     }
 }

@@ -79,6 +79,11 @@ class BookPurchaseController extends Controller
             $book_user     = DB::table('book_user')->latest()->first();
             $url           = Route('book-purchases.show', array('book_user' => $book_user->id));
 
+            $book_stock = $book->printed_book_stock;
+            $stock      = $book - $request->amount;
+            $data       = array('printed_book_stock' => $stock);
+            $book->update($data);
+
             if ($request->ajax()) {
                 return response()->json(compact('book_user', 'url'));
             } else {

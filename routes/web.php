@@ -95,9 +95,10 @@ Route::prefix('book-purchases')->group(function () {
 
 // Wishlist
 Route::prefix('wishlists')->middleware('auth')->group(function () {
-    Route::get('/', array(WishlistController::class, 'index'));
+    Route::get('/', array(WishlistController::class, 'index'))->name('wishlists.index');
     Route::post('/', array(WishlistController::class, 'store'));
     Route::delete('/{id}', array(WishlistController::class, 'destroy'));
+    Route::get('/search', array(WishlistController::class, 'search'));
 });
 
 Route::prefix('book-users/status')->middleware('auth')->group(function () {

@@ -3,25 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\{BookImage, User, Book};
-use Illuminate\Support\Facades\{Auth, File};
+use Illuminate\Support\Facades\{Auth, File, Validator};
 use Illuminate\Http\Request;
 
 class BookImageController extends Controller
 {
     public function edit(Request $request, BookImage $bookImage)
     {
-        $time     = time();
-        $image    = $time . '.' . $request->image->getClientOriginalExtension();
-        $filename = 'storage/books/book_images/' . $bookImage->image;
-        $data     = array('image' => $image);
+        $rules = array(
+            'image' => 'required|mimes:jpg,jpeg,png|max:2000',
+        );
 
-        File::delete($filename);
-        $request->image->storeAs('public/books/book_images', $image);
+        $validator = Validator::make($request->all(), $rules);
 
-        $update = $bookImage->update($data);
-        $src    = $image;
+        if (!$validator->fails()) {
+            $time     = time();
+            $image    = $time . '.' . $request->image->getClientOriginalExtension();
+            $filename = 'storage/books/book_images/' . $bookImage->image;
+            $data     = array('image' => $image);
 
-        return response()->json(compact('update', 'src'));
+            File::delete($filename);
+            $request->image->storeAs('public/books/book_images', $image);
+
+            $update = $bookImage->update($data);
+            $src    = $image;
+
+            return response()->json(compact('update', 'src'));
+        } else {
+            $errors = $validator->errors();
+
+            return response()->json(compact('errors'));
+        }
     }
 
     public function destroy(BookImage $bookImage)

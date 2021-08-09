@@ -496,7 +496,7 @@ const backendMessage = (selectorAfter, errors) => {
     let messages           = `<div class="alert-messages">${errorMessages}</div>`;
 
     alertMessageLength == 0 ? selectorAfter.after(messages) : $('.alert-messages').html(errorMessages);
-} ;
+};
 
 const alertMessage = (messageText) => {
     let html          = `<div id="message">${messageText}</div>`;

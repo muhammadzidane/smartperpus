@@ -22,7 +22,9 @@
                 @foreach ($book->book_images as $image)
                 <div class="book-show-click" data-id="{{ $image->id }}">
                     <img src="{{ asset('storage/books/book_images/' . $image->image) }}" class="book-show-image">
+                    @can('viewAny', 'App\\Models\User')
                     <button class="book-image-delete btn-none"><i class="fa fa-times" aria-hidden="true"></i></button>
+                    @endcan
                 </div>
                 @endforeach
             </div>

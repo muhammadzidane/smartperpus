@@ -17,9 +17,11 @@
             <input class="wishlist-search-input" type="search" placeholder="Cari wishlist anda">
         </div>
 
-        <div class="my-2">
+        <div class="mt-4 mx-4">
             @include('layouts.books',
-            array('books' => $books)
+            array(
+            'books' => $books,
+            )
             )
         </div>
     </div>

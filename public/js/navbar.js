@@ -494,6 +494,20 @@ $(document).ready(function () {
         }
     });
 
+    //#region Wishlist Search
+    $('.wishlist-search-input').on('keyup', function(event) {
+        let value = event.target.value;
+        let datas = { keywords: value };
+
+        ajaxJson('GET', '/wishlists/search', datas, response => {
+            $('.books')[0].outerHTML = response.render;
+            $('.book').on('click', function () {
+                window.location.href = $(this).find('.book-show-link').attr('href');
+            });
+        });
+    });
+    //#endregion Wishlist Search
+
     // Chat dengan admin
     let btnChatclickedCount = 0;
     $('#btn-chat').on('click', function () {
@@ -844,8 +858,6 @@ $(document).ready(function () {
 
         const clickedDataId = () => $('.book-show-image-active').data('id');
 
-        console.log(clickedDataId());
-
         let checkBookImageFirst = $('.book-show-images').children().first().hasClass('book-show-image-active');
 
         if (!checkBookImageFirst) {
@@ -853,7 +865,7 @@ $(document).ready(function () {
                 {
                     input: '#book-image-edit-file',
                     inputName: 'Gambar',
-                    rules: 'required,mimes:jpg|jpeg|png,max:2000'
+                    rules: 'required,mimes:jpg|jpeg|png,maxSize:2000'
                 }
             ];
 
@@ -867,12 +879,15 @@ $(document).ready(function () {
                             alertMessage(message);
                             $(this).trigger('reset');
                             $('.book-show-image-active').find('img').attr('src', src);
+                        } else {
+                            let afterMessage = $('.book-show-images');
+
+                            backendMessage(afterMessage, response.errors)
                         }
                     });
                 }
             });
         } else {
-            console.log($('#book-edit'));
             $('#book-edit')[0].click();;
         }
     });
@@ -1569,6 +1584,7 @@ $(document).ready(function () {
                             $('.alert-messages').remove();
                             alertMessage(message);
                         } else {
+                            console.log(false);
                             let addMessage    = $('#book-edit-form, #book-store-form').children().first();
 
                             backendMessage(addMessage, response.errors);

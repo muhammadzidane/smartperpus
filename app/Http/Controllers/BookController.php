@@ -289,7 +289,7 @@ class BookController extends Controller
             'berat'              => array('required', 'numeric'),
             'panjang'            => array('required', 'numeric'),
             'lebar'              => array('required', 'numeric'),
-            'gambar_sampul_buku' => array('nullable', 'mimes:png,jpg,jpeg', 'max:2000'),
+            'gambar_sampul_buku' => array('nullable', 'mimes:jpg,jpeg,png', 'max:2000'),
         );
 
         $book_image_name = $request->gambar_sampul_buku != null ? $request->gambar_sampul_buku->getClientOriginalName() : $book->image;
@@ -298,6 +298,7 @@ class BookController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+
             return response()->json(compact('errors'));
         } else {
             if ($request->gambar_sampul_buku) {

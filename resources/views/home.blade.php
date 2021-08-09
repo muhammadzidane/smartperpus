@@ -41,7 +41,7 @@
     @include('layouts.book-deals',
     array(
     'title' => 'Buku Diskon',
-    'books' => \App\Models\Book::where('discount', '!=', null)->get()->take(12),
+    'books' => \App\Models\Book::where('discount', '!=', 0)->get()->take(12),
     )
     )
 </div>
@@ -49,7 +49,14 @@
 @include('layouts.book-deals',
 array(
 'title' => 'Rekomendasi Komik / Manga',
-'books' => \App\Models\Book::where('category_id', 1)->get()->take(9),
+'books' => \App\Models\Book::where('category_id', 1)->get()->take(12),
+)
+)
+
+@include('layouts.book-deals',
+array(
+'title' => 'Buku Sejarah',
+'books' => \App\Models\Book::where('category_id', 6)->get()->take(12),
 )
 )
 @endsection

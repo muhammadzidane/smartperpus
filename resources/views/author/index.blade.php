@@ -22,7 +22,7 @@
         @foreach ($authors as $author)
         <div class="col-lg-3 col-sm-6">
             <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
-                <div class="row white-content">
+                <div class="row white-content author-review">
                     <div class="col px-0">
                         <div>
                             <div class="w-50 mx-auto">
