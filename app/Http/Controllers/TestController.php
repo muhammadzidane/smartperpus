@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category, Cart};
 use Faker\Factory as Faker;
@@ -10,17 +11,33 @@ class TestController extends Controller
 {
     public function test(Request $request)
     {
-        $user = User::find(4);
-        $book = Book::find(1);
+        $keywords = $request->keywords;
 
-        $data = array(
-            'user_id' => $user->id,
-            'book_id' => $book->id,
+        $selects = array(
+            'provinces.name AS province_name',
+            'cities.type',
+            'cities.name AS city_name',
+            'districts.name AS district_name'
         );
 
-        $cart = Cart::create($data);
+        $address = DB::table('provinces')
+            ->join('cities', 'provinces.id', '=', 'cities.province_id')
+            ->join('districts', 'cities.id', '=', 'districts.city_id')
+            ->where('cities.name', 'LIKE', "%bandung%")
+            ->orWhere('districts.name', 'LIKE', "%bandung%")
+            ->select($selects)
+            ->get();
 
-        dump($cart);
+        $request_address = $address->map(function ($address) {
+            $province = $address->province_name;
+            $type     = $address->type == 'Kabupaten' ? 'Kab.' : 'Kota';
+            $city     = $address->city_name;
+            $district = $address->district_name;
+
+            $results = $province . ', ' . $type . ' ' . $city . ', Kec.' . $district;
+
+            return $results;
+        });
     }
 
     public function testPost(Request $request)

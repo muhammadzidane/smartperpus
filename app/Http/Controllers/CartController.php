@@ -22,7 +22,7 @@ class CartController extends Controller
     {
         $books = Book::whereHas('carts', function (Builder $query) {
             $query->where('user_id', auth()->id());
-        })->get();
+        })->paginate(8);
 
         return view('cart.index', compact('books'));
     }

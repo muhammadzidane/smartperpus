@@ -10,92 +10,102 @@
     </div>
 </div>
 
-<div class="row flex-md-row-reverse mt-4">
-    <div class="col-md-3 mb-4">
-        <div class="white-content pt-0 m-0">
-            <div id="book-payment" class="text-grey py-2 mb-0 bordash-gray">
-                <div class="mt-2 mb-4">
-                    <h4 class="hd-16 text-center text-body">Ringkasan Pembayaran</h4>
+<form id="cart-form" action="{{ route('checkout.index') }}" method="POST">
+    <div class="row flex-md-row-reverse mt-4">
+        <div class="col-md-3 mb-4">
+            <div class="white-content pt-0 m-0">
+                <div id="book-payment" class="text-grey py-2 mb-0 bordash-gray">
+                    <div class="mt-2 mb-4">
+                        <h4 class="hd-16 text-center text-body">Ringkasan Pembayaran</h4>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Jumlah Barang</div>
+                        <input id="cart-amounts" name="amount" type="text" value="0" class="input-none text-right w-25" readonly>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <div>Jumlah Barang</div>
-                    <div id="jumlah-barang">100</div>
-                </div>
-            </div>
-            <div class="mt-2 text-grey">
-                <div class="d-flex justify-content-between">
-                    <div>Total Pembayaran</div>
-                    <div id="total-payment" data-total-payment="" class="tred-bold text-righteous">Rp30.000</div>
-                </div>
-                <div class="mt-3">
-                    <a id="payment-button" href="#" class="btn btn-red w-100">
-                        <i class="fas fa-shield-alt mr-2"></i>Bayar
-                    </a>
+                <div class="mt-2 text-grey">
+                    <div class="d-flex justify-content-between">
+                        <div>Total Pembayaran</div>
+                        <input id="cart-total-payment" name="total" type="text" value="Rp0" class="input-none text-right tred-bold w-50" readonly>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" id="payment-button" class="btn btn-red w-100">
+                            <i class="fas fa-shield-alt mr-2"></i>Checkout
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-9">
-        <div class="white-content px-0 pt-0 m-0 borbot-yellow-bold">
-            <div class="p-15 pb-0 d-flex">
-                <input type="checkbox" class="mt-1 mr-2" name="" id="checked-all">
-                <label for="checked-all" class="tbold m-0">Pilih Semua</label>
-            </div>
-        </div>
-        @foreach ($books as $book)
-        <div class="white-content mt-4 px-0 pt-0 pb-4 m-0 borbot-gray-bold">
-            <div class="white-content-header-2">
-                <div class="d-flex justify-content-between w-100">
-                    <div class="d-flex">
-                        <input type="checkbox" class="mt-1 mr-2" name="" id="pilih">
-                        <label for="pilih" class="tbold m-0">Pilih</label>
-                    </div>
-                    <div>
-                        <div class="tred-bold">Hapus</div>
-                    </div>
+        <div class="col-md-9">
+            <div class="white-content px-0 pt-0 m-0 borbot-yellow-bold">
+                <div class="p-15 pb-0 d-flex">
+                    <input type="checkbox" class="mt-1 mr-2" name="" id="checked-all">
+                    <label for="checked-all" class="tbold m-0">Pilih Semua</label>
                 </div>
             </div>
-            <div class="container-sm mx-sm-3 mt-4">
-                <div class="row">
-                    <div class="col-sm-2 mb-4">
-                        <img class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $book->image) }}">
+            @foreach ($books as $book)
+            <div class="white-content mt-4 px-0 pt-0 pb-4 m-0 borbot-gray-bold">
+                <div class="white-content-header-2">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <label>
+                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->ebook . '-' .  $book->id }}">
+                                <span>Pilih</span>
+                            </label>
+                        </div>
+                        <div>
+                            <button type="button" data-id="{{ $book->carts[0]->id }}" class="cart-delete btn-none tred-bold">Hapus</button>
+                        </div>
                     </div>
-                    <div class="col-sm-10">
-                        <div class="text-righteous">{{ $book->name }}</div>
-                        <div class="mt-4 d-flex flex-md-column justify-content-md-between">
-                            <div class="d-md-flex">
-                                <div class="mr-4 mb-4">
-                                    <div class="tbold">Harga</div>
-                                    <div class="text-grey">{{ rupiah_format($book->price) }}</div>
-                                </div>
-                                <div class="mr-4">
-                                    <div class="tbold">Jumlah</div>
-                                    <div class="text-grey d-flex">
-                                        <div>
-                                            <span id="book-needed">1</span>
-                                            <span>/</span>
-                                            <span id="total-book" data-total-book="">230</span>
-                                        </div>
-                                        <div class="ml-2">
-                                            <button id="plus-one-book" class="btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
-                                            <button id="sub-one-book" class="btn-none p-0"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+                </div>
+                <div class="container-sm mx-sm-3 mt-4">
+                    <div class="row">
+                        <div class="col-sm-2 mb-4">
+                            <img class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $book->image) }}">
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="text-righteous">{{ $book->name }}</div>
+                            <div class="tred-bold">{{ $book->ebook ? 'E-Book' : 'Buku Cetak' }}</div>
+                            <div class="mt-4 d-flex flex-md-column justify-content-md-between">
+                                <div class="d-md-flex">
+                                    <div class="mr-4 mb-4">
+                                        <div class="tbold">Harga</div>
+                                        <div class="cart-book-price text-grey" data-price="{{ $book->price - $book->discount }}">{{ rupiah_format($book->price - $book->discount)   }}</div>
+                                    </div>
+                                    <div class="mr-4">
+                                        <div class="tbold">Jumlah</div>
+                                        <div class="text-grey d-flex">
+                                            <div>
+                                                <input type="text" value="1" class="cart-amount-req input-none" readonly>
+                                                <span>/</span>
+                                                <input type="text" value="{{ $book->printed_book_stock - 1 }}" class="cart-total-stock input-none" readonly>
+                                            </div>
+                                            <div class="cart-amount ml-2">
+                                                <button type="button" class="cart-plus btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                                                <button type="button" class="cart-sub btn-none p-0"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div>
-                                <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
-                                <span class="tred-bold">Tulis Catatan</span>
+                                <div class="cart-note w-maxc">
+                                    <div>
+                                        <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
+                                        <span class="tred-bold">Tulis Catatan</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            @endforeach
         </div>
-        @endforeach
-
     </div>
+    @csrf
+</form>
 
+<div class="mt-5">
+    <div class="w-maxc ml-auto">{{ $books->links() }}</div>
 </div>
 
 @endsection

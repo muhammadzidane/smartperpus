@@ -13,12 +13,6 @@
                         <div class="">
                             <label for="nama_penerima">Nama Penerima</label>
                             <input type="text" name="nama_penerima" class="form-control-custom book-edit-inp" value="{{ old('nama_penerima') }}">
-
-                            @error('nama_penerima')
-                            <span class="tred small small" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
                             <span class="tred small small" role="alert">
                                 <strong class="error_nama_penerima validate-error"></strong>
                             </span>
@@ -29,12 +23,6 @@
                             <label for="alamat_tujuan">Alamat Tujuan</label>
                             <input type="text" name="alamat_tujuan" class="form-control-custom book-edit-inp" value="{{ old('alamat_tujuan') }}">
                         </div>
-
-                        @error('alamat_tujuan')
-                        <span class="tred small small" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                        @enderror
                         <span class="tred small small" role="alert">
                             <strong class="error_alamat_tujuan validate-error"></strong>
                         </span>

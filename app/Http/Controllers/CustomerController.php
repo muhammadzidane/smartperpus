@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\{Customer, User, District, City, Province};
-use Illuminate\Support\Facades\{Validator, Auth};
+use Illuminate\Support\Facades\{Validator, Auth, DB};
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -66,7 +66,7 @@ class CustomerController extends Controller
                 return redirect()->back()->withErrors($validator)->withInput();
             }
         } else {
-            $customer = $user->customer()->create($create);
+            $customer = $user->customers()->create($create);
             $pesan    = 'Berhasil menambah alamat ' . ucwords($customer->name);
 
             if ($request->ajax()) {
@@ -186,5 +186,30 @@ class CustomerController extends Controller
     public function ajaxEditSubmitGetData(Request $request, Customer $customer)
     {
         return response()->json(compact('customer'));
+    }
+
+    public function ajaxCityOrDistrict(Request $request)
+    {
+        $keywords = $request->keywords;
+
+        $selects = array(
+            'provinces.id AS province_id',
+            'provinces.name AS province_name',
+            'cities.type',
+            'cities.id AS city_id',
+            'cities.name AS city_name',
+            'districts.id AS district_id',
+            'districts.name AS district_name'
+        );
+
+        $request_address = DB::table('provinces')
+            ->join('cities', 'provinces.id', '=', 'cities.province_id')
+            ->join('districts', 'cities.id', '=', 'districts.city_id')
+            ->where('cities.name', 'LIKE', "%$keywords%")
+            ->orWhere('districts.name', 'LIKE', "%$keywords%")
+            ->select($selects)
+            ->get();
+
+        return response()->json(compact('request_address'));
     }
 }

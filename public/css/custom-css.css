@@ -10,6 +10,15 @@
     outline: none;
 }
 
+.input-none {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 20px;
+    outline: none;
+}
+
 ul li {
     list-style-type: none;
     cursor: pointer;
@@ -822,6 +831,27 @@ footer {
     font-size: 28px;
     margin-left: 2px;
     margin-right: 0.40rem;
+}
+
+.user-address {
+    display: none;
+    position: absolute;
+    top: 100%;
+    padding: 5px 0;
+    width: 50%;
+    max-height: 180px;
+    overflow-y: auto;
+    background-color: #f6f6f6;
+    box-shadow: 0 0 0.4rem grey;
+}
+
+.user-address-data:not(:first-child) {
+    margin-top: 0.60rem;
+}
+
+.user-address-data:hover {
+    cursor: pointer;
+    background-color: rgb(226, 213, 213, 0.55);
 }
 
 /* Wishlist */

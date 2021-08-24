@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    <div id="app" data-user-id="{{ auth()->user()->id }}">
+    <div id="app" @auth data-user-id="{{ auth()->user()->id }}" @endauth>
         <nav class="cus-navbar">
             <div class="logo">
                 <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>

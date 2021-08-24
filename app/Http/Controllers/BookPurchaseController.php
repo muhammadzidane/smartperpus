@@ -119,7 +119,6 @@ class BookPurchaseController extends Controller
      */
     public function edit(BookUser $bookPurchase)
     {
-        dump('wkwk');
     }
 
     /**
@@ -154,6 +153,44 @@ class BookPurchaseController extends Controller
         $url    = route('home');
 
         return response()->json(compact('delete', 'url'));
+    }
+
+    public function cartStore(Request $request)
+    {
+        $carts = $request->all()['carts'];
+        $datas = collect($carts)->map(function ($cart) {
+            $isbn    = '978' . substr(time(), 0, 10);
+            $cart    = explode('-', $cart);
+            $book    = Book::find($cart[1]);
+            $results = array(
+                'invoice' => $isbn,
+                'amount'  => $cart[2],
+                'note'    => $cart[3] ?? null,
+
+                // 'invoice'          => $faker->unique()->numerify('##########'),
+                // 'book_version'     => $request->book_version,
+                // 'amount'           => $request->amount,
+                // 'courier_name'     => $request->courier_name,
+                // 'courier_service'  => $request->pilihan_kurir,
+                // 'shipping_cost'    => $request->shipping_cost,
+                // 'note'             => $request->note,
+                // 'insurance'        => $request->insurance,
+                // 'unique_code'      => $request->unique_code,
+                // 'total_payment'    => $request->total_pembayaran + $request->unique_code,
+                // 'payment_method'   => $request->metode_pembayaran,
+                // 'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
+                // 'payment_status'   => 'waiting_for_confirmation',
+            );
+
+            return $results;
+        });
+
+        foreach ($datas as $data) {
+            dump($data);
+        }
+
+        // $user          = User::find(Auth::id());
+        // $book_user     = $book->users()->attach($user, $data);
     }
 
     public function ajaxPaymentDeadline()

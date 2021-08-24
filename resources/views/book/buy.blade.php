@@ -100,7 +100,7 @@
                         <h4 class="hd-18">Alamat Pengiriman</h4>
                     </div>
                     <div>
-                        @if (count($user->customer) < 5) <button id="customer-store-modal-trigger" class="btn-none tred-bold" data-toggle="modal" data-target="#modal-customer-store">Tambah</button>
+                        @if (count($user->customers) < 5) <button id="customer-store-modal-trigger" class="btn-none tred-bold" data-toggle="modal" data-target="#modal-customer-store">Tambah</button>
                             @endif
 
                             <form id="customer-store" data-id="{{ $user->id }}" action="{{ route('customers.store')  }}" method="post">
@@ -130,7 +130,7 @@
                             </span>
                         </div>
                         <div id="data-customers">
-                            @forelse ($user->customer->take(5) as $customer)
+                            @forelse ($user->customers->take(5) as $customer)
                             <div class="data-customer mt-3 pb-3">
                                 <div class="row justify-content-between">
                                     <div class="col-10">

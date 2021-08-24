@@ -919,7 +919,7 @@ $(document).ready(function () {
     bookImageDelete();
     //#endregion Delete Book Images
 
-    //#region Cart
+    //#region Cart - in Book Show
     //#region Cart Delete
     const cartDelete = () => {
         $('#cart-delete').on('click', function() {
@@ -1052,7 +1052,7 @@ $(document).ready(function () {
         });
     });
     //#endregion Book add stock - Tambah stok buku
-    //#endregion Cart
+    //#endregion Cart - in Book Show
 
     // User Index - Daftar karyawan
     $('.user-block').on('click', function (event) {
@@ -1719,6 +1719,126 @@ $(document).ready(function () {
         });
     });
 
+    //#region User - Customer Create
+    $('#user-create-customer').on('click', function() {
+        bootStrapModal('Tambah Alamat Pengiriman', 'modal-md', () => {
+            let html =
+            `
+            <div>
+                <div class="form-group mx-auto">
+                    <div class="">
+                        <label for="nama_penerima">Nama Penerima</label>
+                        <input type="text" name="nama_penerima" class="form-control-custom book-edit-inp">
+                        <span class="tred small small" role="alert">
+                            <strong class="error_nama_penerima validate-error"></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group mx-auto mt-4">
+                    <div class="">
+                        <label for="alamat_tujuan">Alamat Tujuan</label>
+                        <input type="text" name="alamat_tujuan" class="form-control-custom book-edit-inp">
+                    </div>
+                    <span class="tred small small" role="alert">
+                        <strong class="error_alamat_tujuan validate-error"></strong>
+                    </span>
+                </div>
+                <div class="form-group mx-auto mt-4 position-relative">
+                    <div class="">
+                        <label for="provinsi">Cari Kota / Kecamatan</label>
+                        <input id="user-city-district-search" type="text" name="kota-atau-kecamatan" class="form-control-custom book-edit-inp">
+                        <div id="user-address" class="user-address">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group mx-auto mt-4">
+                    <div class="">
+                        <label for="nomer_handphone">Nomer Handphone</label>
+                        <input min="0" type="number" name="nomer_handphone" class="form-control-custom book-edit-inp">
+                        <span class="tred small small" role="alert">
+                            <strong class="error_nomer_handphone validate-error"></strong>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group mt-5">
+                    <button class="button-submit active-login" type="submit">Tambah</button>
+                </div>
+            </div>
+            `;
+            return html;
+        });
+
+        $('#user-city-district-search').on('keyup', function() {
+            let value = $(this).val();
+
+            let data  = {
+                keywords: value,
+            };
+
+            if (value.length >= 3) {
+                ajaxJson('GET', `/customers/city-or-district`, data, response => {
+                    $('#user-address').html('');
+                    $('#user-address').show();
+
+                    let html;
+                    let requestAdressLength  = response.request_address.length;
+
+                    if (requestAdressLength == 0) {
+                        html = `<div class="user-address-data px-2"><div>Data tidak valid</div></div>`;
+                        $('#user-city-district-search').attr('value', '');
+                    } else {
+                        html = response.request_address;
+                        html = html.map(data => {
+                            let province = data.province_name;
+                            let type     = data.type == 'Kabupaten' ? 'Kab.' : 'Kota';
+                            let city     = data.city_name;
+                            let district = data.district_name;
+                            let address  = `${province} , ${type} ${city}, Kec. ${district}`;
+
+                            let dataProvince   = `data-province="${data.province_id}"`;
+                            let dataCity       = `data-city="${data.city_id}"`;
+                            let dataDistrict   = `data-district="${data.district_id}"`;
+                            let attributesData = [
+                                dataProvince,
+                                dataCity,
+                                dataDistrict,
+                            ];
+
+                            attributesData = attributesData.join(' ');
+
+                            let html = `<div class="user-address-data px-2" ${attributesData}><div>${address}</div></div>`;
+
+                            return html;
+                        });
+                    }
+
+                    $('#user-address').append(html);
+
+                    $('.user-address-data').on('click', function() {
+                        let province      = $(this).data('province');
+                        let city          = $(this).data('city');
+                        let district      = $(this).data('district');
+                        let addressValues = `${province}-${city}-${district}`;
+
+                        $('.user-address').hide();
+                        $('#user-city-district-search').val($(this).text());
+                        $('#user-city-district-search').attr('value', addressValues);
+
+                        addressValues = $('#user-city-district-search').attr('value');
+                        addressValues = addressValues.split('-');
+                        addressValues = {
+                            province_id: addressValues[0],
+                            city_id    : addressValues[1],
+                            district_id: addressValues[2],
+                        };
+                    });
+                })
+            } else if (value.length < 3) {
+                $('#user-address').hide();
+            }
+        });
+    });
+    //#endregion User - Customer Create
 
     if (sessionStorage.getItem('pesan') !== null) {
         $('#pesan strong').text(sessionStorage.getItem('pesan'));
@@ -2185,4 +2305,219 @@ $(document).ready(function () {
         }, 800);
     });
     //#endregion Income
+
+    //#region Cart
+    const cartCheck = () => {
+        $('.cart-check').on('click', function() {
+            let cartCheck      = this;
+            let paymentAmount  = $('#cart-amounts');
+            let amount         = $(cartCheck).parents('.white-content-header-2').next().find('.cart-amount-req');
+            let cartCheckValue = cartCheck.getAttribute('value');
+
+            let checkedAll = $('.cart-check').toArray();
+                checkedAll = checkedAll.filter(element => element.checked);
+
+            if (checkedAll.length >= 1) {
+                let checked           = $('.cart-check');
+                    checked           = checked.toArray().filter(element => element.checked);
+                let checkedPriceValue = checked.map(element => {
+                    let amount    = $(element).parents('.white-content').find('.cart-amount-req').val();
+                    let bookPrice = $(element).parents('.white-content').find('.cart-book-price').data('price');
+
+                    let results = bookPrice * amount;
+
+                    return results;
+                });
+                checkedPriceValue = checkedPriceValue.reduce((total, value) => total + value, 0);
+
+                let price = rupiahFormat(checkedPriceValue);
+
+                $('#cart-total-payment').val(price);
+            } else {
+                $('#cart-total-payment').val('Rp0');
+            }
+
+            if (cartCheck.checked) {
+                cartCheck.setAttribute('value', `${cartCheckValue}-${amount.val()}`);
+                $('#cart-amounts').val(parseInt(paymentAmount.val()) + parseInt(amount.val()));
+            } else {
+                let cartCheckValue = $(cartCheck).val().split('-');
+                    cartCheckValue = cartCheckValue.slice(0, 2);
+                    cartCheckValue = cartCheckValue.join('-');
+
+                $(cartCheck).attr('value', cartCheckValue);
+                $(cartCheck).parents('.white-content').find('.cart-note-cancel').trigger('click');
+                $('#cart-amounts').val(parseInt(paymentAmount.val()) - parseInt(amount.val()));
+            }
+
+            $('.cart-amount').on('click', function(event) {
+                event.stopImmediatePropagation();
+
+                let check           = $(this).parents('.white-content').find('.cart-check');
+                let isChecked       = check.is(':checked');
+
+                if (isChecked) {
+                    let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
+                    let amount          = $(this).prev().find('.cart-amount-req');
+                    let totalStock      = $(this).prev().find('.cart-total-stock');
+                    let amountPlus      = parseInt(amount.val()) + 1;
+                    let amountSub       = parseInt(amount.val()) - 1;
+                    let paymentAmount   = $('#cart-amounts');
+                    let paymentPlus     = parseInt(paymentAmount.val()) + 1;
+                    let paymentSub      = parseInt(paymentAmount.val()) - 1;
+                    let paymentPrice    = $('#cart-total-payment').val().replace(/[^0-9]/g, '');
+                        paymentPrice    = parseInt(paymentPrice);
+
+                    if (checkPlusButton && amount.val() >= 1) {
+                        if (totalStock.val() != 0) {
+                            totalStock.val(parseInt(totalStock.val()) - 1);
+
+                            let cartCheckValue = check.val().split('-');
+                            cartCheckValue[2]  = amountPlus;
+                            cartCheckValue     =  cartCheckValue.join('-');
+
+                            check.attr('value', cartCheckValue);
+                            amount.val(amountPlus);
+                            paymentAmount.val(paymentPlus);
+                        }
+                    } else if (amount.val() != 1){
+                        totalStock.val(parseInt(totalStock.val()) + 1);
+
+                        let cartCheckValue = check.val().split('-');
+                        cartCheckValue[2]  = amountSub;
+                        cartCheckValue     =  cartCheckValue.join('-');
+
+                        check.attr('value', cartCheckValue);
+                        amount.val(amountSub);
+                        paymentAmount.val(paymentSub);
+                    }
+
+                    let checkedAll      = $('.cart-check').toArray();
+                        checkedAll      = checkedAll.filter(element => element.checked);
+
+                    let checkedPriceValue = checkedAll.map(element => {
+                        let elementParent = $(element).parents('.white-content');
+                        let price         = elementParent.find('.cart-book-price').data('price');
+                        let amount        = parseInt(elementParent.find('.cart-amount-req').val());
+
+                        let result = price * amount;
+
+                        return result;
+                    });
+
+                    let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
+
+                    $('#cart-total-payment').val(rupiahFormat(paymentTotal));
+                }
+            });
+        });
+    };
+
+    cartCheck();
+
+    $('#checked-all').on('click', function() {
+        let checkedAll  = $(this).is(':checked');
+            let checkboxes = $('.cart-check');
+
+        for (const key in checkboxes) {
+            if (checkboxes.hasOwnProperty.call(checkboxes, key)) {
+                const element = checkboxes[key];
+
+                if (element.type == 'checkbox') {
+                    if (!element.checked) {
+                        if (checkedAll) {
+                            $(element).trigger('click');
+                        }
+                    } else if (!checkedAll) {
+                        $(element).trigger('click');
+                    }
+                }
+            }
+        }
+    });
+
+    $('.cart-note').on('click', function() {
+        let note      = $(this);
+        let isChecked = note.parents('.white-content').find('.cart-check').is(':checked');
+
+        if (isChecked) {
+            let html =
+            `<div class="form-group d-flex w-50">
+                <input type="text" class="cart-note-input form-control-custom mr-2" placeholder="Tulis catatan">
+                <button type="button" class="cart-note-cancel btn-none tred-bold d-inline">Batal</button>
+            </div>`;
+
+            note.hide();
+            $(this).after(html);
+
+            let cartNoteInput = note.next().find('.cart-note-input')
+
+            cartNoteInput.on('keyup', function() {
+                let value = $(this).val();
+                let check = note.parents('.white-content').find('.cart-check');
+
+                let newAttributeValue;
+
+                if (value != 0) {
+                    let checkSplit        = check.val().split('-');
+                    newAttributeValue = `${checkSplit.slice(0, 3).join('-')}-${value}`;
+                } else {
+                    newAttributeValue = check.attr('value').split('-').slice(0, 3).join('-');
+                }
+
+                check.attr('value', newAttributeValue);
+            });
+
+
+            $('.cart-note-cancel').on('click', function(event) {
+                event.stopImmediatePropagation();
+
+                let check = note.parents('.white-content').find('.cart-check');
+                let newAttributeValue = check.attr('value').split('-').slice(0, 2).join('-');
+
+                check.attr('value', newAttributeValue);
+                note.show();
+                $(this).parent().hide();
+                $(this).parent().remove()
+            });
+        }
+    });
+
+    $('#cart-form').on('submit', function(event) {
+        let checks = $('.cart-check').map(function(key, check) {
+            return $(check).is(':checked');
+        });
+
+        checks = checks.toArray();
+
+        let checkEvery = checks.every(check => check == false);
+
+        if (checkEvery) {
+            event.preventDefault();
+        }
+    });
+
+    $('.cart-delete').on('click', function() {
+        let dataId      = $(this).data('id');
+        let confirmText = 'Apakah anda yakin ingin menghapusnya dari daftar ?';
+
+        modalConfirm(confirmText, accepted => {
+            if (accepted) {
+                let datas = {
+                    _token: csrfToken,
+                    _method: 'DELETE',
+                };
+
+                ajaxJson('POST', `/carts/${dataId}`, datas, response => {
+                    if (response.delete) {
+                        let messageText = 'Berhasil menghapus buku dari daftar';
+
+                        alertMessage(messageText);
+                        $(this).parents('.white-content').remove();
+                    }
+                });
+            }
+        });
+    });
+    //#endregion Cart
 }); // End of onload Event

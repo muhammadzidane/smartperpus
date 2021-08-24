@@ -31,7 +31,6 @@ class Customer extends Model
         return $this->belongsTo(Province::class);
     }
 
-
     // Mutators
     public function setNameAttribute($value)
     {

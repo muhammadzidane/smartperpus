@@ -20,6 +20,7 @@ use App\Http\Controllers\{
     StatusController,
     WishlistController,
     ValidatorController,
+    CheckoutController,
 };
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -49,7 +50,8 @@ Route::prefix('validator')->group(function () {
 });
 
 // Customer / User Address
-Route::post('/customers/{customer}/ajax/request/edit-submit-get-data', array(CustomerController::class, 'ajaxEditSubmitGetData'));
+Route::post('customers/{customer}/ajax/request/edit-submit-get-data', array(CustomerController::class, 'ajaxEditSubmitGetData'));
+Route::get('customers/city-or-district', array(CustomerController::class, 'ajaxCityOrDistrict'));
 Route::resource('/customers', CustomerController::class);
 
 // Search
@@ -89,13 +91,6 @@ Route::prefix('search')->group(function () {
 
 Route::resource('/books', BookController::class);
 
-// Book Purchase
-Route::prefix('book-purchases')->group(function () {
-    Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
-    Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
-    Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
-});
-
 // Wishlist
 Route::prefix('wishlists')->middleware('auth')->group(function () {
     Route::get('/', array(WishlistController::class, 'index'))->name('wishlists.index');
@@ -129,7 +124,15 @@ Route::prefix('status')->middleware('auth')->group(function () {
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
 Route::resource('/book-users', BookUserController::class);
 
+// Book Purchase
 Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user');
+Route::prefix('book-purchases')->group(function () {
+    Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
+    Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
+    Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
+});
+
+Route::post('checkout', array(CheckoutController::class, 'index'))->name('checkout.index');
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class)->except('index', 'edit');

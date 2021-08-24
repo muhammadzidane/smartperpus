@@ -23,8 +23,7 @@
 </div>
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
-    @include('book_user.status.sidebar')
-    <div class="col-md-9">
+    <div class="col-12">
         <div class="white-content-0 borbot-gray-bold">
             <div class="container">
                 <div class="borbot-gray-0">
@@ -57,36 +56,70 @@
                             @endisset
                         </div>
                         <div class="col-md-8 mt-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <h5>Biodata diri</h5>
-                                <button id="user-change-biodata" class="btn-none tred-bold" type="button" data-id="{{ $user->id }}">Ubah</button>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Nama</div>
-                                <div class="text-right">
-                                    <span id="user-first-name">{{ $user->first_name }}</span>
-                                    <span id="user-last-name">{{ $user->last_name }}</span>
+                            <div class="borbot-gray-0 pb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h5>Biodata diri</h5>
+                                    <button id="user-change-biodata" class="btn-none tred-bold" type="button" data-id="{{ $user->id }}">Ubah</button>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Nama</div>
+                                    <div class="text-right">
+                                        <span id="user-first-name">{{ $user->first_name }}</span>
+                                        <span id="user-last-name">{{ $user->last_name }}</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Tanggal Lahir</div>
+                                    <div id="user-date-of-birth" class="text-right">{{ $user->date_of_birth ?? '-' }}</div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Jenis Kelamin</div>
+                                    <div id="user-gender" class="text-right">{{ ($user->gender == 'L' ? 'Laki-laki' : 'Perempuan') ?? '-' }}</div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Alamat</div>
+                                    <div id="user-address" class="text-right">{{ $user->address ?? '-' }}</div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Email</div>
+                                    <div id="user-email" class="text-right">{{ $user->email }}</div>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <div>Nomer Handphone</div>
+                                    <div id="user-phone-number" class="text-right">{{ $user->phone_number ?? '-' }}</div>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Tanggal Lahir</div>
-                                <div id="user-date-of-birth" class="text-right">{{ $user->date_of_birth ?? '-' }}</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Jenis Kelamin</div>
-                                <div id="user-gender" class="text-right">{{ ($user->gender == 'L' ? 'Laki-laki' : 'Perempuan') ?? '-' }}</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Alamat</div>
-                                <div id="user-address" class="text-right">{{ $user->address ?? '-' }}</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Email</div>
-                                <div id="user-email" class="text-right">{{ $user->email }}</div>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <div>Nomer Handphone</div>
-                                <div id="user-phone-number" class="text-right">{{ $user->phone_number ?? '-' }}</div>
+                            <div class="mt-4">
+                                <h5>Daftar Alamat Pengiriman</h5>
+                                <div>
+                                    @forelse (auth()->user()->customers as $customer)
+                                    <div class="mt-3 d-flex borbot-gray-0 pb-3">
+                                        <div class="d-flex">
+                                            <div class="d-flex mr-3">
+                                                <input type="radio" class="my-auto" name="address" checked>
+                                            </div>
+                                            <div>
+                                                <div>Muhammad Zidane Alsaadawi</div>
+                                                <div>
+                                                    <span>Jl Pasir Honje No 221,</span>
+                                                    <span>Cimenyan</span>
+                                                    <span>Kabupaten Bandung</span>
+                                                    <span>Jawa Barat</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ml-auto">
+                                            <div class="text-grey">Utama</div>
+                                            <div class="tred-bold">Ubah</div>
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <div>
+                                        <span>Anda belum memiliki alamat pengiriman.</span>
+                                        <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                                    </div>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>

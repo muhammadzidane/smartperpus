@@ -19,7 +19,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Book::class);
     }
 
-    public function customer()
+    public function customers()
     {
         return $this->hasMany('App\Models\Customer');
     }
