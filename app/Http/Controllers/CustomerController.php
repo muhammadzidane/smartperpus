@@ -42,51 +42,50 @@ class CustomerController extends Controller
                 'nama_penerima'       => array('required', 'string'),
                 'alamat_tujuan'       => array('required', 'min:10'),
                 'nomer_handphone'     => array('required', 'min:9', 'max:15'),
+                'kota_atau_kecamatan' => array('required'),
             )
         );
 
-        $kecamatan = District::find($request->kecamatan);
-        $kota      = City::find($request->kota_atau_kabupaten);
-        $provinsi  = Province::find($request->provinsi);
-        $address   = ucwords($request->alamat_tujuan);
-        $user      = User::find(Auth::id());
-        $create    = array(
-            'name'         => $request->nama_penerima,
-            'address'      => $address,
-            'phone_number' => $request->nomer_handphone,
-            'district_id'  => $kecamatan->id,
-            'city_id'      => $kota->id,
-            'province_id'  => $provinsi->id,
-        );
-
         if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json(array('errorMsg' => $validator->errors()));
-            } else {
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
+            $errors = array('errors' => $validator->errors());
+
+            return response()->json($errors);
         } else {
-            $customer = $user->customers()->create($create);
-            $pesan    = 'Berhasil menambah alamat ' . ucwords($customer->name);
+            $request_address = explode('-', $request->kota_atau_kecamatan);
+            $provinsi        = Province::find($request_address[0]);
+            $kota            = City::find($request_address[1]);
+            $kecamatan       = District::find($request_address[2]);
+            $address         = ucwords($request->alamat_tujuan);
+            $user            = User::find(Auth::id());
 
-            if ($request->ajax()) {
-                $status       = true;
+            $create    = array(
+                'name'         => $request->nama_penerima,
+                'address'      => $address,
+                'phone_number' => $request->nomer_handphone,
+                'district_id'  => $kecamatan->id,
+                'city_id'      => $kota->id,
+                'province_id'  => $provinsi->id,
+            );
 
-                $dataCustomer = view(
-                    'book.data-customer',
-                    array(
-                        'customer_address'     => $address . ', ' . $kecamatan->name . ', ' . $kota->name . '. ' . $provinsi->name,
-                        'customer_subdistrict' => $kecamatan,
-                        'customer_city'        => $kota,
-                        'customer_province'    => $provinsi,
-                        'customer'             => $customer,
-                    )
-                )->render();
+            $user->customers()->create($create);
 
-                return response()->json(compact('pesan', 'status', 'dataCustomer'));
-            } else {
-                return redirect()->back()->with('pesan', $pesan);
-            }
+            $message = 'Berhasil menambah alamat';
+
+            $data = array(
+                'user'     => $user,
+                'address'  => $address,
+                'province' => $provinsi,
+                'city'     => $kota,
+                'district' => $kecamatan,
+            );
+
+            $response = array(
+                'success' => 200,
+                'message' => $message,
+                'data'    => $data,
+            );
+
+            return response()->json($response);
         }
     }
 
@@ -124,43 +123,56 @@ class CustomerController extends Controller
         $validator = Validator::make(
             $request->all(),
             array(
-                'nama_penerima'       => array('required', 'string'),
+                'nama_penerima'       => array('required'),
                 'alamat_tujuan'       => array('required', 'min:10'),
-                'nomer_handphone'     => array('required', 'min:12', 'max:13'),
+                'nomer_handphone'     => array('required', 'min:9', 'max:15'),
             )
         );
 
-        $kecamatan = District::find($request->kecamatan)->name;
-        $kota      = City::find($request->kota_atau_kabupaten)->name;
-        $provinsi  = Province::find($request->provinsi)->name;
-        $address   = ucwords($request->alamat_tujuan);
-        $pesan     = 'Berhasil menupdate alamat ' . ucwords($request->nama_penerima);
-        $user      = User::find(Auth::id());
-        $update    = array(
-            'name'         => $request->nama_penerima,
-            'address'      => $address,
-            'phone_number' => $request->nomer_handphone,
-            'district'     => $kecamatan,
-            'city'         => $kota,
-            'province'     => $provinsi,
-        );
-
         if ($validator->fails()) {
-            if ($request->ajax()) {
-                return response()->json(array('errorMsg' => $validator->errors()));
-            } else {
-                return redirect()->back()->withErrors($validator)->withInput();
-            }
+            $response = array(
+                'status' => 'fail',
+                'code'   => 400,
+                'data'   => $validator->errors(),
+            );
+
+            return response()->json($response);
         } else {
+            $request_address = explode('-', $request->kota_atau_kecamatan);
+            $provinsi        = Province::find($request_address[0]);
+            $kota            = City::find($request_address[1]);
+            $kecamatan       = District::find($request_address[2]);
+            $address         = ucwords($request->alamat_tujuan);
+
+            $update    = array(
+                'name'         => $request->nama_penerima,
+                'address'      => $address,
+                'phone_number' => $request->nomer_handphone,
+                'district_id'  => $kecamatan->id,
+                'city_id'      => $kota->id,
+                'province_id'  => $provinsi->id,
+            );
+
             $customer->update($update);
 
-            $status = true;
+            $message = 'Berhasil mengedit alamat';
 
-            if ($request->ajax()) {
-                return response()->json(compact('pesan', 'status'));
-            } else {
-                return redirect()->back()->with('pesan', $pesan);
-            }
+            $data = array(
+                'customer' => $customer,
+                'address'  => $address,
+                'province' => $provinsi,
+                'city'     => $kota,
+                'district' => $kecamatan,
+            );
+
+            $response = array(
+                'status'  => 'success',
+                'code'    => 200,
+                'message' => $message,
+                'data'    => $data,
+            );
+
+            return response()->json($response);
         }
     }
 

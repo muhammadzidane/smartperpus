@@ -1387,7 +1387,7 @@ $(document).ready(function () {
             let userDateOfBirth   = $('#user-date-of-birth').text();
             let userMan           = $('#user-gender').text() == 'Laki-laki' ? 'selected' : '';
             let userWoman         = $('#user-gender').text() != 'Laki-laki' ? 'selected' : '';
-            let userAddress       = $('#user-address').text() == '-' ? '' : $('#user-address').text();
+            let userAddress       = $('#user-hidden-address').text() == '-' ? '' : $('#user-hidden-address').text();
             let userPhoneNumber   = $('#user-phone-number').text();
             let dataId            = $(this).data('id');
 
@@ -1476,7 +1476,7 @@ $(document).ready(function () {
                             $('#user-last-name').text(user.last_name);
                             $('#user-date-of-birth').text(user.date_of_birth);
                             $('#user-gender').text(gender);
-                            $('#user-address').text(user.address);
+                            $('#user-hidden-address').text(user.address);
                             $('#user-email').text(user.email);
                             $('#user-phone-number').text(user.phone_number);
                         }
@@ -1719,55 +1719,44 @@ $(document).ready(function () {
         });
     });
 
-    //#region User - Customer Create
-    $('#user-create-customer').on('click', function() {
-        bootStrapModal('Tambah Alamat Pengiriman', 'modal-md', () => {
-            let html =
-            `
-            <div>
-                <div class="form-group mx-auto">
-                    <div class="">
-                        <label for="nama_penerima">Nama Penerima</label>
-                        <input type="text" name="nama_penerima" class="form-control-custom book-edit-inp">
-                        <span class="tred small small" role="alert">
-                            <strong class="error_nama_penerima validate-error"></strong>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group mx-auto mt-4">
-                    <div class="">
-                        <label for="alamat_tujuan">Alamat Tujuan</label>
-                        <input type="text" name="alamat_tujuan" class="form-control-custom book-edit-inp">
-                    </div>
-                    <span class="tred small small" role="alert">
-                        <strong class="error_alamat_tujuan validate-error"></strong>
-                    </span>
-                </div>
-                <div class="form-group mx-auto mt-4 position-relative">
-                    <div class="">
-                        <label for="provinsi">Cari Kota / Kecamatan</label>
-                        <input id="user-city-district-search" type="text" name="kota-atau-kecamatan" class="form-control-custom book-edit-inp">
-                        <div id="user-address" class="user-address">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mx-auto mt-4">
-                    <div class="">
-                        <label for="nomer_handphone">Nomer Handphone</label>
-                        <input min="0" type="number" name="nomer_handphone" class="form-control-custom book-edit-inp">
-                        <span class="tred small small" role="alert">
-                            <strong class="error_nomer_handphone validate-error"></strong>
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group mt-5">
-                    <button class="button-submit active-login" type="submit">Tambah</button>
+    const formHtmlCustomer = (formId, action, method, buttonText,methodRequest = '') => {
+        let csrfToken = $('meta[name="csrf-token"]').attr('content');
+        methodRequest = methodRequest != '' ? `<input type="hidden" name="_method" value="${methodRequest}">` : '';
+
+        let html =
+        `
+        <form id="${formId}" action="${action}" method="${method}">
+            <div class="form-group mx-auto">
+                <label for="nama_penerima">Nama Penerima</label>
+                <input id="user-customer-name" type="text" name="nama_penerima" class="form-control-custom book-edit-inp">
+            </div>
+            <div class="form-group mx-auto mt-4">
+                <label for="alamat_tujuan">Alamat Tujuan</label>
+                <input id="user-customer-address" type="text" name="alamat_tujuan" class="form-control-custom book-edit-inp">
+            </div>
+            <div class="form-group mx-auto mt-4 position-relative">
+                <label for="provinsi">Cari Kota / Kecamatan</label>
+                <input id="user-city-district-search" type="text" class="form-control-custom book-edit-inp">
+                <input id="user-city-or-district" type="hidden" name="kota_atau_kecamatan">
+                <div id="user-hidden-address" class="user-address">
                 </div>
             </div>
-            `;
-            return html;
-        });
+            <div class="form-group mx-auto mt-4">
+                <label for="nomer_handphone">Nomer Handphone</label>
+                <input id="user-customer-phone" type="text" name="nomer_handphone" class="form-control-custom book-edit-inp">
+            </div>
+            <div class="form-group mt-5">
+                <button class="button-submit active-login" type="submit">${buttonText}</button>
+            </div>
+            ${methodRequest}
+            <input type="hidden" name="_token" value="${csrfToken}">
+        </form>
+        `;
 
+        return html;
+    };
+
+    const formCityAndDistrictKeyup = () => {
         $('#user-city-district-search').on('keyup', function() {
             let value = $(this).val();
 
@@ -1777,23 +1766,22 @@ $(document).ready(function () {
 
             if (value.length >= 3) {
                 ajaxJson('GET', `/customers/city-or-district`, data, response => {
-                    $('#user-address').html('');
-                    $('#user-address').show();
+                    $('#user-hidden-address').html('');
+                    $('#user-hidden-address').show();
 
                     let html;
                     let requestAdressLength  = response.request_address.length;
 
                     if (requestAdressLength == 0) {
-                        html = `<div class="user-address-data px-2"><div>Data tidak valid</div></div>`;
-                        $('#user-city-district-search').attr('value', '');
+                        html = `<div class="px-2"><div>Data tidak valid</div></div>`;
                     } else {
                         html = response.request_address;
                         html = html.map(data => {
                             let province = data.province_name;
-                            let type     = data.type == 'Kabupaten' ? 'Kab.' : 'Kota';
+                            let type     = data.type;
                             let city     = data.city_name;
                             let district = data.district_name;
-                            let address  = `${province} , ${type} ${city}, Kec. ${district}`;
+                            let address  = `${province}, ${type} ${city}, Kec. ${district}`;
 
                             let dataProvince   = `data-province="${data.province_id}"`;
                             let dataCity       = `data-city="${data.city_id}"`;
@@ -1812,7 +1800,7 @@ $(document).ready(function () {
                         });
                     }
 
-                    $('#user-address').append(html);
+                    $('#user-hidden-address').append(html);
 
                     $('.user-address-data').on('click', function() {
                         let province      = $(this).data('province');
@@ -1822,9 +1810,9 @@ $(document).ready(function () {
 
                         $('.user-address').hide();
                         $('#user-city-district-search').val($(this).text());
-                        $('#user-city-district-search').attr('value', addressValues);
+                        $('#user-city-or-district').attr('value', addressValues);
 
-                        addressValues = $('#user-city-district-search').attr('value');
+                        addressValues = $('#user-city-or-district').attr('value');
                         addressValues = addressValues.split('-');
                         addressValues = {
                             province_id: addressValues[0],
@@ -1834,11 +1822,164 @@ $(document).ready(function () {
                     });
                 })
             } else if (value.length < 3) {
-                $('#user-address').hide();
+                $('#user-hidden-address').hide();
             }
+        });
+    };
+
+    const formCustomerValidations = () => {
+        let validations = [
+            {
+                input    : '#user-customer-name',
+                inputName: 'Nama penerima',
+                rules    : 'required,min:3'
+            },
+            {
+                input    : '#user-customer-address',
+                inputName: 'Alamat tujuan',
+                rules    : 'required,min:10',
+            },
+            {
+                input    : '#user-city-district-search',
+                inputName: 'Kota / Kecamatan',
+                rules    : 'required',
+            },
+            {
+                input    : '#user-customer-phone',
+                inputName: 'Nomer handphone',
+                rules    : 'required,numeric,min:9,max:15',
+            },
+        ];
+
+        return validations;
+    };
+
+    //#region User - Customer Create
+    $('#user-create-customer').on('click', function() {
+        bootStrapModal('Tambah Alamat Pengiriman', 'modal-md', () => {
+            let html =  formHtmlCustomer('user-customer-store', '/customers', 'POST', 'Tambah');
+
+            return html;
+        });
+
+        formCityAndDistrictKeyup();
+
+        $('#user-customer-store').on('submit', function(event) {
+            event.preventDefault();
+
+            validator(formCustomerValidations(), success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.success) {
+                            let data    = response.data;
+                            let message = 'Berhasil menambah alamat';
+                            let html =
+                            `
+                            <div class="user-customer mt-3 d-flex borbot-gray-0 pb-3">
+                                <div class="d-flex">
+                                    <div class="d-flex mr-3">
+                                        <input type="radio" class="my-auto" name="address">
+                                    </div>
+                                    <div>
+                                        <div>${data.user.first_name} ${data.user.last_name}</div>
+                                        <div>
+                                            <span>${data.address}.</span>
+                                            <span>${data.province.name},</span>
+                                            <span>${data.city.type} ${data.city.name},</span>
+                                            <span>${data.district.name}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="ml-auto">
+                                    <div class="text-grey">Utama</div>
+                                    <div class="tred-bold">Ubah</div>
+                                </div>
+                            </div>
+                            `;
+                            let userAddressLength = $('.user-customer').length;
+
+                            if (userAddressLength == 0) {
+                                $('#user-create-customer').appendTo($('#user-customer-title').parent());
+                                $('#user-customer-lists').html(html);
+                            } else if (userAddressLength == 4) {
+                                $('#user-customer-lists').append(html);
+                                $('#user-create-customer').remove();
+                            }
+                            else {
+                                $('#user-customer-lists').append(html);
+                            }
+
+                            alertMessage(message);
+                            $('#custom-modal').modal('hide');
+                        } else {
+                            backendMessage($('.modal-title'), response.errors)
+                        }
+                    });
+                }
+            });
         });
     });
     //#endregion User - Customer Create
+
+    //#region User - Customer Update
+    $('.user-customer-update').on('click', function() {
+        bootStrapModal('Ubah Alamat Pengiriman', 'modal-md', () => {
+            let dataId = $(this).data('id');
+            let html   = formHtmlCustomer('user-customer-update', `/customers/${dataId}`, 'POST', 'Tambah', 'PATCH');
+
+            return html;
+        });
+
+        let buttonUpdate         = $(this);
+        let userCustomer         = $(this).parents('.user-customer');
+        let userCustomerName     = userCustomer.find('.customer-name').text();
+        let userCustomerAddress  = userCustomer.find('.customer-address').text();
+        let userCustomerPhone    = userCustomer.find('.customer-phone-number').text();
+        let userCustomerProvince = userCustomer.find('.customer-province');
+        let userCustomerCity     = userCustomer.find('.customer-city');
+        let userCustomerDistrict = userCustomer.find('.customer-district');
+
+        let cityOrDistrictSearchValue  = `${userCustomerProvince.text()} ${userCustomerCity.text()} Kec. ${userCustomerDistrict.text()}`;
+        let cityOrDistrictValue        = `${userCustomerProvince.data('province')}`;
+            cityOrDistrictValue       += `-${userCustomerCity.data('city')}-${userCustomerDistrict.data('district')}`;
+
+        $('#user-customer-name').val(userCustomerName);
+        $('#user-customer-address').val(userCustomerAddress);
+        $('#user-city-district-search').val(cityOrDistrictSearchValue);
+        $('#user-city-or-district').val(cityOrDistrictValue);
+        $('#user-customer-phone').val(userCustomerPhone);
+
+        formCityAndDistrictKeyup();
+
+        $('#user-customer-update').on('submit', function(event) {
+            event.preventDefault();
+
+            validator(formCustomerValidations(), success => {
+                if (success) {
+                    ajaxForm('POST', this, this.action, response => {
+                        if (response.status == 'success') {
+                            let data         = response.data;
+                            let message      = 'Berhasil mengedit alamat';
+                            let userCustomer = buttonUpdate.parents('.user-customer');
+
+                            userCustomer.find('.customer-name').text(data.customer.name);
+                            userCustomer.find('.customer-phone-number').text(data.customer.phone_number);
+                            userCustomer.find('.customer-address').text(data.address);
+                            userCustomer.find('.customer-province').text(data.province.name);
+                            userCustomer.find('.customer-city').text(data.city.name);
+                            userCustomer.find('.customer-district').text(data.district.name);
+
+                            alertMessage(message);
+                            $('#custom-modal').modal('hide');
+                        } else if (response.status == 'fail') {
+                            backendMessage($('.modal-title'), response.data);
+                        }
+                    })
+                }
+            });
+        });
+    })
+    //#endregion User - Customer Update
 
     if (sessionStorage.getItem('pesan') !== null) {
         $('#pesan strong').text(sessionStorage.getItem('pesan'));

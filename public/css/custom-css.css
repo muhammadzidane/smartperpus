@@ -838,7 +838,7 @@ footer {
     position: absolute;
     top: 100%;
     padding: 5px 0;
-    width: 50%;
+    width: 75%;
     max-height: 180px;
     overflow-y: auto;
     background-color: #f6f6f6;
@@ -1811,7 +1811,7 @@ footer {
 .alert-messages {
     border: 1px solid rgb(255, 246, 0, 0.3);
     border-radius: 4px;
-    margin: 1.75rem 0;
+    margin: 1.50rem 0;
     padding: 0.50rem 1rem;
     background-color: #F6F5F5;
 }

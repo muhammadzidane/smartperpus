@@ -10,18 +10,6 @@
     </div>
 </div>
 
-<!-- Error Laravel -->
-@if (session('pesan'))
-<div class="alert alert-primary mt-4" role="alert">
-    <strong>{{ session('pesan') }}</strong>
-</div>
-@endif
-
-<!-- Error JS -->
-<div id="pesan" class="d-none alert alert-primary mt-4" role="alert">
-    <strong></strong>
-</div>
-
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
     <div class="col-12">
         <div class="white-content-0 borbot-gray-bold">
@@ -90,32 +78,38 @@
                                 </div>
                             </div>
                             <div class="mt-4">
-                                <h5>Daftar Alamat Pengiriman</h5>
-                                <div>
+                                <div class="d-flex justify-content-between">
+                                    <h5 id="user-customer-title">Daftar Alamat Pengiriman</h5>
+                                    @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                                        @endif
+                                </div>
+                                <div id="user-customer-lists">
                                     @forelse (auth()->user()->customers as $customer)
-                                    <div class="mt-3 d-flex borbot-gray-0 pb-3">
+                                    <div class="user-customer mt-3 d-flex borbot-gray-0 pb-3">
                                         <div class="d-flex">
                                             <div class="d-flex mr-3">
-                                                <input type="radio" class="my-auto" name="address" checked>
+                                                <input type="radio" class="my-auto" name="address">
                                             </div>
                                             <div>
-                                                <div>Muhammad Zidane Alsaadawi</div>
                                                 <div>
-                                                    <span>Jl Pasir Honje No 221,</span>
-                                                    <span>Cimenyan</span>
-                                                    <span>Kabupaten Bandung</span>
-                                                    <span>Jawa Barat</span>
+                                                    <span class="customer-name">{{ $customer->name }}</span>-
+                                                    <span class="customer-phone-number">{{ $customer->phone_number }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="customer-address">{{ $customer->address }}.</span>
+                                                    <span class="customer-province" data-province="{{ $customer->province->id }}">{{ $customer->province->name }},</span>
+                                                    <span class="customer-city" data-city="{{ $customer->city->id }}">{{ $customer->city->type  . ' ' . $customer->city->name }},</span>
+                                                    <span class="customer-district" data-district="{{ $customer->district->id }}">{{ $customer->district->name }}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="ml-auto">
-                                            <div class="text-grey">Utama</div>
-                                            <div class="tred-bold">Ubah</div>
+                                            <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</butt>
                                         </div>
                                     </div>
                                     @empty
                                     <div>
-                                        <span>Anda belum memiliki alamat pengiriman.</span>
+                                        <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
                                         <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
                                     </div>
                                     @endforelse
