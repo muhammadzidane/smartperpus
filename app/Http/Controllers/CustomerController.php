@@ -67,12 +67,12 @@ class CustomerController extends Controller
                 'province_id'  => $provinsi->id,
             );
 
-            $user->customers()->create($create);
+            $customer =  $user->customers()->create($create);
 
-            $message = 'Berhasil menambah alamat';
+            $message  = 'Berhasil menambah alamat';
 
             $data = array(
-                'user'     => $user,
+                'customer' => $customer,
                 'address'  => $address,
                 'province' => $provinsi,
                 'city'     => $kota,
@@ -182,17 +182,19 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, Customer $customer)
+    public function destroy(Customer $customer)
     {
-        $pesan = 'Berhasil menghapus alamat ' . ucwords($customer->name);
+        $message = 'Berhasil menghapus alamat';
 
         $customer->delete();
 
-        if (!$request->ajax()) {
-            return redirect()->back()->with('pesan', $pesan);
-        } else {
-            return response()->json()->status();
-        }
+        $response = array(
+            'status'  => 'success',
+            'code'    => 200,
+            'message' => $message,
+        );
+
+        return response()->json($response);
     }
 
     public function ajaxEditSubmitGetData(Request $request, Customer $customer)

@@ -1854,132 +1854,186 @@ $(document).ready(function () {
         return validations;
     };
 
-    //#region User - Customer Create
-    $('#user-create-customer').on('click', function() {
-        bootStrapModal('Tambah Alamat Pengiriman', 'modal-md', () => {
-            let html =  formHtmlCustomer('user-customer-store', '/customers', 'POST', 'Tambah');
+    //#region User - Customer Update
+    const userCustomerUpdate = () => {
+        $('.user-customer-update').on('click', function(event) {
+            event.stopImmediatePropagation();
 
-            return html;
-        });
+            bootStrapModal('Ubah Alamat Pengiriman', 'modal-md', () => {
+                let dataId = $(this).data('id');
+                let html   = formHtmlCustomer('user-customer-update', `/customers/${dataId}`, 'POST', 'Edit', 'PATCH');
 
-        formCityAndDistrictKeyup();
+                return html;
+            });
 
-        $('#user-customer-store').on('submit', function(event) {
-            event.preventDefault();
+            let buttonUpdate         = $(this);
+            let userCustomer         = $(this).parents('.user-customer');
+            let userCustomerName     = userCustomer.find('.customer-name').text();
+            let userCustomerAddress  = userCustomer.find('.customer-address').text();
+            let userCustomerPhone    = userCustomer.find('.customer-phone-number').text();
+            let userCustomerProvince = userCustomer.find('.customer-province');
+            let userCustomerCity     = userCustomer.find('.customer-city');
+            let userCustomerDistrict = userCustomer.find('.customer-district');
 
-            validator(formCustomerValidations(), success => {
-                if (success) {
-                    ajaxForm('POST', this, this.action, response => {
-                        if (response.success) {
-                            let data    = response.data;
-                            let message = 'Berhasil menambah alamat';
-                            let html =
-                            `
-                            <div class="user-customer mt-3 d-flex borbot-gray-0 pb-3">
-                                <div class="d-flex">
-                                    <div class="d-flex mr-3">
-                                        <input type="radio" class="my-auto" name="address">
-                                    </div>
-                                    <div>
-                                        <div>${data.user.first_name} ${data.user.last_name}</div>
-                                        <div>
-                                            <span>${data.address}.</span>
-                                            <span>${data.province.name},</span>
-                                            <span>${data.city.type} ${data.city.name},</span>
-                                            <span>${data.district.name}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="ml-auto">
-                                    <div class="text-grey">Utama</div>
-                                    <div class="tred-bold">Ubah</div>
-                                </div>
-                            </div>
-                            `;
-                            let userAddressLength = $('.user-customer').length;
+            console.log(userCustomer);
 
-                            if (userAddressLength == 0) {
-                                $('#user-create-customer').appendTo($('#user-customer-title').parent());
-                                $('#user-customer-lists').html(html);
-                            } else if (userAddressLength == 4) {
-                                $('#user-customer-lists').append(html);
-                                $('#user-create-customer').remove();
+            let cityOrDistrictSearchValue  = `${userCustomerProvince.text()} ${userCustomerCity.text()} Kec. ${userCustomerDistrict.text()}`;
+            let cityOrDistrictValue        = `${userCustomerProvince.data('province')}`;
+                cityOrDistrictValue       += `-${userCustomerCity.data('city')}-${userCustomerDistrict.data('district')}`;
+
+            $('#user-customer-name').val(userCustomerName);
+            $('#user-customer-address').val(userCustomerAddress);
+            $('#user-city-district-search').val(cityOrDistrictSearchValue);
+            $('#user-city-or-district').val(cityOrDistrictValue);
+            $('#user-customer-phone').val(userCustomerPhone);
+
+            formCityAndDistrictKeyup();
+
+            $('#user-customer-update').on('submit', function(event) {
+                event.preventDefault();
+
+                validator(formCustomerValidations(), success => {
+                    if (success) {
+                        ajaxForm('POST', this, this.action, response => {
+                            if (response.status == 'success') {
+                                let data         = response.data;
+                                let message      = 'Berhasil mengedit alamat';
+                                let userCustomer = buttonUpdate.parents('.user-customer');
+
+                                userCustomer.find('.customer-name').text(data.customer.name);
+                                userCustomer.find('.customer-phone-number').text(data.customer.phone_number);
+                                userCustomer.find('.customer-address').text(data.address);
+                                userCustomer.find('.customer-province').text(data.province.name);
+                                userCustomer.find('.customer-city').text(data.city.name);
+                                userCustomer.find('.customer-district').text(data.district.name);
+
+                                alertMessage(message);
+                                $('#custom-modal').modal('hide');
+                            } else if (response.status == 'fail') {
+                                backendMessage($('.modal-title'), response.data);
                             }
-                            else {
-                                $('#user-customer-lists').append(html);
+                        })
+                    }
+                });
+            });
+        })
+    };
+
+    userCustomerUpdate();
+    //#endregion User - Customer Update
+
+    //#region User - Customer Delete
+    const userCustomerDelete = () => {
+        $('.user-customer-delete').on('click', function() {
+            let confirmText = 'Apakah anda yakin akan menghapus alamat tersebut ?';
+
+            modalConfirm(confirmText, accepted => {
+                if (accepted) {
+                    let dataId       = $(this).data('id');
+                    let datas        = {
+                        _token : csrfToken,
+                        _method: 'DELETE',
+                    }
+
+                    ajaxJson('POST', `/customers/${dataId}`, datas, response => {
+                        if (response.status == 'success') {
+                            let customerLength = $('.user-customer').length;
+
+                            if (customerLength == 5) {
+                                let html = `<button id="user-create-customer" class="btn-none tred-bold">Tambah</button>`;
+
+                                $('#user-customer-title').after(html);
+                                userCustomerCreate();
                             }
 
-                            alertMessage(message);
-                            $('#custom-modal').modal('hide');
-                        } else {
-                            backendMessage($('.modal-title'), response.errors)
+                            $(this).parents('.user-customer').remove();
+                            alertMessage(response.message);
                         }
                     });
                 }
             });
         });
-    });
-    //#endregion User - Customer Create
+    }
 
-    //#region User - Customer Update
-    $('.user-customer-update').on('click', function() {
-        bootStrapModal('Ubah Alamat Pengiriman', 'modal-md', () => {
-            let dataId = $(this).data('id');
-            let html   = formHtmlCustomer('user-customer-update', `/customers/${dataId}`, 'POST', 'Tambah', 'PATCH');
+    userCustomerDelete();
+    //#endregion User - Customer Delete
 
-            return html;
-        });
+    //#region User - Customer Create
+    const userCustomerCreate = () => {
+        $('#user-create-customer').on('click', function() {
+            bootStrapModal('Tambah Alamat Pengiriman', 'modal-md', () => {
+                let html =  formHtmlCustomer('user-customer-store', '/customers', 'POST', 'Tambah');
 
-        let buttonUpdate         = $(this);
-        let userCustomer         = $(this).parents('.user-customer');
-        let userCustomerName     = userCustomer.find('.customer-name').text();
-        let userCustomerAddress  = userCustomer.find('.customer-address').text();
-        let userCustomerPhone    = userCustomer.find('.customer-phone-number').text();
-        let userCustomerProvince = userCustomer.find('.customer-province');
-        let userCustomerCity     = userCustomer.find('.customer-city');
-        let userCustomerDistrict = userCustomer.find('.customer-district');
+                return html;
+            });
 
-        let cityOrDistrictSearchValue  = `${userCustomerProvince.text()} ${userCustomerCity.text()} Kec. ${userCustomerDistrict.text()}`;
-        let cityOrDistrictValue        = `${userCustomerProvince.data('province')}`;
-            cityOrDistrictValue       += `-${userCustomerCity.data('city')}-${userCustomerDistrict.data('district')}`;
+            formCityAndDistrictKeyup();
 
-        $('#user-customer-name').val(userCustomerName);
-        $('#user-customer-address').val(userCustomerAddress);
-        $('#user-city-district-search').val(cityOrDistrictSearchValue);
-        $('#user-city-or-district').val(cityOrDistrictValue);
-        $('#user-customer-phone').val(userCustomerPhone);
+            $('#user-customer-store').on('submit', function(event) {
+                event.preventDefault();
 
-        formCityAndDistrictKeyup();
+                validator(formCustomerValidations(), success => {
+                    if (success) {
+                        ajaxForm('POST', this, this.action, response => {
+                            if (response.success) {
+                                let data    = response.data;
+                                let message = 'Berhasil menambah alamat';
+                                let html =
+                                `
+                                <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
+                                    <div class="d-flex">
+                                        <div>
+                                            <div>
+                                                <span class="customer-name">${data.customer.name}</span> -
+                                                <span class="customer-phone-number">${data.customer.phone_number}</span>
+                                            </div>
+                                            <div>
+                                                <span class="customer-address">${data.address}</span>.
+                                                <span class="customer-province" data-province="${data.province.id}">${data.province.name},</span>
+                                                <span class="customer-city" data-city="${data.city.id}">${data.city.type} ${data.city.name},</span>
+                                                <span class="customer-district" data-district="${data.district.id}">${data.district.name}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ml-auto text-right">
+                                        <div>
+                                            <button class="user-customer-update btn-none tred-bold" type="button" data-id="${data.customer.id}">Ubah</button>
+                                        </div>
+                                        <div>
+                                            <button class="user-customer-delete btn-none tred-bold" type="button" data-id="${data.customer.id}">Hapus</butt>
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                                let userAddressLength = $('.user-customer').length;
 
-        $('#user-customer-update').on('submit', function(event) {
-            event.preventDefault();
+                                if (userAddressLength == 0) {
+                                    $('#user-create-customer').appendTo($('#user-customer-title').parent());
+                                    $('#user-customer-lists').html(html);
+                                } else if (userAddressLength == 4) {
+                                    $('#user-customer-lists').append(html);
+                                    $('#user-create-customer').remove();
+                                }
+                                else {
+                                    $('#user-customer-lists').append(html);
+                                }
 
-            validator(formCustomerValidations(), success => {
-                if (success) {
-                    ajaxForm('POST', this, this.action, response => {
-                        if (response.status == 'success') {
-                            let data         = response.data;
-                            let message      = 'Berhasil mengedit alamat';
-                            let userCustomer = buttonUpdate.parents('.user-customer');
-
-                            userCustomer.find('.customer-name').text(data.customer.name);
-                            userCustomer.find('.customer-phone-number').text(data.customer.phone_number);
-                            userCustomer.find('.customer-address').text(data.address);
-                            userCustomer.find('.customer-province').text(data.province.name);
-                            userCustomer.find('.customer-city').text(data.city.name);
-                            userCustomer.find('.customer-district').text(data.district.name);
-
-                            alertMessage(message);
-                            $('#custom-modal').modal('hide');
-                        } else if (response.status == 'fail') {
-                            backendMessage($('.modal-title'), response.data);
-                        }
-                    })
-                }
+                                alertMessage(message);
+                                $('#custom-modal').modal('hide');
+                                userCustomerUpdate();
+                                userCustomerDelete();
+                            } else {
+                                backendMessage($('.modal-title'), response.errors)
+                            }
+                        });
+                    }
+                });
             });
         });
-    })
-    //#endregion User - Customer Update
+    }
+
+    userCustomerCreate();
+    //#endregion User - Customer Create
 
     if (sessionStorage.getItem('pesan') !== null) {
         $('#pesan strong').text(sessionStorage.getItem('pesan'));

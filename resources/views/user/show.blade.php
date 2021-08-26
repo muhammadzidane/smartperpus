@@ -85,26 +85,28 @@
                                 </div>
                                 <div id="user-customer-lists">
                                     @forelse (auth()->user()->customers as $customer)
-                                    <div class="user-customer mt-3 d-flex borbot-gray-0 pb-3">
+                                    <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
                                         <div class="d-flex">
-                                            <div class="d-flex mr-3">
-                                                <input type="radio" class="my-auto" name="address">
-                                            </div>
                                             <div>
                                                 <div>
-                                                    <span class="customer-name">{{ $customer->name }}</span>-
+                                                    <span class="customer-name">{{ $customer->name }}</span> -
                                                     <span class="customer-phone-number">{{ $customer->phone_number }}</span>
                                                 </div>
                                                 <div>
-                                                    <span class="customer-address">{{ $customer->address }}.</span>
+                                                    <span class="customer-address">{{ $customer->address }}</span>.
                                                     <span class="customer-province" data-province="{{ $customer->province->id }}">{{ $customer->province->name }},</span>
                                                     <span class="customer-city" data-city="{{ $customer->city->id }}">{{ $customer->city->type  . ' ' . $customer->city->name }},</span>
                                                     <span class="customer-district" data-district="{{ $customer->district->id }}">{{ $customer->district->name }}</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="ml-auto">
-                                            <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</butt>
+                                        <div class="ml-auto text-right">
+                                            <div>
+                                                <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
+                                            </div>
+                                            <div>
+                                                <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
+                                            </div>
                                         </div>
                                     </div>
                                     @empty
