@@ -19,7 +19,7 @@
         </div>
     </div>
     <div class="row mt-2">
-        @foreach ($authors as $author)
+        @forelse ($authors as $author)
         <div class="col-lg-3 col-sm-6">
             <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
                 <div class="row white-content author-review">
@@ -37,7 +37,12 @@
                 </div>
             </a>
         </div>
-        @endforeach
+        @empty
+        <div class="w-50 mx-auto mt-4 text-center">
+            <h4 class="mb-4">Hasil pencarian tidak ditemukan</h4>
+            <img class="w-75" src="{{ asset('img/no-data.png') }}">
+        </div>
+        @endforelse
     </div>
     <div class="row">
         <div class="ml-auto mt-4">

@@ -32,21 +32,19 @@
             </div>
             <div class="circle-input">
                 <div>
-                    <form class="search-form" action="{{ route('books.index') }}" method="GET">
-                        <div>
-                            <div class="search-icon">
-                                <i class="fas fa-search m-auto"></i>
-                            </div>
-                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
-                            <input type="hidden" name="page" value="1">
+                    <div>
+                        <div class="search-icon">
+                            <i class="fas fa-search m-auto"></i>
                         </div>
-                    </form>
-                </div>
-                <div class="nav-book-search">
-                    <div class="ml-2 pb-1">Buku</div>
-                    <div class="nav-book-search-values">
+                        <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                        <div id="search-author-or-book">
+                            <span>Cari :</span>
+                            <a id="search-books" class="btn-none tred-bold p-0 mr-1">Buku</a>
+                            <a id="search-authors" class="btn-none tred-bold p-0">Penulis</a>
+                        </div>
                     </div>
                 </div>
+                <div class="nav-book-search"></div>
             </div>
             <div class="cus-nav">
                 <ul class="ul-nav h-100">
@@ -191,6 +189,7 @@
         </div>
 
         <!-- Error messages from backend -->
+        @isset($errors)
         @if ($errors->any())
         <div class="alert alert-danger" role="alert">
             @foreach ($errors->all() as $error)
@@ -200,6 +199,7 @@
             @endforeach
         </div>
         @endif
+        @endisset
 
         @yield('carousel')
 

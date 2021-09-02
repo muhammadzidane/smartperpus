@@ -34,7 +34,6 @@ class CartController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -45,7 +44,7 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        $datas = $request->all();
+        $datas = $request->except('_token');
         $cart  = Cart::create($datas);
 
         return response()->json(compact('cart'));
@@ -59,7 +58,6 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -80,9 +78,17 @@ class CartController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Cart $cart)
     {
-        //
+        $cart->update($request->except('_token', '_method'));
+
+        $response = array(
+            'status' => 'success',
+            'code' => 200,
+            'data' => null,
+        );
+
+        return response()->json($response);
     }
 
     /**

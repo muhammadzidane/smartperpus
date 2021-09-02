@@ -9,35 +9,33 @@ use Faker\Factory as Faker;
 
 class TestController extends Controller
 {
-    public function test(Request $request)
+    public function test()
     {
-        $keywords = $request->keywords;
-
-        $selects = array(
-            'provinces.name AS province_name',
-            'cities.type',
-            'cities.name AS city_name',
-            'districts.name AS district_name'
+        $get     = array('id', 'name');
+        $books   = Book::where('name', 'LIKE', "%hen%")->get($get);
+        $authors = Author::where('name', 'LIKE', "%hen%")->get($get);
+        $data    = array(
+            'books' => $books,
+            'authors' => $authors,
         );
 
-        $address = DB::table('provinces')
-            ->join('cities', 'provinces.id', '=', 'cities.province_id')
-            ->join('districts', 'cities.id', '=', 'districts.city_id')
-            ->where('cities.name', 'LIKE', "%bandung%")
-            ->orWhere('districts.name', 'LIKE', "%bandung%")
-            ->select($selects)
-            ->get();
+        $response = array(
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data,
+        );
 
-        $request_address = $address->map(function ($address) {
-            $province = $address->province_name;
-            $type     = $address->type == 'Kabupaten' ? 'Kab.' : 'Kota';
-            $city     = $address->city_name;
-            $district = $address->district_name;
+        dump($response);
 
-            $results = $province . ', ' . $type . ' ' . $city . ', Kec.' . $district;
+        // foreach ($datas as $data) {
+        //     $table_name = $data->getTable();
 
-            return $results;
-        });
+        //     if ($table_name == 'books') {
+        //         dump($data->name);
+        //     } else { // $table_name == 'authors'
+
+        //     }
+        // }
     }
 
     public function testPost(Request $request)

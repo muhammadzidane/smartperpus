@@ -84,7 +84,7 @@
                                         @endif
                                 </div>
                                 <div id="user-customer-lists">
-                                    @forelse (auth()->user()->customers as $customer)
+                                    @forelse (auth()->user()->customers->take(5 ) as $customer)
                                     <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
                                         <div class="d-flex">
                                             <div>
@@ -126,9 +126,5 @@
     </div>
 </div>
 </div>
-
-
 </div>
-
-
 @endsection

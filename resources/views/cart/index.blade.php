@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<form id="cart-form" action="{{ route('checkout.index') }}" method="POST">
+<form id="cart-form" action="{{ route('checkout.index') }}" method="GET">
     <div class="row flex-md-row-reverse mt-4">
         <div class="col-md-3 mb-4">
             <div class="white-content pt-0 m-0">
@@ -43,7 +43,7 @@
                     <label for="checked-all" class="tbold m-0">Pilih Semua</label>
                 </div>
             </div>
-            @foreach ($books as $book)
+            @forelse ($books as $book)
             <div class="white-content mt-4 px-0 pt-0 pb-4 m-0 borbot-gray-bold">
                 <div class="white-content-header-2">
                     <div class="d-flex justify-content-between w-100">
@@ -76,7 +76,7 @@
                                         <div class="tbold">Jumlah</div>
                                         <div class="text-grey d-flex">
                                             <div>
-                                                <input type="text" value="1" class="cart-amount-req input-none" readonly>
+                                                <input type="text" value="{{ $book->carts[0]->amount }}" class="cart-amount-req input-none" readonly>
                                                 <span>/</span>
                                                 <input type="text" value="{{ $book->printed_book_stock - 1 }}" class="cart-total-stock input-none" readonly>
                                             </div>
@@ -85,6 +85,10 @@
                                                 <button type="button" class="cart-sub btn-none p-0"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="mr-4 mb-4">
+                                        <div class="tbold">Berat</div>
+                                        <div class="text-grey">{{ $book->weight }} gram</div>
                                     </div>
                                 </div>
                                 <div class="cart-note w-maxc">
@@ -98,7 +102,11 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @empty
+            <div class="mt-4">
+                @include('book_user.status.empty-values', ['text' => 'Anda belum memiliki keranjang belanja'])
+            </div>
+            @endforelse
         </div>
     </div>
     @csrf

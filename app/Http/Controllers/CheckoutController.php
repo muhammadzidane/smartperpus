@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(Request $request)
     {
         $carts = $request->all()['carts'];

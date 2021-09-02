@@ -69,10 +69,10 @@
             <div class="d-sm-flex justify-content-between borbot-gray-bold">
                 <div class="search-value d-flex">
                     <div class="mr-2 tred-bold search-content-active">
-                        <a href="{{ route('books.index') }}">Buku ({{ $books->total() }})</a>
+                        <a href="{{ url()->full() }}">Buku ({{ $books->total() }})</a>
                     </div>
                     <div class="tred-bold">
-                        <a href="/authors/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $authors->count() }})</a>
+                        <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $authors->count() }})</a>
                     </div>
                 </div>
                 <div class="mt-4 mt-sm-0">
@@ -92,7 +92,7 @@
             <div class="mt-2">
                 @if(empty($books->total()) || $books->isEmpty())
                 <div class="w-50 mx-auto mt-4">
-                    <h4 class="text-center mb-4">Hasil pencarian tidak ditemukan </h4>
+                    <h4 class="text-center mb-4">Hasil pencarian tidak ditemukan</h4>
                     <img class="w-100" src="{{ asset('img/no-data.png') }}">
                 </div>
 

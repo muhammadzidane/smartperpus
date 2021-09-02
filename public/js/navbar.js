@@ -13,31 +13,85 @@ $(document).ready(function () {
     $('.search-text').on('keyup', function() {
         let keywordValue = $(this).val();
 
-        if (keywordValue != "" || keywordValue != 0)  {
+        if (keywordValue != "" && keywordValue.length >= 3)  {
+            $('#search-author-or-book').show();
 
             let datas = { keywords: keywordValue }
 
             ajaxJson('GET', '/books/search', datas, response => {
                 let html = '';
+                let books = response.data.books;
+                let authors = response.data.authors;
 
-                response.books.forEach(book => {
-                    html += `<a href="/books/${book.id}" class="nav-book-search-link">${book.name}</a>`;
-                });
+                if (books.length != 0) {
+                    html += `<div class="ml-2 pb-1">Buku</div>`;
 
-                $('.nav-book-search-values').html(html);
+                    let i        = 0;
+                    let htmlLink = ``;
+
+                    books.forEach(data => {
+                        i++;
+
+                        if (i <= 6) {
+                            htmlLink += `<a href="/books/${data.id}" class="nav-book-search-link">${data.name}</a>`;
+                        }
+
+                    });
+
+                    htmlLink = `<div id="book-links">${htmlLink}</div>`;
+                    html += htmlLink;
+
+                    let j = 0;
+
+                    if (books.length > 6) {
+                        j++;
+
+                        if (j <= 6) {
+                            html += `<a href="/books?keywords=${keywordValue}" class="text-right nav-book-search-link">Lihat semua</a>`;
+                        }
+                    }
+                }
+
+                if (authors.length != 0) {
+                    html += `<div class="ml-2 pb-1">Author</div>`;
+
+                    let i = 0;
+                    let htmlLink = ``;
+
+                    authors.forEach(data => {
+                        i++;
+
+                        if (i <= 6) {
+                            htmlLink += `<a href="/authors/${data.id}" class="nav-book-search-link">${data.name}</a>`;
+                        }
+                    });
+
+                    htmlLink = `<div id="author-links">${htmlLink}</div>`;
+
+                    html += htmlLink;
+
+                    let j = 0;
+
+                    if (authors.length > 6) {
+                        j++;
+
+                        if (j <= 6) {
+                            html += `<a href="/authors?keywords=${keywordValue}" class="text-right nav-book-search-link">Lihat semua</a>`;
+                        }
+                    }
+                }
+
+                $('.nav-book-search').html('');
+                $('.nav-book-search').append(html);
                 $('.nav-book-search').show();
+
+                $('#search-books').attr('href', `/books?keywords=${keywordValue}`);
+                $('#search-authors').attr('href', `/authors?keywords=${keywordValue}`);
             });
 
         } else {
             $('.nav-book-search').hide();
-        }
-    });
-
-    $('.search-form').on('submit', function(event) {
-        let searchValue = $(this).find('input[name=keywords]').val();
-
-        if (searchValue == "" || searchValue == 0) {
-            event.preventDefault();
+            $('#search-author-or-book').hide();
         }
     });
 
@@ -1894,6 +1948,8 @@ $(document).ready(function () {
 
                 validator(formCustomerValidations(), success => {
                     if (success) {
+                        $('#custom-modal').modal('hide');
+
                         ajaxForm('POST', this, this.action, response => {
                             if (response.status == 'success') {
                                 let data         = response.data;
@@ -1904,11 +1960,14 @@ $(document).ready(function () {
                                 userCustomer.find('.customer-phone-number').text(data.customer.phone_number);
                                 userCustomer.find('.customer-address').text(data.address);
                                 userCustomer.find('.customer-province').text(data.province.name);
+                                userCustomer.find('.customer-province').attr('data-province', data.province.id);
                                 userCustomer.find('.customer-city').text(data.city.name);
+                                userCustomer.find('.customer-city').attr('data-city', data.city.id);
                                 userCustomer.find('.customer-district').text(data.district.name);
+                                userCustomer.find('.customer-district').attr('data-district', data.district.id);
 
+                                $('#checkout-courier-service').remove();
                                 alertMessage(message);
-                                $('#custom-modal').modal('hide');
                             } else if (response.status == 'fail') {
                                 backendMessage($('.modal-title'), response.data);
                             }
@@ -1946,6 +2005,7 @@ $(document).ready(function () {
                                 userCustomerCreate();
                             }
 
+                            $('#checkout-courier-service').remove();
                             $(this).parents('.user-customer').remove();
                             alertMessage(response.message);
                         }
@@ -1974,6 +2034,8 @@ $(document).ready(function () {
 
                 validator(formCustomerValidations(), success => {
                     if (success) {
+                        $('#custom-modal').modal('hide');
+
                         ajaxForm('POST', this, this.action, response => {
                             if (response.success) {
                                 let data    = response.data;
@@ -1981,20 +2043,25 @@ $(document).ready(function () {
                                 let html =
                                 `
                                 <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
-                                    <div class="d-flex">
-                                        <div>
-                                            <div>
-                                                <span class="customer-name">${data.customer.name}</span> -
-                                                <span class="customer-phone-number">${data.customer.phone_number}</span>
+                                    <label>
+                                        <div class="d-flex">
+                                            <div class="mr-2 d-flex">
+                                                <input type="radio" name="customer" class="my-auto">
                                             </div>
                                             <div>
-                                                <span class="customer-address">${data.address}</span>.
-                                                <span class="customer-province" data-province="${data.province.id}">${data.province.name},</span>
-                                                <span class="customer-city" data-city="${data.city.id}">${data.city.type} ${data.city.name},</span>
-                                                <span class="customer-district" data-district="${data.district.id}">${data.district.name}</span>
+                                                <div>
+                                                    <span class="customer-name">${data.customer.name}</span> -
+                                                    <span class="customer-phone-number">${data.customer.phone_number}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="customer-address">${data.address}</span>.
+                                                    <span class="customer-province" data-province="${data.province.id}">${data.province.name},</span>
+                                                    <span class="customer-city" data-city="${data.city.id}">${data.city.type} ${data.city.name},</span>
+                                                    <span class="customer-district" data-district="${data.district.id}">${data.district.name}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        </label>
                                     <div class="ml-auto text-right">
                                         <div>
                                             <button class="user-customer-update btn-none tred-bold" type="button" data-id="${data.customer.id}">Ubah</button>
@@ -2019,7 +2086,6 @@ $(document).ready(function () {
                                 }
 
                                 alertMessage(message);
-                                $('#custom-modal').modal('hide');
                                 userCustomerUpdate();
                                 userCustomerDelete();
                             } else {
@@ -2548,62 +2614,85 @@ $(document).ready(function () {
             $('.cart-amount').on('click', function(event) {
                 event.stopImmediatePropagation();
 
-                let check           = $(this).parents('.white-content').find('.cart-check');
-                let isChecked       = check.is(':checked');
+                setTimeout(() => {
+                    let check           = $(this).parents('.white-content').find('.cart-check');
+                    let isChecked       = check.is(':checked');
 
-                if (isChecked) {
-                    let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
-                    let amount          = $(this).prev().find('.cart-amount-req');
-                    let totalStock      = $(this).prev().find('.cart-total-stock');
-                    let amountPlus      = parseInt(amount.val()) + 1;
-                    let amountSub       = parseInt(amount.val()) - 1;
-                    let paymentAmount   = $('#cart-amounts');
-                    let paymentPlus     = parseInt(paymentAmount.val()) + 1;
-                    let paymentSub      = parseInt(paymentAmount.val()) - 1;
-                    let paymentPrice    = $('#cart-total-payment').val().replace(/[^0-9]/g, '');
-                        paymentPrice    = parseInt(paymentPrice);
+                    if (isChecked) {
+                        let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
+                        let amount          = $(this).prev().find('.cart-amount-req');
+                        let totalStock      = $(this).prev().find('.cart-total-stock');
+                        let amountPlus      = parseInt(amount.val()) + 1;
+                        let amountSub       = parseInt(amount.val()) - 1;
+                        let paymentAmount   = $('#cart-amounts');
+                        let paymentPlus     = parseInt(paymentAmount.val()) + 1;
+                        let paymentSub      = parseInt(paymentAmount.val()) - 1;
+                        let paymentPrice    = $('#cart-total-payment').val().replace(/[^0-9]/g, '');
+                            paymentPrice    = parseInt(paymentPrice);
+                        let customerId      = $(this).parents('.white-content').find('.cart-delete').data('id');
 
-                    if (checkPlusButton && amount.val() >= 1) {
-                        if (totalStock.val() != 0) {
-                            totalStock.val(parseInt(totalStock.val()) - 1);
+                        if (checkPlusButton && amount.val() >= 1) {
+                            if (totalStock.val() != 0) {
+                                totalStock.val(parseInt(totalStock.val()) - 1);
+
+                                let cartCheckValue = check.val().split('-');
+                                cartCheckValue[2]  = amountPlus;
+                                cartCheckValue     =  cartCheckValue.join('-');
+
+                                check.attr('value', cartCheckValue);
+                                amount.val(amountPlus);
+                                paymentAmount.val(paymentPlus);
+
+                                let datas = {
+                                    _token : csrfToken,
+                                    _method: 'PATCH',
+                                    amount : amountPlus
+                                };
+
+                                $.post(`/carts/${customerId}`, datas, function(data) {
+                                    console.log(data);
+                                }, 'JSON');
+                            }
+                        } else if (amount.val() != 1){
+                            totalStock.val(parseInt(totalStock.val()) + 1);
 
                             let cartCheckValue = check.val().split('-');
-                            cartCheckValue[2]  = amountPlus;
+                            cartCheckValue[2]  = amountSub;
                             cartCheckValue     =  cartCheckValue.join('-');
 
                             check.attr('value', cartCheckValue);
-                            amount.val(amountPlus);
-                            paymentAmount.val(paymentPlus);
+                            amount.val(amountSub);
+                            paymentAmount.val(paymentSub);
+
+                            let datas = {
+                                _token : csrfToken,
+                                _method: 'PATCH',
+                                amount : amountSub
+                            };
+
+                            $.post(`/carts/${customerId}`, datas, function(data) {
+                                console.log(data);
+                            }, 'JSON');
                         }
-                    } else if (amount.val() != 1){
-                        totalStock.val(parseInt(totalStock.val()) + 1);
 
-                        let cartCheckValue = check.val().split('-');
-                        cartCheckValue[2]  = amountSub;
-                        cartCheckValue     =  cartCheckValue.join('-');
+                        let checkedAll      = $('.cart-check').toArray();
+                            checkedAll      = checkedAll.filter(element => element.checked);
 
-                        check.attr('value', cartCheckValue);
-                        amount.val(amountSub);
-                        paymentAmount.val(paymentSub);
+                        let checkedPriceValue = checkedAll.map(element => {
+                            let elementParent = $(element).parents('.white-content');
+                            let price         = elementParent.find('.cart-book-price').data('price');
+                            let amount        = parseInt(elementParent.find('.cart-amount-req').val());
+
+                            let result = price * amount;
+
+                            return result;
+                        });
+
+                        let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
+
+                        $('#cart-total-payment').val(rupiahFormat(paymentTotal));
                     }
-
-                    let checkedAll      = $('.cart-check').toArray();
-                        checkedAll      = checkedAll.filter(element => element.checked);
-
-                    let checkedPriceValue = checkedAll.map(element => {
-                        let elementParent = $(element).parents('.white-content');
-                        let price         = elementParent.find('.cart-book-price').data('price');
-                        let amount        = parseInt(elementParent.find('.cart-amount-req').val());
-
-                        let result = price * amount;
-
-                        return result;
-                    });
-
-                    let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
-
-                    $('#cart-total-payment').val(rupiahFormat(paymentTotal));
-                }
+                }, 500);
             });
         });
     };
@@ -2715,4 +2804,152 @@ $(document).ready(function () {
         });
     });
     //#endregion Cart
+
+    //#region Checkout
+    $('input[name=courier]').on('change', function() {
+        let customersAddress = $('.user-customer');
+        let checkedCustomer  = $('input[name=customer]').is(':checked');
+
+        $('#checkout-courier-service').remove();
+        $('#checkout-courier-choise-title').children(':nth-child(2)').remove();
+
+        if (!checkedCustomer) {
+            console.log(true);
+            console.log($('#error-customer-address').length);
+            let html = `<span id="error-courier-choise" class="tred-bold">Pilih alamat pengiriman</span>`;
+
+            if ($('#error-courier-choise').length == 0) {
+                $('#checkout-courier-choise-title').append(html);
+            }
+        } else {
+            if (customersAddress.length == 0) {
+                $('#user-create-customer').trigger('click');
+            } else {
+                let customer      = $('input[name=customer]:checked').parents('.user-customer');
+                let districtId    = customer.find('.customer-district').attr('data-district');
+                let courierValue  = $('input[name=courier]:checked').val();
+                let spinnerHtml   = `<div id="spinner" class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
+                    spinnerHtml  += `<div class="spin"></div>`;
+                    spinnerHtml  += `</div>`;
+                let spinnerLength = $('#spinner').length;
+
+                let totalWeight = $('.customer-book').map(function() {
+                    return $(this).find('.book-weight').text();
+                });
+
+                totalWeight = totalWeight.toArray();
+                totalWeight = totalWeight.reduce((total, value) => {
+                    return parseInt(total) + parseInt(value);
+                });
+
+                if (spinnerLength == 0) {
+                    $('#checkout-courier-choise').after(spinnerHtml);
+                }
+
+                let datas = {
+                    key: 'ce496165f4a20bc07d96b6fe3ab41ded',
+                    origin: '317', // Cimenyan
+                    originType: 'subdistrict',
+                    destination: districtId,
+                    destinationType: 'subdistrict',
+                    weight: totalWeight,
+                    courier: courierValue,
+                };
+
+                $.post('https://pro.rajaongkir.com/api/cost', datas, function(response) {
+                    let costs = response.rajaongkir.results[0].costs;
+                    let html  = ``;
+
+                    $('#spinner').remove();
+
+                    if (costs.length == 0) {
+                        html +=
+                        `
+                        <div id="checkout-courier-service" class="mt-2">
+                        <div class="tbold">Ekspedisi tidak tersedia</div>
+                        </div>
+                        `;
+                    } else {
+                        html += '';
+                        costs.forEach(function(cost) {
+                            let costValue = cost.cost[0].value;
+
+                            html += `<option value="${costValue}">${cost.service}</option>`;
+                        });
+
+                        html =
+                        `
+                        <div id="checkout-courier-service" class="mt-2">
+                            <div class="tbold">Pilih Pengiriman</div>
+                            <div class="mt-2">
+                                <select id="select-courier-service" class="custom-select w-25">
+                                    ${html}
+                                </select>
+                            </div>
+                        </div>`;
+                    }
+
+                    if ($('#checkout-courier-service').length == 0) {
+                        $('#checkout-courier-choise').after(html);
+
+                        let courierOptions          = $('#select-courier-service');
+                        let courierPriceHtml        = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(courierOptions.first().val())}</span>`;
+
+                        courierOptions.after(courierPriceHtml);
+                        $('#checkout-shipping-price').attr('value', courierOptions.first().val());
+                        $('#checkout-shipping-price').val(rupiahFormat(courierOptions.first().val()));
+
+                        $('#select-courier-service').on('change', function() {
+                            let selectedValue = $(this).children('option:selected').val();
+                            let rupiahText  = rupiahFormat(selectedValue);
+
+                            $('#checkout-courier-price').text(rupiahText);
+                            $('#checkout-shipping-price').attr('value', selectedValue);
+                            $('#checkout-shipping-price').val(rupiahText);
+                        });
+                    }
+
+                })
+            }
+        }
+    });
+
+    //#region Checkout Store
+    $('#checkout-form').on('submit', function(event) {
+        let customerAddressChecked = $('input[name=customer]').is(':checked');
+        let courierChoiseChecked   = $('input[name=courier]').is(':checked');
+        let paymentMethodChecked   = $('input[name=payment_method]').is(':checked');
+        let courierServiceLength   = $('#checkout-courier-service').length;
+
+        // Validasi
+        if (!customerAddressChecked && !courierChoiseChecked && !paymentMethodChecked && courierServiceLength == 0) {
+            event.preventDefault();
+
+            if (courierServiceLength == 0) {
+                let html = `<span id="error-courier-choise" class="tred-bold">Pilih alamat pengiriman</span>`;
+
+                if ($('#error-courier-choise').length == 0) {
+                    $('#checkout-courier-choise-title').append(html);
+                }
+            }
+
+            if (!customerAddressChecked) {
+                let html = `<span id="error-customer-address" class="tred-bold">Pilih alamat pengiriman</span>`;
+
+                if ($('#error-customer-address').length == 0) {
+                    $('#user-customer-title').parent().after(html);
+                }
+            }
+
+            if (!paymentMethodChecked) {
+                let html = `<span id="error-payment-method" class="tred-bold">Pilih metode pembayaran</span>`;
+
+                if ($('#error-payment-method').length == 0) {
+                    $('#payment-method-title').after(html);
+                }
+            }
+        }
+    })
+    //#endregion Checkout Store
+    //#endregion Checkout
 }); // End of onload Event

@@ -342,6 +342,13 @@ body {
     margin-bottom: auto;
 }
 
+#search-author-or-book {
+    display: none;
+    position: absolute;
+    top: 25%;
+    right: 10px;
+}
+
 .search-text {
     width: 100%;
     box-sizing: border-box;
@@ -429,7 +436,24 @@ dropdown-navbar {
     color: black !important;
 }
 
+/* Checkout */
+.radio-toolbar input[type="radio"] {
+    display: none;
+}
 
+.radio-toolbar label {
+    margin-right: 0.50rem;
+    display: inline-block;
+    border: 1px solid #fff600;
+    padding: 8px 14px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.radio-toolbar input[type="radio"]:checked+label {
+    background-color: #e2d5d5;
+}
 
 /* Caraousel IMG */
 .carousel-item img {

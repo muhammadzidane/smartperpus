@@ -414,11 +414,22 @@ class BookController extends Controller
 
     public function search(Request $request)
     {
-        $value = $request->keywords;
-        $get   = array('id', 'name');
-        $books = Book::where('name', 'LIKE', "%$value%")->get($get)->take(10);
+        $value   = $request->keywords;
+        $get     = array('id', 'name');
+        $books   = Book::where('name', 'LIKE', "%$value%")->get($get);
+        $authors = Author::where('name', 'LIKE', "%$value%")->get($get);
+        $data    = array(
+            'books' => $books,
+            'authors' => $authors,
+        );
 
-        return response()->json(compact('books'));
+        $response = array(
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data,
+        );
+
+        return response()->json($response);
     }
 
     public function addBookImages(Request $request, Book $book)
