@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<form id="cart-form" action="{{ route('checkout.index') }}" method="GET">
+<form action="{{ route('checkout') }}" method="POST">
     <div class="row flex-md-row-reverse mt-4">
         <div class="col-md-3 mb-4">
             <div class="white-content pt-0 m-0">
@@ -20,13 +20,13 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>
-                        <input id="cart-amounts" name="amount" type="text" value="0" class="input-none text-right w-25" readonly>
+                        <input id="cart-amounts" type="text" value="0" class="input-none text-right w-25" readonly>
                     </div>
                 </div>
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">
                         <div>Total Pembayaran</div>
-                        <input id="cart-total-payment" name="total" type="text" value="Rp0" class="input-none text-right tred-bold w-50" readonly>
+                        <input id="cart-total-payment" type="text" value="Rp0" class="input-none text-right tred-bold w-50" readonly>
                     </div>
                     <div class="mt-3">
                         <button type="submit" id="payment-button" class="btn btn-red w-100">
@@ -39,8 +39,9 @@
         <div class="col-md-9">
             <div class="white-content px-0 pt-0 m-0 borbot-yellow-bold">
                 <div class="p-15 pb-0 d-flex">
-                    <input type="checkbox" class="mt-1 mr-2" name="" id="checked-all">
+                    <input type="checkbox" class="mt-1 mr-2" id="checked-all">
                     <label for="checked-all" class="tbold m-0">Pilih Semua</label>
+                    <span class="ml-1 tred-bold">({{ $books->count() }})</span>
                 </div>
             </div>
             @forelse ($books as $book)
@@ -65,7 +66,14 @@
                         </div>
                         <div class="col-sm-10">
                             <div class="text-righteous">{{ $book->name }}</div>
-                            <div class="tred-bold">{{ $book->ebook ? 'E-Book' : 'Buku Cetak' }}</div>
+                            <div class="form-group w-maxc mt-2">
+                                <div>Pilih Jenis: </div>
+                                <select class="cart-book-version form-control-custom mt-2" name="book_version">
+                                    <option disabled selected class="d-none"></option>
+                                    <option>Buku Cetak</option>
+                                    <option>E-Book</option>
+                                </select>
+                            </div>
                             <div class="mt-4 d-flex flex-md-column justify-content-md-between">
                                 <div class="d-md-flex">
                                     <div class="mr-4 mb-4">
@@ -78,7 +86,7 @@
                                             <div>
                                                 <input type="text" value="{{ $book->carts[0]->amount }}" class="cart-amount-req input-none" readonly>
                                                 <span>/</span>
-                                                <input type="text" value="{{ $book->printed_book_stock - 1 }}" class="cart-total-stock input-none" readonly>
+                                                <input type="text" value="{{ $book->printed_book_stock - $book->carts[0]->amount }}" class="cart-total-stock input-none" readonly>
                                             </div>
                                             <div class="cart-amount ml-2">
                                                 <button type="button" class="cart-plus btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>

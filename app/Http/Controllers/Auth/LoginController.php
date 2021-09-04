@@ -26,7 +26,6 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate(
             array(
                 'email'    => 'required',
@@ -41,7 +40,6 @@ class LoginController extends Controller
             Auth::login($user);
 
             $url = route('home');
-
 
             if ($request->ajax()) {
                 return response()->json(compact('url'));

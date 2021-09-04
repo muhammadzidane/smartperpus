@@ -1814,6 +1814,8 @@ $(document).ready(function () {
         $('#user-city-district-search').on('keyup', function() {
             let value = $(this).val();
 
+            console.log(value);
+
             let data  = {
                 keywords: value,
             };
@@ -2046,7 +2048,7 @@ $(document).ready(function () {
                                     <label>
                                         <div class="d-flex">
                                             <div class="mr-2 d-flex">
-                                                <input type="radio" name="customer" class="my-auto">
+                                                <input type="radio" name="customer" class="my-auto" value="${data.customer.id}">
                                             </div>
                                             <div>
                                                 <div>
@@ -2569,7 +2571,7 @@ $(document).ready(function () {
 
     //#region Cart
     const cartCheck = () => {
-        $('.cart-check').on('click', function() {
+        $('.cart-check').on('change', function() {
             let cartCheck      = this;
             let paymentAmount  = $('#cart-amounts');
             let amount         = $(cartCheck).parents('.white-content-header-2').next().find('.cart-amount-req');
@@ -2614,11 +2616,11 @@ $(document).ready(function () {
             $('.cart-amount').on('click', function(event) {
                 event.stopImmediatePropagation();
 
-                setTimeout(() => {
-                    let check           = $(this).parents('.white-content').find('.cart-check');
-                    let isChecked       = check.is(':checked');
+                let check           = $(this).parents('.white-content').find('.cart-check');
+                let isChecked       = check.is(':checked');
 
-                    if (isChecked) {
+                if (isChecked) {
+                    setTimeout(() => {
                         let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
                         let amount          = $(this).prev().find('.cart-amount-req');
                         let totalStock      = $(this).prev().find('.cart-total-stock');
@@ -2649,9 +2651,7 @@ $(document).ready(function () {
                                     amount : amountPlus
                                 };
 
-                                $.post(`/carts/${customerId}`, datas, function(data) {
-                                    console.log(data);
-                                }, 'JSON');
+                                $.post(`/carts/${customerId}`, datas);
                             }
                         } else if (amount.val() != 1){
                             totalStock.val(parseInt(totalStock.val()) + 1);
@@ -2670,9 +2670,7 @@ $(document).ready(function () {
                                 amount : amountSub
                             };
 
-                            $.post(`/carts/${customerId}`, datas, function(data) {
-                                console.log(data);
-                            }, 'JSON');
+                            $.post(`/carts/${customerId}`, datas);
                         }
 
                         let checkedAll      = $('.cart-check').toArray();
@@ -2691,13 +2689,33 @@ $(document).ready(function () {
                         let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
 
                         $('#cart-total-payment').val(rupiahFormat(paymentTotal));
-                    }
-                }, 500);
+                    }, 300);
+                }
+            });
+
+            $('.cart-book-version').on('change', function() {
+                let html = `<div class="book-version-text tred-bold mt-2">${$(this).val()}</div>`;
+
+                $(this).siblings('.book-version-text').length == 0
+                    ? $(this).after(html)
+                    : $('.book-version-text').text($(this).val());
             });
         });
     };
 
     cartCheck();
+
+    // Disable klik pada saat memilih jenis buku
+    $('.cart-book-version').on('mousedown', function(event) {
+        let check           = $(this).parents('.white-content').find('.cart-check');
+        let isChecked       = check.is(':checked');
+
+        if (!isChecked) {
+            event.preventDefault();
+            this.blur();
+            window.focus();
+        }
+    });
 
     $('#checked-all').on('click', function() {
         let checkedAll  = $(this).is(':checked');
@@ -2767,7 +2785,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#cart-form').on('submit', function(event) {
+    $('#checkout-button').on('click', function(event) {
         let checks = $('.cart-check').map(function(key, check) {
             return $(check).is(':checked');
         });
@@ -2806,7 +2824,7 @@ $(document).ready(function () {
     //#endregion Cart
 
     //#region Checkout
-    $('input[name=courier]').on('change', function() {
+    $('input[name=courier_name]').on('change', function() {
         let customersAddress = $('.user-customer');
         let checkedCustomer  = $('input[name=customer]').is(':checked');
 
@@ -2827,7 +2845,7 @@ $(document).ready(function () {
             } else {
                 let customer      = $('input[name=customer]:checked').parents('.user-customer');
                 let districtId    = customer.find('.customer-district').attr('data-district');
-                let courierValue  = $('input[name=courier]:checked').val();
+                let courierValue  = $('input[name=courier_name]:checked').val();
                 let spinnerHtml   = `<div id="spinner" class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
                     spinnerHtml  += `<div class="spin"></div>`;
                     spinnerHtml  += `</div>`;
@@ -2874,7 +2892,7 @@ $(document).ready(function () {
                         costs.forEach(function(cost) {
                             let costValue = cost.cost[0].value;
 
-                            html += `<option value="${costValue}">${cost.service}</option>`;
+                            html += `<option value="${costValue}-${cost.service}">${cost.service}</option>`;
                         });
 
                         html =
@@ -2882,7 +2900,7 @@ $(document).ready(function () {
                         <div id="checkout-courier-service" class="mt-2">
                             <div class="tbold">Pilih Pengiriman</div>
                             <div class="mt-2">
-                                <select id="select-courier-service" class="custom-select w-25">
+                                <select id="select-courier-service" class="custom-select w-25" name="courier_service">
                                     ${html}
                                 </select>
                             </div>
@@ -2892,20 +2910,23 @@ $(document).ready(function () {
                     if ($('#checkout-courier-service').length == 0) {
                         $('#checkout-courier-choise').after(html);
 
-                        let courierOptions          = $('#select-courier-service');
-                        let courierPriceHtml        = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(courierOptions.first().val())}</span>`;
+                        let courierOptions     = $('#select-courier-service');
+                        let courierOptionFirst = courierOptions.first().val();
+                        let costFirst          = courierOptionFirst.split('-')[0];
+                        let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
 
                         courierOptions.after(courierPriceHtml);
-                        $('#checkout-shipping-price').attr('value', courierOptions.first().val());
-                        $('#checkout-shipping-price').val(rupiahFormat(courierOptions.first().val()));
+                        $('#checkout-shipping-price').text(rupiahFormat(costFirst));
+                        $('#checkout-shipping-cost').attr('value', costFirst);
 
                         $('#select-courier-service').on('change', function() {
-                            let selectedValue = $(this).children('option:selected').val();
-                            let rupiahText  = rupiahFormat(selectedValue);
+                            let selectedValue      = $(this).children('option:selected').val();
+                            let selectedCost       = selectedValue.split('-')[0];
+                            let rupiahSelectedCost = rupiahFormat(selectedCost);
 
-                            $('#checkout-courier-price').text(rupiahText);
-                            $('#checkout-shipping-price').attr('value', selectedValue);
-                            $('#checkout-shipping-price').val(rupiahText);
+                            $('#checkout-courier-price').text(rupiahSelectedCost);
+                            $('#checkout-shipping-price').text(rupiahSelectedCost);
+                            $('#checkout-shipping-cost').attr('value', selectedCost);
                         });
                     }
 
@@ -2917,12 +2938,12 @@ $(document).ready(function () {
     //#region Checkout Store
     $('#checkout-form').on('submit', function(event) {
         let customerAddressChecked = $('input[name=customer]').is(':checked');
-        let courierChoiseChecked   = $('input[name=courier]').is(':checked');
+        let courierChoiseChecked   = $('input[name=courier_name]').is(':checked');
         let paymentMethodChecked   = $('input[name=payment_method]').is(':checked');
         let courierServiceLength   = $('#checkout-courier-service').length;
 
         // Validasi
-        if (!customerAddressChecked && !courierChoiseChecked && !paymentMethodChecked && courierServiceLength == 0) {
+        if (!customerAddressChecked || !courierChoiseChecked || !paymentMethodChecked || courierServiceLength == 0) {
             event.preventDefault();
 
             if (courierServiceLength == 0) {

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\{BookUser, Book};
 use Carbon\Carbon;
-use Facade\Ignition\DumpRecorder\DumpRecorder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Storage, Validator, Auth};
 

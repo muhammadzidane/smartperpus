@@ -132,7 +132,10 @@ Route::prefix('book-purchases')->group(function () {
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
-Route::get('checkout', array(CheckoutController::class, 'index'))->name('checkout.index');
+// Checkout
+Route::post('checkouts', array(CheckoutController::class, 'checkout'))->name('checkout');
+Route::get('checkouts', array(CheckoutController::class, 'index'))->name('checkout.index');
+Route::post('checkouts/{user}/payment', array(CheckoutController::class, 'checkoutPayment'))->name('checkout.payment');
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class)->except('index', 'edit');

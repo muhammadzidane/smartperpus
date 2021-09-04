@@ -10,7 +10,7 @@
     </div>
 </div>
 
-<form id="checkout-form" action="#" method="GET">
+<form id="checkout-form" action="{{ route('checkout.payment', array('user' => auth()->user()->id)) }}" method="POST">
     <div class="row flex-md-row-reverse mt-4">
         <div class="col-md-3 mb-4">
             <div class="white-content pt-0 m-0">
@@ -20,21 +20,24 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>
-                        <input name="amount" type="text" value="{{ request('amount') }}" class="input-none text-right w-50" readonly>
+                        <input name="amount" type="text" value="{{ $amount }}" class="input-none text-right w-50" readonly>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Ongkos Kirim</div>
-                        <input id="checkout-shipping-price" type="text" value="0" class="input-none text-right w-50" readonly>
+                        <div id="checkout-shipping-price">Rp0</div>
+                        <input id="checkout-shipping-cost" name="shipping_cost" type="hidden" value="0" class="input-none text-right w-50" readonly>
                     </div>
                 </div>
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">
                         <div>Total Pembayaran</div>
-                        <input name="total" type="text" value="{{ request('total') }}" class="input-none text-right tred-bold w-50" readonly>
+                        <div class="tred-bold">{{ rupiah_format($total) }}</div>
+                        <input name="total" type="hidden" value="{{ $total }}" class="input-none text-right tred-bold w-50" readonly>
                     </div>
                     <div class="mt-3">
                         <button type="submit" id="payment-button" class="btn btn-red w-100">
-                            <i class="fas fa-shield-alt mr-2"></i>Bayar
+                            <i class="fas fa-shield-alt mr-2"></i>
+                            <span>Buat Pesanan</span>
                         </button>
                     </div>
                 </div>
@@ -58,7 +61,7 @@
                         <label>
                             <div class="d-flex">
                                 <div class="mr-2 d-flex">
-                                    <input type="radio" name="customer" class="my-auto">
+                                    <input type="radio" name="customer" class="my-auto" value="{{ $customer->id }}">
                                 </div>
                                 <div>
                                     <div>
@@ -98,13 +101,13 @@
                     </div>
                     <span>* Dikirim dari Kec. Cimenyan, Kab. Bandung Jawa Barat</span>
                     <div class="radio-toolbar mt-3">
-                        <input type="radio" id="jne" name="courier" value="jne">
+                        <input type="radio" id="jne" name="courier_name" value="jne">
                         <label for="jne">JNE</label>
 
-                        <input type="radio" id="pos" name="courier" value="pos">
+                        <input type="radio" id="pos" name="courier_name" value="pos">
                         <label for="pos">Pos Indonesia</label>
 
-                        <input type="radio" id="tiki" name="courier" value="tiki">
+                        <input type="radio" id="tiki" name="courier_name" value="tiki">
                         <label for="tiki">TIKI</label>
                     </div>
                 </div>
@@ -113,41 +116,41 @@
                 <div>
                     <div id="payment-method-title" class="tbold">Metode pembayaran</div>
                     <div class="radio-toolbar mt-3">
-                        <input type="radio" id="bri" name="payment_method" value="all">
+                        <input type="radio" id="bri" name="payment_method" value="bri">
                         <label for="bri">Transfer Bank BRI</label>
 
-                        <input type="radio" id="bni" name="payment_method" value="false">
+                        <input type="radio" id="bni" name="payment_method" value="bni">
                         <label for="bni">Transfer Bank BNI</label>
 
-                        <input type="radio" id="bca" name="payment_method" value="true">
+                        <input type="radio" id="bca" name="payment_method" value="bca">
                         <label for="bca">Transfer Bank BCA</label>
                     </div>
                 </div>
             </div>
-            @foreach ($datas as $data)
+            @foreach ($checkouts as $checkout)
             <div class="customer-book white-content mt-4 borbot-gray-bold">
                 <div class="container-sm mx-sm-3 mt-4">
                     <div class="row">
                         <div class="col-sm-2 mb-4">
-                            <img class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $data['book']->image) }}">
+                            <img class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $checkout->books[0]->image) }}">
                         </div>
                         <div class="col-sm-10">
-                            <div class="text-righteous">{{ $data['book']->name }}</div>
-                            <div class="tred-bold">{{ $data['book']->ebook ? 'E-Book' : 'Buku Cetak' }}</div>
+                            <div class="text-righteous">{{ $checkout->books[0]->name }}</div>
+                            <div class="tred-bold">{{ $checkout->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</div>
                             <div class="mt-4 d-flex flex-md-column justify-content-md-between">
                                 <div class="d-md-flex">
                                     <div class="mr-4 mb-4">
                                         <div class="tbold">Harga</div>
-                                        <div class="cart-book-price text-grey" data-price="{{ $data['book']->price - $data['book']->discount }}">{{ rupiah_format($data['book']->price - $data['book']->discount)   }}</div>
+                                        <div class="cart-book-price text-grey" data-price="{{ $checkout->books[0]->price - $checkout->books[0]->discount }}">{{ rupiah_format($checkout->books[0]->price - $checkout->books[0]->discount)   }}</div>
                                     </div>
                                     <div class="mr-4">
                                         <div class="tbold">Jumlah</div>
-                                        <div class="text-grey">{{ $data['amount'] }}</div>
+                                        <div class="text-grey">{{ $checkout->amount }}</div>
                                     </div>
                                     <div class="mr-4">
                                         <div class="tbold">Berat</div>
                                         <div class="text-grey">
-                                            <span class="book-weight">{{ $data['book']->weight }}</span>
+                                            <span class="book-weight">{{ $checkout->books[0]->weight }}</span>
                                             <span>gram</span>
                                         </div>
                                     </div>
@@ -155,7 +158,7 @@
                                 <div>
                                     <i class="fas fa-pencil-alt mr-1" aria-hidden="true"></i>
                                     <span class="tred-bold">Catatan:</span>
-                                    <span>{{ $data['note'] ?? '-' }}</span>
+                                    <span>{{ $checkout->note ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
