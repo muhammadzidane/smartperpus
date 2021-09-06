@@ -10,11 +10,11 @@
     </div>
 </div>
 
-<form action="{{ route('checkout') }}" method="POST">
+<form id="cart-checkout" action="{{ route('checkout') }}" method="POST">
     <div class="row flex-md-row-reverse mt-4">
         <div class="col-md-3 mb-4">
             <div class="white-content pt-0 m-0">
-                <div id="book-payment" class="text-grey py-2 mb-0 bordash-gray">
+                <div id="book-payment" class="text-grey py-2 pb-3 mb-0 borbot-gray">
                     <div class="mt-2 mb-4">
                         <h4 class="hd-16 text-center text-body">Ringkasan Pembayaran</h4>
                     </div>
@@ -50,12 +50,12 @@
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
                             <label>
-                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->ebook . '-' .  $book->id }}">
+                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->id }}">
                                 <span>Pilih</span>
                             </label>
                         </div>
                         <div>
-                            <button type="button" data-id="{{ $book->carts[0]->id }}" class="cart-delete btn-none tred-bold">Hapus</button>
+                            <button type="button" data-id="{{ $book->carts()->where('user_id', auth()->id())->first()->id }}" class="cart-delete btn-none tred-bold">Hapus</button>
                         </div>
                     </div>
                 </div>
@@ -68,10 +68,15 @@
                             <div class="text-righteous">{{ $book->name }}</div>
                             <div class="form-group w-maxc mt-2">
                                 <div>Pilih Jenis: </div>
-                                <select class="cart-book-version form-control-custom mt-2" name="book_version">
+                                <select class="cart-book-version form-control-custom mt-2">
                                     <option disabled selected class="d-none"></option>
-                                    <option>Buku Cetak</option>
-                                    <option>E-Book</option>
+                                    <option value="hard_cover">Buku Cetak</option>
+                                    @if ($book->ebook == 0)
+                                    <option disabled>E-Book</option>
+
+                                    @else
+                                    <option value="ebook">E-Book</option>
+                                    @endif
                                 </select>
                             </div>
                             <div class="mt-4 d-flex flex-md-column justify-content-md-between">
@@ -84,9 +89,9 @@
                                         <div class="tbold">Jumlah</div>
                                         <div class="text-grey d-flex">
                                             <div>
-                                                <input type="text" value="{{ $book->carts[0]->amount }}" class="cart-amount-req input-none" readonly>
+                                                <input type="text" value="{{ $book->carts()->where('user_id', auth()->id())->first()->amount }}" class="cart-amount-req input-none" readonly>
                                                 <span>/</span>
-                                                <input type="text" value="{{ $book->printed_book_stock - $book->carts[0]->amount }}" class="cart-total-stock input-none" readonly>
+                                                <input type="text" value="{{ $book->printed_book_stock - $book->carts()->where('user_id', auth()->id())->first()->amount }}" class="cart-total-stock input-none" readonly>
                                             </div>
                                             <div class="cart-amount ml-2">
                                                 <button type="button" class="cart-plus btn-none p-0"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>

@@ -88,7 +88,7 @@ class CartController extends Controller
             'data' => null,
         );
 
-        return response()->json($response);
+        return response()->json($request->all());
     }
 
     /**

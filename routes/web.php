@@ -125,8 +125,9 @@ Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'se
 Route::resource('/book-users', BookUserController::class);
 
 // Book Purchase
-Route::resource('/book-purchases', BookPurchaseController::class)->except('store')->parameter('book-purchases', 'book_user');
+Route::resource('/book-purchases', BookPurchaseController::class)->except('store', 'show')->parameter('book-purchases', 'book_user');
 Route::prefix('book-purchases')->group(function () {
+    Route::get('{invoice}', array(BookPurchaseController::class, 'show'))->name('book.purchases.show');
     Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');

@@ -98,17 +98,31 @@ class BookPurchaseController extends Controller
      * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function show(BookUser $bookUser)
+    public function show($invoice)
     {
-        if ($bookUser->user_id == Auth::id()) {
-            if ($bookUser->payment_status == 'failed') {
-                return abort(404);
-            } else {
-                return view('book.book-payment', compact('bookUser'));
-            }
-        } else {
-            return abort(404);
-        }
+        $user       = User::find(auth()->user()->id);
+        $conditions = [
+            ['user_id', $user->id],
+            ['invoice', $invoice],
+        ];
+
+        $book_users = BookUser::where($conditions)->get();
+
+
+        $total_payment = $book_users->reduce(function ($carry, $item) {
+            return $carry + ($item->total_payment - $item->unique_code);
+        });
+
+        $total_payment = $total_payment + $book_users[0]->unique_code + $book_users[0]->shipping_cost;
+
+        $datas = $book_users->map(function ($book_user) {
+            return array(
+                'book_user' => $book_user,
+                'book'      => Book::find($book_user->book_id),
+            );
+        });
+
+        return view('book.book-payment', compact('datas', 'total_payment'));
     }
 
     /**

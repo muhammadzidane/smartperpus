@@ -20,7 +20,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>
-                        <input name="amount" type="text" value="{{ $amount }}" class="input-none text-right w-50" readonly>
+                        <input name="amount" type="text" value="{{ $amount }}" class="input-none text-right w-50 text-grey" readonly>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Ongkos Kirim</div>
@@ -31,7 +31,7 @@
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">
                         <div>Total Pembayaran</div>
-                        <div class="tred-bold">{{ rupiah_format($total) }}</div>
+                        <div id="checkout-total-payment-text" data-price="{{ $total }}" class="tred-bold">{{ rupiah_format($total) }}</div>
                         <input name="total" type="hidden" value="{{ $total }}" class="input-none text-right tred-bold w-50" readonly>
                     </div>
                     <div class="mt-3">
@@ -52,7 +52,7 @@
                         </span>
                         <h4 class="d-inline">Alamat Pengiriman</h4>
                     </div>
-                    @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                    @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button type="button" id="user-create-customer" class="btn-none tred-bold">Tambah</button>
                         @endif
                 </div>
                 <div id="user-customer-lists">
@@ -89,7 +89,7 @@
                     @empty
                     <div class="mt-4">
                         <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
-                        <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                        <button id="user-create-customer" type="button" class="btn-none tred-bold">Tambah</button>
                     </div>
                     @endforelse
                 </div>
@@ -114,7 +114,7 @@
             </div>
             <div class="white-content mt-4">
                 <div>
-                    <div id="payment-method-title" class="tbold">Metode pembayaran</div>
+                    <div id="payment-method-title" class="tbold">Metode pembayaran (Cek manual)</div>
                     <div class="radio-toolbar mt-3">
                         <input type="radio" id="bri" name="payment_method" value="bri">
                         <label for="bri">Transfer Bank BRI</label>
@@ -127,6 +127,7 @@
                     </div>
                 </div>
             </div>
+
             @foreach ($checkouts as $checkout)
             <div class="customer-book white-content mt-4 borbot-gray-bold">
                 <div class="container-sm mx-sm-3 mt-4">
@@ -172,7 +173,7 @@
 </form>
 
 <div class="mt-5">
-    <div class="w-maxc ml-auto">{{ 'links()' }}</div>
+    <div class="w-maxc ml-auto">{{ $checkouts->links() }}</div>
 </div>
 
 @endsection

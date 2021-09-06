@@ -189,9 +189,9 @@
                         <div class="tred-bold">
                             <span>
                                 <small class="discount-line-through d-inline">
-                                    {{ rupiah_format($book->price - $book->discount) }}
+                                    {{ rupiah_format($book->price) }}
                                 </small>
-                                {{ rupiah_format($book->price) }}
+                                {{ rupiah_format($book->price - $book->discount) }}
                             </span>
                         </div>
 
@@ -233,7 +233,7 @@
                         @endif
 
                         @auth
-                        <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                        <a href="{{ route('carts.index') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
                         @endauth
 
                         @guest

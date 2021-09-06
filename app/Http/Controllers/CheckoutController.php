@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, Checkout};
-use Illuminate\Support\Facades\{Auth, Validator};
+use App\Models\{User, Book, Cart, Checkout};
+use Illuminate\Support\Facades\{Auth, Validator, Date, BookUser};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -16,15 +16,35 @@ class CheckoutController extends Controller
 
     public function checkout(Request $request)
     {
+        // Validasi
+        $rules = array(
+            'carts' => 'required'
+        );
+
+        $request->validate($rules);
+        // End Validasi
+
         $carts = $request->all()['carts'];
         $datas = collect($carts)->map(function ($cart) {
             $cart    = explode('-', $cart);
-            $book    = Book::find($cart[1]);
+
+            if (count($cart) > 3) {
+                $note = collect($cart)
+                    ->slice(2)
+                    ->map(fn ($note) => $note == '' ? '-' : $note)
+                    ->join('-');
+            } else {
+                $note = $cart[2] ?? null;
+            }
+
+            $book   = Book::find($cart[0]);
+            $amount = $book->carts()->where('user_id', auth()->id())->first()->amount;
+
             $results = array(
-                'book_version' => $cart[0],
+                'book_version' => $cart[1],
                 'book'         => $book,
-                'amount'       => $cart[2],
-                'note'         => $cart[3] ?? null,
+                'amount'       => $amount,
+                'note'         => $note,
             );
 
             return $results;
@@ -47,13 +67,12 @@ class CheckoutController extends Controller
         })->toArray();
 
         Checkout::insert($datas);
-
         return redirect()->route('checkout.index');
     }
 
     public function index()
     {
-        $checkouts = Auth::user()->checkouts;
+        $checkouts = Checkout::where('user_id', Auth::id())->paginate(8);
 
         if ($checkouts->isEmpty()) {
             return abort(404);
@@ -102,29 +121,55 @@ class CheckoutController extends Controller
         }
         // End Validasi
 
-        $checkouts = $user->checkouts;
-        $user = User::find(Auth::user());
-
-        $data = array(
-            'invoice' => substr(time(), 0, 10),
-            'book_version' => '',
-            'amount' => '',
-            'courier_name' => '',
-            'courier_service' => '',
-            'shipping_cost' => '',
-            'note' => '',
-            'insurance' => '',
-            'unique_code' => '',
-            'total_payment' => '',
-            'payment_method' => '',
-            'payment_status' => '',
-            'payment_deadline' => '',
-        );
+        $checkouts     = $user->checkouts;
+        $random_digits = 3;
+        $unique_code   = rand(pow(10, $random_digits - 1), pow(10, $random_digits) - 1);
+        $invoice       = substr(time(), 0, 10);
 
         foreach ($checkouts as $checkout) {
-            dump($checkout->book_id);
+            $book            = Book::find($checkout->book_id);
+            $courier_service = explode('-', $request->courier_service)[1];
+            $shipping_cost   = $request->shipping_cost;
+            $total_payment   = ($book->price - $book->discount) * $checkout->amount + $unique_code;
+
+            switch ($request->payment_method) {
+                case 'bri':
+                    $payment_method = 'Transfer Bank BRI';
+
+                    break;
+                case 'bni':
+                    $payment_method = 'Transfer Bank BNI';
+
+                    break;
+                case 'bca':
+                    $payment_method = 'Transfer Bank BCA';
+
+                    break;
+            }
+
+            $data = array(
+                'book_id' => $checkout->book_id,
+                'invoice' => $invoice,
+                'book_version' => $checkout->book_version,
+                'amount' => $checkout->amount,
+                'courier_name' => $request->courier_name,
+                'courier_service' => $courier_service,
+                'shipping_cost' => $shipping_cost,
+                'note' => $checkout->note,
+                'insurance' => 0,
+                'unique_code' => $unique_code,
+                'total_payment' => $total_payment,
+                'payment_method' => $payment_method,
+                'payment_status' => 'waiting_for_confirmation',
+                'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
+            );
+
+            $reduce_book_stock = $book->printed_book_stock - $checkout->amount;
+            $reduce_book_stock = array('printed_book_stock' => $reduce_book_stock);
+
+            $book->users()->attach($user->id, $data);
         }
 
-        dump($request->all());
+        return redirect()->route('book.purchases.show', array('invoice' => $invoice));
     }
 }

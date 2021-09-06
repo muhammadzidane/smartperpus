@@ -4,13 +4,13 @@
 <div class="text-center">
     <h4>Lakukan pembayaran dalam</h4>
     <h1 id="payment-limit-time" class="text-righteous my-4"></h1>
-    <div>Batas waktu pembayaran : <span id="payment-limit-date" data-id="{{ $bookUser->id }}" class="tbold"></span></div>
+    <div>Batas waktu pembayaran : <span id="payment-limit-date" data-id="{{ $datas[0]['book_user']->id }}" class="tbold"></span></div>
 </div>
 
 <div>
     <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold mt-c w-75 mx-auto">
         <div class="white-content-header-2">
-            @switch($bookUser->payment_method)
+            @switch($datas[0]['book_user']->payment_method)
             @case('Transfer Bank BRI')
             <h4 class="hd-18">Transfer Bank BRI</h4>
             @break
@@ -29,7 +29,7 @@
                     <div>
                         <div class="d-flex">
                             <div>
-                                @switch($bookUser->payment_method)
+                                @switch($datas[0]['book_user']->payment_method)
                                 @case('Transfer Bank BRI')
                                 <img src="{{ asset('img/transfer/bri.png') }}" class="w-20">
                                 @break
@@ -51,7 +51,7 @@
             <div class="d-flex justify-content-between p-15 ml-4">
                 <div>
                     <h4 class="hd-18">Total Pembayaran</h4>
-                    <div class="hd-18 tred-bold">{{ rupiah_format($bookUser->total_payment) }}</div>
+                    <div class="hd-18 tred-bold">{{ rupiah_format($total_payment) }}</div>
                     <div class="mt-4 text-grey"><i class="fa fa-info-circle" aria-hidden="true"></i> Unggah bukti pembayaran agar proses cepat dilakukan</div>
                 </div>
                 <div class="ml-4">
@@ -68,55 +68,33 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="row borbot-gray-0 pb-2 px-3">
+                                    @foreach ($datas as $data)
+                                    <div class="row borbot-gray-0 pb-4 px-3 mt-3">
                                         <div class="col-3">
-                                            <img class="w-100" src="{{ asset('storage/books/' . App\Models\Book::find($bookUser->book_id)->image) }}">
+                                            <img class="w-100" src="{{ asset('storage/books/' . $data['book']->image) }}">
                                         </div>
                                         <div class="col-9">
                                             <div>
-                                                <h4 class="hd-14">{{ App\Models\Book::find($bookUser->book_id)->name }} </h4>
-                                                <h4 class="hd-14 tred">( Buku Cetak )</h4>
+                                                <h4 class="hd-14">{{ $data['book']->name }}</h4>
+                                                <h4 class="hd-14 tred">{{ $data['book_user']->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</h4>
                                             </div>
                                             <div class="text-grey">
                                                 <div class="d-flex justify-content-between mb-1">
                                                     <div>Jumlah barang</div>
-                                                    <div>{{ $bookUser->amount }}</div>
+                                                    <div>{{ $data['book_user']->amount }}</div>
                                                 </div>
                                                 <div class="d-flex justify-content-between mb-1">
                                                     <div>Harga barang</div>
-                                                    <div>{{ rupiah_format(App\Models\Book::find($bookUser->book_id)->price) }}</div>
+                                                    <div>{{ rupiah_format($data['book']->price - $data['book']->discount) }}</div>
                                                 </div>
                                                 <div class="d-flex justify-content-between mb-1">
-                                                    <div>Kurir</div>
-                                                    <div>{{ $bookUser->courier_name }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Layanan kurir</div>
-                                                    <div>{{ $bookUser->courier_service }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Layanan pembayaran</div>
-                                                    <div>{{ $bookUser->payment_method }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Ongkos Kirim</div>
-                                                    <div>{{ rupiah_format($bookUser->shipping_cost) }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Asuransi</div>
-                                                    <div>{{ rupiah_format($bookUser->insurance) }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Kode unik</div>
-                                                    <div>{{ rupiah_format($bookUser->unique_code) }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Total Pembayaran</div>
-                                                    <div class="tred-bold">{{ rupiah_format($bookUser->total_payment) }}</div>
+                                                    <div>Total</div>
+                                                    <div class="tred-bold">{{ rupiah_format($data['book_user']->total_payment - $data['book_user']->unique_code) }}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -131,9 +109,9 @@
     <div class="white-content-header-2">
         <h4 class="hd-18">Petunjuk Pembayaran</h4>
     </div>
-    @switch($bookUser->payment_method)
+    @switch($datas[0]['book_user']->payment_method)
     @case('Transfer Bank BRI')
-    <div class="my-4 c-p">
+    <div class="c-p">
         <div class="payment-instructions borbot-gray-0" data-bank="bri-atm">
             <div class="p-15">
                 <h4 class="hd-18">BRI - ATM <i class="payment-instructions-caret fa fa-caret-right ml-2" aria-hidden="true"></i></h4>
@@ -201,7 +179,7 @@
     </div>
     @break
     @case('Transfer Bank BNI')
-    <div class="my-4 c-p">
+    <div class="c-p">
         <div class="payment-instructions borbot-gray-0" data-bank="bri-atm">
             <div class="p-15">
                 <h4 class="hd-18">BNI - ATM <i class="payment-instructions-caret fa fa-caret-right ml-2" aria-hidden="true"></i></h4>
@@ -273,7 +251,7 @@
     </div>
     @break
     @case('Transfer Bank BCA')
-    <div class="my-4 c-p">
+    <div class="c-p">
         <div class="payment-instructions borbot-gray-0" data-bank="bri-atm">
             <div class="p-15">
                 <h4 class="hd-18">BCA - ATM<i class="payment-instructions-caret fa fa-caret-right ml-2" aria-hidden="true"></i></h4>

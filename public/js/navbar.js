@@ -2103,13 +2103,6 @@ $(document).ready(function () {
     userCustomerCreate();
     //#endregion User - Customer Create
 
-    if (sessionStorage.getItem('pesan') !== null) {
-        $('#pesan strong').text(sessionStorage.getItem('pesan'));
-        $('#pesan').removeClass('d-none');
-    }
-
-    sessionStorage.clear();
-
     // Customer Create
     $('#customer-store').on('submit', function (e) {
         e.preventDefault();
@@ -2575,7 +2568,6 @@ $(document).ready(function () {
             let cartCheck      = this;
             let paymentAmount  = $('#cart-amounts');
             let amount         = $(cartCheck).parents('.white-content-header-2').next().find('.cart-amount-req');
-            let cartCheckValue = cartCheck.getAttribute('value');
 
             let checkedAll = $('.cart-check').toArray();
                 checkedAll = checkedAll.filter(element => element.checked);
@@ -2601,14 +2593,8 @@ $(document).ready(function () {
             }
 
             if (cartCheck.checked) {
-                cartCheck.setAttribute('value', `${cartCheckValue}-${amount.val()}`);
                 $('#cart-amounts').val(parseInt(paymentAmount.val()) + parseInt(amount.val()));
             } else {
-                let cartCheckValue = $(cartCheck).val().split('-');
-                    cartCheckValue = cartCheckValue.slice(0, 2);
-                    cartCheckValue = cartCheckValue.join('-');
-
-                $(cartCheck).attr('value', cartCheckValue);
                 $(cartCheck).parents('.white-content').find('.cart-note-cancel').trigger('click');
                 $('#cart-amounts').val(parseInt(paymentAmount.val()) - parseInt(amount.val()));
             }
@@ -2651,7 +2637,9 @@ $(document).ready(function () {
                                     amount : amountPlus
                                 };
 
-                                $.post(`/carts/${customerId}`, datas);
+                                $.post(`/carts/${customerId}`, datas, function(response) {
+                                    console.log(response);
+                                });
                             }
                         } else if (amount.val() != 1){
                             totalStock.val(parseInt(totalStock.val()) + 1);
@@ -2691,14 +2679,6 @@ $(document).ready(function () {
                         $('#cart-total-payment').val(rupiahFormat(paymentTotal));
                     }, 300);
                 }
-            });
-
-            $('.cart-book-version').on('change', function() {
-                let html = `<div class="book-version-text tred-bold mt-2">${$(this).val()}</div>`;
-
-                $(this).siblings('.book-version-text').length == 0
-                    ? $(this).after(html)
-                    : $('.book-version-text').text($(this).val());
             });
         });
     };
@@ -2752,25 +2732,6 @@ $(document).ready(function () {
             note.hide();
             $(this).after(html);
 
-            let cartNoteInput = note.next().find('.cart-note-input')
-
-            cartNoteInput.on('keyup', function() {
-                let value = $(this).val();
-                let check = note.parents('.white-content').find('.cart-check');
-
-                let newAttributeValue;
-
-                if (value != 0) {
-                    let checkSplit        = check.val().split('-');
-                    newAttributeValue = `${checkSplit.slice(0, 3).join('-')}-${value}`;
-                } else {
-                    newAttributeValue = check.attr('value').split('-').slice(0, 3).join('-');
-                }
-
-                check.attr('value', newAttributeValue);
-            });
-
-
             $('.cart-note-cancel').on('click', function(event) {
                 event.stopImmediatePropagation();
 
@@ -2821,9 +2782,57 @@ $(document).ready(function () {
             }
         });
     });
+
+    $('#cart-checkout').on('submit', function(event) {
+        let cartsChecked               = $('.cart-check:checked');
+        let cartsIsChecked             = $('.cart-check').is(':checked');
+        let selectedCarts              = cartsChecked.parents('.white-content').find('.cart-book-version');
+        let bookVersionChoiseIsChecked = selectedCarts.length != 0
+            ? selectedCarts.toArray().every((selectedCart) => selectedCart.value != "")
+            : false;
+
+        if (!cartsIsChecked || !bookVersionChoiseIsChecked) {
+            event.preventDefault();
+
+            selectedCarts.toArray().forEach(cart => {
+                if (cart.value == '') {
+                    let message = $(cart).siblings('.cart-book-version-error').length;
+
+                    if (message == 0) {
+                        $(cart).after('<div class="cart-book-version-error tred-bold">Jenis buku wajib diisi.</div>');
+                    }
+                }
+            });
+        } else {
+            cartsChecked.toArray().forEach(cart => {
+                let bookVersion = $(cart).parents('.white-content').find('.cart-book-version').val() == null
+                    ? ''
+                    : (selectedCarts.val() == "hard_cover" ? '-0' : '-1');
+
+                let noteValue = $(cart).parents('.white-content').find('.cart-note-input').val();
+                    noteValue = noteValue == undefined || noteValue == '' ? '' : `-${noteValue}`
+
+                let newCartsCheckedValue = cart.value + bookVersion;
+
+                $(cart).attr('value', newCartsCheckedValue.split('-').slice(0, 2).join('-') + noteValue);
+            });
+
+        }
+    });
     //#endregion Cart
 
     //#region Checkout
+    $('input[name=customer]').on('change', function() {
+        let customerAddressIsChecked = $('input[name=courier_name]').is(':checked');
+
+        $('#checkout-courier-service').remove();
+
+        if (customerAddressIsChecked) {
+            $('input[name=courier_name]:checked').trigger('change');
+            $('input[name=customer]').attr('disabled', true);
+        }
+    });
+
     $('input[name=courier_name]').on('change', function() {
         let customersAddress = $('.user-customer');
         let checkedCustomer  = $('input[name=customer]').is(':checked');
@@ -2832,8 +2841,6 @@ $(document).ready(function () {
         $('#checkout-courier-choise-title').children(':nth-child(2)').remove();
 
         if (!checkedCustomer) {
-            console.log(true);
-            console.log($('#error-customer-address').length);
             let html = `<span id="error-courier-choise" class="tred-bold">Pilih alamat pengiriman</span>`;
 
             if ($('#error-courier-choise').length == 0) {
@@ -2860,9 +2867,9 @@ $(document).ready(function () {
                     return parseInt(total) + parseInt(value);
                 });
 
-                if (spinnerLength == 0) {
-                    $('#checkout-courier-choise').after(spinnerHtml);
-                }
+                if (spinnerLength == 0) $('#checkout-courier-choise').after(spinnerHtml);
+
+                $('input[name=courier_name]').attr('disabled', true);
 
                 let datas = {
                     key: 'ce496165f4a20bc07d96b6fe3ab41ded',
@@ -2890,9 +2897,14 @@ $(document).ready(function () {
                     } else {
                         html += '';
                         costs.forEach(function(cost) {
-                            let costValue = cost.cost[0].value;
+                            let costValue        = cost.cost[0].value;
+                            let patt             = new RegExp('hari', 'i');
+                            let estimatedArrival = cost.cost[0].etd;
+                            let textHari         = patt.test(estimatedArrival);
 
-                            html += `<option value="${costValue}-${cost.service}">${cost.service}</option>`;
+                            estimatedArrival = textHari ? estimatedArrival.toLowerCase() : `${estimatedArrival} Hari`;
+
+                            html += `<option value="${costValue}-${cost.service}">${cost.description} - ${estimatedArrival}</option>`;
                         });
 
                         html =
@@ -2914,7 +2926,10 @@ $(document).ready(function () {
                         let courierOptionFirst = courierOptions.first().val();
                         let costFirst          = courierOptionFirst.split('-')[0];
                         let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
+                        let totalPaymentText   = $('#checkout-total-payment-text');
+                        let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
 
+                        totalPaymentText.text(rupiahFormat(totalPayment));
                         courierOptions.after(courierPriceHtml);
                         $('#checkout-shipping-price').text(rupiahFormat(costFirst));
                         $('#checkout-shipping-cost').attr('value', costFirst);
@@ -2923,14 +2938,21 @@ $(document).ready(function () {
                             let selectedValue      = $(this).children('option:selected').val();
                             let selectedCost       = selectedValue.split('-')[0];
                             let rupiahSelectedCost = rupiahFormat(selectedCost);
+                            let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
 
+                            totalPaymentText.text(rupiahFormat(totalPayment));
                             $('#checkout-courier-price').text(rupiahSelectedCost);
                             $('#checkout-shipping-price').text(rupiahSelectedCost);
                             $('#checkout-shipping-cost').attr('value', selectedCost);
                         });
                     }
 
+
                 })
+                .done(function() {
+                    $('input[name=customer]').attr('disabled', false);
+                    $('input[name=courier_name]').attr('disabled', false);
+                });
             }
         }
     });
