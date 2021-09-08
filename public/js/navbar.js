@@ -119,40 +119,43 @@ $(document).ready(function () {
         });
     });
 
-    keyUpToggleFormButton('.login-form');
+    // Login
+    $('#form-login').on('submit', function (event) {
+        event.preventDefault();
 
-    // Validasi Email & Password
-    $('#button-submit').on('click', function (e) {
-        e.preventDefault();
+        let validations = [
+            {
+                input: '#email',
+                inputName: 'Email',
+                rules: 'required,email'
+            },
+            {
+                input: '#password',
+                inputName: 'Password',
+                rules: 'required'
+            },
+        ];
 
-        if ($(this).hasClass('active-login') && checkFormRequiredInputs('.login-form')) {
-            $.ajax({
-                type: "POST",
-                url: "/ajax/request/check-login",
-                data: {
-                    '_token': csrfToken,
-                    'email': $('#email').val(),
-                    'password': $('#password').val(),
-                },
-                success: function (response) {
-                    let errorLogin = '<div class="error tred small mb-2" role="alert">';
-                    errorLogin += `<strong>${response.message}</strong>`;
-                    errorLogin += '</div>';
+        validator(validations, success => {
+            if (success) {
+                ajaxForm('POST', this, this.action, response => {
+                    if (response.status == 'fail') {
+                        let errorMessages =
+                        `<div class="alert-messages m-0 mb-3">
+                            <div class="alert-message">
+                                <div class="alert-message-text">${response.message}</div>
+                                <i class="alert-message-icon fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>`;
 
-                    if (!response.success) {
-                        $('#error-login').first().html((errorLogin));
+                        if ($('.alert-messages').length == 0) $('#form-login').prepend(errorMessages);
                     } else {
-                        $('#form-login').trigger('submit');
+                        window.location.href = response.data.url;
                     }
-                }
-            });
-        }
+                });
+            }
+        });
     });
-
-    // Error Login
-    if ($('.error').length) {
-        $('#login').trigger('click');
-    }
 
     // Menghapus pesan error dan input value login, saat men-click tombol exit pada modal login
     $('#login-exit').on('click', function () {
@@ -160,14 +163,6 @@ $(document).ready(function () {
         $('#errorLogin').html('');
         $('#email').val('');
         $('#password').val('');
-    });
-
-    // Menghapus input value login, saat menekan tombol keyboard 'ESC'
-    $(document).on('keyup', function (e) {
-        if (e.code == 'Escape') {
-            $('#email').val('');
-            $('#password').val('');
-        }
     });
 
     // Jika validasi form login bagian backend mulai bekerja, maka munculkan alert
@@ -2291,12 +2286,13 @@ $(document).ready(function () {
                     status: 'failed',
                 };
 
-                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
+                $.post(`/book-users/${dataId}`, datas, (response) => {
+                    console.log(response);
                     $(this).parents('.upload-payment-value').remove();
                     let messageText = 'Berhasil membatalkan pembelian';
 
                     alertMessage(messageText);
-                });
+                })
             }
         });
     })

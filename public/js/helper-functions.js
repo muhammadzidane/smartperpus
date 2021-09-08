@@ -40,17 +40,6 @@ function checkFormRequiredInputs(classInputs) {
     return check == true ?  true : false;
 }
 
-// Jika sebuah Form <input></input> yang sudah di tentukan dengan class yang sama, dan value
-// tersebut kosong . Maka tombol submit pada form tersebut tidak akan berfungsi.
-
-function keyUpToggleFormButton(classInputs) {
-    $(classInputs).on('keyup', function () {
-        checkFormRequiredInputs($(classInputs)) === true
-        ? $('.button-submit').addClass('active-login')
-        : $('.button-submit').removeClass('active-login');
-    });
-}
-
 // Mengambil value dari URL
 var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = window.location.search.substring(1),

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Cart, Book};
+use App\Models\{Cart, Book, User};
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CartController extends Controller
 {
@@ -18,11 +19,35 @@ class CartController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::whereHas('carts', function (Builder $query) {
-            $query->where('user_id', auth()->id());
-        })->paginate(8);
+        $user  = User::find(auth()->user()->id);
+        $carts = $user->carts->sortByDesc('created_at');
+
+        $books = $carts->map(function ($cart) {
+            return Book::find($cart->book_id);
+        });
+
+        $data_perpage = 8;
+        $slice_book   = $request->page == 1 || $request->page == null ? 0 : $request->page * $data_perpage - $data_perpage;
+
+        $book_id_session = session('bought_directly');
+
+        if ($book_id_session) { // Membuat session untuk checked buku pilihan, dan di taruh paling atas
+            $cart_session = $user->carts()->firstWhere('book_id', $book_id_session);
+            $book_session = Book::find($cart_session->book_id);
+
+            $books = $books->filter(function ($book, $key) {
+                return $book->id != session('bought_directly');
+            });
+
+            $books->prepend($book_session);
+        }
+
+        $books = new LengthAwarePaginator($books->slice($slice_book, $data_perpage), $books->count(), $data_perpage, $request->page, [
+            'path' => url()->current(),
+            'pageName' => 'page',
+        ]);
 
         return view('cart.index', compact('books'));
     }
@@ -101,5 +126,29 @@ class CartController extends Controller
         $delete = $cart->delete();
 
         return response()->json(compact('delete'));
+    }
+
+    public function boughtDirectly(Book $book)
+    {
+        $conditions = array(
+            array('user_id', auth()->user()->id),
+            array('book_id', $book->id)
+        );
+
+        $carts = Cart::where($conditions)->get();
+
+        // Buat cart baru
+        if ($carts->count() == 0) {
+            $data = array(
+                'user_id' => auth()->user()->id,
+                'book_id' => $book->id,
+            );
+
+            $cart = Cart::create($data);
+
+            return redirect()->route('carts.index')->with('bought_directly', $cart->book_id);
+        } else {
+            return redirect()->route('carts.index')->with('bought_directly', $book->id);
+        }
     }
 }

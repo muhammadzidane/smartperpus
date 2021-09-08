@@ -12,10 +12,18 @@ class StatusController extends Controller
     {
         $user       = User::find(Auth::id());
         $record     = 'waiting_for_payment';
-        $book_users = BookUser::where('user_id', $user->id)
-            ->where('payment_status', 'failed')
+        $conditions = array(
+            array('user_id', $user->id),
+            array('payment_status', 'failed'),
+        );
+
+        $book_users = BookUser::where($conditions)
             ->orderBy('created_at', 'DESC')
             ->get();
+
+        $book_users = $book_users->unique('invoice');
+
+        $book_users->values()->all();
 
         $waiting_for_payment_count = BookUser::where('user_id', $user->id)
             ->where('payment_status', 'waiting_for_confirmation')

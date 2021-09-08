@@ -11,15 +11,25 @@ class BookUserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth.admin.only');
+        $admin_only_middleware = array(
+            'uploadedPayments',
+            'incomeDetail',
+            'confirmedOrders',
+            'onDelivery',
+            'arrived',
+        );
+
+        $this->middleware('auth');
+        $this->middleware('auth.admin.only')->only($admin_only_middleware);
     }
 
     public function show(BookUser $bookUser)
     {
         $bookUsers = BookUser::where('invoice', $bookUser->invoice)->get();
-        $datas = array(
+        $datas     = array(
             'book_users' => $bookUsers,
         );
+
         $viewRender = view('modal.bill', $datas)->render();
 
         return response()->json(compact('bookUsers', 'viewRender'));
@@ -123,6 +133,7 @@ class BookUserController extends Controller
     {
         $book_users = BookUser::where('upload_payment_image', '!=', null)
             ->where('payment_status', 'waiting_for_confirmation')->get();
+
         return view('book_user.status.upload-payment', compact('book_users'));
     }
 
@@ -192,10 +203,9 @@ class BookUserController extends Controller
         }
     }
 
-    public function income()
+    public function income(Request $request)
     {
         $now              = Carbon::now();
-
         $nowStartOfDay    = $now->startOfDay()->format('Y-m-d H:i:s');
         $nowEndOfDay      = $now->endOfDay()->format('Y-m-d H:i:s');
         $today_book_users = BookUser::where('payment_status', 'arrived')
@@ -243,7 +253,38 @@ class BookUserController extends Controller
             'total_payments' => $all_total_payments,
         );
 
-        return view('book_user.status.income', compact('now', 'all', 'today', 'this_month'));
+        $data = compact('now', 'all', 'today', 'this_month');
+
+        // Search
+        if ($request->month) {
+            $rules = array(
+                'month' => 'required|date_format:Y-m'
+            );
+
+            $request->validate($rules);
+
+            $search              = Carbon::create($request->month);
+            $search_start_of_day = $search->startOfDay()->format('Y-m-d H:i:s');
+            $search_end_of_day   = $search->endOfMonth()->format('Y-m-d H:i:s');
+
+            $search_book_users = BookUser::where('payment_status', 'arrived')
+                ->whereBetween('completed_date', [$search_start_of_day, $search_end_of_day])
+                ->get();
+
+            $search_total_payments = $search_book_users->reduce(function ($carry, $item) {
+                return $item == null ? 0 : $carry + $item->total_payment;
+            });
+
+            $search = array(
+                'book_users' => $search_book_users,
+                'count' => $search_total_payments == 0 ? 0 : $search_book_users->count(),
+                'total_payments' => $search_total_payments,
+            );
+
+            $data = compact('now', 'all', 'today', 'this_month', 'search');
+        }
+
+        return view('book_user.status.income', $data);
     }
 
     // Ajax GET

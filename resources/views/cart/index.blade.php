@@ -44,13 +44,14 @@
                     <span class="ml-1 tred-bold">({{ $books->count() }})</span>
                 </div>
             </div>
+
             @forelse ($books as $book)
             <div class="white-content mt-4 px-0 pt-0 pb-4 m-0 borbot-gray-bold">
                 <div class="white-content-header-2">
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
                             <label>
-                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->id }}">
+                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->id ?? session('bought_directly') }}" {{ session('bought_directly') == $book->id ? 'checked' : ''}}>
                                 <span>Pilih</span>
                             </label>
                         </div>

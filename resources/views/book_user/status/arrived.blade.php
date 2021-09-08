@@ -12,7 +12,7 @@
                 <div class="row">
                     <div class="col-md-3 mb-5">
                         @can('viewAny', 'App\Models\User')
-                        <img class="zoom-modal-image w-100" src="{{ asset('storage/uploaded_payment/' . $book_user->upload_payment_image) }}">
+                        <img class="zoom-modal-image book-status-image" src="{{ asset('storage/uploaded_payment/' . $book_user->upload_payment_image) }}">
 
                         @else
                         <img class="w-100" src="{{ asset('img/checklist.png') }}">

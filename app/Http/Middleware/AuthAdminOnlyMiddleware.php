@@ -20,7 +20,9 @@ class AuthAdminOnlyMiddleware
         $authrole = Auth::user() != null ? Auth::user()->role : null;
 
         if ($authrole == 'guest' || $authrole == null) {
+
             return abort(404);
+            dump(true);
         } else {
             return $next($request);
         }

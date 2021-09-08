@@ -11,31 +11,6 @@ class TestController extends Controller
 {
     public function test()
     {
-        $get     = array('id', 'name');
-        $books   = Book::where('name', 'LIKE', "%hen%")->get($get);
-        $authors = Author::where('name', 'LIKE', "%hen%")->get($get);
-        $data    = array(
-            'books' => $books,
-            'authors' => $authors,
-        );
-
-        $response = array(
-            'status' => 'success',
-            'code' => 200,
-            'data' => $data,
-        );
-
-        dump($response);
-
-        // foreach ($datas as $data) {
-        //     $table_name = $data->getTable();
-
-        //     if ($table_name == 'books') {
-        //         dump($data->name);
-        //     } else { // $table_name == 'authors'
-
-        //     }
-        // }
     }
 
     public function testPost(Request $request)

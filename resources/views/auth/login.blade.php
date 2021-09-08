@@ -28,7 +28,7 @@
 <body>
     <div class="register-user container py-4">
         <div class="form-register">
-            <form id="login-form" action="{{ route('login') }}" method="POST">
+            <form id="form-login" action="{{ route('login') }}" method="POST">
                 <h5 class="tred-bold mb-4">Login</h5>
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -74,7 +74,6 @@
 
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
-    <script src="{{ asset('js/login.js') }}"></script>
 </body>
 
 </html>

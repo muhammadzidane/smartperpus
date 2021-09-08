@@ -67,9 +67,10 @@
                                 <div>Ongkos kirim : <span class="text-grey tbold">{{ rupiah_format($book_user->shipping_cost )}}</span></div>
                                 <div>Total pembayaran : <span class="text-grey tbold">{{ rupiah_format($book_user->total_payment) }}</span></div>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <div>
                                     <button class="see-billing-list mr-3 btn-none p-0 tred-bold" data-toggle="modal" data-target="#bill" data-id="{{ $book_user->id }}">Lihat Detail Transaksi</button>
+
                                     @isset ($on_delivery)
                                     <button class="tracking-packages pl-0 mt-4 btn-none tred-bold" data-invoice="{{ $book_user->invoice }}">Lacak Paket</button>
                                     @endif
@@ -97,7 +98,7 @@
     </div>
 
     @empty
-    @include('book_user.status.empty-values', array('text' => 'Tidak data yang di proses'))
+    @include('book_user.status.empty-values', array('text' => 'Tidak ada data yang di proses'))
     @endforelse
 
     @include('layouts.modal-custom',

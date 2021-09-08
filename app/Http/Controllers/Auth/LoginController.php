@@ -39,18 +39,25 @@ class LoginController extends Controller
         if ($check_password && $user !== null) {
             Auth::login($user);
 
-            $url = route('home');
+            $datas = array(
+                'url' => route('home'),
+            );
 
-            if ($request->ajax()) {
-                return response()->json(compact('url'));
-            } else {
-                return redirect()->route('home');
-            }
+            $response = array(
+                'status'  => 'success',
+                'code'    => 200,
+                'data'    => $datas,
+                'message' => 'Berhasil login',
+            );
         } else {
-            $errors = array('Email / Password anda salah');
-
-            return response()->json(compact('errors'));
+            $response = array(
+                'status'  => 'fail',
+                'code'    => 401,
+                'message' => 'Email / Password tidak valid'
+            );
         }
+
+        return response()->json($response);
     }
 
     /**

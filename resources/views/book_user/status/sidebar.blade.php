@@ -88,7 +88,7 @@
                 @else
                 <div class="text-grey">
                     <div class="py-1 position-relative {{ $failed ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Tidak berhasil</a>
+                        <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Dibatalkan</a>
                         @isset($counts['failed'])
                         @if ($counts['failed'] != 0)
                         <span class="status-circle">{{ $counts['failed'] }}</span>
@@ -96,7 +96,7 @@
                         @endisset
                     </div>
                     <div class="py-1 position-relative {{ $waiting_for_payment ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('status.waiting.for.payment') }}">Menunggu pembayaran</a>
+                        <a class="text-decoration-none text-grey" href="{{ route('status.waiting.for.payment') }}">Belum Bayar</a>
                         @isset($counts['waiting_for_payment'])
                         @if ($counts['waiting_for_payment'] != 0)
                         <span class="status-circle">{{ $counts['waiting_for_payment'] }}</span>
@@ -120,7 +120,7 @@
                         @endisset
                     </div>
                     <div class="py-1 position-relative {{ $arrived ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('status.success') }}">Berhasil</a>
+                        <a class="text-decoration-none text-grey" href="{{ route('status.success') }}">Selesai</a>
                         @isset($counts['arrived'])
                         @if ($counts['arrived'] != 0)
                         <span class="status-circle">{{ $counts['arrived'] }}</span>
@@ -129,7 +129,6 @@
                     </div>
                 </div>
                 @endcan
-
             </div>
         </div>
         <div class="mt-3">

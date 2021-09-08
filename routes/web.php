@@ -1,27 +1,30 @@
 <?php
 
-use App\Http\Controllers\{
-    AjaxController,
-    BookController,
-    AuthorController,
-    BookImageController,
-    CategoryController,
-    HomeController,
-    TestController,
-    BookPurchaseController,
-    BookUserController,
-    CartController,
-    CityController,
-    CustomerController,
-    ContentSearchFilterController,
-    UserController,
-    ProvinceController,
-    UserChatController,
-    StatusController,
-    WishlistController,
-    ValidatorController,
-    CheckoutController,
-};
+// use App\Http\Controllers\{
+//     AjaxController,
+//     BookController,
+//     AuthorController,
+//     BookImageController,
+//     CategoryController,
+//     HomeController,
+//     TestController,
+//     BookPurchaseController,
+//     BookUserController,
+//     CartController,
+//     CityController,
+//     CustomerController,
+//     ContentSearchFilterController,
+//     UserController,
+//     ProvinceController,
+//     UserChatController,
+//     StatusController,
+//     WishlistController,
+//     ValidatorController,
+//     CheckoutController,
+//     IncomeController,
+// };
+
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\{Route, Auth};
@@ -80,6 +83,7 @@ Route::prefix('books')->group(function () {
 
 // Cart
 Route::resource('carts', CartController::class);
+Route::post('carts/{book}/bought-directly', array(CartController::class, 'boughtDirectly'))->name('carts.bought.directly');
 
 Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
 Route::delete('book_images/{book_image}/delete', array(BookImageController::class, 'destroy'))->name('book.images.destroy');
@@ -99,12 +103,13 @@ Route::prefix('wishlists')->middleware('auth')->group(function () {
     Route::get('/search', array(WishlistController::class, 'search'));
 });
 
-Route::prefix('book-users/status')->middleware('auth')->group(function () {
-    Route::get('/', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
+// Book User
+Route::resource('book-users', BookUserController::class);
+Route::prefix('book-users/status')->group(function () {
+    Route::get('uploaded-payment', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
     Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))->name('confirmed.orders');
     Route::get('on-delivery', array(BookUserController::class, 'onDelivery'))->name('on.delivery');
     Route::get('success', array(BookUserController::class, 'arrived'))->name('book.users.status.arrived');
-    Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
 
     // Ajax request
     Route::get('ajax/income-detail', array(BookUserController::class, 'incomeDetail'));
@@ -112,6 +117,10 @@ Route::prefix('book-users/status')->middleware('auth')->group(function () {
     // Lacak paket
     Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));
 });
+
+// Income
+Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
+Route::get('income/detail/monthly', array(IncomeController::class, 'incomeMonthly'))->name('income.monthly');
 
 Route::prefix('status')->middleware('auth')->group(function () {
     Route::get('/failed', array(StatusController::class, 'failed'))->name('status.failed');
@@ -122,7 +131,6 @@ Route::prefix('status')->middleware('auth')->group(function () {
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
-Route::resource('/book-users', BookUserController::class);
 
 // Book Purchase
 Route::resource('/book-purchases', BookPurchaseController::class)->except('store', 'show')->parameter('book-purchases', 'book_user');

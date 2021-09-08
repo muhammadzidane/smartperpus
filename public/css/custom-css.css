@@ -2044,6 +2044,13 @@ footer {
 }
 
 /* Upload payment */
+.book-status-image {
+    display: block;
+    margin: 0 auto;
+    width: auto;
+    max-height: 250px;
+}
+
 .upload-payment-value:not(:first-child) {
     margin-top: 3rem;
 }
@@ -2178,6 +2185,12 @@ footer {
     color: #444444;
     font-weight: 600;
     box-shadow: 0.15rem 0.15rem 0.20rem #bbbbbb;
+}
+
+.income-book {
+    width: auto;
+    max-width: 80px;
+    margin-right: 0.75rem;
 }
 
 /* Media Small */

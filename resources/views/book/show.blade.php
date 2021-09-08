@@ -204,10 +204,11 @@
 
                 <div class="mt-5">
                     @auth
+                    @cannot('authAdminOnly', 'App/Models/User')
                     <div class="d-flex justify-content-between">
                         <div>
                             <button id="book-show-wishlist" class="btn-none">
-                                @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', Illuminate\Support\Facades\Auth::id())->first())
+                                @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', auth()->user()->id)->first())
                                 <i class="fas fa-heart text-danger"></i>
                                 @else
                                 <i class="far fa-heart text-danger"></i>
@@ -224,16 +225,24 @@
                             @endif
                         </div>
                     </div>
+                    @endcannot
                     @endauth
+
                     <div>
-                        @if ($book->ebook === 0)
+                        @if ($book->ebook == 0)
                         <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
+
                         @else
                         <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
                         @endif
 
                         @auth
-                        <a href="{{ route('carts.index') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                        <div>
+                            <form action="{{ route('carts.bought.directly', array('book' => $book->id)) }}" method="POST">
+                                <button type="submit" class="btn btn-red w-100 mt-2">Beli Buku Cetak</button>
+                                @csrf
+                            </form>
+                        </div>
                         @endauth
 
                         @guest

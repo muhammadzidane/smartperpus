@@ -34,11 +34,6 @@
                 </div>
             </div>
         </div>
-        @cannot('viewAny', 'App\Models\User')
-        <div class="mt-auto ml-auto">
-            <a href="{{ route('books.show', array('book' => App\Models\Book::find($book_user->book_id)->id)) }}" class="btn btn-red">Beli lagi</a>
-        </div>
-        @endcannot
     </div>
 </div>
 @endforeach

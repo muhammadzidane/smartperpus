@@ -11,7 +11,7 @@
             <div class="white-content m-0 borbot-gray-bold">
                 <div class="row">
                     <div class="col-md-3 mb-5">
-                        <img class="zoom-modal-image w-100" src="{{ asset('storage/uploaded_payment/' . $book_user->upload_payment_image) }}">
+                        <img class="zoom-modal-image book-status-image" src="{{ asset('storage/uploaded_payment/' . $book_user->upload_payment_image) }}">
                     </div>
                     <div class="col-md-9">
                         <div class="d-flex justify-content-between flex-column h-100">

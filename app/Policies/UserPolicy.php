@@ -24,6 +24,15 @@ class UserPolicy
         ));
     }
 
+    public function authAdminOnly(User $user)
+    {
+        $check_role = in_array($user->role, array(
+            'super_admin', 'admin'
+        ));
+
+        return $check_role && auth()->check();
+    }
+
     /**
      * Determine whether the user can view the model.
      *

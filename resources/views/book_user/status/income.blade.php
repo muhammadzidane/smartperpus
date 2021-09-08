@@ -33,9 +33,9 @@
             <div class="mb-4">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h4 class="hd-14">Bulan {{ $now->isoFormat('MMMM') }}</h4>
+                        <h4 class="hd-14">Bulan ini</h4>
                     </div>
-                    <div id="income-this-month" class="btn-none tred-bold">Lihat Detail</div>
+                    <a href="{{ route('income.monthly') }}" id="income-this-month" class="btn-none tred-bold">Lihat Detail</a>
                 </div>
             </div>
             <div class="row mt-auto">
@@ -83,12 +83,12 @@
         <div class="income-box borbot-gray-bold">
             <div class="mb-4">
                 <div class="d-flex justify-content-between">
-                    <h4 class="hd-14">Lihat berdasarkan bulan</h4>
+                    <h4 class="hd-14">Cari berdasarkan bulan</h4>
                     <div class="btn-none tred-bold">Lihat Detail</div>
                 </div>
                 <div class="mt-4">
-                    <form action="#" method="get">
-                        <input type="month" class="form-control-custom">
+                    <form method="GET">
+                        <input type="month" name="month" class="form-control-custom" value="{{ old('month') }}">
                         <div class="text-right mt-3">
                             <button class="btn btn-red">Cari</button>
                         </div>
@@ -98,47 +98,13 @@
             <div class="row income-search">
                 <div class="col-4">
                     <div class="text-center">
-                        <div class="income-book-amount">10</div>
+                        <div class="income-book-amount">{{ isset($search) ? $search['count'] : '-' }}</div>
                         <div class="tbold">Buku Terjual</div>
                     </div>
                 </div>
                 <div class="col-8 m-auto text-center">
-                    <h4 class="hd-14">Total</h4>
-                    <div class="income-money">
-                        <i class="fas fa-money-bill"></i>
-                        <span>Rp2.000.000</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="income-box borbot-gray-bold">
-            <div class="mb-4">
-                <div class="d-flex justify-content-between">
-                    <h4 class="hd-14">Lihat berdasarkan hari</h4>
-                    <div class="btn-none tred-bold">Lihat Detail</div>
-                </div>
-                <div class="mt-4">
-                    <form action="#" method="get">
-                        <input type="month" class="form-control-custom">
-                        <div class="text-right mt-3">
-                            <button class="btn btn-red">Cari</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row income-search">
-                <div class="col-4">
-                    <div class="text-center">
-                        <div class="income-book-amount">10</div>
-                        <div class="tbold">Buku Terjual</div>
-                    </div>
-                </div>
-                <div class="col-8 m-auto text-center">
-                    <h4 class="hd-14">Total</h4>
-                    <div class="income-money">
-                        <i class="fas fa-money-bill"></i>
-                        <span>Rp2.000.000</span>
-                    </div>
+                    <h4>Total</h4>
+                    <h4>{{ rupiah_format(isset($search) ? $search['total_payments'] : 0) }}</h4>
                 </div>
             </div>
         </div>

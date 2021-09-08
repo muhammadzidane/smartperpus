@@ -19,11 +19,13 @@
         <div>
             <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
         </div>
+
         @cannot('viewAny', App\Models\User::class)
         <div>
             <a class="dropdown-item" href="{{ route('status.waiting.for.payment') }}">Pembelian</a>
         </div>
         @endcannot
+
         @cannot('viewAny', App\Models\User::class)
         <div>
             <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
@@ -32,6 +34,7 @@
             <a class=" dropdown-item" href="{{ route('carts.index') }}">Keranjang Saya</a>
         </div>
         @endcannot
+
         @can('viewAny', App\Models\User::class)
         <div>
             <a class="dropdown-item" href="{{ route('uploaded.payments') }}">Status</a>

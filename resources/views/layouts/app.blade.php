@@ -297,13 +297,6 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        @if (session('errorLogin'))
-                        <div class="error-backend"></div>
-                        @endif
-
-                        <div id="error-login">
-                        </div>
-
                         <form id="form-login" action="{{ route('login') }}" method="POST">
                             @csrf
                             <div class="form-group">
