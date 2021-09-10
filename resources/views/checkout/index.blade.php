@@ -27,6 +27,10 @@
                         <div id="checkout-shipping-price">Rp0</div>
                         <input id="checkout-shipping-cost" name="shipping_cost" type="hidden" value="0" class="input-none text-right w-50" readonly>
                     </div>
+                    <div class="d-flex justify-content-between">
+                        <div>Subtotal Produk</div>
+                        <div>{{ rupiah_format($total)  }}</div>
+                    </div>
                 </div>
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">

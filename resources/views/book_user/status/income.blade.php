@@ -9,7 +9,7 @@
             <div class="mb-4">
                 <div class="d-flex justify-content-between">
                     <h4 class="hd-14">Hari ini</h4>
-                    <div id="income-today" class="btn-none tred-bold">Lihat Detail</div>
+                    <a href="{{ route('income.detail.today') }}" class="btn-none tred-bold">Lihat Detail</a>
                 </div>
                 <div>{{ $now->isoFormat('dddd, D MMMM YYYY') }}</div>
             </div>
@@ -35,7 +35,7 @@
                     <div>
                         <h4 class="hd-14">Bulan ini</h4>
                     </div>
-                    <a href="{{ route('income.monthly') }}" id="income-this-month" class="btn-none tred-bold">Lihat Detail</a>
+                    <a href="{{ route('income.detail.this.month') }}" id="income-this-month" class="btn-none tred-bold">Lihat Detail</a>
                 </div>
             </div>
             <div class="row mt-auto">

@@ -6,6 +6,7 @@ use App\Models\{Book, BookPurchase, BookUser, User};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, Date, Validator, DB};
 use Faker\Factory as Faker;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class BookPurchaseController extends Controller
@@ -98,7 +99,7 @@ class BookPurchaseController extends Controller
      * @param  \App\Models\BookPurchase  $bookPurchase
      * @return \Illuminate\Http\Response
      */
-    public function show($invoice)
+    public function show($invoice, Request $request)
     {
         $user       = User::find(auth()->user()->id);
         $conditions = [
@@ -106,14 +107,13 @@ class BookPurchaseController extends Controller
             ['invoice', $invoice],
         ];
 
-        $book_users = BookUser::where($conditions)->get();
+        $book_users    = BookUser::where($conditions)->get();
+        $total_payment = $book_users->sum('total_payment');
 
-
-        $total_payment = $book_users->reduce(function ($carry, $item) {
-            return $carry + ($item->total_payment - $item->unique_code);
-        });
-
-        $total_payment = $total_payment + $book_users[0]->unique_code + $book_users[0]->shipping_cost;
+        $total_payment          = $total_payment + $book_users[0]->unique_code + +$book_users[0]->shipping_cost;
+        $total_payment_sub_last = substr($total_payment, -3);
+        $total_payment_sub      = substr($total_payment, 0, -3);
+        $total_payment          = substr(rupiah_format($total_payment_sub . $total_payment_sub_last), 0, -3);
 
         $datas = $book_users->map(function ($book_user) {
             return array(
@@ -122,7 +122,24 @@ class BookPurchaseController extends Controller
             );
         });
 
-        return view('book.book-payment', compact('datas', 'total_payment'));
+        $courier_name = $book_users[0]->courier_name;
+
+        switch ($courier_name) {
+            case 'jne':
+                $courier_name = 'Jalur Nugraha Ekakurir (JNE)';
+                break;
+            case 'pos':
+                $courier_name = 'POS Indonesia';
+                break;
+            case 'tiki':
+                $courier_name = 'Citra Van Titipan Kilat (TIKI)';
+                break;
+            default:
+                $courier_name = '';
+                break;
+        }
+
+        return view('book.book-payment', compact('datas', 'total_payment', 'total_payment_sub_last', 'courier_name'));
     }
 
     /**

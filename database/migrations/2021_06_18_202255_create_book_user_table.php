@@ -17,6 +17,7 @@ class CreateBookUserTable extends Migration
             $table->id();
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('customer_id')->constrained();
             $table->string('invoice', 10);
             $table->enum('book_version', array('ebook', 'hard_cover'));
             $table->integer('amount');

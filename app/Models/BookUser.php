@@ -20,11 +20,16 @@ class BookUser extends Model
     // Relasi antar tabel
     public function books()
     {
-        return $this->hasMany(Book::class);
+        return $this->belongsToMany(Book::class, 'book_user', 'id');
     }
 
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function customers()
+    {
+        return $this->belongsToMany(Customer::class);
     }
 }

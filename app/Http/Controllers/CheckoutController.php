@@ -18,7 +18,7 @@ class CheckoutController extends Controller
     {
         // Validasi
         $rules = array(
-            'carts' => 'required'
+            'carts'        => 'required',
         );
 
         $request->validate($rules);
@@ -130,7 +130,7 @@ class CheckoutController extends Controller
             $book            = Book::find($checkout->book_id);
             $courier_service = explode('-', $request->courier_service)[1];
             $shipping_cost   = $request->shipping_cost;
-            $total_payment   = ($book->price - $book->discount) * $checkout->amount + $unique_code;
+            $total_payment   = ($book->price - $book->discount) * $checkout->amount;
 
             switch ($request->payment_method) {
                 case 'bri':
@@ -149,6 +149,7 @@ class CheckoutController extends Controller
 
             $data = array(
                 'book_id' => $checkout->book_id,
+                'customer_id' => $request->customer,
                 'invoice' => $invoice,
                 'book_version' => $checkout->book_version,
                 'amount' => $checkout->amount,

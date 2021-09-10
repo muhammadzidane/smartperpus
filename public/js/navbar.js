@@ -2299,11 +2299,48 @@ $(document).ready(function () {
 
     // Lihat daftar tagihan
     $('.see-billing-list').on('click', function() {
-        let dataId = $(this).data('id');
-        let html = '';
+        let invoice = $(this).data('invoice');
 
-        ajaxJson('GET', `/book-users/${dataId}`, {}, response => {
-            $('.bill').html(response.viewRender);
+        $.get(`/status/${invoice}/detail`, response => {
+            bootStrapModal('Detail', 'modal-md', () => {
+                console.log(response);
+                let data         = response.data;
+
+                let html =
+                `
+                <div>
+                    <div class="mb-3">
+                        <h5>Alamat Pengiriman</h5>
+                        <div>
+                            <div>${data.customer.name}</div>
+                            <div>${data.customer.phone_number}</div>
+                            <div>${data.customer.address}, Kec.${data.district}, ${data.city} ${data.city_type} . ${data.province}</div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td>Kurir</td>
+                        <td>${data.book_user.courier_name.toUpperCase()} (${data.book_user.courier_service})</td>
+                    </tr>
+                    <tr>
+                        <td>Metode Pembayaran</td>
+                        <td>${data.book_user.payment_method} (di cek manual)</td>
+                    </tr>
+                    <tr>
+                        <td>Kode Unik</td>
+                        <td>Rp(${data.book_user.unique_code})</td>
+                    </tr>
+                    <tr>
+                        <td>Total Pembayaran</td>
+                        <td class="tred-bold">${rupiahFormat(data.total_payment)}</td>
+                    </tr>
+                    </tbody>
+                    </table>
+                </div>`;
+
+                return html;
+            });
         });
     });
 

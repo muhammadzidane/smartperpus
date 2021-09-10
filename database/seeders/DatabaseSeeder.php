@@ -25,8 +25,6 @@ class DatabaseSeeder extends Seeder
                 SynopsisSeeder::class,
                 ProvinceSeeder::class,
                 CitySeeder::class,
-                BookUserSeeder::class,
-                // DistrictSeeder::class,
             )
         );
     }

@@ -72,6 +72,7 @@
                                 <select class="cart-book-version form-control-custom mt-2">
                                     <option disabled selected class="d-none"></option>
                                     <option value="hard_cover">Buku Cetak</option>
+                                    {{ dump($book->ebook) }}
                                     @if ($book->ebook == 0)
                                     <option disabled>E-Book</option>
 
@@ -84,7 +85,13 @@
                                 <div class="d-md-flex">
                                     <div class="mr-4 mb-4">
                                         <div class="tbold">Harga</div>
-                                        <div class="cart-book-price text-grey" data-price="{{ $book->price - $book->discount }}">{{ rupiah_format($book->price - $book->discount)   }}</div>
+                                        <div class="cart-book-price text-grey" data-price="{{ $book->price - $book->discount }}">
+                                            <span class="{{ $book->discount != 0 ? 'discount-line-through text-danger' : '' }}">{{ rupiah_format($book->price) }}</span>
+
+                                            @if ($book->discount != 0)
+                                            <span>{{ rupiah_format($book->price - $book->discount) }}</span>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="mr-4">
                                         <div class="tbold">Jumlah</div>

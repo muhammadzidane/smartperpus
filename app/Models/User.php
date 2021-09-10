@@ -16,7 +16,26 @@ class User extends Authenticatable
     // Relasi antar tabel
     public function books()
     {
-        return $this->belongsToMany(Book::class);
+        $pivot_columns = array(
+            'invoice',
+            'book_version',
+            'amount',
+            'courier_name',
+            'courier_service',
+            'shipping_cost',
+            'note',
+            'insurance',
+            'unique_code',
+            'total_payment',
+            'payment_method',
+            'payment_status',
+            'completed_date',
+            'payment_deadline',
+            'upload_payment_image',
+            'confirmed_payment',
+        );
+
+        return $this->belongsToMany(Book::class)->withPivot($pivot_columns)->withTimestamps();
     }
 
     public function customers()

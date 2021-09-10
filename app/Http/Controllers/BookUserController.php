@@ -6,6 +6,7 @@ use App\Models\{BookUser, Book};
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Storage, Validator, Auth};
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class BookUserController extends Controller
 {
@@ -21,18 +22,6 @@ class BookUserController extends Controller
 
         $this->middleware('auth');
         $this->middleware('auth.admin.only')->only($admin_only_middleware);
-    }
-
-    public function show(BookUser $bookUser)
-    {
-        $bookUsers = BookUser::where('invoice', $bookUser->invoice)->get();
-        $datas     = array(
-            'book_users' => $bookUsers,
-        );
-
-        $viewRender = view('modal.bill', $datas)->render();
-
-        return response()->json(compact('bookUsers', 'viewRender'));
     }
 
     public function update(Request $request, BookUser $bookUser)
@@ -129,6 +118,10 @@ class BookUserController extends Controller
         }
     }
 
+    public function failed()
+    {
+    }
+
     public function uploadedPayments()
     {
         $book_users = BookUser::where('upload_payment_image', '!=', null)
@@ -137,11 +130,40 @@ class BookUserController extends Controller
         return view('book_user.status.upload-payment', compact('book_users'));
     }
 
-    public function confirmedOrders()
+    public function confirmedOrders(Request $request)
     {
         $book_users = BookUser::where('upload_payment_image', '!=', null)
             ->where('payment_status', 'order_in_process')
             ->where('confirmed_payment', true)->get();
+
+        $book_users = $book_users->unique('invoice');
+        $book_users = $book_users->map(function ($book_user) {
+            $amount        = BookUser::where('invoice', $book_user->invoice)->get()->sum('amount');
+            $total_payment = BookUser::where('invoice', $book_user->invoice)->get()
+                ->sum('total_payment') + $book_user->unique_code + $book_user->shipping_cost;
+
+            return array(
+                'invoice' => $book_user->invoice,
+                'book_user' => $book_user,
+                'amount' => $amount,
+                'total_payment' => $total_payment,
+            );
+        });
+
+        $data_perpage = 10;
+        $slice_book   = $request->page == 1 || $request->page == null ? 0 : $request->page * $data_perpage - $data_perpage;
+        $book_users   = new LengthAwarePaginator(
+            $book_users->slice($slice_book, $data_perpage),
+            $book_users->count(),
+            $data_perpage,
+            $request->page,
+            [
+                'path' => url()->current(),
+                'pageName' => 'page',
+            ]
+        );
+
+        dump($book_users);
 
         return view('book_user.status.confirmed-orders', compact('book_users'));
     }
@@ -168,7 +190,10 @@ class BookUserController extends Controller
     public function arrived()
     {
         $book_users = BookUser::where('payment_status', 'arrived')->get();
-        return view('book_user.status.arrived', compact('book_users'));
+        $book_users = $book_users->unique('invoice');
+
+        dump($book_users);
+        // return view('book_user.status.arrived', compact('book_users'));
     }
 
     public function trackingPackages()

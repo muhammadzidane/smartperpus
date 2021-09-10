@@ -120,14 +120,17 @@ Route::prefix('book-users/status')->group(function () {
 
 // Income
 Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
-Route::get('income/detail/monthly', array(IncomeController::class, 'incomeMonthly'))->name('income.monthly');
+Route::get('income/detail', array(IncomeController::class, 'incomeDetail'))->name('income.detail');
+Route::get('income/detail/today', array(IncomeController::class, 'incomeDetailToday'))->name('income.detail.today');
+Route::get('income/detail/this-month', array(IncomeController::class, 'incomeDetailThisMonth'))->name('income.detail.this.month');
 
 Route::prefix('status')->middleware('auth')->group(function () {
-    Route::get('/failed', array(StatusController::class, 'failed'))->name('status.failed');
-    Route::get('/waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('status.waiting.for.payment');
-    Route::get('/on-process', array(StatusController::class, 'onProcess'))->name('status.on.process');
-    Route::get('/on-delivery', array(StatusController::class, 'onDelivery'))->name('status.on.delivery');
-    Route::get('/success', array(StatusController::class, 'success'))->name('status.success');
+    Route::get('failed', array(StatusController::class, 'failed'))->name('status.failed');
+    Route::get('waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('status.waiting.for.payment');
+    Route::get('on-process', array(StatusController::class, 'onProcess'))->name('status.on.process');
+    Route::get('on-delivery', array(StatusController::class, 'onDelivery'))->name('status.on.delivery');
+    Route::get('success', array(StatusController::class, 'success'))->name('status.success');
+    Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));

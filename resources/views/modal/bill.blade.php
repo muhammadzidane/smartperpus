@@ -1,20 +1,20 @@
 @foreach ($book_users as $book_user)
 <div class="row mt-4 borbot-gray-0 pb-2 px-3">
     <div class="col-sm-3 mb-4">
-        <img class="w-100" src="{{ asset('storage\books\\' . App\Models\Book::find($book_user->book_id)->image) }}">
+        <img class="w-100" src="{{ asset('storage\books\\' . $book_user->books[0]->image) }}">
     </div>
     <div class="col-sm-9 d-flex flex-column">
         <div>
             <div>
                 <div class="d-flex justify-content-between">
-                    <h4 class="hd-14">{{ App\Models\Book::find($book_user->book_id)->name }}</h4>
+                    <h4 class="hd-14">{{ $book_user->books[0]->name }}</h4>
                 </div>
                 <h4 class="hd-14 tred">
                     @if ($book_user->book_version == "hard_cover" )
                     <span>Buku Cetak</span>
 
                     @else
-                    <span>Ebook</span>
+                    <span>E-book</span>
                     @endif
                 </h4>
             </div>
@@ -26,11 +26,11 @@
                 </div>
                 <div class="d-flex justify-content-between mb-1">
                     <div>Harga barang</div>
-                    <div>{{ rupiah_format(App\Models\Book::find($book_user->book_id)->price) }}</div>
+                    <div>{{ rupiah_format($book_user->books[0]->price - $book_user->books[0]->discount) }}</div>
                 </div>
                 <div class="d-flex justify-content-between mb-1">
                     <div>Berat barang</div>
-                    <div>{{ App\Models\Book::find($book_user->book_id)->weight }}gram</div>
+                    <div>{{ $book_user->books[0]->weight }}gram</div>
                 </div>
             </div>
         </div>

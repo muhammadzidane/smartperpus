@@ -48,55 +48,63 @@
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-between p-15 ml-4">
-                <div>
-                    <h4 class="hd-18">Total Pembayaran</h4>
-                    <div class="hd-18 tred-bold">{{ rupiah_format($total_payment) }}</div>
-                    <div class="mt-4 text-grey"><i class="fa fa-info-circle" aria-hidden="true"></i> Unggah bukti pembayaran agar proses cepat dilakukan</div>
-                </div>
-                <div class="ml-4">
-                    <button class="btn-none tred tred-bold" data-toggle="modal" data-target="#modal-payment-detail">Lihat Detail</button>
-
-                    <!-- Modal lihat detail pembayaran -->
-                    <div class="modal fade" id="modal-payment-detail" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered p-5" role="document">
-                            <div class="modal-content modal-content-login">
-                                <div class="px-3 mb-4 d-flex justify-content-between">
-                                    <h5 class="modal-title tred login-header">Detail Pembayaran</h5>
-                                    <button type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    @foreach ($datas as $data)
-                                    <div class="row borbot-gray-0 pb-4 px-3 mt-3">
-                                        <div class="col-3">
-                                            <img class="w-100" src="{{ asset('storage/books/' . $data['book']->image) }}">
-                                        </div>
-                                        <div class="col-9">
-                                            <div>
-                                                <h4 class="hd-14">{{ $data['book']->name }}</h4>
-                                                <h4 class="hd-14 tred">{{ $data['book_user']->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</h4>
-                                            </div>
-                                            <div class="text-grey">
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Jumlah barang</div>
-                                                    <div>{{ $data['book_user']->amount }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Harga barang</div>
-                                                    <div>{{ rupiah_format($data['book']->price - $data['book']->discount) }}</div>
-                                                </div>
-                                                <div class="d-flex justify-content-between mb-1">
-                                                    <div>Total</div>
-                                                    <div class="tred-bold">{{ rupiah_format($data['book_user']->total_payment - $data['book_user']->unique_code) }}</div>
-                                                </div>
-                                            </div>
-                                        </div>
+            <div class="d-flex mt-4 px-4">
+                <div class="w-100">
+                    <div id="accordion">
+                        <div>
+                            <div id="headingOne" class="d-flex justify-content-between border py-2 px-2">
+                                <button class="btn-none collapsed p-0 w-100 text-left" data-toggle="collapse" data-target="#detailCollapse" aria-expanded="false" aria-controls="detailCollapse">
+                                    Lihat Detail
+                                </button>
+                                <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            </div>
+                            <div id="detailCollapse" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div class="mt-3">
+                                    <div>
+                                        <div class="tbold">Kurir</div>
+                                        <div class="text-grey">{{ $courier_name }}</div>
                                     </div>
-                                    @endforeach
+                                    <div class="mt-2">
+                                        <div class="tbold">Layanan Kurir</div>
+                                        <div class="text-grey">{{ $datas[0]['book_user']->courier_service }}</div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="tbold">Ongkos Kirim</div>
+                                        <div class="text-grey">+{{ rupiah_format($datas[0]['book_user']->shipping_cost) }}</div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="tbold">Kode Unik</div>
+                                        <div class="text-grey">+{{ rupiah_format($datas[0]['book_user']->unique_code) }}</div>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5>Total Pembayaran</h5>
+                                <div class="tred-bold hd-18">
+                                    <span>{{ $total_payment }}</span>
+                                    <span>{{ $total_payment_sub_last }}</span>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div class="my-auto mr-2">Contoh Foto Transfer</div>
+                                <div>
+                                    <img class="zoom-modal-image transfer-sample" src="{{ asset('img/sample-transfer.jpg') }}" alt="Contoh Foto Transfer">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2">Pastikan nominal transfer <span class="tbold">TEPAT BERJUMLAH ANGKA DI ATAS (Hingga 3 angka terakhir)</span></div>
+                    </div>
+                    <div class="mt-4 text-grey"><i class="fa fa-info-circle" aria-hidden="true"></i> Unggah bukti pembayaran agar proses cepat dilakukan</div>
+                    <div class="mt-3 row">
+                        <div class="col-6">
+                            <button class="upload-payment-button btn btn-outline-danger w-100">Upload Bukti Pembayaran</button>
+                        </div>
+                        <div class="col-6">
+                            <a href="{{ route('status.waiting.for.payment') }}#{{ $datas[0]['book_user']->invoice }}" class="btn btn-outline-danger w-100">Kembali</a>
                         </div>
                     </div>
                 </div>
@@ -104,7 +112,6 @@
         </div>
     </div>
 </div>
-
 <div class="white-content px-0 pt-0 pb-4 borbot-gray-bold mt-c w-75 mx-auto">
     <div class="white-content-header-2">
         <h4 class="hd-18">Petunjuk Pembayaran</h4>

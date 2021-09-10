@@ -88,12 +88,7 @@
                 @else
                 <div class="text-grey">
                     <div class="py-1 position-relative {{ $failed ?? '' }}">
-                        <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Dibatalkan</a>
-                        @isset($counts['failed'])
-                        @if ($counts['failed'] != 0)
-                        <span class="status-circle">{{ $counts['failed'] }}</span>
-                        @endif
-                        @endisset
+                        <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Di Batalkan</a>
                     </div>
                     <div class="py-1 position-relative {{ $waiting_for_payment ?? '' }}">
                         <a class="text-decoration-none text-grey" href="{{ route('status.waiting.for.payment') }}">Belum Bayar</a>

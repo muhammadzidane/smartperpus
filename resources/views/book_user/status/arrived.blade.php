@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-<h4>Berhasil</h4>
+<h4>Selesai</h4>
 
 <div class="row flex-row-reverse mt-4">
     @include('book_user.status.sidebar', array('arrived' => 'active-acc'))
@@ -35,6 +35,7 @@
             @include('book_user.status.empty-values', array('text' => 'Tidak ada pesanan yang sedang dikirim'))
             @endforelse
         </div>
+        <div class="d-flex justify-content-end mt-4">{{ $book_users->links() }}</div>
     </div>
 
     @include('layouts.modal-custom',
@@ -45,6 +46,6 @@
     "modal_content" => "bill"
     )
     )
-
-    @endsection
 </div>
+
+@endsection
