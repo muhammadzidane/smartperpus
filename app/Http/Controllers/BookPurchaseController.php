@@ -2,33 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, BookPurchase, BookUser, User};
+use App\Models\{Book, BookPurchase, BookUser, User, Customer};
 use Carbon\Carbon;
-use Illuminate\Support\Facades\{Auth, Date, Validator, DB};
+use Illuminate\Support\Facades\{Auth, Date, Validator, DB, Storage};
 use Faker\Factory as Faker;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 
 class BookPurchaseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        dump('index');
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
     }
 
     /**
@@ -107,22 +92,19 @@ class BookPurchaseController extends Controller
             ['invoice', $invoice],
         ];
 
-        $book_users    = BookUser::where($conditions)->get();
-        $total_payment = $book_users->sum('total_payment');
-
+        $book_users             = BookUser::where($conditions)->get();
+        $total_payment          = $book_users->sum('total_payment');
         $total_payment          = $total_payment + $book_users[0]->unique_code + +$book_users[0]->shipping_cost;
         $total_payment_sub_last = substr($total_payment, -3);
         $total_payment_sub      = substr($total_payment, 0, -3);
         $total_payment          = substr(rupiah_format($total_payment_sub . $total_payment_sub_last), 0, -3);
+        $first_book_user        = $book_users->first();
+        $courier_name           = $book_users->first()->courier_name;
+        $customer               = Customer::find($first_book_user->customer_id);
 
-        $datas = $book_users->map(function ($book_user) {
-            return array(
-                'book_user' => $book_user,
-                'book'      => Book::find($book_user->book_id),
-            );
-        });
-
-        $courier_name = $book_users[0]->courier_name;
+        if ($first_book_user->upload_payment_image != null) {
+            return abort(404);
+        }
 
         switch ($courier_name) {
             case 'jne':
@@ -139,7 +121,9 @@ class BookPurchaseController extends Controller
                 break;
         }
 
-        return view('book.book-payment', compact('datas', 'total_payment', 'total_payment_sub_last', 'courier_name'));
+        $data = compact('first_book_user', 'customer', 'total_payment', 'total_payment_sub_last', 'courier_name');
+
+        return view('book.book-payment', $data);
     }
 
     /**
@@ -161,7 +145,6 @@ class BookPurchaseController extends Controller
      */
     public function update(Request $request, BookPurchase $bookPurchase)
     {
-        //
     }
 
     /**
@@ -224,13 +207,36 @@ class BookPurchaseController extends Controller
         // $book_user     = $book->users()->attach($user, $data);
     }
 
+    public function uploadPayment(Request $request, $invoice)
+    {
+        $rules = array(
+            'upload_payment' => array('required', 'mimes:jpg,png,jpeg', 'max:2000')
+        );
+
+        $request->validate($rules);
+
+        $user          = Auth::user();
+        $path_store    = "$user->first_name-$user->last_name-$user->email-";
+        $path_store   .= time() . '.' . $request->upload_payment->getClientOriginalExtension();
+        $update        = array('upload_payment_image' => $path_store);
+
+        $book_users = BookUser::where('invoice', $invoice);
+        $book_users->update($update);
+
+        if ($request->upload_payment && !Storage::exists('public/uploaded_payment/' . $path_store)) {
+            $request->upload_payment->storeAs('public/uploaded_payment', $path_store);
+        }
+
+        return redirect()->back()->with('message', 'Berhasil mengupload bukti pembayaran');
+    }
+
     public function ajaxPaymentDeadline()
     {
         foreach (BookUser::get() as $bookUser) {
             $now           = Carbon::now();
             $deadline      = $bookUser->payment_deadline;
 
-            if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation') {
+            if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation' && $bookUser->confirmed_payment == 0) {
                 $update     = array('payment_status' => 'failed');
 
                 $bookUser->update($update);

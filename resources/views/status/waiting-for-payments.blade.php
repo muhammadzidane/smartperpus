@@ -7,7 +7,7 @@
     @include('book_user.status.sidebar', array('waiting_for_payment' => 'active-acc'))
     <div class="col-md-9">
         @forelse ($book_users as $book_user)
-        <div id="{{ $book_user['first']->invoice }}" class="status-invoice white-content m-0 mt-4">
+        <div id="{{ $book_user['first']->invoice }}" class="status-invoice white-content m-0">
             <div class="borbot-gray-0 pb-3">
                 <div class="d-flex justify-content-between text-grey tbold">
                     <div>{{ $book_user['first']->invoice }}</div>
@@ -69,6 +69,7 @@
                 </div>
             </div>
         </div>
+
         @empty
         @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
         @endforelse

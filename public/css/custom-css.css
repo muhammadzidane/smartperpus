@@ -2041,6 +2041,13 @@ footer {
     .account-table {
         margin-top: 25px;
     }
+
+    /* Status */
+    .book-status-image {
+        border: none !important;
+        border-bottom: 1px solid black !important;
+        height: 190px !important;
+    }
 }
 
 /* Upload payment */
@@ -2116,7 +2123,11 @@ footer {
     height: auto;
 }
 
-/* Status - Side bar */
+/* Status */
+.status-invoice:not(.status-invoice:first-child) {
+    margin-top: 1.5rem !important;
+}
+
 .status-circle {
     display: inline-block;
     position: absolute;

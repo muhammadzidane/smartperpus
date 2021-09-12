@@ -34,36 +34,6 @@ class BookUserController extends Controller
                 return response()->json()->status();
                 break;
 
-            case 'uploadImage':
-                $validation_rules = array(
-                    'upload_payment' => array('required', 'mimes:jpg,png,jpeg', 'max:2000')
-                );
-
-                $validator = Validator::make($request->all(), $validation_rules);
-
-                if ($validator->fails()) {
-                    $errors = $validator->errors();
-
-                    $success = false;
-                    return response()->json(compact('errors', 'success'));
-                } else {
-                    $user          = Auth::user();
-                    $path_store    = "$user->first_name-$user->last_name-$user->email-";
-                    $path_store   .= time() . '.' . $request->upload_payment->getClientOriginalExtension();
-                    $update           = array('upload_payment_image' => $path_store);
-
-                    $bookUser->update($update);
-
-                    if ($request->upload_payment && !Storage::exists('public/uploaded_payment/' . $path_store)) {
-                        $request->upload_payment->storeAs('public/uploaded_payment', $path_store);
-                    }
-
-                    $success = true;
-
-                    return response()->json(compact('success'));
-                }
-                break;
-
             case 'orderInProcess':
                 $update = array(
                     'payment_status' => 'order_in_process',
@@ -116,10 +86,6 @@ class BookUserController extends Controller
                 return response()->json()->status();
                 break;
         }
-    }
-
-    public function failed()
-    {
     }
 
     public function uploadedPayments()

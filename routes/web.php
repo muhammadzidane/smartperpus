@@ -124,13 +124,18 @@ Route::get('income/detail', array(IncomeController::class, 'incomeDetail'))->nam
 Route::get('income/detail/today', array(IncomeController::class, 'incomeDetailToday'))->name('income.detail.today');
 Route::get('income/detail/this-month', array(IncomeController::class, 'incomeDetailThisMonth'))->name('income.detail.this.month');
 
-Route::prefix('status')->middleware('auth')->group(function () {
-    Route::get('failed', array(StatusController::class, 'failed'))->name('status.failed');
-    Route::get('waiting-for-payments', array(StatusController::class, 'waitingForPayments'))->name('status.waiting.for.payment');
-    Route::get('on-process', array(StatusController::class, 'onProcess'))->name('status.on.process');
-    Route::get('on-delivery', array(StatusController::class, 'onDelivery'))->name('status.on.delivery');
-    Route::get('success', array(StatusController::class, 'success'))->name('status.success');
+Route::prefix('status')->group(function () {
+    Route::get('all', array(StatusController::class, 'index'))->name('status.all');
+    Route::get('unpaid', array(StatusController::class, 'index'))->name('status.unpaid');
+    Route::get('failed', array(StatusController::class, 'index'))->name('status.failed');
+    Route::get('on-process', array(StatusController::class, 'index'))->name('status.on.process');
+    Route::get('on-delivery', array(StatusController::class, 'index'))->name('status.on.delivery');
+    Route::get('completed', array(StatusController::class, 'index'))->name('status.completed');
     Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
+    Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
+
+    // Update
+    Route::patch('{invoice}/confirm-upload-payment', array(StatusController::class, 'confirmUploadPayment'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
@@ -139,6 +144,7 @@ Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'se
 Route::resource('/book-purchases', BookPurchaseController::class)->except('store', 'show')->parameter('book-purchases', 'book_user');
 Route::prefix('book-purchases')->group(function () {
     Route::get('{invoice}', array(BookPurchaseController::class, 'show'))->name('book.purchases.show');
+    Route::patch('{invoice}/upload-payment', array(BookPurchaseController::class, 'uploadPayment'))->name('book-purchases.upload');
     Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
     Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');

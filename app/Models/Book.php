@@ -20,7 +20,26 @@ class Book extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\User')->withTimestamps();
+        $pivot_columns = array(
+            'invoice',
+            'book_version',
+            'amount',
+            'courier_name',
+            'courier_service',
+            'shipping_cost',
+            'note',
+            'insurance',
+            'unique_code',
+            'total_payment',
+            'payment_method',
+            'payment_status',
+            'completed_date',
+            'payment_deadline',
+            'upload_payment_image',
+            'confirmed_payment',
+        );
+
+        return $this->belongsToMany('App\Models\User')->withPivot($pivot_columns)->withTimestamps();
     }
 
     public function category()

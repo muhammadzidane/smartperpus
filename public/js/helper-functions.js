@@ -578,44 +578,39 @@ const bootStrapModal = (modalHeader, modalSizeClass, callback) => {
 
 // Modal zoom image - Click untuk menampilkan modal gambar yang lebih besar
 $('.zoom-modal-image').on('click', function() {
-    let windowWidth = $(window).width();
-
-    if (windowWidth >= 768) {
-        let html =
-        `<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content modal-image position-relative">
-                    <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <div class="modal-body">
-                        <div class="w-75 mx-auto">
-                            <img id="image-modal-source" class="w-100">
-                        </div>
+    let html =
+    `<div class="modal fade" id="zoom-modal-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-image position-relative">
+                <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="modal-body">
+                    <div class="w-75 mx-auto">
+                        <img id="image-modal-source" class="w-100">
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div>
+    </div>`;
 
-        let modalLength = $('#imagemodal').length;
+    let modalLength = $('#zoom-modal-image').length;
 
 
-        if (modalLength == 0) {
-            $(this).after(html)
-        }
-
-        $('#imagemodal').modal('show');
-
-        let clickedImageSource = $(this).attr('src');
-
-        $('#image-modal-source').attr('src', clickedImageSource);
-
-        $('.modal-close').on('click', () => {
-            setTimeout(() => {
-                $('#imagemodal').remove();
-            }, 200);
-        });
+    if (modalLength == 0) {
+        $(this).after(html)
     }
+
+    $('#zoom-modal-image').modal('show');
+
+    let clickedImageSource = $(this).attr('src') ?? $(this).data('src');
+
+    $('#image-modal-source').attr('src', clickedImageSource);
+
+    $('#zoom-modal-image').on('hidden.bs.modal', function(event) {
+        event.stopImmediatePropagation();
+        $(this).remove();
+    });
 });
 // End Modal zoom image
 

@@ -74,7 +74,7 @@
                                 </button>
                                 <div class="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton">
                                     <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.waiting.for.payment') }}">Menunggu Pembayaran
+                                        <a class="text-decoration-none" href="{{ route('status.unpaid') }}">Menunggu Pembayaran
                                             @if (Illuminate\Support\Facades\DB::table('book_user')
                                             ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count() != 0)
                                             <span class="nav-dropdown-waiting">
@@ -120,7 +120,7 @@
                                         @endif
                                     </div>
                                     <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.success') }}">Telah Sampai</a>
+                                        <a class="text-decoration-none" href="{{ route('status.completed') }}">Telah Sampai</a>
                                         @if (Illuminate\Support\Facades\DB::table('book_user')
                                         ->where('user_id', Auth::id())->where('payment_status', 'arrived')->get()->count() != 0)
                                         <span class="nav-dropdown-waiting">
@@ -200,6 +200,15 @@
         </div>
         @endif
         @endisset
+
+        @if (session()->has('message'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ session('message') }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endif
 
         @yield('carousel')
 

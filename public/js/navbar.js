@@ -2156,122 +2156,63 @@ $(document).ready(function () {
 
     // Waiting for payment - menunggu pembayaran
     // Upload payment form
-    $('.upload-payment-button').on('click', function() {
-        let buttonModalUpload = $(this);
+    $('#upload-payment-file').on('change', function() {
+        let preview      = document.getElementById('upload-payment-image');
+        let file         = document.getElementById('upload-payment-file').files[0];
+        let reader       = new FileReader();
+        let ext          = $('#upload-payment-file').val().split('.').pop().toLowerCase();
+        let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
 
-        bootStrapModal('Upload Bukti Pembayaran', 'modal-sm', () => {
-            let html =
-            `<div class="upload-payment">
-                <form id="upload-payment-form" action="{{ route('book-users.update', array('book_user' => 3)) }}" enctype="multipart/form-data" data-id="" method="post">
-                    <div class="upload-payment-select-image">
-                        <button type="button" id="upload-payment-cancel" class="btn-none d-none"><i class="fa fa-times" aria-hidden="true"></i></button>
-                        <label>
-                            <input id="upload-payment-file" type="file" class="d-none" name="upload_payment" accept=".jpg, .jpeg, .png">
-                            <i id="upload-payment-plus-logo" class="fa fa-plus" aria-hidden="true"></i>
-                            <input type="hidden" name="_method" value="PATCH">
-                            <input type="hidden" name="_token" value="${csrfToken}">
-                        </label>
-                        <div>
-                            <img id="upload-payment-image" class="w-100 d-none" src="" alt="gambar">
-                        </div>
-                        <button id="upload-payment-submit-button" class="btn btn-red d-none mt-3" type="submit">Kirim</button>
-                    </div>
-                </form>
-                <div class="upload-payment-information">
-                    <div class="text-grey bold">
-                        <div>File harus berupa jpg, jpeg, png</div>
-                        <div>Maksimal 2mb</div>
-                    </div>
-                </div>
-            </div>`;
+        if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
+            let text = `Hanya bisa mengirim file gambar berupa: png, jpg, jpeg`;
+            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+            let uploadPaymentMessageLength = $('#upload-payment-message').length;
 
-            return html;
-        });
-
-        $('#upload-payment-file').on('change', function() {
-            let preview      = document.getElementById('upload-payment-image');
-            let file         = document.getElementById('upload-payment-file').files[0];
-            let reader       = new FileReader();
-            let ext          = $('#upload-payment-file').val().split('.').pop().toLowerCase();
-            let fileSizeInMB = (this.files[0].size / (1024*1024)).toFixed(2);
-
-            if ($.inArray(ext, ['png', 'jpg', 'jpeg']) == -1) {
-                let text = `Hanya bisa mengirim file gambar berupa: png, jpg, jpeg`;
-                let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
-                let uploadPaymentMessageLength = $('#upload-payment-message').length;
-
-                if (uploadPaymentMessageLength == 0) {
-                    $('.upload-payment').prepend(html);
-                } else if (uploadPaymentMessageLength == 1) {
-                    $('#upload-payment-message').text(text);
-                }
-            } else if (fileSizeInMB > 2) {
-                let text = `File gambar tidak boleh lebih dari 2mb`;
-                let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
-                let uploadPaymentMessageLength = $('#upload-payment-message').length;
-
-                if (uploadPaymentMessageLength == 0) {
-                    $('.upload-payment').prepend(html);
-                }
-                else if (uploadPaymentMessageLength == 1) {
-                    $('#upload-payment-message').text(text);
-                }
-            } else {
-                $('#upload-payment-message').remove();
-
-                reader.onloadend = () => {
-                    preview.src = reader.result;
-                }
-
-                if (file) {
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.src = "";
-                }
-
-                $('#upload-payment-image').toggleClass('d-none');
-                $('#upload-payment-plus-logo').toggleClass('d-none');
-                $('#upload-payment-cancel').removeClass('d-none');
-                $('#upload-payment-submit-button').toggleClass('d-none');
+            if (uploadPaymentMessageLength == 0) {
+                $('.upload-payment').prepend(html);
+            } else if (uploadPaymentMessageLength == 1) {
+                $('#upload-payment-message').text(text);
             }
-        });
+        } else if (fileSizeInMB > 2) {
+            let text = `File gambar tidak boleh lebih dari 2mb`;
+            let html = `<div><small id="upload-payment-message" class="tred-bold">${text}</small></div>`;
+            let uploadPaymentMessageLength = $('#upload-payment-message').length;
 
-        // Batal unggah foto pembayaran
-        $('#upload-payment-cancel').on('click', function() {
-            $('#upload-payment-plus-logo').removeClass('d-none');
-            $('#upload-payment-cancel').addClass('d-none');
-            $('#upload-payment-image').removeAttr('src');
-            $('#upload-payment-file').val('');
+            if (uploadPaymentMessageLength == 0) {
+                $('.upload-payment').prepend(html);
+            }
+            else if (uploadPaymentMessageLength == 1) {
+                $('#upload-payment-message').text(text);
+            }
+        } else {
+            $('#upload-payment-message').remove();
+
+            reader.onloadend = () => {
+                preview.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = "";
+            }
+
             $('#upload-payment-image').toggleClass('d-none');
+            $('#upload-payment-plus-logo').toggleClass('d-none');
+            $('#upload-payment-cancel').removeClass('d-none');
             $('#upload-payment-submit-button').toggleClass('d-none');
-        });
-
-        $('#upload-payment-form').on('submit', function(event) {
-            event.preventDefault();
-
-            let dataId = buttonModalUpload.data('id');
-            let datas  = [{status: 'uploadImage'}];
-
-            ajaxForm('POST', this, `/book-users/${dataId}`, function (response) {
-                if (response.success) {
-                    let messageText = 'Berhasil mengupload bukti pembayaran';
-                    let html        = `<span class="btn btn-grey btn-sm-0 hd-14">Sudah mengirim bukti</span>`;
-
-                    $('#upload-payment-file').val('');
-                    $('.close').trigger('click');
-                    $('#upload-payment-cancel').trigger('click');
-                    alertMessage(messageText);
-                    buttonModalUpload.parents('.borbot-gray-bold').prev().find('.upload-payment-failed').remove();
-                    buttonModalUpload.parent().append(html);
-                    buttonModalUpload.remove();
-                } else {
-                    let errors = response.errors.upload_payment;
-                    alert(errors);
-                }
-            }, datas);
-        });
+        }
     });
 
+    // Batal unggah foto pembayaran
+    $('#upload-payment-cancel').on('click', function() {
+        $('#upload-payment-plus-logo').removeClass('d-none');
+        $('#upload-payment-cancel').addClass('d-none');
+        $('#upload-payment-image').removeAttr('src');
+        $('#upload-payment-file').val('');
+        $('#upload-payment-image').toggleClass('d-none');
+        $('#upload-payment-submit-button').toggleClass('d-none');
+    });
 
     $('.upload-payment-failed').on('click', function() {
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
@@ -2298,13 +2239,12 @@ $(document).ready(function () {
     })
 
     // Lihat daftar tagihan
-    $('.see-billing-list').on('click', function() {
+    $('.status-detail').on('click', function() {
         let invoice = $(this).data('invoice');
 
         $.get(`/status/${invoice}/detail`, response => {
             bootStrapModal('Detail', 'modal-md', () => {
-                console.log(response);
-                let data         = response.data;
+                let data = response.data;
 
                 let html =
                 `
@@ -2325,7 +2265,7 @@ $(document).ready(function () {
                     </tr>
                     <tr>
                         <td>Metode Pembayaran</td>
-                        <td>${data.book_user.payment_method} (di cek manual)</td>
+                        <td>${data.book_user.payment_method} (dicek manual)</td>
                     </tr>
                     <tr>
                         <td>Kode Unik</td>
@@ -2346,24 +2286,23 @@ $(document).ready(function () {
 
     //#region  Confirmed payment - Konfirmasi pembayaran
     $('.confirm-payment').on('click', function() {
-        let dataId = $(this).data('id');
-        let datas  = {
-            _token       : csrfToken,
-            _method      : 'PATCH',
-            status: 'orderInProcess'
-        }
-
         let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
 
         modalConfirm(confirmText, accepted => {
             if (accepted) {
-                ajaxJson('POST', `/book-users/${dataId}`, datas, response => {
-                    let messageText = 'Berhasil menkonfirmasi pembayaran dan akan di proses';
+                let datas  = {
+                    _token       : csrfToken,
+                    _method      : 'PATCH',
+                }
 
-                    alertMessage(messageText);
-                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
+                let invoiceParent = $(this).parents('.status-invoice');
+                let invoice       = invoiceParent.attr('id');
 
-                    addAndSubtractStatusNotification();
+                $.post(`/status/${invoice}/confirm-upload-payment`, datas, response => {
+                    if (response.status == 'success') {
+                        invoiceParent.remove();
+                        alertMessage(response.message);
+                    }
                 });
             }
         });

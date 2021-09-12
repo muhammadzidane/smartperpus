@@ -22,7 +22,7 @@
 
         @cannot('viewAny', App\Models\User::class)
         <div>
-            <a class="dropdown-item" href="{{ route('status.waiting.for.payment') }}">Pembelian</a>
+            <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
         </div>
         @endcannot
 
@@ -37,7 +37,7 @@
 
         @can('viewAny', App\Models\User::class)
         <div>
-            <a class="dropdown-item" href="{{ route('uploaded.payments') }}">Status</a>
+            <a class="dropdown-item" href="{{ route('status.all') }}">Status</a>
         </div>
         <div>
             <a class="dropdown-item" href="{{ route('book.users.status.income') }}">Penghasilan</a>
