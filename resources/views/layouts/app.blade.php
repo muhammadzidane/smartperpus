@@ -36,7 +36,7 @@
                         <div class="search-icon">
                             <i class="fas fa-search m-auto"></i>
                         </div>
-                        <form action="{{ route('books.index') }}" method="GET">
+                        <form id="search-books-form" action="{{ route('books.index') }}" method="GET">
                             <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
                         </form>
                     </div>

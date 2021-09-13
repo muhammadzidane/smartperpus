@@ -89,6 +89,12 @@ $(document).ready(function () {
         }
     });
 
+    $('#search-books-form').on('submit', function(event) {
+        let search = $('.search-text').val();
+
+        if (search.length < 3) event.preventDefault();
+    });
+
     // Modal Login
     $('#toggle-password').on('click', function () {
         if ($('#password').is('input[type=password]')) {

@@ -75,12 +75,12 @@
                 </div>
                 <div class="mt-4 mt-sm-0">
                     <span class="mr-2 text-grey">Ukutkan</span>
-                    <select id="sort-books" name="sort">
-                        <option value="relevan" {{ old('sort') == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
-                        <option value="highest-rating" {{ old('sort') == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>
-                        <option value="lowest-rating" {{ old('sort') == 'lowest-rating' ? 'selected' : '' }}>Rating Terendah</option>
-                        <option value="lowest-price" {{ old('sort') == 'lowest-price' ? 'selected' : '' }}>Harga Terendah</option>
-                        <option value="highest-price" {{ old('sort') == 'highest-price' ? 'selected' : '' }}>Harga Tertinggi</option>
+                    <select id="sort-books" name="sort" onchange="this.form.submit()">
+                        <option value="relevan" {{ request()->sort == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
+                        <option value="highest-rating" {{ request()->sort == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>
+                        <option value="lowest-rating" {{ request()->sort == 'lowest-rating' ? 'selected' : '' }}>Rating Terendah</option>
+                        <option value="lowest-price" {{ request()->sort == 'lowest-price' ? 'selected' : '' }}>Harga Terendah</option>
+                        <option value="highest-price" {{ request()->sort == 'highest-price' ? 'selected' : '' }}>Harga Tertinggi</option>
                     </select>
                 </div>
             </div>
