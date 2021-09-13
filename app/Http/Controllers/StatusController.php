@@ -52,9 +52,17 @@ class StatusController extends Controller
                 break;
         }
 
-        $user = User::find(Auth::id());
+        $user   = User::find(Auth::id());
 
         if (auth()->user()->role == 'guest') {
+            $count = fn ($condition) => $user->books()->distinct('invoice')->where('payment_status', $condition)->count();
+
+            $counts = array(
+                'waiting_for_confirmation' => $count('waiting_for_confirmation'),
+                'order_in_process' => $count('order_in_process'),
+                'being_shipped' => $count('being_shipped'),
+            );
+
             if ($request->path() != 'status/all') {
                 $conditions = array(
                     array('user_id', $user->id),
@@ -66,16 +74,32 @@ class StatusController extends Controller
                 );
             }
         } else { // Admin / Super Admin
+            $counts = BookUser::get()->unique('invoice');
+            $counts = $counts->groupBy('payment_status')->map(fn ($book_user) => $book_user->count());
+
+            $conditions = array(
+                array('payment_status', 'waiting_for_confirmation'),
+                array('upload_payment_image', '!=', null),
+            );
+
+            $counts->put('uploaded_payment', BookUser::where($conditions)->get()->unique('invoice')->count());
+
             if ($request->path() != 'status/all') {
                 $conditions = array(
                     array('payment_status', $payment_status),
                 );
 
-                // Unggahan bukti pembayaran
                 if ($request->path() == 'status/uploaded-payment') {
+                    // Unggahan bukti pembayaran
                     $conditions = array(
                         array('payment_status', $payment_status),
                         array('upload_payment_image', '!=', null),
+                    );
+                } else if ($request->path() == 'status/unpaid') {
+                    // Belum dibayar dan tidak ada bukti unggahan pembayaran
+                    $conditions = array(
+                        array('payment_status', $payment_status),
+                        array('upload_payment_image', '==', null),
                     );
                 }
             } else {
@@ -87,7 +111,7 @@ class StatusController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $book_users = $book_users->unique('invoice');
+        $book_users    = $book_users->unique('invoice');
 
         $book_users = $book_users->map(function ($book_user) {
             $book_user_invoice = BookUser::where('invoice', $book_user->invoice);
@@ -118,7 +142,9 @@ class StatusController extends Controller
                     $status = 'DIBATALKAN';
                     break;
                 case 'waiting_for_confirmation':
-                    $status = 'BELUM DIBAYAR';
+                    $status = $first_data->upload_payment_image == null || request()->path() == 'status/unpaid'
+                        ? 'BELUM DIBAYAR'
+                        : 'BUKTI PEMBAYARAN';
                     break;
                 case 'order_in_process':
                     $status = 'SEDANG DIPROSES';
@@ -131,7 +157,7 @@ class StatusController extends Controller
                     break;
 
                 default:
-                    # code...
+
                     break;
             }
 
@@ -159,7 +185,7 @@ class StatusController extends Controller
         );
 
 
-        $data = compact('book_users', 'status_title');
+        $data = compact('book_users', 'status_title', 'counts');
 
         return view('status.index', $data);
     }

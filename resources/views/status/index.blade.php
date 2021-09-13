@@ -5,7 +5,7 @@
 
 <div class="row flex-row-reverse mt-4">
     <div class="col-md-3 mb-4">
-        <div class="white-content m-0 borbot-gray-bold {{ $margin_zero ?? '' }}">
+        <div class="white-content m-0 borbot-gray-bold">
             <div class="borbot-gray-0 pb-3">
                 <div class="mt-1">
                     <h4 class="hd-16">Status</h4>
@@ -19,40 +19,32 @@
                         </div>
                         <div class="py-1 position-relative {{ request()->path() == 'status/unpaid' ? 'active-acc' : '' }}">
                             <a class="text-decoration-none text-grey" href="{{ route('status.unpaid') }}">Belum Dibayar</a>
-                            @isset($counts['waiting_for_payment'])
-                            @if ($counts['waiting_for_payment'] != 0)
-                            <span class="status-circle">{{ $counts['waiting_for_payment'] }}</span>
+                            @if (isset($counts['waiting_for_confirmation']) && $counts['waiting_for_confirmation'] != 0)
+                            <span class="status-circle">{{ $counts['waiting_for_confirmation'] }}</span>
                             @endif
-                            @endisset
                         </div>
                         @if (auth()->user()->role != 'guest')
                         <div class="py-1 position-relative {{ request()->path() == 'status/uploaded-payment' ? 'active-acc' : '' }}">
                             <a class="text-decoration-none text-grey" href="{{ route('status.uploaded.payment') }}">Unggahan Bukti Pembayaran</a>
+                            @if (isset($counts['uploaded_payment']) && $counts['uploaded_payment'] != 0)
+                            <span class="status-circle">{{ $counts['uploaded_payment'] }}</span>
+                            @endif
                         </div>
                         @endif
                         <div class="py-1 position-relative {{ request()->path() == 'status/on-process' ? 'active-acc' : '' }}">
                             <a class="text-decoration-none text-grey" href="{{ route('status.on.process') }}">Sedang Diproses</a>
-                            @isset($counts['on_process'])
-                            @if ($counts['on_process'] != 0)
-                            <span class="status-circle">{{ $counts['on_process'] }}</span>
+                            @if (isset($counts['order_in_process']) && $counts['order_in_process'] != 0)
+                            <span class="status-circle">{{ $counts['order_in_process'] }}</span>
                             @endif
-                            @endisset
                         </div>
                         <div class="py-1 position-relative {{ request()->path() == 'status/on-delivery' ? 'active-acc' : '' }}">
                             <a class="text-decoration-none text-grey" href="{{ route('status.on.delivery') }}">Sedang Dikirim</a>
-                            @isset($counts['on_delivery'])
-                            @if ($counts['on_delivery'] != 0)
-                            <span class="status-circle">{{ $counts['on_delivery'] }}</span>
+                            @if (isset($counts['being_shipped']) && $counts['being_shipped'] != 0)
+                            <span class="status-circle">{{ $counts['being_shipped'] }}</span>
                             @endif
-                            @endisset
                         </div>
                         <div class="py-1 position-relative {{ request()->path() == 'status/completed' ? 'active-acc' : '' }}">
                             <a class="text-decoration-none text-grey" href="{{ route('status.completed') }}">Selesai</a>
-                            @isset($counts['arrived'])
-                            @if ($counts['arrived'] != 0)
-                            <span class="status-circle">{{ $counts['arrived'] }}</span>
-                            @endif
-                            @endisset
                         </div>
                     </div>
                 </div>
