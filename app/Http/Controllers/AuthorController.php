@@ -20,8 +20,32 @@ class AuthorController extends Controller
             ->paginate(12)
             ->withQueryString();
 
+        $conditions = array(
+            array('books.name', 'LIKE', "%$request->keywords%"),
+            array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
+        );
 
-        return view('author.index', compact('authors'));
+        $books = Book::join('authors', 'books.author_id', '=', 'authors.id')
+            ->select('books.*', 'authors.name as author_name')
+            ->where($conditions);
+
+        if ($request->category) $books = $books->whereIn('category_id', $request->category);
+
+        if ($request->min_price || $request->max_price) {
+            $between = array($request->min_price ?? 0, $request->max_price ?? $books->max('books.price'));
+            $books   = $books->whereBetween('books.price', $between);
+        }
+
+        if ($request->sort == 'highest-price') $books = $books->orderByDesc('price');
+        if ($request->sort == 'highest-rating') $books = $books->orderByDesc('rating');
+        if ($request->sort == 'lowest-rating') $books = $books->orderBy('rating');
+        if ($request->sort == 'lowest-price') $books = $books->orderBy('price');
+
+        $total_books = $books->count();
+
+        $data = compact('authors', 'total_books');
+
+        return view('author.index', $data);
     }
 
     /**

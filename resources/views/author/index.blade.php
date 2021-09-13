@@ -11,7 +11,7 @@
     <div class="borbot-gray-bold">
         <div class="search-value d-flex">
             <div class="mr-2 tred-bold">
-                <a href="/books/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Buku ({{ '0' }})</a>
+                <a href="/books/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Buku ({{ $total_books }})</a>
             </div>
             <div class="tred-bold search-content-active pb-2">
                 <a href="{{ url()->full() }}">Penulis ({{ $authors->total() }})</a>

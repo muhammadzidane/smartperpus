@@ -46,25 +46,10 @@ class BookController extends Controller
             $books   = $books->whereBetween('books.price', $between);
         }
 
-        if ($request->sort == 'highest-price') {
-            $books      = $books->orderByDesc('price');
-            $categories = $categories->orderByDesc('price');
-        }
-
-        if ($request->sort == 'highest-rating') {
-            $books      = $books->orderByDesc('rating');
-            $categories = $categories->orderByDesc('rating');
-        }
-
-        if ($request->sort == 'lowest-rating') {
-            $books      = $books->orderBy('rating');
-            $categories = $categories->orderBy('rating');
-        }
-
-        if ($request->sort == 'lowest-price') {
-            $books      = $books->orderBy('price');
-            $categories = $categories->orderBy('price');
-        }
+        if ($request->sort == 'highest-price') $books = $books->orderByDesc('price');
+        if ($request->sort == 'highest-rating') $books = $books->orderByDesc('rating');
+        if ($request->sort == 'lowest-rating') $books = $books->orderBy('rating');
+        if ($request->sort == 'lowest-price') $books = $books->orderBy('price');
 
         $books      = $books->paginate(40)->withQueryString();
         $categories = $categories->get();

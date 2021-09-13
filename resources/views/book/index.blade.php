@@ -18,26 +18,20 @@
             </div>
             <div class="white-content">
                 <h6 class="tbold borbot-gray-0 pb-3">Berdasarkan Kategori</h6>
-                <button class="btn btn-none pl-0" type="button" data-toggle="collapse" data-target="#categories-filter" aria-expanded="false" aria-controls="categories-filter">
-                    Lihat Semua
-                </button>
 
-                <div class="collapse" id="categories-filter">
-                    @forelse ($categories as $category)
-
-                    <div id="filter-categories">
-                        <label>
-                            <div class="d-flex">
-                                <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ is_array(request()->category) && in_array($category->id, request()->category) ? 'checked' : '' }}>
-                                <span class="tbold">{{ $category->name }} ({{ $category->total_books }})</span>
-                            </div>
-                        </label>
-                    </div>
-
-                    @empty
-                    <button class="btn-none text-grey tbold">Pencarian kosong</button>
-                    @endforelse
+                @forelse ($categories as $category)
+                <div id="filter-categories">
+                    <label>
+                        <div class="d-flex">
+                            <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ is_array(request()->category) && in_array($category->id, request()->category) ? 'checked' : '' }}>
+                            <span class="tbold">{{ $category->name }} ({{ $category->total_books }})</span>
+                        </div>
+                    </label>
                 </div>
+
+                @empty
+                <button class="btn-none text-grey tbold">Pencarian kosong</button>
+                @endforelse
             </div>
             <div class="white-content mt-4">
                 <h6 class="tbold borbot-gray-0 pb-2">Minimum Harga</h6>
