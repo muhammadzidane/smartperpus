@@ -103,7 +103,7 @@ class BookPurchaseController extends Controller
         $customer               = Customer::find($first_book_user->customer_id);
 
         if ($first_book_user->upload_payment_image != null) {
-            return abort(404);
+            return redirect('/status/unpaid#' . $first_book_user->invoice);
         }
 
         switch ($courier_name) {
@@ -237,7 +237,10 @@ class BookPurchaseController extends Controller
             $deadline      = $bookUser->payment_deadline;
 
             if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation' && $bookUser->confirmed_payment == 0) {
-                $update     = array('payment_status' => 'failed');
+                $update     = array(
+                    'payment_status' => 'failed',
+                    'failed_message' => 'Dibatalkan secara otomatis oleh sistem kami'
+                );
 
                 $bookUser->update($update);
             }

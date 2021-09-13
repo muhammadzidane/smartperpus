@@ -75,14 +75,25 @@ class StatusController extends Controller
             }
         } else { // Admin / Super Admin
             $counts = BookUser::get()->unique('invoice');
-            $counts = $counts->groupBy('payment_status')->map(fn ($book_user) => $book_user->count());
+            $count  = fn ($conditions, $value = null) => $counts->where($conditions, $value)->count();
 
-            $conditions = array(
-                array('payment_status', 'waiting_for_confirmation'),
-                array('upload_payment_image', '!=', null),
+            $uploaded_payment_count = $counts
+                ->where('payment_status', 'waiting_for_confirmation')
+                ->where('upload_payment_image', '!=', null)
+                ->count();
+
+            $unpaid_count = $counts
+                ->where('payment_status', 'waiting_for_confirmation')
+                ->where('upload_payment_image', '==', null)
+                ->count();
+
+
+            $counts = array(
+                'waiting_for_confirmation' => $unpaid_count,
+                'order_in_process' => $count('payment_status', 'order_in_process'),
+                'being_shipped' => $count('payment_status', 'being_shipped'),
+                'uploaded_payment' => $uploaded_payment_count,
             );
-
-            $counts->put('uploaded_payment', BookUser::where($conditions)->get()->unique('invoice')->count());
 
             if ($request->path() != 'status/all') {
                 $conditions = array(
@@ -99,7 +110,7 @@ class StatusController extends Controller
                     // Belum dibayar dan tidak ada bukti unggahan pembayaran
                     $conditions = array(
                         array('payment_status', $payment_status),
-                        array('upload_payment_image', '==', null),
+                        array('upload_payment_image', null),
                     );
                 }
             } else {
@@ -112,6 +123,7 @@ class StatusController extends Controller
             ->get();
 
         $book_users    = $book_users->unique('invoice');
+
 
         $book_users = $book_users->map(function ($book_user) {
             $book_user_invoice = BookUser::where('invoice', $book_user->invoice);
@@ -216,22 +228,27 @@ class StatusController extends Controller
         return response()->json($response);
     }
 
-    public function confirmUploadPayment($invoice)
+    public function update($invoice, Request $request)
     {
-        $data = array(
-            'payment_status' => 'order_in_process',
-            'confirmed_payment' => true,
-        );
+        if ($request->update == 'cancelUploadPayment') {
+            $failed_message  = 'Dibatalkan oleh admin kami, karena anda mengirim bukti pembayaran yang kurang jelas';
+            $failed_message .= '. Harap kirim lagi dengan benar';
+
+            $data = array(
+                'upload_payment_image' => null,
+                'failed_message'       => $failed_message,
+            );
+        } else { // confirmUploadPayment
+            $data = array(
+                'payment_status' => 'order_in_process',
+                'confirmed_payment' => true,
+            );
+        }
 
         $status_exists = BookUser::where('invoice', $invoice)->exists();
 
         if ($status_exists) {
-            $book_users = BookUser::where('invoice', $invoice)->update($data);
-
-            $data = array(
-                'book_users' => $book_users,
-                'invoice'    => $invoice,
-            );
+            BookUser::where('invoice', $invoice)->update($data);
 
             $response = array(
                 'status'  => 'success',

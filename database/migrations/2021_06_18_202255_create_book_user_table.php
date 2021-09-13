@@ -13,6 +13,7 @@ class CreateBookUserTable extends Migration
      */
     public function up()
     {
+
         Schema::create('book_user', function (Blueprint $table) {
             $table->id();
             $table->foreignId('book_id')->constrained()->onDelete('cascade');
@@ -34,6 +35,7 @@ class CreateBookUserTable extends Migration
             $table->dateTime('payment_deadline');
             $table->string('upload_payment_image')->nullable()->default(null);
             $table->boolean('confirmed_payment')->default(false);
+            $table->string('failed_message')->nullable()->default(null);
             $table->timestamps();
         });
     }

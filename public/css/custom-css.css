@@ -342,13 +342,6 @@ body {
     margin-bottom: auto;
 }
 
-#search-author-or-book {
-    display: none;
-    position: absolute;
-    top: 25%;
-    right: 10px;
-}
-
 .search-text {
     width: 100%;
     box-sizing: border-box;

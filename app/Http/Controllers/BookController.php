@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\{Book, Author, Category, BookImage};
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Storage, Validator, Auth, File};
+use Illuminate\Support\Facades\{Storage, Validator, Auth, File, DB};
 
 class BookController extends Controller
 {
@@ -24,142 +24,31 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        // Filter
-        $filters = array(
-            'category_id' => $request->category,
-            'min_price'   => $request->min_price,
-            'max_price'   => $request->max_price,
+        $conditions = array(
+            array('books.name', 'LIKE', "%$request->keywords%"),
+            array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
         );
 
-        $filters = collect($filters);
+        $books = Book::join('authors', 'books.author_id', '=', 'authors.id')
+            ->select('books.*', 'authors.name as author_name')
+            ->where($conditions);
 
-        $check_empty_filters = $filters->every(function ($filter) {
-            return empty($filter);
-        });
-
-        $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
-        $books      = $request->category
-            ? Book::where('name',   'LIKE', "%$request->keywords%")->whereIn('category_id', $request->category)
-            : Book::where('name',   'LIKE', "%$request->keywords%");
-
-        switch ($request->sort) {
-            case 'relevan':
-                $authors = $books
-                    ->whereBetween('price', $between)
-                    ->get();;
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books->whereBetween('price', $between)
-                    ->paginate(50)
-                    ->withQueryString();
-
-                break;
-            case 'lowest-rating':
-                $authors = $books
-                    ->orderBy('rating')
-                    ->whereBetween('price', $between)
-                    ->get();
-
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books->orderBy('rating')->whereBetween('price', $between)
-                    ->paginate(50)
-                    ->withQueryString();
-                break;
-            case 'highest-rating':
-                $authors = $books
-                    ->orderByDesc(
-                        'rating'
-                    )->whereBetween('price', $between)
-                    ->get();
-
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books->orderByDesc('rating')->whereBetween('price', $between)
-                    ->paginate(50)
-                    ->withQueryString();
-                break;
-            case 'lowest-price':
-                $authors = $books
-                    ->orderBy('price')
-                    ->whereBetween('price', $between)
-                    ->get();
-
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books
-                    ->orderBy('price')
-                    ->whereBetween('price', $between)
-                    ->paginate(50)
-                    ->withQueryString();
-                break;
-            case 'highest-price':
-                $authors = $books
-                    ->orderByDesc('price')
-                    ->whereBetween('price', $between)
-                    ->get();
-
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books
-                    ->orderByDesc('price')
-                    ->whereBetween('price', $between)
-                    ->paginate(50)
-                    ->withQueryString();
-                break;
-
-            default:
-                $authors = $books->get();
-
-                $authors = $authors->map(function ($book) {
-                    return $book->author;
-                });
-
-                $books = $books
-                    ->paginate(50)
-                    ->withQueryString();
-                break;
+        if ($request->min_price || $request->max_price) {
+            $between = [(int) $request->min_price ?? 0, $request->max_price ?? $books->max('books.price')];
+            $books   = $books->whereBetween('books.price', $between);
         }
 
-        $authors = $authors->unique();
-        // End Filter
+        $books = $books->paginate(40)->withQueryString();
 
-        $keywords   = $request->keywords;
-        $categories = Book::where('name', 'LIKE', "%$request->keywords%")->get();
-        $categories = $categories->map(function ($book) {
-            global $request;
+        $categories = Category::join('books', 'categories.id', '=', 'books.category_id')
+            ->join('authors', 'books.author_id', '=', 'authors.id')
+            ->select('categories.*', DB::raw('count(books.category_id) as total_books'))
+            ->groupBy('categories.id')
+            ->where('books.name', 'LIKE', "%$request->keywords%")
+            ->orWhere('authors.name', 'LIKE', "%$request->keywords%")
+            ->get();
 
-            $between    = [(int) $request->min_price, (int) $request->max_price == 0 ? 99999999 : $request->max_price];
-
-            $book_count = Book::where('name', 'LIKE', "%$request->keywords%")
-                ->where('category_id', $book->category->id)
-                ->whereBetween('price', $between)
-                ->get()
-                ->count();
-
-            $results = array(
-                'id'         => $book->category->id,
-                'name'       => $book->category->name,
-                'book_count' => $book_count,
-            );
-
-            return $results;
-        });
-
-        $categories = $categories->unique();
-        session()->flashInput($request->input());
-
-        return view('book.index', compact('books', 'authors', 'keywords', 'categories'));
+        return view('book.index', compact('books', 'categories'));
     }
 
     /**

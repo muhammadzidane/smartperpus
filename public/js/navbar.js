@@ -14,11 +14,9 @@ $(document).ready(function () {
         let keywordValue = $(this).val();
 
         if (keywordValue != "" && keywordValue.length >= 3)  {
-            $('#search-author-or-book').show();
-
             let datas = { keywords: keywordValue }
 
-            ajaxJson('GET', '/books/search', datas, response => {
+            $.get('/books/search', datas, response => {
                 let html = '';
                 let books = response.data.books;
                 let authors = response.data.authors;
@@ -84,14 +82,10 @@ $(document).ready(function () {
                 $('.nav-book-search').html('');
                 $('.nav-book-search').append(html);
                 $('.nav-book-search').show();
-
-                $('#search-books').attr('href', `/books?keywords=${keywordValue}`);
-                $('#search-authors').attr('href', `/authors?keywords=${keywordValue}`);
             });
 
         } else {
             $('.nav-book-search').hide();
-            $('#search-author-or-book').hide();
         }
     });
 
@@ -2285,20 +2279,28 @@ $(document).ready(function () {
     });
 
     //#region  Confirmed payment - Konfirmasi pembayaran
-    $('.confirm-payment').on('click', function() {
-        let confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?';
+    $('.confirm-payment ,.status-cancel-upload').on('click', function(event) {
+        let targetIsCancel = $(event.target).hasClass('status-cancel-upload');
+
+
+        let confirmText = targetIsCancel
+            ? 'Apakah anda yakin ingin membatalkan bukti pembayaran tersebut ?'
+            : 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?'
 
         modalConfirm(confirmText, accepted => {
             if (accepted) {
+                let update = targetIsCancel ? 'cancelUploadPayment' : 'confirmUploadPayment';
+
                 let datas  = {
                     _token       : csrfToken,
                     _method      : 'PATCH',
+                    update       : update,
                 }
 
                 let invoiceParent = $(this).parents('.status-invoice');
                 let invoice       = invoiceParent.attr('id');
 
-                $.post(`/status/${invoice}/confirm-upload-payment`, datas, response => {
+                $.post(`/status/${invoice}`, datas, response => {
                     if (response.status == 'success') {
                         invoiceParent.remove();
                         alertMessage(response.message);
@@ -2308,52 +2310,6 @@ $(document).ready(function () {
         });
     });
     //#endregion Confirmed payment - Konfirmasi pembayaran
-
-    //#region Confirmed shipped - Konfirmasi pengiriman
-    $('.confirm-process').on('click', function () {
-        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman tersebut?';
-        let dataId      = $(this).data('id');
-        let datas       = {
-            _token : csrfToken,
-            _method: 'PATCH',
-            status : 'orderOnDelivery'
-        }
-
-        modalConfirm(confirmText, accepted => {
-            if (accepted) {
-                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                    let messageText = 'Berhasil menkonfirmasi pengiriman dan telah sampai';
-
-                    alertMessage(messageText);
-                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
-                    addAndSubtractStatusNotification();
-                });
-            }
-        })
-    });
-    //#endregion Confirmed shipped - Konfirmasi pengiriman
-
-    $('.confirm-shipping').on('click', function () {
-        let confirmText = 'Apakah anda yakin akan menkonfirmasi pengiriman tersebut?';
-        let dataId      = $(this).data('id');
-        let datas       = {
-            _token : csrfToken,
-            _method: 'PATCH',
-            status : 'arrived'
-        }
-
-        modalConfirm(confirmText, accepted => {
-            if (accepted) {
-                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                    let messageText = 'Berhasil menkonfirmasi pengiriman dan telah sampai';
-
-                    alertMessage(messageText);
-                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
-                    addAndSubtractStatusNotification();
-                });
-            }
-        })
-    });
 
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
@@ -2500,31 +2456,6 @@ $(document).ready(function () {
         $('#tracking-modal-close').on('click', () => removeModal());
     });
     //#endregion Tracking packages - Lacak paket
-
-    //#region Cancel delivery - Batalkan pengiriman
-    let cancelDelivery            = '.cancel-shipping-confirmation';
-    let cancelDeliveryConfirmText = 'Apakah anda yakin ingin membatalkan pengiriman tersebut?';
-
-    cancelStatusPayment(cancelDelivery, cancelDeliveryConfirmText, 'orderInProcess', 'Berhasil membatalkan pengiriman');
-    //#endregion Cancel delivery
-
-    //#region Cancel process confirmation - Batalkan proses konfirmasi
-    let cancelProcessConfirmation            = '.cancel-process-confirmation';
-    let cancelProcessConfirmationConfirmText = 'Apakah anda yakin ingin membatalkan proses tersebut?';
-
-    cancelStatusPayment(cancelProcessConfirmation, cancelProcessConfirmationConfirmText,
-        'cancelProcessConfirmation', 'Berhasil membatalkan proses');
-    //#endregion Cancel process confirmation
-
-    //#region Cancel payment - Batalkan pembayaran
-    let cancelUploadImage            = '.cancel-upload-image';
-    let cancelUploadImageConfirmText = 'Apakah anda yakin ingin membatalkan pembayaran tersebut?';
-
-    cancelStatusPayment(cancelUploadImage, cancelUploadImageConfirmText,
-        'cancelUploadImage', 'Berhasil membatalkan unggahan bukti pembayaran');
-    //#end region cancel payment
-
-    // #endregion Waiting for payment - menunggu pembayaran
 
     //#region Income
     $('#income-today, #income-this-month, #income-all').on('click', function() {

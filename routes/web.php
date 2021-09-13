@@ -135,7 +135,7 @@ Route::prefix('status')->group(function () {
     Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
 
     // Update
-    Route::patch('{invoice}/confirm-upload-payment', array(StatusController::class, 'confirmUploadPayment'));
+    Route::patch('{invoice}', array(StatusController::class, 'update'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));

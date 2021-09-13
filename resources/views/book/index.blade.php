@@ -3,7 +3,7 @@
 
 <div>Hasil Pencarian
     <span id="search-text" class="tbold">
-        "{{ $keywords ?? 'Semua Buku' }}"
+        "{{ request()->keywords ?? 'Semua Buku' }}"
     </span>
 </div>
 
@@ -25,16 +25,14 @@
                 <div class="collapse" id="categories-filter">
                     @forelse ($categories as $category)
 
-                    @if ($category['book_count'] != 0)
                     <div id="filter-categories">
                         <label>
                             <div class="d-flex">
                                 <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
-                                <span class="tbold">{{ $category['name'] }} ({{ $category['book_count'] }})</span>
+                                <span class="tbold">{{ $category->name }} ({{ $category->total_books }})</span>
                             </div>
                         </label>
                     </div>
-                    @endif
 
                     @empty
                     <button class="btn-none text-grey tbold">Pencarian kosong</button>
@@ -46,7 +44,7 @@
                 <div class="form-group">
                     <div class="d-flex">
                         <label class="tbold mt-2 mr-2" for="">Rp</label>
-                        <input type="number" class="form-control m-0 min-price" name="min_price" placeholder="Mininum" value="{{ old('min_price') }}">
+                        <input type="number" class="form-control m-0 min-price" name="min_price" placeholder="Mininum" value="{{ request()->min_price }}">
                     </div>
                 </div>
 
@@ -54,7 +52,7 @@
                 <div class="form-group">
                     <div class="d-flex">
                         <label class="tbold mt-2 mr-2" for="">Rp</label>
-                        <input type="number" class="form-control m-0 max-price" name="max_price" placeholder="Maksimal" value="{{ old('max_price') }}">
+                        <input type="number" class="form-control m-0 max-price" name="max_price" placeholder="Maksimal" value="{{ request()->max_price }}">
                     </div>
                 </div>
             </div>
@@ -72,7 +70,7 @@
                         <a href="{{ url()->full() }}">Buku ({{ $books->total() }})</a>
                     </div>
                     <div class="tred-bold">
-                        <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $authors->count() }})</a>
+                        <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $books->unique('author_name')->count() }})</a>
                     </div>
                 </div>
                 <div class="mt-4 mt-sm-0">
@@ -90,7 +88,8 @@
                 <button type="button" class="w-50 btn btn-outline-yellow" data-toggle="modal" data-target="#modal-filter">Filter</button>
             </div>
             <div class="mt-2">
-                @if(empty($books->total()) || $books->isEmpty())
+                <!-- empty($books->total()) ||  -->
+                @if( $books->isEmpty())
                 <div class="w-50 mx-auto mt-4">
                     <h4 class="text-center mb-4">Hasil pencarian tidak ditemukan</h4>
                     <img class="w-100" src="{{ asset('img/no-data.png') }}">
@@ -112,7 +111,7 @@
             @endif
         </div>
     </div>
-    <input type="hidden" name="keywords" value="{{ $keywords }}">
+    <input type="hidden" name="keywords" value="{{ request()->keywords }}">
     <input type="hidden" name="page" value="1">
 </form>
 
@@ -137,6 +136,7 @@
                         </button>
 
                         <div class="collapse" id="categories-filter">
+
                             @forelse ($categories as $category)
 
                             @if ($category['book_count'] != 0)
@@ -176,7 +176,7 @@
                         <button type="submit" class="d-flex btn btn-primary mt-4 ml-auto w-100">
                             <span class="mx-auto">Terapkan</span>
                         </button>
-                        <input type="hidden" name="keywords" value="{{ $keywords }}">
+                        <input type="hidden" name="keywords" value="{{ '$keywords' }}">
                         <input type="hidden" name="page" value="1">
                     </div>
                 </form>

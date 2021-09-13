@@ -143,6 +143,9 @@
                 @endforeach
             </div>
             <div class="mt-3">
+                <!-- <div class="mb-2"><i class="fas fa-info-circle mr-1"></i> -->
+                <!-- <span class="text-grey">Dibatalkan secara otomatis oleh sistem kami</span> -->
+                <!-- </div> -->
                 <div class="d-md-flex justify-content-between">
                     <div class="my-auto d-flex justify-content-between">
                         <span>Total Pembayaran :</span>
@@ -168,7 +171,7 @@
                             <div>
                                 <button class="zoom-modal-image btn btn-outline-red mr-1" data-src="{{ asset('storage/uploaded_payment/' . $book_user['first']->upload_payment_image) }}">Lihat Bukti</button>
                                 <button class="confirm-payment btn btn-outline-red">Proses Bukti</button>
-                                <button class="cancel-upload-image btn-none tred-bold">Batalkan</button>
+                                <button class="status-cancel-upload btn-none tred-bold">Batalkan</button>
                             </div>
                             @endif
                         </div>
