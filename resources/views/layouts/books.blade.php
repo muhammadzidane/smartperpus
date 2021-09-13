@@ -17,6 +17,7 @@
                 @else
                 <a class="tbreak-all" href="{{ route('books.show', array('book' => $book->id)) }}">{{ $book->name }}</a>
                 @endif
+                <div>{{ dump($book->category->name) }}</div>
             </div>
         </div>
         <div class="rating-and-author">

@@ -33,25 +33,41 @@ class BookController extends Controller
             ->select('books.*', 'authors.name as author_name')
             ->where($conditions);
 
-        if ($request->min_price || $request->max_price) {
-            $between = [(int) $request->min_price ?? 0, $request->max_price ?? $books->max('books.price')];
-            $books   = $books->whereBetween('books.price', $between);
-        }
-
-        if ($request->sort == 'highest-price') $books = $books->orderByDesc('price');
-        if ($request->sort == 'highest-rating') $books = $books->orderByDesc('rating');
-        if ($request->sort == 'lowest-rating') $books = $books->orderBy('rating');
-        if ($request->sort == 'lowest-price') $books = $books->orderBy('price');
-
-        $books = $books->paginate(40)->withQueryString();
-
         $categories = Category::join('books', 'categories.id', '=', 'books.category_id')
             ->join('authors', 'books.author_id', '=', 'authors.id')
             ->select('categories.*', DB::raw('count(books.category_id) as total_books'))
             ->groupBy('categories.id')
-            ->where('books.name', 'LIKE', "%$request->keywords%")
-            ->orWhere('authors.name', 'LIKE', "%$request->keywords%")
-            ->get();
+            ->where($conditions);
+
+        if ($request->category) $books = $books->whereIn('category_id', $request->category);
+
+        if ($request->min_price || $request->max_price) {
+            $between = array($request->min_price ?? 0, $request->max_price ?? $books->max('books.price'));
+            $books   = $books->whereBetween('books.price', $between);
+        }
+
+        if ($request->sort == 'highest-price') {
+            $books      = $books->orderByDesc('price');
+            $categories = $categories->orderByDesc('price');
+        }
+
+        if ($request->sort == 'highest-rating') {
+            $books      = $books->orderByDesc('rating');
+            $categories = $categories->orderByDesc('rating');
+        }
+
+        if ($request->sort == 'lowest-rating') {
+            $books      = $books->orderBy('rating');
+            $categories = $categories->orderBy('rating');
+        }
+
+        if ($request->sort == 'lowest-price') {
+            $books      = $books->orderBy('price');
+            $categories = $categories->orderBy('price');
+        }
+
+        $books      = $books->paginate(40)->withQueryString();
+        $categories = $categories->get();
 
         return view('book.index', compact('books', 'categories'));
     }

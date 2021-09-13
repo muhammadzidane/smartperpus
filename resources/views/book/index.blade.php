@@ -1,7 +1,7 @@
 @extends('layouts/app')
 @section('content')
 
-<div>Hasil Pencarian
+<div class="text-grey">Hasil Pencarian
     <span id="search-text" class="tbold">
         "{{ request()->keywords ?? 'Semua Buku' }}"
     </span>
@@ -28,7 +28,7 @@
                     <div id="filter-categories">
                         <label>
                             <div class="d-flex">
-                                <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
+                                <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ is_array(request()->category) && in_array($category->id, request()->category) ? 'checked' : '' }}>
                                 <span class="tbold">{{ $category->name }} ({{ $category->total_books }})</span>
                             </div>
                         </label>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="d-flex btn btn-primary mt-4 ml-auto w-100">
+                <button type="submit" class="d-flex btn btn-outline-primary mt-4 ml-auto w-100">
                     <span class="mx-auto">Terapkan</span>
                 </button>
             </div>
@@ -173,7 +173,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button type="submit" class="d-flex btn btn-primary mt-4 ml-auto w-100">
+                        <button type="submit" class="d-flex btn btn-outline-primary mt-4 ml-auto w-100">
                             <span class="mx-auto">Terapkan</span>
                         </button>
                         <input type="hidden" name="keywords" value="{{ '$keywords' }}">
