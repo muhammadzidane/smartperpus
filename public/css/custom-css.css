@@ -969,6 +969,7 @@ footer {
 
 .search-content-active {
     box-shadow: 0 5px 0 0 #6E7C7C;
+    padding-bottom: 0.50rem;
 }
 
 .search-filter {
@@ -1125,16 +1126,23 @@ footer {
 }
 
 /* Book Search */
+.book-sort {
+    border: 2px solid #6E7C7C;
+    border-radius: 4px;
+    /* padding: 10px 10px; */
+}
+
 .right {
     width: max-content;
     margin: 0 0 20px auto;
 }
 
-#sort-books {
+.sort-books {
     cursor: pointer;
     outline: none;
     border: none;
-    padding: 5px;
+    width: 190px;
+    height: 100%;
     border-left: 4px solid #ee6f57;
 }
 
@@ -2174,6 +2182,21 @@ footer {
 }
 
 /* Lacak paket */
+
+.manifes-date div:not(:last-child)::before, .manifes-date div:last-child::before {
+    display: inline-block;
+    content: '';
+    margin-right: 0.50rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 100%;
+    background-color: red;
+}
+
+.manifes-date div:last-child::before {
+    background-color: pink;
+}
+
 .tracking-package-expeditions {
     display: flex;
 }

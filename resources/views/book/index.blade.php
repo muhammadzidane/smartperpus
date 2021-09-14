@@ -60,17 +60,20 @@
         </div>
         <div class="search-books-md">
             <div class="d-sm-flex justify-content-between borbot-gray-bold">
-                <div class="search-value d-flex">
-                    <div class="mr-2 tred-bold search-content-active">
-                        <a href="{{ url()->full() }}">Buku ({{ $books->total() }})</a>
-                    </div>
-                    <div class="tred-bold">
-                        <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Penulis ({{ $books->unique('author_name')->count() }})</a>
+                <div>
+                    <div class="d-flex text-grey tbold">
+                        <div class="m-0 mr-2 search-content-active">
+                            <a href="{{ url()->full() }}" class="text-decoration-none text-grey">BUKU ({{ $books->total() }})</a>
+                        </div>
+                        <div class="m-0 mr-2">
+                            <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}" class="text-decoration-none text-grey">PENULIS ({{ $books->unique('author_name')->count() }})</a>
+
+                        </div>
                     </div>
                 </div>
-                <div class="mt-4 mt-sm-0">
-                    <span class="mr-2 text-grey">Ukutkan</span>
-                    <select id="sort-books" name="sort" onchange="this.form.submit()">
+                <div class="">
+                    <span class="mr-1 text-grey">Ukutkan</span>
+                    <select class="sort-books" name="sort" onchange="this.form.submit()">
                         <option value="relevan" {{ request()->sort == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
                         <option value="highest-rating" {{ request()->sort == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>
                         <option value="lowest-rating" {{ request()->sort == 'lowest-rating' ? 'selected' : '' }}>Rating Terendah</option>

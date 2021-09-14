@@ -16,15 +16,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $discount_books = Book::where('discount', '!=', null)->orderBy('discount')->get();
-        $comic_books    = Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12);
-
-        $books = array(
-            'komik' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
-            'pendidikan' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
-            'komik' => Book::where('category_id', 1)->orderByDesc('rating')->get()->take(12),
+        $data = array(
+            'books' => array(
+                array(
+                    'title' => 'Buku Komik',
+                    'data' => Category::find(1),
+                    'search_url' => route('books.index', array('category' => array(Category::find(1)->id))),
+                ),
+                array(
+                    'title' => 'Buku Sejarah',
+                    'data' => Category::find(6),
+                    'search_url' => route('books.index', array('category' => array(Category::find(6)->id))),
+                ),
+                array(
+                    'title' => 'Buku Pendidikan',
+                    'data' => Category::find(1),
+                    'search_url' => route('books.index', array('category' => array(Category::find(1)->id))),
+                ),
+            )
         );
 
-        return view('home');
+        return view('home', $data);
     }
 }

@@ -124,7 +124,7 @@ Route::get('income/detail', array(IncomeController::class, 'incomeDetail'))->nam
 Route::get('income/detail/today', array(IncomeController::class, 'incomeDetailToday'))->name('income.detail.today');
 Route::get('income/detail/this-month', array(IncomeController::class, 'incomeDetailThisMonth'))->name('income.detail.this.month');
 
-Route::prefix('status')->group(function () {
+Route::prefix('status')->middleware('auth')->group(function () {
     Route::get('all', array(StatusController::class, 'index'))->name('status.all');
     Route::get('unpaid', array(StatusController::class, 'index'))->name('status.unpaid');
     Route::get('failed', array(StatusController::class, 'index'))->name('status.failed');
@@ -133,9 +133,6 @@ Route::prefix('status')->group(function () {
     Route::get('completed', array(StatusController::class, 'index'))->name('status.completed');
     Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
     Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
-
-    // Update
-    Route::patch('{invoice}', array(StatusController::class, 'update'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));

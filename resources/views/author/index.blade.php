@@ -9,12 +9,12 @@
 
 <div class="py-4">
     <div class="borbot-gray-bold">
-        <div class="search-value d-flex">
-            <div class="mr-2 tred-bold">
-                <a href="/books/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}">Buku ({{ $total_books }})</a>
+        <div class="d-flex text-grey tbold">
+            <div class="m-0 mr-2">
+                <a href="/books/{{ '?' . preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}" class="text-decoration-none text-grey">BUKU ({{ $total_books }})</a>
             </div>
-            <div class="tred-bold search-content-active pb-2">
-                <a href="{{ url()->full() }}">Penulis ({{ $authors->total() }})</a>
+            <div class="m-0 mr-2 search-content-active">
+                <a href="{{ url()->full() }}" class="text-decoration-none text-grey">PENULIS ({{ $authors->total() }})</a>
             </div>
         </div>
     </div>

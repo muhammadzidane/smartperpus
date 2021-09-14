@@ -1,4 +1,3 @@
-// JS untuk Navbar
 "use strict";
 
 $(document).ready(function () {
@@ -2285,28 +2284,32 @@ $(document).ready(function () {
     });
 
     //#region  Confirmed payment - Konfirmasi pembayaran
-    $('.confirm-payment ,.status-cancel-upload').on('click', function(event) {
-        let targetIsCancel = $(event.target).hasClass('status-cancel-upload');
+    $('.status-confirm-payment ,.status-cancel-upload').on('click', function(event) {
+        let path = new RegExp('status-confirm-payment|status-cancel-upload');
+        let exec = path.exec(this.className)[0];
+        let confirmText;
 
-
-        let confirmText = targetIsCancel
-            ? 'Apakah anda yakin ingin membatalkan bukti pembayaran tersebut ?'
-            : 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut?'
+        switch (exec) {
+            case 'status-confirm-payment':
+                confirmText = 'Apakah anda yakin ingin menkonfirmasi pembayaran tersebut ?';
+                break;
+            case 'status-cancel-upload':
+                confirmText = 'Apakah anda yakin ingin membatalkan bukti pembayaran tersebut ?';
+            break;
+        }
 
         modalConfirm(confirmText, accepted => {
             if (accepted) {
-                let update = targetIsCancel ? 'cancelUploadPayment' : 'confirmUploadPayment';
-
                 let datas  = {
                     _token       : csrfToken,
                     _method      : 'PATCH',
-                    update       : update,
+                    update       : exec,
                 }
 
                 let invoiceParent = $(this).parents('.status-invoice');
                 let invoice       = invoiceParent.attr('id');
 
-                $.post(`/status/${invoice}`, datas, response => {
+                $.post(`/api/status/${invoice}`, datas, response => {
                     if (response.status == 'success') {
                         invoiceParent.remove();
                         alertMessage(response.message);
@@ -2317,134 +2320,130 @@ $(document).ready(function () {
     });
     //#endregion Confirmed payment - Konfirmasi pembayaran
 
-    // #region Tracking packages - Lacak paket
-    $('.tracking-packages').on('click', function() {
-        let dataInvoice = $(this).data('invoice').toString();
-
-        let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center pb-4">`;
-            spinnerHtml += `<div class="spin"></div>`;
-            spinnerHtml += `</div>`;
-        let modalLength  = $('tracking-packages-modal').length;
-
-        let datas        = {
-            waybill: '030200010250720',
-            courier: 'jne',
-            key    : 'ce496165f4a20bc07d96b6fe3ab41ded',
-        };
-
-        $(this).attr('data-target', '#tracking-packages');
-        $(this).attr('data-toggle', 'modal');
-
+    $('.status-on-delivery').on('click', function() {
+        let invoice = $(this).parents('.status-invoice');
         let html =
-        `<div class="modal fade" id="tracking-packages-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        `<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div id="tracking-packages-body" class="modal-body">
-                        <div id="tracking-modal-header" class="mb-4 d-flex justify-content-between">
-                            <h5 class="modal-title tred login-header">Lacak Paket</h5>
-                            <button id="tracking-modal-close" type="button" class="close c-p" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                <div class="modal-content modal-confirm-content">
+                    <div class="modal-confirm-body">
+                        <div class="text-left">Masukan nomer resi dari barang tersebut dengan benar</div>
+                        <div class="form-group mt-4">
+                            <input type="text" class="form-control-custom" name="resi_number">
+                            <input type="hidden" name="update" value="status-on-delivery">
                         </div>
-                        <div id="tracking-modal-content">
-                            ${spinnerHtml}
-                        </div>
+                        <div class="modal-confirm-close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></div>
+                    </div>
+                    <div class="modal-confirm-buttons">
+                        <button id="status-on-delivery-form" class="modal-confirm-accept" type="button">Kirim</button>
+                        <button class="modal-confirm-cancel" type="button" data-dismiss="modal" aria-label="Close">Batal</button>
                     </div>
                 </div>
             </div>
         </div>`;
 
-        $(this).after(html);
-        $('#tracking-packages-modal').modal('show');
+        let modalConfirmLength = $('#modal-confirm').length;
 
-        $.ajax({
-            type: "POST",
-            url: "https://pro.rajaongkir.com/api/waybill",
-            data: datas,
-            dataType: "JSON",
-            success: response => {
-                let trackingPackagesBody =
-                `<div class="mt-4 text-grey">
-                    <div class="d-flex justify-content-between">
-                        <div>Nomer Resi</div>
-                        <div id="tracking-resi"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Nama Penerima</div>
-                        <div id="tracking-receiver-name"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Status</div>
-                        <div id="tracking-status"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Kurir</div>
-                        <div id="tracking-courier-name"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Service</div>
-                        <div id="tracking-service"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Dikirim tanggal</div>
-                        <div id="tracking-date"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Dikirim oleh</div>
-                        <div id="tracking-shipper-name"></div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div>Dikirim menuju</div>
-                        <div id="tracking-destination"></div>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <h5>Manifes</h5>
-                    <div id="tracking-package-manifest" class="text-grey">
-                    </div>
-                </div>`;
+        if (modalConfirmLength == 0) $('body').prepend(html);
 
-                let contentLength = $('#tracking-modal-content').children().length; // Default 1
+        $('#modal-confirm').modal('show');
 
-                if (contentLength == 1) {
-                    $('#tracking-spinner').remove();
-                    $('#tracking-modal-content').append(trackingPackagesBody);
-                }
+        $('#status-on-delivery-form').on('click', function(event) {
+            event.preventDefault();
 
-                let result              = response.rajaongkir.result;
-                let details             = result.details;
-                let manifestChildLength = $('#tracking-package-manifest').children().length;
+            let validations = [
+                {
+                    input: 'input[name=resi_number]',
+                    inputName: 'Nomer Resi',
+                    rules: 'required'
+                },
+            ];
 
-                const html = (date, description) => {
-                    let html =
-                    `<div class="d-flex justify-content-between">
-                        <div>${date}</div>
-                        <div class="text-right">${description}</div>
-                    </div>`;
+            validator(validations, success => {
+                if (success) {
+                    let inputResiValue = $('input[name=resi_number]').val();
 
-                    return html;
-                }
+                    let datas = {
+                        '_method'    : 'PATCH',
+                        '_token'     : csrfToken,
+                        'resi_number': inputResiValue,
+                        'update'     : 'status-on-delivery',
+                    }
 
-                $('#tracking-resi').text(details.waybill_number);
-                $('#tracking-receiver-name').text(result.summary.receiver_name);
-                $('#tracking-status').text(result.summary.status);
-                $('#tracking-courier-name').text(result.summary.courier_name);
-                $('#tracking-service').text(result.summary.service_code);
-                $('#tracking-date').text(result.summary.waybill_date);
-                $('#tracking-shipper-name').text(result.summary.shipper_name);
-                $('#tracking-destination').text(result.summary.destination);
-
-                if (manifestChildLength == 0) {
-                    result.manifest.map(manifest => {
-                        let dateTime = `${manifest.manifest_date} ${manifest.manifest_time}`;
-
-                        $('#tracking-package-manifest').append(html(dateTime, manifest.manifest_description));
+                    $.post(`/api/status/${invoice.attr('id')}`, datas, response => {
+                        if (response.status == 'success') {
+                            $('#modal-confirm').modal('hide');
+                            invoice.remove();
+                            alertMessage(response.message);
+                        }
                     });
                 }
-            },
-            error: errors => {
-                console.log(errors.responseJSON.rajaongkir.status.description);
+            });
+        });
+    });
+
+    // #region Tracking packages - Lacak paket
+    $('.tracking-packages').on('click', function() {
+        let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center py-4">`;
+            spinnerHtml += `<div class="spin"></div>`;
+            spinnerHtml += `</div>`;
+
+        let datas        = {
+            waybill: $(this).data('resi'),
+            courier: $(this).data('courier'),
+            key    : 'ce496165f4a20bc07d96b6fe3ab41ded',
+        };
+
+        bootStrapModal('Informasi Pengiriman', 'modal-lg', () => {
+            return `<div id="tracking-modal-content">${spinnerHtml}</div>`;
+        });
+
+        $.post('https://pro.rajaongkir.com/api/waybill', datas)
+        .done(response => {
+            let result = response.rajaongkir.result;
+            let trackingPackagesBody =
+            `<div class="mb-3">
+                <h5>Alamat Pengiriman</h5>
+                <div>
+                    <div class="tbold">${result.details.receiver_name}</div>
+                    <div>${result.details.receiver_address1}</div>
+                    <div>${result.details.receiver_address2}</div>
+                    <div>${result.details.receiver_address3}</div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <h5>Manifes</h5>
+                <div id="tracking-package-manifest" class="text-grey">
+                </div>
+            </div>`;
+
+            let contentLength = $('#tracking-modal-content').children().length; // Default 1
+
+            if (contentLength == 1) {
+                $('#tracking-modal-content').html(trackingPackagesBody);
             }
+
+            let manifestChildLength = $('#tracking-package-manifest').children().length;
+            let manifesDate, manifesDescription;
+
+            if (manifestChildLength == 0) {
+                manifesDate        = result.manifest.map(manifest => `<div class="d-flex align-items-center mb-1">${manifest.manifest_date} ${manifest.manifest_time}</div>`);
+                manifesDescription = result.manifest.map(manifest => `<div class="d-flex align-items-center mb-1">${manifest.manifest_description}</div>`);
+            }
+
+            let html =
+                `<div class="d-flex justify-content-between">
+                    <div class="manifes-date">${manifesDate.join('')}</div>
+                    <div class="text-right">${manifesDescription.join('')}</div>
+                </div>`;
+
+            $('#tracking-package-manifest').html(html);
+        })
+        .fail(function(xhr) {
+            let message = xhr.responseJSON.rajaongkir.status.description;
+            let html    = `<div><h5 class="text-grey tbold">${message}</h5></div>`;
+
+            $('#tracking-modal-content').html(html);
         });
 
         const removeModal = () => {

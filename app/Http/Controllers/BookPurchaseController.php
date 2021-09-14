@@ -218,7 +218,10 @@ class BookPurchaseController extends Controller
         $user          = Auth::user();
         $path_store    = "$user->first_name-$user->last_name-$user->email-";
         $path_store   .= time() . '.' . $request->upload_payment->getClientOriginalExtension();
-        $update        = array('upload_payment_image' => $path_store);
+        $update        = array(
+            'upload_payment_image' => $path_store,
+            'failed_message' => null,
+        );
 
         $book_users = BookUser::where('invoice', $invoice);
         $book_users->update($update);

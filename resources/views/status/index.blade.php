@@ -143,51 +143,66 @@
                 @endforeach
             </div>
             <div class="mt-3">
-                <!-- <div class="mb-2"><i class="fas fa-info-circle mr-1"></i> -->
-                <!-- <span class="text-grey">Dibatalkan secara otomatis oleh sistem kami</span> -->
-                <!-- </div> -->
+                @if ($book_user['first']->failed_message != null)
+                <div class="mb-3"><i class="fas fa-info-circle mr-1"></i>
+                    <span class="text-grey">{{ $book_user['first']->failed_message }}</span>
+                </div>
+                @endif
+
+
+                <div class="text-right mb-3">
+                    @if (auth()->user()->role == 'guest')
+
+                    @if (request()->path() == 'status/unpaid' && $book_user['first']->upload_payment_image == null)
+                    <div>
+                        <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Unggah Bukti Pembayaran</a>
+                    </div>
+                    @endif
+
+                    @if (request()->path() == 'status/unpaid' && $book_user['first']->upload_payment_image != null)
+                    <div>
+                        <span class="text-grey mr-1"><i class="fa fa-info-circle" aria-hidden="true"></i> Dicek dalam 24 Jam</span>
+                        <button type="button" class="btn btn-outline-danger" disabled>Bukti Sedang Diproses</button>
+                    </div>
+                    @endif
+
+                    @if (request()->path() == 'status/on-delivery')
+                    <div>
+                        <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
+                    </div>
+                    @endif
+
+                    @else
+                    @if ((request()->path() == 'status/uploaded-payment' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image != null && $book_user['first']->payment_status == 'waiting_for_confirmation')
+                    <div>
+                        <button class="zoom-modal-image btn btn-outline-red mr-1" data-src="{{ asset('storage/uploaded_payment/' . $book_user['first']->upload_payment_image) }}">Lihat Bukti</button>
+                        <button class="status-confirm-payment btn btn-outline-red">Proses Bukti</button>
+                        <button class="status-cancel-upload btn btn-outline-red">Batalkan</button>
+                    </div>
+                    @elseif ($book_user['first']->upload_payment_image != null && $book_user['first']->payment_status == 'order_in_process')
+                    <div>
+                        <button type="button" class="status-on-delivery btn btn-outline-danger">Kirim</button>
+                    </div>
+                    @endif
+                    @endif
+                </div>
                 <div class="d-md-flex justify-content-between">
                     <div class="my-auto d-flex justify-content-between">
                         <span>Total Pembayaran :</span>
                         <h5 class="tred-bold d-inline ml-2">{{ rupiah_format($book_user['total_payment']) }}</h4>
                     </div>
-                    <div class="d-flex justify-content-between ">
-                        <div>
-                            @if (request()->path() == 'status/unpaid' && auth()->user()->role == 'guest')
-                            @if ($book_user['first']->upload_payment_image == null)
-                            <div>
-                                <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Unggah Bukti Pembayaran</a>
-                            </div>
-
-                            @else
-                            <div>
-                                <span class="text-grey mr-1"><i class="fa fa-info-circle" aria-hidden="true"></i> Dicek dalam 24 Jam</span>
-                                <button type="button" class="btn btn-outline-danger" disabled>Bukti Sedang Diproses</button>
-                            </div>
-                            @endif
-                            @endif
-
-                            @if ((request()->path() == 'status/uploaded-payment' || request()->path() == 'status/all') && auth()->user()->role != 'guest' && $book_user['first']->upload_payment_image != null && $book_user['first']->payment_status == 'waiting_for_confirmation')
-                            <div>
-                                <button class="zoom-modal-image btn btn-outline-red mr-1" data-src="{{ asset('storage/uploaded_payment/' . $book_user['first']->upload_payment_image) }}">Lihat Bukti</button>
-                                <button class="confirm-payment btn btn-outline-red">Proses Bukti</button>
-                                <button class="status-cancel-upload btn-none tred-bold">Batalkan</button>
-                            </div>
-                            @endif
-                        </div>
-
+                    <div>
                         <div class="ml-2 tred-bold my-auto">
                             <button class="status-detail btn-none tred-bold p-0 m-0" data-invoice="{{ $book_user['first']->invoice }}">Lihat Detail</button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            @empty
+            @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
+            @endforelse
         </div>
-
-        @empty
-        @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
-        @endforelse
     </div>
-</div>
 
-@endsection
+    @endsection

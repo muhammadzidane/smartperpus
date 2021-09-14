@@ -9,11 +9,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class StatusController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         switch ($request->path()) {
@@ -230,19 +225,34 @@ class StatusController extends Controller
 
     public function update($invoice, Request $request)
     {
-        if ($request->update == 'cancelUploadPayment') {
-            $failed_message  = 'Dibatalkan oleh admin kami, karena anda mengirim bukti pembayaran yang kurang jelas';
-            $failed_message .= '. Harap kirim lagi dengan benar';
+        switch ($request->update) {
+            case 'status-cancel-upload':
+                $failed_message  = 'Dibatalkan oleh admin kami, karena anda mengirim bukti pembayaran yang kurang jelas';
+                $failed_message .= '. Harap kirim lagi dengan benar';
+                $message         = 'Unggahan bukti pembayaran berhasil dibatalkan';
 
-            $data = array(
-                'upload_payment_image' => null,
-                'failed_message'       => $failed_message,
-            );
-        } else { // confirmUploadPayment
-            $data = array(
-                'payment_status' => 'order_in_process',
-                'confirmed_payment' => true,
-            );
+                $data = array(
+                    'upload_payment_image' => null,
+                    'failed_message'       => $failed_message,
+                );
+                break;
+
+            case 'status-confirm-payment':
+                $message = 'Berhasil menkonfirmasi bukti transfer, dan akan segera diproses';
+
+                $data = array(
+                    'payment_status' => 'order_in_process',
+                    'confirmed_payment' => true,
+                );
+                break;
+            case 'status-on-delivery':
+                $message = 'Barang selesai proses dan sedang dikirim oleh pihak ekspedisi';
+
+                $data = array(
+                    'payment_status' => 'being_shipped',
+                    'resi_number'    => $request->resi_number,
+                );
+                break;
         }
 
         $status_exists = BookUser::where('invoice', $invoice)->exists();
@@ -253,8 +263,8 @@ class StatusController extends Controller
             $response = array(
                 'status'  => 'success',
                 'code'    => 200,
-                'data'    => null,
-                'message' => 'Berhasil menkonfirmasi bukti transfer, dan akan segera diproses'
+                'data'    => $data,
+                'message' => $message,
             );
         } else {
             $response = array(

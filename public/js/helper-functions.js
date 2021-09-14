@@ -522,9 +522,7 @@ const modalConfirm = (text, callback) => {
 
     let modalConfirmLength = $('#modal-confirm').length;
 
-    if (modalConfirmLength == 0) {
-        $('body').prepend(html);
-    }
+    if (modalConfirmLength == 0) $('body').prepend(html)
 
     $('#modal-confirm').modal('show');
 
@@ -538,6 +536,7 @@ const modalConfirm = (text, callback) => {
         setTimeout(() => {
             $('#modal-confirm').remove();
         }, 200);
+
         callback(true);
     });
 }
@@ -555,7 +554,7 @@ const bootStrapModal = (modalHeader, modalSizeClass, callback) => {
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body pt-0">
                     ${callback()}
                 </div>
             </div>
@@ -635,52 +634,6 @@ const addAndSubtractStatusNotification = () => {
     }
 };
 //#endregion Add and subtract status notification - Menambah dan menghapus notifikasi status
-
-//#region Cancel status payment - Membatalkan status pembayaran
-const cancelStatusPayment = (buttonSelector, alertConfirmText, status, successMessage) => {
-    let csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-
-    $(buttonSelector).on('click', function() {
-        console.log(buttonSelector);
-        let dataId      = $(this).data('id');
-        let confirmText = alertConfirmText;
-        let datas       = {
-            _token : csrfToken,
-            _method: 'PATCH',
-            status : status,
-        };
-
-        modalConfirm(confirmText, accepted => {
-            if (accepted) {
-                ajaxJson('POST', `/book-users/${dataId}`, datas, () => {
-                    let messageText            = successMessage;
-                    let statusActive           = $('.active-acc');
-                    let statusNotification     = statusActive.find('.status-circle');
-                    let statusNotificationPrev = statusActive.prev().find('.status-circle');
-
-                    alertMessage(messageText);
-                    setTimeout(() => $(this).parents('.uploaded-payment').remove(), 200);
-
-                    statusNotification.text(statusNotification.text() - 1);
-
-                    let html = `<div class="status-circle">1</div>`;
-
-                    if (statusNotificationPrev.length == 0) {
-                        statusActive.prev().append(html);
-                    } else {
-                        statusNotificationPrev.text(parseInt(statusNotificationPrev.text()) + 1);
-                    }
-
-                    if (statusNotification.text() == 0) {
-                        statusNotification.remove();
-                    }
-                });
-            }
-        });
-    });
-};
-//#endregion Cancel status payment - Membatalkan status pembayaran
 
 //#region Validator - Validasi otomatis menambah message di element input next
 const validator = (validations, success = '') => {
@@ -825,7 +778,6 @@ const validator = (validations, success = '') => {
                     }
                 }
 
-
                 let digitsRegex = new RegExp('digits:[0-9]');
 
                 if (digitsRegex.test(rule)) {
@@ -918,9 +870,7 @@ const validator = (validations, success = '') => {
 
     let checkValidations = validationFails.every(validationFail => validationFail == []);
 
-    if (success != '') {
-        checkValidations ? success(true) : success(false);
-    }
+    if (success != '') checkValidations ? success(true) : success(false);
 }
 //#endregion Validator
 
