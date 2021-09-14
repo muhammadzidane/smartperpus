@@ -153,6 +153,22 @@ label { cursor: pointer; }
     padding: 0.65rem 0 0.65rem 0;
 }
 
+.nav-cart {
+    color: #444444;
+}
+
+.nav-cart-count {
+    position: absolute;
+    bottom: 15px;
+    left: 27px;
+    font-size: 10px;
+    background-color: #ea5455;
+    color: #f6f6f6;
+    width: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
 .nav-book-search-link {
     text-decoration: none;
     color: #444444;
@@ -182,6 +198,13 @@ label { cursor: pointer; }
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.search-filters-md, .search-books-md {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 .search-icon,
@@ -1946,7 +1969,21 @@ footer {
 }
 
 /* Media Medium */
+@media screen and (min-width: 768px)  {
+    /* Search */
+    .search-filters-md {
+        flex: 0 0 20.6666666667%;
+        max-width: 20.6666666667%;
+    }
+
+    .search-books-md {
+        flex: 0 0 79.3333333333%;
+        max-width: 79.3333333333%;
+    }
+}
+
 @media screen and (max-width: 768px)  {
+
     /* Chatting dengan admin  dan Navbar*/
     .chat-with-admin > div:last-child > div:first-child, .circle-input {
         display: none;
@@ -2010,6 +2047,7 @@ footer {
     .register-user-pict { display: none; }
 
     /* Book Search */
+
     #book-search .books {
         width: 21.90% !important;
     }

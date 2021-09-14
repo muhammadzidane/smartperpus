@@ -1,17 +1,19 @@
 @extends('layouts/app')
 @section('content')
 
-<div class="text-grey">Hasil Pencarian
-    <span id="search-text" class="tbold">
-        "{{ request()->keywords ?? 'Semua Buku' }}"
+<div class="text-grey">
+    <span>
+        <i class="fas fa-search mr-1"></i>
+        <span>Hasil Pencarian untuk</span>
     </span>
+    <span id="search-text" class="tbold">"{{ request()->keywords ?? 'Semua Buku' }}"</span>
 </div>
 
 <form action="{{ route('books.index') }}" method="GET">
-    <div class="row py-4">
-        <div class="col-md-3 d-md-block d-none">
+    <div class="row flex-nowrap py-4">
+        <div class="search-filters-md d-md-block d-none">
             <div class="d-flex justify-content-between">
-                <h4 class="hd-14">Filter <i class="fas fa-filter"></i></h4>
+                <h5><i class="fas fa-filter"></i> Filter</h5>
                 <div>
                     <button type="submit" class="form-reset">Reset</button>
                 </div>
@@ -56,8 +58,7 @@
                 </button>
             </div>
         </div>
-
-        <div class="col-md-9">
+        <div class="search-books-md">
             <div class="d-sm-flex justify-content-between borbot-gray-bold">
                 <div class="search-value d-flex">
                     <div class="mr-2 tred-bold search-content-active">
@@ -82,8 +83,7 @@
                 <button type="button" class="w-50 btn btn-outline-yellow" data-toggle="modal" data-target="#modal-filter">Filter</button>
             </div>
             <div class="mt-2">
-                <!-- empty($books->total()) ||  -->
-                @if( $books->isEmpty())
+                @if($books->isEmpty())
                 <div class="w-50 mx-auto mt-4">
                     <h4 class="text-center mb-4">Hasil pencarian tidak ditemukan</h4>
                     <img class="w-100" src="{{ asset('img/no-data.png') }}">

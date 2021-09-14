@@ -100,6 +100,7 @@ class BookController extends Controller
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+
             return response()->json(compact('errors'));
         } else {
             $request->gambar_sampul_buku->storeAs('public/books', $book_image_name);

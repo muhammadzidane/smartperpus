@@ -47,7 +47,8 @@
                 <ul class="ul-nav h-100">
                     <div id="nav-categories" class="d-flex h-100 align-items-center ml-3">
                         <li id="categories" class="h-100 c-middle">
-                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
+                            <span class="mr-1">Kategori</span>
+                            <i class="fa fa-caret-down" aria-hidden="true"></i>
                             <div>
                                 <div class="d-flex">
                                     <div class="mr-5">
@@ -61,86 +62,20 @@
 
                         <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
                         <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
+                        <li>
+                            <div class="position-relative">
+                                <a href="{{ auth()->check() ? route('carts.index') : route('login') }}" class="text-body"><i class="fas fa-shopping-cart nav-cart"></i></a>
 
-                        @auth
-                        @cannot('viewAny', 'App\\Models\User')
-                        <li class="nav-bell">
-                            <div class="dropdown">
-                                <button class="btn-none" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="far fa-bell"></i>
-                                </button>
-                                <div class="dropdown-menu nav-dropdown" aria-labelledby="dropdownMenuButton">
-                                    <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.unpaid') }}">Menunggu Pembayaran
-                                            @if (Illuminate\Support\Facades\DB::table('book_user')
-                                            ->where('user_id', Auth::id())->where('payment_status', 'waiting_for_confirmation')->get()->count() != 0)
-                                            <span class="nav-dropdown-waiting">
-                                                {{
-                                                        Illuminate\Support\Facades\DB::table('book_user')
-                                                        ->where('user_id', Auth::id())
-                                                        ->where('confirmed_payment', false)
-                                                        ->where('payment_status', 'waiting_for_confirmation')
-                                                        ->get()->count()
-                                                    }}
-                                            </span>
-                                            @endif
-                                        </a>
-                                    </div>
-                                    <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.on.process') }}">
-                                            Sedang Diproses
-                                            @if (Illuminate\Support\Facades\DB::table('book_user')
-                                            ->where('user_id', Auth::id())->where('payment_status', 'order_in_process')->get()->count() != 0)
-                                            <span class="nav-dropdown-waiting">
-                                                {{
-                                                        Illuminate\Support\Facades\DB::table('book_user')
-                                                        ->where('user_id', Auth::id())
-                                                        ->where('payment_status', 'order_in_process')
-                                                        ->get()->count()
-                                                    }}
-                                            </span>
-                                            @endif
-                                        </a>
-                                    </div>
-                                    <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.on.delivery') }}">Sedang Dikirim</a>
-                                        @if (Illuminate\Support\Facades\DB::table('book_user')
-                                        ->where('user_id', Auth::id())->where('payment_status', 'being_shipped')->get()->count() != 0)
-                                        <span class="nav-dropdown-waiting">
-                                            {{
-                                                    Illuminate\Support\Facades\DB::table('book_user')
-                                                    ->where('user_id', Auth::id())
-                                                    ->where('payment_status', 'being_shipped')
-                                                    ->get()->count()
-                                                }}
-                                        </span>
-                                        @endif
-                                    </div>
-                                    <div class="nav-dropdown-status">
-                                        <a class="text-decoration-none" href="{{ route('status.completed') }}">Telah Sampai</a>
-                                        @if (Illuminate\Support\Facades\DB::table('book_user')
-                                        ->where('user_id', Auth::id())->where('payment_status', 'arrived')->get()->count() != 0)
-                                        <span class="nav-dropdown-waiting">
-                                            {{
-                                                    Illuminate\Support\Facades\DB::table('book_user')
-                                                    ->where('user_id', Auth::id())
-                                                    ->where('payment_status', 'arrived')
-                                                    ->get()->count()
-                                                }}
-                                        </span>
-                                        @endif
-                                    </div>
-                                </div>
+                                @if (auth()->check() && auth()->user()->carts->count() != 0)
+                                <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
+                                @endif
                             </div>
                         </li>
-                        @endcannot
-                        @endauth
                     </div>
                     <div id="nav-login" class="d-flex ml-auto align-items-center">
                         @guest
                         <li>
                             <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                        </li>
                         </li>
                         @endguest
 
@@ -218,7 +153,7 @@
                 <div class="footer-logo">
                     <img class="w-15" src="{{ asset('img/logo.png') }}" alt="">
                 </div>
-                <div class="d-flex justify-content-center mt-5 bg-grey-2 py-4">
+                <div class="d-flex justify-content-center mt-5 -grey-2 py-4">
                     <div class="mr-5"><i class="fab fa-facebook-f"></i></div>
                     <div class="mr-5"><i class="fab fa-twitter"></i></div>
                     <div><i class="fab fa-instagram"></i></div>
