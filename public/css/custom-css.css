@@ -2183,18 +2183,43 @@ footer {
 
 /* Lacak paket */
 
-.manifes-date div:not(:last-child)::before, .manifes-date div:last-child::before {
-    display: inline-block;
-    content: '';
-    margin-right: 0.50rem;
-    width: 12px;
-    height: 12px;
-    border-radius: 100%;
-    background-color: red;
+.manifest-circle {
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    position: relative;
+    padding: 0 0 12px 30px;
 }
 
-.manifes-date div:last-child::before {
-    background-color: pink;
+.manifest-circle::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 9px;
+    width: 2px;
+    height: 999px;
+    background-color: #6E7C7C;
+}
+
+.manifest-circle:last-child::before {
+    display: none;
+}
+
+.manifest-circle::after {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border: 2px solid #6E7C7C;
+    border-radius: 100%;
+    background-color: #e2d5d5;
+}
+
+.manifest-circle:last-child::after {
+    background-color: #6E7C7C;
 }
 
 .tracking-package-expeditions {

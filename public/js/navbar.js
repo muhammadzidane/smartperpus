@@ -2384,6 +2384,9 @@ $(document).ready(function () {
 
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
+        console.log($(this).data('resi'));
+        console.log($(this).data('courier'));
+
         let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center py-4">`;
             spinnerHtml += `<div class="spin"></div>`;
             spinnerHtml += `</div>`;
@@ -2413,7 +2416,7 @@ $(document).ready(function () {
             </div>
             <div class="mt-4">
                 <h5>Manifes</h5>
-                <div id="tracking-package-manifest" class="text-grey">
+                <div id="tracking-package-manifest" class="text-grey mt-3">
                 </div>
             </div>`;
 
@@ -2423,21 +2426,15 @@ $(document).ready(function () {
                 $('#tracking-modal-content').html(trackingPackagesBody);
             }
 
-            let manifestChildLength = $('#tracking-package-manifest').children().length;
-            let manifesDate, manifesDescription;
-
-            if (manifestChildLength == 0) {
-                manifesDate        = result.manifest.map(manifest => `<div class="d-flex align-items-center mb-1">${manifest.manifest_date} ${manifest.manifest_time}</div>`);
-                manifesDescription = result.manifest.map(manifest => `<div class="d-flex align-items-center mb-1">${manifest.manifest_description}</div>`);
-            }
-
-            let html =
-                `<div class="d-flex justify-content-between">
-                    <div class="manifes-date">${manifesDate.join('')}</div>
-                    <div class="text-right">${manifesDescription.join('')}</div>
+            let manifestHtml        = result.manifest.map(manifest => {
+                return `<div class="manifest-circle">
+                    <div>${manifest.manifest_date} ${manifest.manifest_time}</div>
+                    <div class="text-right">${manifest.manifest_description}</div>
                 </div>`;
+            });
 
-            $('#tracking-package-manifest').html(html);
+            $('#tracking-package-manifest').html(manifestHtml.join(''));
+            $('.manifes-circle').last().addClass('manifes-circle-last');
         })
         .fail(function(xhr) {
             let message = xhr.responseJSON.rajaongkir.status.description;
