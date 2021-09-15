@@ -242,7 +242,8 @@ class BookPurchaseController extends Controller
             if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation' && $bookUser->confirmed_payment == 0) {
                 $update     = array(
                     'payment_status' => 'failed',
-                    'failed_message' => 'Dibatalkan secara otomatis oleh sistem kami'
+                    'failed_message' => 'Dibatalkan secara otomatis oleh sistem kami',
+                    'failed_date'    => $now->format('Y-m-d H:i:s'),
                 );
 
                 $bookUser->update($update);

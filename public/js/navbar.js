@@ -1773,7 +1773,7 @@ $(document).ready(function () {
 
         let html =
         `
-        <form id="${formId}" action="${action}" method="${method}">
+        <form id="${formId}" action="${action}" method="${method}" class="mt-4">
             <div class="form-group mx-auto">
                 <label for="nama_penerima">Nama Penerima</label>
                 <input id="user-customer-name" type="text" name="nama_penerima" class="form-control-custom book-edit-inp">
@@ -2014,6 +2014,23 @@ $(document).ready(function () {
     userCustomerDelete();
     //#endregion User - Customer Delete
 
+    const onChangeAddress = () => {
+        $('input[name=customer]').on('change', function() {
+            let customerAddressIsChecked = $('input[name=courier_name]').is(':checked');
+
+            $('#checkout-courier-service').remove();
+
+            if (customerAddressIsChecked) {
+                $('input[name=courier_name]:checked').trigger('change');
+                $('input[name=customer]').attr('disabled', true);
+            }
+
+            console.log(true);
+        });
+    }
+
+    onChangeAddress();
+
     //#region User - Customer Create
     const userCustomerCreate = () => {
         $('#user-create-customer').on('click', function() {
@@ -2068,6 +2085,7 @@ $(document).ready(function () {
                                     </div>
                                 </div>
                                 `;
+
                                 let userAddressLength = $('.user-customer').length;
 
                                 if (userAddressLength == 0) {
@@ -2084,6 +2102,7 @@ $(document).ready(function () {
                                 alertMessage(message);
                                 userCustomerUpdate();
                                 userCustomerDelete();
+                                onChangeAddress();
                             } else {
                                 backendMessage($('.modal-title'), response.errors)
                             }
@@ -2147,10 +2166,7 @@ $(document).ready(function () {
         });
     });
 
-    // Customer Update
     customerUpdate();
-
-    // Customer Destroy
     customerDestroy();
 
     // Waiting for payment - menunggu pembayaran
@@ -2242,16 +2258,60 @@ $(document).ready(function () {
         let invoice = $(this).data('invoice');
 
         $.get(`/status/${invoice}/detail`, response => {
+            let data       = response.data;
+            let failedDate = data.status_date.failed_date;
+
+            const statusCircleHtml = (status, iconHtml, statusName) => {
+                return `<div class="status-modal-detail">
+                    <div class="status-modal-detail-circle ${status ? 'status-modal-detail-active' : ''}">
+                        ${iconHtml}
+                    </div>
+                    <div class="mt-2 text-center text-grey">
+                        <div class="tred-bold">${statusName}</div>
+                        <div>${status ?? '-'}</div>
+                    </div>
+                </div>`;
+            }
+
             bootStrapModal('Detail', 'modal-md', () => {
-                let data = response.data;
+                delete data.status_date.failed_date;
+
+                let statusHtml = Object.keys(data.status_date).map((key) => {
+                    const status = data.status_date[key];
+                    let statusName, iconHtml;
+
+                    switch (key) {
+                        case 'order_date':
+                            statusName = 'Pesan';
+                            iconHtml   = `<i class="fas fa-receipt"></i>`;
+                            break;
+                        case 'payment_date':
+                            statusName = 'Pembayaran';
+                            iconHtml   = `<i class="fas fa-money-bill-wave"></i>`;
+                                break;
+                        case 'shipped_date':
+                            statusName = 'Dikirim';
+                            iconHtml   = `<i class="fas fa-truck"></i>`;
+                            break;
+                        case 'completed_date':
+                            statusName = 'Selesai';
+                            iconHtml   = `<i class="far fa-check-circle"></i>`;
+                            break;
+                    }
+
+                    return statusCircleHtml(status, iconHtml, statusName);
+                });
+
+                statusHtml = `<div class="d-flex mt-3 borbot-gray-0 pb-3">${statusHtml.join('')}</div>`
 
                 let html =
                 `
                 <div>
-                    <div class="mb-3">
+                    ${statusHtml}
+                    <div class="my-3">
                         <h5>Alamat Pengiriman</h5>
                         <div>
-                            <div>${data.customer.name}</div>
+                            <div class="tbold">${data.customer.name}</div>
                             <div>${data.customer.phone_number}</div>
                             <div>${data.customer.address}, Kec.${data.district}, ${data.city} ${data.city_type} . ${data.province}</div>
                         </div>
@@ -2280,6 +2340,11 @@ $(document).ready(function () {
 
                 return html;
             });
+
+            if (failedDate) {
+                let html = statusCircleHtml(failedDate, '<i class="far fa-times-circle"></i>', 'Dibatalkan');
+                $('.status-modal-detail').first().after(html);
+            }
         });
     });
 
@@ -2727,17 +2792,6 @@ $(document).ready(function () {
     //#endregion Cart
 
     //#region Checkout
-    $('input[name=customer]').on('change', function() {
-        let customerAddressIsChecked = $('input[name=courier_name]').is(':checked');
-
-        $('#checkout-courier-service').remove();
-
-        if (customerAddressIsChecked) {
-            $('input[name=courier_name]:checked').trigger('change');
-            $('input[name=customer]').attr('disabled', true);
-        }
-    });
-
     $('input[name=courier_name]').on('change', function() {
         let customersAddress = $('.user-customer');
         let checkedCustomer  = $('input[name=customer]').is(':checked');

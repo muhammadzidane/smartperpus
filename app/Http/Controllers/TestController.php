@@ -5,20 +5,26 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category, Cart};
+use Carbon\Carbon;
 use Faker\Factory as Faker;
 
 class TestController extends Controller
 {
     public function test()
     {
-        return view('test');
+        $test = null;
+        $test = $test ? Carbon::make($test)->format('Y-m-d H:i:s') : null;
+
+        dump($test);
+        // return view('test');
     }
 
     public function testPost(Request $request)
     {
-        // $request->photo->store('public/test');
-        // return response()->json(array('photo' => $request->photo));
-        dd(true);
+        $test = Carbon::now();
+
+        dump($test);
+        // dd(true);
     }
 
     public function pagination()

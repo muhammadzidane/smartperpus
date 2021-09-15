@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\{User, Book, BookUser, Customer};
+use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -82,12 +83,11 @@ class StatusController extends Controller
                 ->where('upload_payment_image', '==', null)
                 ->count();
 
-
             $counts = array(
                 'waiting_for_confirmation' => $unpaid_count,
-                'order_in_process' => $count('payment_status', 'order_in_process'),
-                'being_shipped' => $count('payment_status', 'being_shipped'),
-                'uploaded_payment' => $uploaded_payment_count,
+                'order_in_process'         => $count('payment_status', 'order_in_process'),
+                'being_shipped'            => $count('payment_status', 'being_shipped'),
+                'uploaded_payment'         => $uploaded_payment_count,
             );
 
             if ($request->path() != 'status/all') {
@@ -200,31 +200,59 @@ class StatusController extends Controller
     public function detail($invoice)
     {
         $book_user     = BookUser::firstWhere('invoice', $invoice);
-        $customer      = Customer::find($book_user->customer_id);
-        $total_payment = BookUser::where('invoice', $invoice)->sum('total_payment');
-        $total_payment = $total_payment + $book_user->unique_code + $book_user->shipping_cost;
 
-        $data = array(
-            'book_user'     => $book_user,
-            'customer'      => $customer,
-            'district'      => $customer->district->name,
-            'city'          => $customer->city->name,
-            'city_type'     => $customer->city->type,
-            'province'      => $customer->province->name,
-            'total_payment' => $total_payment,
-        );
+        if ($book_user->exists()) {
+            $customer      = Customer::find($book_user->customer_id);
+            $total_payment = BookUser::where('invoice', $invoice)->sum('total_payment');
+            $total_payment = $total_payment + $book_user->unique_code + $book_user->shipping_cost;
 
-        $response = array(
-            'status' => 'success',
-            'code'   => 200,
-            'data'   => $data,
-        );
+            // Tanggal Status
+            $order_date     = $book_user->created_at ? Carbon::make($book_user->created_at)->format('Y-m-d H:i:s') : null;
+            $payment_date   = $book_user->payment_date ? Carbon::make($book_user->payment_date)->format('Y-m-d H:i:s') : null;
+            $shipped_date   = $book_user->shipped_date ? Carbon::make($book_user->shipped_date)->format('Y-m-d H:i:s') : null;
+            $completed_date = $book_user->completed_date ? Carbon::make($book_user->completed_date)->format('Y-m-d H:i:s') : null;
+            $failed_date    = $book_user->failed_date ? Carbon::make($book_user->failed_date)->format('Y-m-d H:i:s') : null;
+
+            $status_date = compact('order_date', 'failed_date', 'payment_date', 'shipped_date', 'completed_date');
+
+            $data = array(
+                'book_user'     => $book_user,
+                'customer'      => $customer,
+                'district'      => $customer->district->name,
+                'city'          => $customer->city->name,
+                'city_type'     => $customer->city->type,
+                'province'      => $customer->province->name,
+                'total_payment' => $total_payment,
+                'order_date'    => $order_date,
+                'payment_date'  => $payment_date,
+                'shipped_date'  => $shipped_date,
+                'completed_date' => $completed_date,
+                'failed_date'   => $failed_date,
+                'status_date'   => $status_date,
+            );
+
+            $response = array(
+                'status' => 'success',
+                'code'   => 200,
+                'data'   => $data,
+            );
+        } else {
+            $response = array(
+                'status' => 'fail',
+                'code'   => 400,
+                'data'   => null,
+                'message' => 'Invoice tidak valid',
+            );
+        }
+
 
         return response()->json($response);
     }
 
     public function update($invoice, Request $request)
     {
+        $nowTimeStampFormat = Carbon::now()->format('Y-m-d H:i:s');
+
         switch ($request->update) {
             case 'status-cancel-upload':
                 $failed_message  = 'Dibatalkan oleh admin kami, karena anda mengirim bukti pembayaran yang kurang jelas';
@@ -234,15 +262,17 @@ class StatusController extends Controller
                 $data = array(
                     'upload_payment_image' => null,
                     'failed_message'       => $failed_message,
+                    'failed_date'          => $nowTimeStampFormat,
                 );
                 break;
 
             case 'status-confirm-payment':
-                $message = 'Berhasil menkonfirmasi bukti transfer, dan akan segera diproses';
+                $message      = 'Berhasil menkonfirmasi bukti transfer, dan akan segera diproses';
 
                 $data = array(
-                    'payment_status' => 'order_in_process',
+                    'payment_status'    => 'order_in_process',
                     'confirmed_payment' => true,
+                    'payment_date'      => $nowTimeStampFormat,
                 );
                 break;
             case 'status-on-delivery':
@@ -251,6 +281,7 @@ class StatusController extends Controller
                 $data = array(
                     'payment_status' => 'being_shipped',
                     'resi_number'    => $request->resi_number,
+                    'shipped_date'   => $nowTimeStampFormat,
                 );
                 break;
         }

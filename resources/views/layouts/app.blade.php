@@ -528,7 +528,7 @@
     </div>
 </body>
 
-<script src="{{ asset('js/navbar.js') }}"></script>
+<script ty src="{{ asset('js/navbar.js') }}"></script>
 <script src="{{ asset('js/helper-functions.js') }}"></script>
 
 </html>
