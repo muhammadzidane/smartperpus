@@ -2349,8 +2349,8 @@ $(document).ready(function () {
     });
 
     //#region  Confirmed payment - Konfirmasi pembayaran
-    $('.status-confirm-payment ,.status-cancel-upload').on('click', function(event) {
-        let path = new RegExp('status-confirm-payment|status-cancel-upload');
+    $('.status-confirm-payment ,.status-cancel-upload, .status-complete').on('click', function() {
+        let path = new RegExp('status-confirm-payment|status-cancel-upload|status-complete');
         let exec = path.exec(this.className)[0];
         let confirmText;
 
@@ -2360,6 +2360,9 @@ $(document).ready(function () {
                 break;
             case 'status-cancel-upload':
                 confirmText = 'Apakah anda yakin ingin membatalkan bukti pembayaran tersebut ?';
+            break;
+            case 'status-complete':
+                confirmText = 'Apakah anda yakin ingin menyelesaikan orderan tersebut ?';
             break;
         }
 

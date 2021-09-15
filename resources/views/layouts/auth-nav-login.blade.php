@@ -37,10 +37,10 @@
 
         @can('viewAny', App\Models\User::class)
         <div>
-            <a class="dropdown-item" href="{{ route('status.all') }}">Status</a>
+            <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
         </div>
         <div>
-            <a class="dropdown-item" href="{{ route('book.users.status.income') }}">Penghasilan</a>
+            <a class="dropdown-item" href="{{ route('income') }}">Penghasilan</a>
         </div>
         <div>
             <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>

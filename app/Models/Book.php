@@ -57,6 +57,10 @@ class Book extends Model
         return $this->hasMany(Wishlist::class);
     }
 
+    public function book_user()
+    {
+        return $this->hasMany(BookUser::class);
+    }
 
     public function book_images()
     {

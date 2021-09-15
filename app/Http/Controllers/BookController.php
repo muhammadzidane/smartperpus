@@ -30,8 +30,13 @@ class BookController extends Controller
         );
 
         $books = Book::join('authors', 'books.author_id', '=', 'authors.id')
-            ->select('books.*', 'authors.name as author_name')
+            ->select('books.*')
             ->where($conditions);
+
+        $authors = Author::join('books', 'authors.id', '=', 'books.author_id')
+            ->select('authors.*')
+            ->distinct('authors.id')
+            ->where('authors.name', 'LIKE', "%$request->keywords%");
 
         $categories = Category::join('books', 'categories.id', '=', 'books.category_id')
             ->join('authors', 'books.author_id', '=', 'authors.id')
@@ -53,8 +58,9 @@ class BookController extends Controller
 
         $books      = $books->paginate(40)->withQueryString();
         $categories = $categories->get();
+        $data       = compact('books', 'categories', 'authors');
 
-        return view('book.index', compact('books', 'categories'));
+        return view('book.index', $data);
     }
 
     /**

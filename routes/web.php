@@ -34,7 +34,6 @@ Route::get('/', array(HomeController::class, 'index'))->name('home');
 // TEST
 Route::get('/test', array(TestController::class, 'test'))->name('test');
 Route::post('/test', array(TestController::class, 'testPost'))->name('test.post');
-Route::get('/pagination', array(TestController::class, 'pagination'));
 
 // User
 Route::prefix('users')->group(function () {
@@ -62,15 +61,6 @@ Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('
 
 Route::resource('authors', AuthorController::class)->except('index', 'edit');
 Route::get('authors', array(AuthorController::class, 'index'))->name('authors.index');
-
-// My Account
-// Route::get('/account', array(AccountController::class, 'index'));
-// Route::prefix('/account')->group(function() {
-// Route::get('/transaction-lists', array(AccountController::class, 'transactionLists'))->name('transaction.lists');
-//     Route::get('/my-reviews', array(AccountController::class, 'myReviews'))->name('my.reviews');
-//     Route::get('/chat', array(AccountController::class, 'chat'))->name('chat');
-//     Route::get('/add-new-account', array(AccountController::class, 'addNewAccount'))->name('add.new.account');
-// });
 
 // Books
 Route::prefix('books')->group(function () {
@@ -105,21 +95,9 @@ Route::prefix('wishlists')->middleware('auth')->group(function () {
 
 // Book User
 Route::resource('book-users', BookUserController::class);
-Route::prefix('book-users/status')->group(function () {
-    Route::get('uploaded-payment', array(BookUserController::class, 'uploadedPayments'))->name('uploaded.payments');
-    Route::get('confirmed-orders', array(BookUserController::class, 'confirmedOrders'))->name('confirmed.orders');
-    Route::get('on-delivery', array(BookUserController::class, 'onDelivery'))->name('on.delivery');
-    Route::get('success', array(BookUserController::class, 'arrived'))->name('book.users.status.arrived');
-
-    // Ajax request
-    Route::get('ajax/income-detail', array(BookUserController::class, 'incomeDetail'));
-
-    // Lacak paket
-    Route::get('/tracking-packages', array(BookUserController::class, 'trackingPackages'));
-});
 
 // Income
-Route::get('income', array(BookUserController::class, 'income'))->name('book.users.status.income');
+Route::get('income', array(IncomeController::class, 'income'))->name('income');
 Route::get('income/detail', array(IncomeController::class, 'incomeDetail'))->name('income.detail');
 Route::get('income/detail/today', array(IncomeController::class, 'incomeDetailToday'))->name('income.detail.today');
 Route::get('income/detail/this-month', array(IncomeController::class, 'incomeDetailThisMonth'))->name('income.detail.this.month');
@@ -143,7 +121,6 @@ Route::prefix('book-purchases')->group(function () {
     Route::get('{invoice}', array(BookPurchaseController::class, 'show'))->name('book.purchases.show');
     Route::patch('{invoice}/upload-payment', array(BookPurchaseController::class, 'uploadPayment'))->name('book-purchases.upload');
     Route::post('ajax-payment-deadline', array(BookPurchaseController::class, 'ajaxPaymentDeadline'));
-    Route::post('{book_user}/ajax-payment-deadline-text', array(BookPurchaseController::class, 'ajaxPaymentDeadlineText'));
     Route::post('{book}', array(BookPurchaseController::class, 'store'))->name('book-purchases.store');
 });
 
@@ -157,26 +134,8 @@ Route::resource('/user-chats', UserChatController::class)->except('index', 'edit
 Route::post('/user-chats/search', array(UserChatController::class, 'search'));
 Route::post('/user-chats/{user_chat}', array(UserChatController::class, 'destroyy'))->name('user-chats.destroy');
 
-// Test Ajax
-Route::post('/getmsg', array(TestController::class, 'index'))->name('getmsg');
-
 // Ajax
 Route::prefix('/ajax/request')->group(function () {
-    Route::post('cek-ongkir', array(AjaxController::class, 'cekOngkir'));
-    Route::post('first-load', array(AjaxController::class, 'firstLoad'));
-    Route::post('store', array(AjaxController::class, 'ajaxRequestStore'))->name('ajax.request.store');
-    Route::post('check-login', array(AjaxController::class, 'checkLogin'));
-    Route::post('register', array(AjaxController::class, 'register'));
-    Route::post('search', array(AjaxController::class, 'search'));
-    Route::post('pagination', array(AjaxController::class, 'pagination'));
-    Route::post('pagination-data', array(AjaxController::class, 'paginationData'));
-    Route::get('responsive-filters', array(AjaxController::class, 'responsiveFilters'));
-
-    // Filter
-    Route::post('filter-search', array(AjaxController::class, 'filterSearch'));
-    Route::post('filter-star', array(AjaxController::class, 'filterStar'));
-    Route::post('sort-books', array(AjaxController::class, 'sortBooks'));
-
     // Provinsi
     Route::post('change-province', array(ProvinceController::class, 'ajaxChangeProvince'));
 

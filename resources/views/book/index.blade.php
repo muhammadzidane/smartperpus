@@ -66,7 +66,7 @@
                             <a href="{{ url()->full() }}" class="text-decoration-none text-grey">BUKU ({{ $books->total() }})</a>
                         </div>
                         <div class="m-0 mr-2">
-                            <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}" class="text-decoration-none text-grey">PENULIS ({{ $books->unique('author_name')->count() }})</a>
+                            <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}" class="text-decoration-none text-grey">PENULIS ({{ $authors->count() }})</a>
 
                         </div>
                     </div>

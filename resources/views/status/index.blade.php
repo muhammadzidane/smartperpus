@@ -153,7 +153,7 @@
                 <div class="text-right mb-3">
                     @if (auth()->user()->role == 'guest')
 
-                    @if (request()->path() == 'status/unpaid' && $book_user['first']->upload_payment_image == null)
+                    @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null)
                     <div>
                         <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Unggah Bukti Pembayaran</a>
                     </div>
@@ -163,12 +163,6 @@
                     <div>
                         <span class="text-grey mr-1"><i class="fa fa-info-circle" aria-hidden="true"></i> Dicek dalam 24 Jam</span>
                         <button type="button" class="btn btn-outline-danger" disabled>Bukti Sedang Diproses</button>
-                    </div>
-                    @endif
-
-                    @if (request()->path() == 'status/on-delivery')
-                    <div>
-                        <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     </div>
                     @endif
 
@@ -185,11 +179,18 @@
                     </div>
                     @endif
                     @endif
+
+                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'being_shipped')
+                    <div>
+                        <button type="button" class="status-complete btn btn-outline-danger mr-2">Selesai</button>
+                        <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
+                    </div>
+                    @endif
                 </div>
                 <div class="d-md-flex justify-content-between">
                     <div class="my-auto d-flex justify-content-between">
                         <span>Total Pembayaran :</span>
-                        <h5 class="tred-bold d-inline ml-2">{{ rupiah_format($book_user['total_payment']) }}</h4>
+                        <h5 class="tred-bold d-inline ml-2">{{ rupiah_format($book_user['total_payment']) }}</h5>
                     </div>
                     <div>
                         <div class="ml-2 tred-bold my-auto">
@@ -198,11 +199,12 @@
                     </div>
                 </div>
             </div>
-
-            @empty
-            @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
-            @endforelse
         </div>
-    </div>
 
-    @endsection
+        @empty
+        @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
+        @endforelse
+    </div>
+</div>
+
+@endsection

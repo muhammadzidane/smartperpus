@@ -273,6 +273,8 @@ class StatusController extends Controller
                     'payment_status'    => 'order_in_process',
                     'confirmed_payment' => true,
                     'payment_date'      => $nowTimeStampFormat,
+                    'failed_date'       => null,
+                    'payment_deadline'  => null,
                 );
                 break;
             case 'status-on-delivery':
@@ -282,6 +284,16 @@ class StatusController extends Controller
                     'payment_status' => 'being_shipped',
                     'resi_number'    => $request->resi_number,
                     'shipped_date'   => $nowTimeStampFormat,
+                    'failed_date'    => null,
+                );
+                break;
+            case 'status-complete':
+                $message = 'Barang telah sampai ditujuan';
+
+                $data = array(
+                    'payment_status' => 'arrived',
+                    'completed_date' => $nowTimeStampFormat,
+                    'failed_date'    => null,
                 );
                 break;
         }
@@ -291,10 +303,22 @@ class StatusController extends Controller
         if ($status_exists) {
             BookUser::where('invoice', $invoice)->update($data);
 
+            // Mengurangi 1 stok buku cetak
+            if ($request->update == 'status-complete') {
+                $data = array(
+                    'printed_book_stock' => DB::raw('books.printed_book_stock - 1'),
+                );
+
+                Book::join('book_user', 'books.id', '=', 'book_user.book_id')
+                    ->select('books.*')
+                    ->where('book_user.invoice', $invoice)
+                    ->update($data);
+            }
+
             $response = array(
                 'status'  => 'success',
                 'code'    => 200,
-                'data'    => $data,
+                'data'    => null,
                 'message' => $message,
             );
         } else {

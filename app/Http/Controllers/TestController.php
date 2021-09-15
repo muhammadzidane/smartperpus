@@ -7,13 +7,20 @@ use Illuminate\Http\Request;
 use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminChat, Category, Cart};
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Eloquent\Builder;
 
 class TestController extends Controller
 {
     public function test()
     {
-        $test = null;
-        $test = $test ? Carbon::make($test)->format('Y-m-d H:i:s') : null;
+        $test = Book::join('book_user', 'books.id', '=', 'book_user.book_id')
+            ->select('books.*')
+            ->where('book_user.invoice', '1631722294')
+            ->update(
+                array(
+                    'printed_book_stock' => DB::raw('books.printed_book_stock - 1   '),
+                )
+            );
 
         dump($test);
         // return view('test');
