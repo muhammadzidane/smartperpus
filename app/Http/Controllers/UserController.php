@@ -61,6 +61,15 @@ class UserController extends Controller
             ->where('payment_status', 'waiting_for_confirmation')
             ->get();
 
+        $user_email      = explode('@', $user->email);
+        $user_email_hide = substr($user_email[0], 2, strlen($user_email[0]));
+        $user_email_hide = str_repeat('*', strlen($user_email_hide));
+        $user_email[0]   = substr($user_email[0], 0, 2) . $user_email_hide;
+
+        array_push($user_email, '@');
+
+        $user->email = $user_email[0] . $user_email[2] . $user_email[1];
+
         return view('user.show', compact('user', 'book_user'));
     }
 

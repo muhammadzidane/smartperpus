@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatusController;
@@ -19,4 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('api')->patch('status/{invoice}', array(StatusController::class, 'update'));
+// Status
+Route::patch('status/{invoice}', array(StatusController::class, 'update'));
+
+// Customer
+Route::patch('customers/{customer}/change-main-address', array(CustomerController::class, 'changeMainAddress'));

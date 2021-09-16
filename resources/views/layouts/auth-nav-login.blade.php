@@ -1,12 +1,14 @@
 <li class="nav-item dropdown self-middle">
     <a id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <div class="user">
-            <div class="user-circle self-middle">
+            <div class="user-circle">
                 @isset (Illuminate\Support\Facades\Auth::user()->profile_image)
-                <img id="user-circle-fit" src="{{ asset('storage/users/profiles/' . Illuminate\Support\Facades\Auth::user()->profile_image) }}">
+                <img id="user-circle-fit" class="w-100" src="{{ asset('storage/users/profiles/' . auth()->user()->profile_image) }}">
 
                 @else
-                <i class="fas fa-user"></i>
+                <div class="h-100 d-flex justify-content-center align-items-center">
+                    <i class="fas fa-user"></i>
+                </div>
                 @endisset
             </div>
             <div class="tred-bold self-middle ml-2">

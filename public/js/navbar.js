@@ -1907,6 +1907,46 @@ $(document).ready(function () {
     }
 
     onChangeAddress();
+    //#region Customer change main address
+    const customerChangeMain = () => {
+        $('.user-customer-select-main, .user-customer-main').on('click', function(event) {
+            let mainCheck = $(this).hasClass('user-customer-main');
+
+            if (!mainCheck) {
+                setTimeout(() => {
+                    let modalText = 'Apakah anda yakin ingin menyimpan data tersebut sebagai alamat pengiriman utama ?';
+                    modalConfirm(modalText, accepted => {
+                        let customerId = $(this).parents('.user-customer').attr('id');
+
+                        if (accepted) {
+                            let data = {
+                                _token: csrfToken,
+                                _method: 'PATCH'
+                            }
+
+                            $.post(`/api/customers/${customerId}/change-main-address`, data)
+                            .done(() => {
+                                let beforemMainAddress = $('.user-customer-main');
+
+                                beforemMainAddress.text('Simpan sebagai utama');
+                                beforemMainAddress.removeClass();
+                                beforemMainAddress.addClass('user-customer-select-main c-p');
+
+
+                                $(this).parents('.user-customer').find('.user-customer-delete').appendTo(beforemMainAddress.parents('.user-customer').find('.user-customer-update').parent().parent());
+                                $(this).text('Utama');
+                                $(this).removeClass('user-customer-select-main');
+                                $(this).addClass('user-customer-main');
+                            });
+                        }
+                    });
+                }, 200);
+            }
+        });
+    }
+
+    customerChangeMain();
+    //#endregion Customer change main address
 
     //#region User - Customer Create
     const userCustomerCreate = () => {
@@ -1930,15 +1970,14 @@ $(document).ready(function () {
                             if (response.success) {
                                 let data    = response.data;
                                 let message = 'Berhasil menambah alamat';
+
                                 let html =
                                 `
-                                <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
+                                <div id="${data.customer.id}" class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
                                     <label>
                                         <div class="d-flex">
-                                            <div class="mr-2 d-flex">
-                                                <input type="radio" name="customer" class="my-auto" value="${data.customer.id}">
-                                            </div>
                                             <div>
+                                                <div class="user-customer-select-main">Simpan sebagai utama</div>
                                                 <div>
                                                     <span class="customer-name">${data.customer.name}</span> -
                                                     <span class="customer-phone-number">${data.customer.phone_number}</span>
@@ -1952,7 +1991,7 @@ $(document).ready(function () {
                                             </div>
                                         </div>
                                         </label>
-                                    <div class="ml-auto text-right">
+                                    <div class="ml-auto text-right mt-auto">
                                         <div>
                                             <button class="user-customer-update btn-none tred-bold" type="button" data-id="${data.customer.id}">Ubah</button>
                                         </div>
@@ -1980,6 +2019,7 @@ $(document).ready(function () {
                                 userCustomerUpdate();
                                 userCustomerDelete();
                                 onChangeAddress();
+                                customerChangeMain();
                             } else {
                                 backendMessage($('.modal-title'), response.errors)
                             }
@@ -2120,7 +2160,6 @@ $(document).ready(function () {
                 };
 
                 $.post(`/book-users/${dataId}`, datas, (response) => {
-                    console.log(response);
                     $(this).parents('.upload-payment-value').remove();
                     let messageText = 'Berhasil membatalkan pembelian';
 
@@ -2329,9 +2368,6 @@ $(document).ready(function () {
 
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
-        console.log($(this).data('resi'));
-        console.log($(this).data('courier'));
-
         let spinnerHtml  = `<div id="tracking-spinner" class="d-flex justify-content-center py-4">`;
             spinnerHtml += `<div class="spin"></div>`;
             spinnerHtml += `</div>`;

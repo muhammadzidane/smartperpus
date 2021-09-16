@@ -1,30 +1,37 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="overflow-auto borbot-gray-bold pb-2">
-    <div class="w-maxc text-grey">
-        <div class="d-flex">
-            <i class="user-icon fas fa-user-circle text-grey"></i>
-            <h5 class="m-auto"><a class="text-decoration-none text-grey" href="#">Akun Saya</a></h5>
-        </div>
-    </div>
-</div>
+@include('content-header',
+array(
+'title' => 'Akun Saya',
+'icon_html' => '<i class="user-icon fas fa-user-circle text-grey"></i>'
+))
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
-    <div class="col-12">
+    @include('profile-sidebar')
+    <div class="col-md-9">
         <div class="white-content-0 borbot-gray-bold">
             <div class="container">
                 <div class="borbot-gray-0">
                     <div class="d-md-flex py-4">
                         <div class="col-md-4 text-center mb-5">
                             @if ($user->profile_image)
-                            <img id="user-show-profile" class="profile-img zoom-modal-image" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}" alt="">
+                            <div class="user-profile-image">
+                                <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}">
+                            </div>
 
                             @else
-                            <img id="user-show-profile" class="profile-img zoom-modal-image" src="{{ asset('img/avatar-icon.png') }}" alt="">
+                            <div class="user-profile-image">
+                                <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('img/avatar-icon.png') }}">
+                            </div>
                             @endif
 
-                            <div class="mt-5">
+                            <div class="mt-5 text-grey">
+                                <div>Ukuran gambar maksimal <span class="tbold">2mb</span></div>
+                                <div>Format yang gambar: JPG, JPEG, PNG</div>
+                            </div>
+
+                            <div class="mt-3">
                                 <button id="user-add-photo" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">{{ $user->profile_image ? 'Edit Foto' : 'Tambah Foto' }}</button>
                             </div>
                             <div class="mt-3">
@@ -84,10 +91,16 @@
                                         @endif
                                 </div>
                                 <div id="user-customer-lists">
-                                    @forelse (auth()->user()->customers->take(5 ) as $customer)
-                                    <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
+                                    @forelse (auth()->user()->customers->take(5) as $customer)
+                                    <div id="{{ $customer->id }}" class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
                                         <div class="d-flex">
                                             <div>
+                                                @if ($customer->main)
+                                                <div class="user-customer-main">Utama</div>
+
+                                                @else
+                                                <div class="user-customer-select-main c-p">Simpan sebagai utama</div>
+                                                @endif
                                                 <div>
                                                     <span class="customer-name">{{ $customer->name }}</span> -
                                                     <span class="customer-phone-number">{{ $customer->phone_number }}</span>
@@ -100,13 +113,15 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="ml-auto text-right">
+                                        <div class="ml-auto text-right mt-auto">
                                             <div>
                                                 <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
                                             </div>
+                                            @if (!$customer->main)
                                             <div>
                                                 <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                     @empty
@@ -120,7 +135,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="my-4 text-grey">Besar file: maksimum 2.000 kilobytes (2 Megabytes). Ekstensi file yang diperbolehkan: .JPG .JPEG .PNG</div>
             </div>
         </div>
     </div>

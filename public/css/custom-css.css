@@ -846,21 +846,15 @@ footer {
     border-radius: 25px;
 }
 
-.user-circle, #user-circle-fit {
+.user-circle {
     background-color: #e2d5d5;
     border: 2px solid #fffdf6;
     color: #fffdf6;
-    border-radius: 100%;
+    overflow: hidden;
+    border-radius: 50%;
     width: 46px;
     height: 46px;
-    border-radius: 100%;
 }
-
-#user-circle-fit {
-    object-fit: cover;
-    border-radius: 50%;
-}
-
 
 .user-circle i { font-size: 24px; }
 
@@ -999,7 +993,20 @@ footer {
 .borbot-gray-bold { border-bottom: 5px solid #e2d5d5; }
 .borbot-yellow-bold { border-bottom: 5px solid #fff600; }
 
-/* Customer Reviews */
+/* Customer */
+.user-customer-main, .user-customer-select-main {
+    margin-bottom: 0.25rem;
+    background-color: #6E7C7C;
+    width: max-content;
+    padding: 2px 8px;
+    color: #fffdf6;
+    border-radius: 4px;
+}
+
+.user-customer-select-main {
+    background-color: #e2d5d5;
+}
+
 .customer-reviews {
     display: flex;
     margin-bottom: 40px;
@@ -1817,15 +1824,13 @@ footer {
 }
 .account-table div div:last-child { margin-left: auto; }
 
-.profile-img {
+.user-profile-image {
+    margin: 0 auto;
+    overflow: hidden;
     object-fit: cover;
     border-radius: 50%;
     height: 170px;
     width: 170px;
-}
-.btn-sm {
-    padding: 5px 0;
-    background-color: transparent;
 }
 
 .btn-sm-0 { padding: 2px 12px; }
@@ -2165,6 +2170,15 @@ footer {
 }
 
 /* Status */
+.status-profile {
+    border: 1px solid #e2d5d5;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
 .status-invoice:not(.status-invoice:first-child) {
     margin-top: 1.5rem !important;
 }

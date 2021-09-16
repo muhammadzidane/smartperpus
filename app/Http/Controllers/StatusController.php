@@ -19,29 +19,29 @@ class StatusController extends Controller
                 break;
             case 'status/failed':
                 $payment_status = 'failed';
-                $status_title = 'Dibatalkan';
+                $status_title   = 'Dibatalkan';
                 break;
             case 'status/unpaid':
                 $payment_status = 'waiting_for_confirmation';
-                $status_title = 'Belum Dibayar';
+                $status_title   = 'Belum Dibayar';
                 break;
             case 'status/on-process':
                 $payment_status = 'order_in_process';
-                $status_title = 'Sedang Diproses';
+                $status_title   = 'Sedang Diproses';
                 break;
             case 'status/on-delivery':
                 $payment_status = 'being_shipped';
-                $status_title = 'Sedang Dikirim';
+                $status_title   = 'Sedang Dikirim';
                 break;
             case 'status/completed':
                 $payment_status = 'arrived';
-                $status_title = 'Selesai';
+                $status_title   = 'Selesai';
                 break;
 
                 // Admin
             case 'status/uploaded-payment':
                 $payment_status = 'waiting_for_confirmation';
-                $status_title = 'Unggahan Bukti Pembayaran';
+                $status_title   = 'Unggahan Bukti Pembayaran';
                 break;
             default:
 
@@ -55,8 +55,8 @@ class StatusController extends Controller
 
             $counts = array(
                 'waiting_for_confirmation' => $count('waiting_for_confirmation'),
-                'order_in_process' => $count('order_in_process'),
-                'being_shipped' => $count('being_shipped'),
+                'order_in_process'         => $count('order_in_process'),
+                'being_shipped'            => $count('being_shipped'),
             );
 
             if ($request->path() != 'status/all') {
@@ -120,7 +120,7 @@ class StatusController extends Controller
         if ($request->keywords) {
             array_push(
                 $conditions,
-                array('books.name', 'LIKE', "%$request->keywords%", 'OR'),
+                array('books.name', 'LIKE', "%$request->keywords%"),
                 array('book_user.invoice', 'LIKE', "%$request->keywords%", 'OR'),
                 array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
             );

@@ -1,14 +1,11 @@
 @extends('layouts.app')
 @section('content')
 
-<div class="borbot-gray-bold">
-    <div class="w-maxc d-flex c-p text-grey pb-1">
-        <div class="d-flex mr-4 active-authbook">
-            <i class="fas fa-shopping-basket mr-2 text-green f-20"></i>
-            <h4 class="hd-14">Keranjang Saya</h4>
-        </div>
-    </div>
-</div>
+@include('content-header',
+array(
+'title' => 'Keranjang Saya',
+'icon_html' => '<i class="fas fa-shopping-basket mr-2 text-green f-20"></i>',
+))
 
 <form id="cart-checkout" action="{{ route('checkout') }}" method="POST">
     <div class="row flex-md-row-reverse mt-4">

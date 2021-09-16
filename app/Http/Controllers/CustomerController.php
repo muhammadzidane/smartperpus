@@ -226,4 +226,38 @@ class CustomerController extends Controller
 
         return response()->json(compact('request_address'));
     }
+
+    public function changeMainAddress(Customer $customer)
+    {
+        if ($customer->exists()) {
+            $data = array(
+                'main' => false,
+            );
+
+            $customer->where('main', true)
+                ->update($data);
+
+            $data = array(
+                'main' => true,
+            );
+
+            $customer->update($data);
+
+            $response = array(
+                'status'  => 'success',
+                'code'    => 200,
+                'data'    => $customer,
+                'message' => 'Berhasil mengubah alamat pengiriman utama'
+            );
+        } else {
+            $response = array(
+                'status'  => 'fail',
+                'code'    => 400,
+                'data'    => $customer,
+                'message' => 'Alamat tersebut tidak ada, harap cek request'
+            );
+        }
+
+        return response()->json($response);
+    }
 }

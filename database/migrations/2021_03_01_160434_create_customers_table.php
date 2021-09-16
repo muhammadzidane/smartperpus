@@ -16,6 +16,7 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->boolean('main')->default(false);
             $table->string('name');
             $table->string('address');
             $table->foreignId('district_id')->constrained();

@@ -1,70 +1,15 @@
 @extends('layouts.app')
 @section('content')
 
-<h4>{{ $status_title }}</h4>
+@include('content-header', array(
+'title' => $status_title,
+'icon_html' => '<i class="fas fa-shopping-bag user-icon mr-2 text-green f-20"></i>',
+)
+)
 
 <div class="row flex-row-reverse mt-4">
-    <div class="col-md-3 mb-4">
-        <div class="white-content m-0 borbot-gray-bold">
-            <div class="borbot-gray-0 pb-3">
-                <div class="mt-1">
-                    <h4 class="hd-16">Status</h4>
-
-                    <div class="text-grey">
-                        <div class="py-1 position-relative {{ request()->path() == 'status/all' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.all') }}">Semua</a>
-                        </div>
-                        <div class="py-1 position-relative {{ request()->path() == 'status/failed' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.failed') }}">Di Batalkan</a>
-                        </div>
-                        <div class="py-1 position-relative {{ request()->path() == 'status/unpaid' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.unpaid') }}">Belum Dibayar</a>
-                            @if (isset($counts['waiting_for_confirmation']) && $counts['waiting_for_confirmation'] != 0)
-                            <span class="status-circle">{{ $counts['waiting_for_confirmation'] }}</span>
-                            @endif
-                        </div>
-                        @if (auth()->user()->role != 'guest')
-                        <div class="py-1 position-relative {{ request()->path() == 'status/uploaded-payment' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.uploaded.payment') }}">Unggahan Bukti Pembayaran</a>
-                            @if (isset($counts['uploaded_payment']) && $counts['uploaded_payment'] != 0)
-                            <span class="status-circle">{{ $counts['uploaded_payment'] }}</span>
-                            @endif
-                        </div>
-                        @endif
-                        <div class="py-1 position-relative {{ request()->path() == 'status/on-process' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.on.process') }}">Sedang Diproses</a>
-                            @if (isset($counts['order_in_process']) && $counts['order_in_process'] != 0)
-                            <span class="status-circle">{{ $counts['order_in_process'] }}</span>
-                            @endif
-                        </div>
-                        <div class="py-1 position-relative {{ request()->path() == 'status/on-delivery' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.on.delivery') }}">Sedang Dikirim</a>
-                            @if (isset($counts['being_shipped']) && $counts['being_shipped'] != 0)
-                            <span class="status-circle">{{ $counts['being_shipped'] }}</span>
-                            @endif
-                        </div>
-                        <div class="py-1 position-relative {{ request()->path() == 'status/completed' ? 'active-acc' : '' }}">
-                            <a class="text-decoration-none text-grey" href="{{ route('status.completed') }}">Selesai</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mt-3">
-                <div class="mt-1">
-                    <h4 class="hd-16">Kontak Masuk</h4>
-                    <div class="text-grey">
-                        <div>
-                            <a class="text-decoration-none text-grey" href="#">Ulasan</a>
-                        </div>
-                        <div class="{{ $product_discutions ?? '' }}">
-                            <a class="text-decoration-none text-grey" href="#" class=" $product_discutions ?? ''  }}">Chat</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-9">
+    @include('profile-sidebar')
+    <div class=" col-md-9">
         <div class="status-links">
             <a href="/status/all" class="status-link {{ request()->path() == 'status/all' ? 'status-link-active' : '' }}">
                 <span>Semua</span>
@@ -109,6 +54,14 @@
                         <input name="keywords" class="status-search-input" type="text" placeholder="Cari berdasarkan nama produk, nama author dan nomer pesanan">
                     </div>
                 </form>
+
+                @if (request()->keywords)
+                <div class="text-grey mt-4">
+                    <span>Hasil pencarian untuk</span>
+                    <span class="tbold">"{{ request()->keywords }}"</span>
+                    <span>. Menampilkan <span class="tbold">{{ $book_users->count() }}</span> hasil </span>
+                </div>
+                @endif
             </div>
         </div>
 
@@ -140,7 +93,7 @@
                         <span>{{ $book_user['first']->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
                         @endif
 
-                        @if (request()->path() == 'status/completed')
+                        @if ((request()->path() == 'status/completed' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'arrived')
                         <span>{{ $book_user['first']->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss') }} -</span>
                         @endif
 
