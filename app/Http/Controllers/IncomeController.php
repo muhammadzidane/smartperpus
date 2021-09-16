@@ -36,8 +36,6 @@ class IncomeController extends Controller
             ->whereBetween('completed_date', [$nowStartOfDay, $nowEndOfDay])
             ->get();
 
-        dump($nowStartOfDay);
-
         // Penghasilan bulan ini
         $nowStartOfMonth       = $now->startOfMonth()->format('Y-m-d H:i:s');
         $nowEndOfMonth         = $now->endOfMonth()->format('Y-m-d H:i:s');

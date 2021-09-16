@@ -72,58 +72,9 @@
 </head>
 
 <body>
-    <div class="d-flex">
-        <div class="status-modal-detail">
-            <div class="status-modal-detail-circle status-modal-detail-active">
-                <i class="fas fa-receipt"></i>
-            </div>
-            <div class="mt-2 text-center text-grey">
-                <div class="tred-bold">Pesan</div>
-                <div>19-02-2000</div>
-                <div>19:22:22</div>
-            </div>
-        </div>
-        <div class="status-modal-detail">
-            <div class="status-modal-detail-circle">
-                <i class="fas fa-money-bill-wave"></i>
-            </div>
-            <div class="mt-2 text-center text-grey">
-                <div class="tred-bold">Pembayaran</div>
-                <div>19-02-2000</div>
-                <div>19:22:22</div>
-            </div>
-        </div>
-        <div class="status-modal-detail">
-            <div class="status-modal-detail-circle">
-                <i class="fas fa-box-open"></i>
-            </div>
-            <div class="mt-2 text-center text-grey">
-                <div class="tred-bold">Dikemas</div>
-                <div>19-02-2000</div>
-                <div>19:22:22</div>
-            </div>
-        </div>
-        <div class="status-modal-detail">
-            <div class="status-modal-detail-circle">
-                <i class="fas fa-truck"></i>
-            </div>
-            <div class="mt-2 text-center text-grey">
-                <div class="tred-bold">Dikirim</div>
-                <div>19-02-2000</div>
-                <div>19:22:22</div>
-            </div>
-        </div>
-        <div class="status-modal-detail">
-            <div class="status-modal-detail-circle">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="mt-2 text-center text-grey">
-                <div class="tred-bold">Selesai</div>
-                <div>19-02-2000</div>
-                <div>19:22:22</div>
-            </div>
-        </div>
-    </div>
+    <span class="d-inline-block" data-toggle="popover" data-content="Disabled popover">
+        <button class="btn btn-primary" style="pointer-events: none;" type="button" disabled>Disabled button</button>
+    </span>
 </body>
 
 </html>

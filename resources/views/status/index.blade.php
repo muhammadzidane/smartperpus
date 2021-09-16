@@ -65,12 +65,60 @@
         </div>
     </div>
     <div class="col-md-9">
+        <div class="status-links">
+            <a href="/status/all" class="status-link {{ request()->path() == 'status/all' ? 'status-link-active' : '' }}">
+                <span>Semua</span>
+
+            </a>
+            <a href="/status/unpaid" class="status-link {{ request()->path() == 'status/unpaid' ? 'status-link-active' : '' }}">
+                <span>Belum Dibayar</span>
+
+                @if (isset($counts['waiting_for_confirmation']) && $counts['waiting_for_confirmation'] != 0)
+                <span>({{ $counts['waiting_for_confirmation'] }})</span>
+                @endif
+            </a>
+            <a href="/status/on-process" class="status-link {{ request()->path() == 'status/on-process' ? 'status-link-active' : '' }}">
+                <span>Diproses</span>
+
+                @if (isset($counts['order_in_process']) && $counts['order_in_process'] != 0)
+                <span>({{ $counts['order_in_process'] }})</span>
+                @endif
+            </a>
+            <a href="/status/on-delivery" class="status-link {{ request()->path() == 'status/on-delivery' ? 'status-link-active' : '' }}">
+                <span>Dikirim</span>
+
+                @if (isset($counts['being_shipped']) && $counts['being_shipped'] != 0)
+                <span>({{ $counts['being_shipped'] }})</span>
+                @endif
+            </a>
+            <a href="/status/completed" class="status-link {{ request()->path() == 'status/completed' ? 'status-link-active' : '' }}">
+                <span>Selesai</span>
+
+            </a>
+            <a href="/status/failed" class="status-link {{ request()->path() == 'status/failed' ? 'status-link-active' : '' }}">
+                <span>Dibatalkan</span>
+            </a>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <form action="{{ url()->current() }}" method="get">
+                    <div class="status-search">
+                        <button class="status-search-icon btn-none p-0">
+                            <i class="fa fa-search d-none d-md-block" aria-hidden="true"></i>
+                        </button>
+                        <input name="keywords" class="status-search-input" type="text" placeholder="Cari berdasarkan nama produk, nama author dan nomer pesanan">
+                    </div>
+                </form>
+            </div>
+        </div>
+
         @forelse ($book_users as $book_user)
         <div id="{{ $book_user['first']->invoice }}" class="status-invoice white-content m-0">
             <div class="borbot-gray-0 pb-3">
                 <div class="d-flex justify-content-between text-grey tbold">
                     <div>
-                        <span>{{ $book_user['first']->invoice }}</span>
+                        <i class="fas fa-shopping-bag mr-1"></i>
+                        <span>No. Pesanan: {{ $book_user['first']->invoice }}</span>
                         @if (auth()->user()->role != 'guest')
                         <span>/ {{ $book_user['user_fullname'] }}</span>
                         @endif
@@ -79,6 +127,23 @@
                         @if (request()->path() == 'status/unpaid')
                         <span>Bayar sebelum tanggal, {{ $book_user['first']->created_at->isoFormat('dddd, D MMMM Y H:mm:ss') }} WIB -</span>
                         @endif
+
+                        @if (request()->path() == 'status/failed')
+                        <span>{{ $book_user['first']->failed_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                        @endif
+
+                        @if (request()->path() == 'status/on-process')
+                        <span>{{ $book_user['first']->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                        @endif
+
+                        @if (request()->path() == 'status/on-delivery')
+                        <span>{{ $book_user['first']->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                        @endif
+
+                        @if (request()->path() == 'status/completed')
+                        <span>{{ $book_user['first']->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss') }} -</span>
+                        @endif
+
                         <span class="tred">{{ $book_user['status'] }}</span>
                     </div>
                 </div>
@@ -202,7 +267,9 @@
         </div>
 
         @empty
-        @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
+        <div class="mt-4">
+            @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
+        </div>
         @endforelse
     </div>
 </div>

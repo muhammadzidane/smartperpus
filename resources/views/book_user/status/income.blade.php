@@ -3,8 +3,6 @@
 
 <h4>Penghasilan</h4>
 
-{{ dump($today['count']) }}
-
 <div id="income">
     <div class="d-md-flex mt-4">
         <div class="income-box">
@@ -111,6 +109,9 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="">
 </div>
 
 @endsection

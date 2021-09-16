@@ -22,8 +22,8 @@ class TestController extends Controller
                 )
             );
 
-        dump($test);
-        // return view('test');
+        // dump($test);
+        return view('test');
     }
 
     public function testPost(Request $request)

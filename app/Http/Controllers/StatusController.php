@@ -61,12 +61,12 @@ class StatusController extends Controller
 
             if ($request->path() != 'status/all') {
                 $conditions = array(
-                    array('user_id', $user->id),
-                    array('payment_status', $payment_status)
+                    array('book_user.user_id', $user->id),
+                    array('book_user.payment_status', $payment_status)
                 );
             } else {
                 $conditions = array(
-                    array('user_id', $user->id)
+                    array('book_user.user_id', $user->id)
                 );
             }
         } else { // Admin / Super Admin
@@ -92,20 +92,20 @@ class StatusController extends Controller
 
             if ($request->path() != 'status/all') {
                 $conditions = array(
-                    array('payment_status', $payment_status),
+                    array('book_user.payment_status', $payment_status),
                 );
 
                 if ($request->path() == 'status/uploaded-payment') {
                     // Unggahan bukti pembayaran
                     $conditions = array(
-                        array('payment_status', $payment_status),
-                        array('upload_payment_image', '!=', null),
+                        array('book_user.payment_status', $payment_status),
+                        array('book_user.upload_payment_image', '!=', null),
                     );
                 } else if ($request->path() == 'status/unpaid') {
                     // Belum dibayar dan tidak ada bukti unggahan pembayaran
                     $conditions = array(
-                        array('payment_status', $payment_status),
-                        array('upload_payment_image', null),
+                        array('book_user.payment_status', $payment_status),
+                        array('book_user.upload_payment_image', null),
                     );
                 }
             } else {
@@ -117,8 +117,23 @@ class StatusController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        $book_users    = $book_users->unique('invoice');
+        if ($request->keywords) {
+            array_push(
+                $conditions,
+                array('books.name', 'LIKE', "%$request->keywords%", 'OR'),
+                array('book_user.invoice', 'LIKE', "%$request->keywords%", 'OR'),
+                array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
+            );
 
+            $book_users = BookUser::join('books', 'book_user.book_id', '=', 'books.id')
+                ->join('authors', 'books.author_id', '=', 'authors.id')
+                ->select('book_user.*')
+                ->where($conditions)
+                ->orderBy('created_at', 'DESC')
+                ->get();
+        }
+
+        $book_users    = $book_users->unique('invoice');
 
         $book_users = $book_users->map(function ($book_user) {
             $book_user_invoice = BookUser::where('invoice', $book_user->invoice);
@@ -162,10 +177,6 @@ class StatusController extends Controller
                 case 'arrived':
                     $status = 'SELESAI';
                     break;
-
-                default:
-
-                    break;
             }
 
             return array(
@@ -207,11 +218,11 @@ class StatusController extends Controller
             $total_payment = $total_payment + $book_user->unique_code + $book_user->shipping_cost;
 
             // Tanggal Status
-            $order_date     = $book_user->created_at ? Carbon::make($book_user->created_at)->format('Y-m-d H:i:s') : null;
-            $payment_date   = $book_user->payment_date ? Carbon::make($book_user->payment_date)->format('Y-m-d H:i:s') : null;
-            $shipped_date   = $book_user->shipped_date ? Carbon::make($book_user->shipped_date)->format('Y-m-d H:i:s') : null;
-            $completed_date = $book_user->completed_date ? Carbon::make($book_user->completed_date)->format('Y-m-d H:i:s') : null;
-            $failed_date    = $book_user->failed_date ? Carbon::make($book_user->failed_date)->format('Y-m-d H:i:s') : null;
+            $order_date     = $book_user->created_at ? $book_user->created_at->format('Y-m-d H:i:s') : null;
+            $payment_date   = $book_user->payment_date ? $book_user->payment_date->format('Y-m-d H:i:s') : null;
+            $shipped_date   = $book_user->shipped_date ? $book_user->shipped_date->format('Y-m-d H:i:s') : null;
+            $completed_date = $book_user->completed_date ? $book_user->completed_date->format('Y-m-d H:i:s') : null;
+            $failed_date    = $book_user->failed_date ? $book_user->failed_date->format('Y-m-d H:i:s') : null;
 
             $status_date = compact('order_date', 'failed_date', 'payment_date', 'shipped_date', 'completed_date');
 
