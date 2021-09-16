@@ -86,9 +86,12 @@ class CheckoutController extends Controller
                 return $result;
             });
 
-            $total = $total->reduce(fn ($carry, $item) => $carry + $item);
+            $user          = User::find(auth::id());
+            $main_customer = $user->customers()->firstWhere('main', true);
+            $total         = $total->reduce(fn ($carry, $item) => $carry + $item);
+            $data          = compact('checkouts', 'amount', 'total', 'main_customer');
 
-            return view('checkout.index', compact('checkouts', 'amount', 'total'));
+            return view('checkout.index', $data);
         }
     }
 

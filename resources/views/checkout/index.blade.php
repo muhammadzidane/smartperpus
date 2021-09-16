@@ -60,42 +60,26 @@
                         @endif
                 </div>
                 <div id="user-customer-lists">
-                    @forelse (auth()->user()->customers->take(5) as $customer)
-                    <div class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
-                        <label>
-                            <div class="d-flex">
-                                <div class="mr-2 d-flex">
-                                    <input type="radio" name="customer" class="my-auto" value="{{ $customer->id }}">
-                                </div>
-                                <div>
-                                    <div>
-                                        <span class="customer-name">{{ $customer->name }}</span> -
-                                        <span class="customer-phone-number">{{ $customer->phone_number }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="customer-address">{{ $customer->address }}</span>.
-                                        <span class="customer-province" data-province="{{ $customer->province->id }}">{{ $customer->province->name }},</span>
-                                        <span class="customer-city" data-city="{{ $customer->city->id }}">{{ $customer->city->type  . ' ' . $customer->city->name }},</span>
-                                        <span class="customer-district" data-district="{{ $customer->district->id }}">{{ $customer->district->name }}</span>
-                                    </div>
-                                </div>
+                    <div class="mt-4">
+                        <div class="user-customer-main">Utama</div>
+                        <input type="hidden" name="customer" class="my-auto" value="{{ $main_customer->id }}">
+                        <div class="h5 row mt-2">
+                            <div class="col-3">
+                                <div class="tbold">{{ $main_customer->name }}</div>
+                                <div class="text-grey">{{ $main_customer->phone_number }}</div>
                             </div>
-                        </label>
-                        <div class="ml-auto text-right">
-                            <div>
-                                <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
+                            <div class="col-7 text-grey">
+                                <div>{{ $main_customer->address }},</div>
+                                <span>{{ $main_customer->city->type }}</span>
+                                <span>{{ $main_customer->city->name }},</span>
+                                <span id="checkout-district" data-id="{{ $main_customer->district->id }}">Kec.{{ $main_customer->district->name }},</span>
+                                <span>{{ $main_customer->province->name }},</span>
                             </div>
-                            <div>
-                                <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
+                            <div class="col-2 text-right">
+                                <button class="btn btn-outline-danger">Ubah</button>
                             </div>
                         </div>
                     </div>
-                    @empty
-                    <div class="mt-4">
-                        <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
-                        <button id="user-create-customer" type="button" class="btn-none tred-bold">Tambah</button>
-                    </div>
-                    @endforelse
                 </div>
             </div>
             <div class="white-content mt-4">
