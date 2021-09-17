@@ -7,16 +7,6 @@ array(
 'title' => 'Daftar Karyawan'
 ))
 
-@if (session('pesan'))
-<div class="alert alert-primary my-4" role="alert">
-    <strong>{{ session('pesan') }}</strong>
-</div>
-@endif
-
-<div id="pesan" class="alert alert-warning my-4 d-none" role="alert">
-    <strong>{{ session('pesan') }}</strong>
-</div>
-
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
     @include('profile-sidebar')
     <div class="col-md-9">
@@ -26,7 +16,6 @@ array(
                     <th>Nama Lengkap</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Edit</th>
                     <th>Blokir</th>
                     <th>Hapus</th>
                 </tr>
@@ -35,37 +24,15 @@ array(
                 @foreach ($users as $user)
                 <tr>
                     <td>
-                        @if ($user->deleted_at !== null)
-                        <span class="text-grey tbold">{{ $user->first_name . ' ' . $user->last_name }}</span>
-
-                        @else
-                        <span>{{ $user->first_name . ' ' . $user->last_name }}</span>
-                        @endif
-
+                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">
+                            {{ $user->first_name . ' ' . $user->last_name  }}
+                        </span>
                     </td>
                     <td>
-                        @if ($user->deleted_at !== null)
-                        <span class="text-grey tbold">{{ $user->email }}</span>
-
-                        @else
-                        <span>{{ $user->email }}</span>
-                        @endif
+                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ $user->email }}</span>
                     </td>
                     <td>
-                        @if ($user->deleted_at !== null)
-                        <span class="text-grey tbold">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
-
-                        @else
-                        <span>{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if ($user->deleted_at == null)
-                        <a href="/users/{{ $user->id }}/edit" type="button" class="btn btn-success">Edit</a>
-
-                        @else
-                        <a type="button" class="btn btn-success">Edit</a>
-                        @endif
+                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
                     </td>
                     <td>
                         <form data-id="{{ $user->id }}" action="{{ route('users.block', array('user' => $user->id)) }}" method="post">
@@ -90,6 +57,7 @@ array(
                 @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-end mt-4">{{ $users->links() }}</div>
     </div>
 </div>
 

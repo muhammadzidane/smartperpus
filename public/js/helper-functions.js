@@ -1,4 +1,19 @@
 'use strict';
+// Disable form submit jika input value kosong
+const formDisableSubmit = (formSelector, events) => {
+    $(formSelector).on(events, function() {
+        let notNullValues = $(this).find('input, select').toArray().every((input) => input.value != "");
+
+        if (notNullValues) {
+            $(this).find('button[type=submit]').removeClass('cursor-disabled');
+            $(this).find('button[type=submit]').removeAttr('disabled');
+        } else {
+            $(this).find('button[type=submit]').attr('disabled', 'disabled');
+            $(this).find('button[type=submit]').removeClass('cursor-disabled');
+        }
+    });
+}
+
 // Random Number
 function randomIntFromInterval(min, max) { // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);

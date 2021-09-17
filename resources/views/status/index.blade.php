@@ -10,6 +10,7 @@
 <div class="row flex-row-reverse mt-4">
     @include('profile-sidebar')
     <div class=" col-md-9">
+        @if (auth()->user()->role != 'guest' && request()->path() != 'status/uploaded-payment')
         <div class="status-links">
             <a href="/status/all" class="status-link {{ request()->path() == 'status/all' ? 'status-link-active' : '' }}">
                 <span>Semua</span>
@@ -43,9 +44,12 @@
                 <span>Dibatalkan</span>
             </a>
         </div>
-        @if (auth()->user()->role != 'guest')
-        <div class="mt-4">
-            <a href="/status/uploaded-payment" class="status-link {{ request()->path() == 'status/uploaded-payment' ? 'status-link-active' : '' }}">
+
+        @endif
+
+        @if (auth()->user()->role != 'guest' && request()->path() == 'status/uploaded-payment')
+        <div class="status-links">
+            <a href="/status/uploaded-payment" class="status-link text-left {{ request()->path() == 'status/uploaded-payment' ? 'status-link-active' : '' }}">
                 <span>Bukti Pembayaran</span>
             </a>
         </div>

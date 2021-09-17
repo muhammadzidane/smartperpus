@@ -45,7 +45,7 @@ Route::prefix('users')->group(function () {
     Route::patch('{user}/change-biodata', array(UserController::class, 'changeBiodata'));
     Route::patch('{user}/change-email', array(UserController::class, 'changeEmail'));
 });
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->except('edit');
 
 Route::prefix('validator')->group(function () {
     Route::get('unique', array(ValidatorController::class, 'unique'));

@@ -11,37 +11,68 @@
                     <div class="col-md-8 col-8 pl-0">
                         <div class="pt-1">
                             <div class="tbold">{{ auth()->user()->first_name . ' ' . auth()->user()->last_name }}</div>
-                            <a href="{{ route('users.show', array('user' => auth()->user()->id)) }}" class="text-grey"><i class="fas fa-pencil-alt"></i> Ubah Profile</a>
+                            <a href="{{ route('users.show', array('user' => auth()->user()->id)) }}" class="text-grey"><i class="fas fa-pencil-alt"></i> Akun Saya</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="py-2">
-            <div class="py-2 {{ preg_match('/users\/[0-9]{1}/i', request()->path()) ? 'active-acc' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none text-grey" href="{{ route('users.show', array('user' => auth()->user()->id)) }}">Akun Saya</a>
-            </div>
-            <div class="py-2 {{ preg_match('/status\/[\s\S]{1}/i', request()->path()) ? 'active-acc' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.all') }}">Pembelian</a>
+        <div class="p-2">
+            <div>
+                <div class="px-2 pt-2 pb-0 tbold">Pembelian</div>
+                <div>
+                    <div class="py-2 {{ preg_match('/status\/all|unpaid|on-process|on-delivery|completed|failed/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.all') }}">Daftar Transaksi</a>
+                    </div>
+                    <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.uploaded.payment') }}">Bukti Pembayaran</a>
+                    </div>
+                </div>
             </div>
 
             @if (auth()->user()->role == 'guest')
-            <div class="py-2 {{ preg_match('/users[\s\S]{0}/i', request()->path()) ? 'active-acc' : '' }}">
+            <div class="py-2 {{ preg_match('/users[\s\S]{0}/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                 <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
             </div>
-            <div class="py-2 {{ preg_match('/status[\s\S]{0}/i', request()->path()) ? 'active-acc' : '' }}">
+            <div class="py-2 {{ preg_match('/status[\s\S]{0}/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                 <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('carts.index') }}">Keranjang Saya</a>
             </div>
 
             @else
-            <div class="py-2 {{ preg_match('/books\/create/i', request()->path()) ? 'active-acc' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('books.create') }}">Tambah Buku</a>
+            <div>
+                <div class="px-2 pt-2 pb-0 tbold">Penghasilan</div>
+                <div>
+                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Daftar Penghasilan</a>
+                    </div>
+                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Hari ini</a>
+                    </div>
+                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Bulan Ini</a>
+                    </div>
+                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Tahun Ini</a>
+                    </div>
+                </div>
             </div>
-            <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'active-acc' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
+
+            <div>
+                <div class="px-2 pt-2 pb-0 tbold">Karyawan</div>
+                <div>
+                    <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
+                    </div>
+                    <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                    </div>
+                </div>
             </div>
-            <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'active-acc' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+            <div>
+                <div class="px-2 pt-2 pb-0 tbold">Buku</div>
+                <div class="py-2 {{ preg_match('/books\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                    <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('books.create') }}">Tambah Buku</a>
+                </div>
             </div>
             @endif
         </div>

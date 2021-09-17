@@ -1042,6 +1042,8 @@ $(document).ready(function () {
     });
 
     //#region User store
+    formDisableSubmit('#user-store-form', 'input select');
+
     $('#user-store-form').on('submit', function(event) {
         let validations = $(this).children().find('input, select').toArray();
         validations     = validations.map(input => {

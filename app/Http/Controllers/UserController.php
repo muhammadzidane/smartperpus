@@ -11,7 +11,15 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth.admin.only')->only('create', 'index', 'edit', 'update', 'store');
+        $admin_only_middleware = array(
+            'create',
+            'index',
+            'edit',
+            'update',
+            'store'
+        );
+
+        $this->middleware('auth.admin.only')->only($admin_only_middleware);
     }
 
     /**
@@ -21,7 +29,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::withTrashed()->where('id', '!=', Auth::id())->where('role', '!=', 'guest')->get();
+        $users = User::withTrashed()->where('id', '!=', Auth::id())
+            ->where('role', '!=', 'guest')
+            ->paginate(20);
+
         return view('user.index', compact('users'));
     }
 
