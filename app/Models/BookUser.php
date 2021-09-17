@@ -12,7 +12,6 @@ class BookUser extends Model
     // Mengubah nama tabel menjadi 'book_user'
     public $table = "book_user";
 
-    // Otomatis mengubah request kolom 'payment_deadline' menjadi Carbon Object
     protected $dates   = [
         'payment_deadline',
         'completed_date',

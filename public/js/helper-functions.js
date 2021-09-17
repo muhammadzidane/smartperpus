@@ -581,11 +581,8 @@ $('.zoom-modal-image').on('click', function() {
     `<div class="modal fade" id="zoom-modal-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content modal-image position-relative">
-                <button type="button" class="close modal-close c-p" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
                 <div class="modal-body">
-                    <div class="w-75 mx-auto">
+                    <div class="w-100 mx-auto">
                         <img id="image-modal-source" class="w-100">
                     </div>
                 </div>

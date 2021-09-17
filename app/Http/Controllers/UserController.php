@@ -45,6 +45,32 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = array(
+            'nama_awal'       => 'required|min:3',
+            'nama_akhir'      => 'required|min:3',
+            'email'           => 'required|email|unique:users,email',
+            'role'            => 'required|in:admin,super_admin',
+            'tanggal_lahir'   => 'required|date',
+            'jenis_kelamin'   => 'in:L,P',
+            'nomer_handphone' => 'required|numeric|digits_between:9,15',
+        );
+
+        $request->validate($rules);
+
+        $data = array(
+            'password'      => Hash::make('12345678'),
+            'first_name'    => $request->nama_awal,
+            'last_name'     => $request->nama_akhir,
+            'email'         => $request->email,
+            'role'          => $request->role,
+            'date_of_birth' => $request->tanggal_lahir,
+            'gender'        => $request->jenis_kelamin,
+            'phone_number'  => $request->nomer_handpone,
+        );
+
+        User::create($data);
+
+        return redirect()->back()->with('message', 'Berhasil menambah karyawan baru');
     }
 
     /**
@@ -279,10 +305,15 @@ class UserController extends Controller
 
             return response()->json(compact('errors', 'test'));
         } else {
-            $data      = $request->except('_token', '_method');
+            $data = $request->except('_token', '_method');
+
             $user->update($data);
 
-            return response()->json(compact('user'));
+            $date_of_birth = $user->date_of_birth->isoFormat('D MMMM YYYY');
+
+            $data = compact('user', 'date_of_birth');
+
+            return response()->json($data);
         }
     }
 

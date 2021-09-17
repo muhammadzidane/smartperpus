@@ -75,8 +75,60 @@
                                 <span id="checkout-district" data-id="{{ $main_customer->district->id }}">Kec.{{ $main_customer->district->name }},</span>
                                 <span>{{ $main_customer->province->name }},</span>
                             </div>
-                            <div class="col-2 text-right">
-                                <button class="btn btn-outline-danger">Ubah</button>
+                            <div class="col-2">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-outline-danger text-right" data-toggle="modal" data-target="#checkout-address-modal">Ubah</button>
+                                </div>
+
+                                <div class="modal fade" id="checkout-address-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="p-3 position-relative">
+                                                <h4 class="modal-title tred login-header">Ubah alamat utama</h4>
+                                                <button id="modal-exit-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body pt-0 mt-4">
+                                                <form action="/checkouts/change-main-address" method="POST">
+                                                    @forelse (auth()->user()->customers()->where('main', false)->get() as $customer)
+                                                    <div class="container">
+                                                        <div class="row mt-4 borbot-gray-0 pb-3">
+                                                            <div class="col-4">
+                                                                <div class="d-flex">
+                                                                    <div class="my-auto mr-3">
+                                                                        <label>
+                                                                            <input type="radio" name="customer">
+                                                                            <span>Pilih</span>
+                                                                        </label>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div class=" tbold">{{ $customer->name }}
+                                                                        </div>
+                                                                        <div class="text-grey">{{ $customer->phone_number }}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-8 text-right text-grey">
+                                                                <div>{{ $customer->address }},</div>
+                                                                <span>{{ $customer->city->type }}</span>
+                                                                <span>{{ $customer->city->name }},</span>
+                                                                <span id="checkout-district" data-id="{{ $customer->district->id }}">Kec.{{ $customer->district->name }},</span>
+                                                                <span>{{ $customer->province->name }},</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @empty
+                                                    <h3>Belum punya alamat</h3>
+                                                    @endforelse
+                                                    <div class="p-3 text-right">
+                                                        <button type="submit" class="btn btn-outline-danger">Ubah</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1041,6 +1041,34 @@ $(document).ready(function () {
 
     });
 
+    //#region User store
+    $('#user-store-form').on('submit', function(event) {
+        let validations = $(this).children().find('input, select').toArray();
+        validations     = validations.map(input => {
+            let validations  = {
+                input    : '#' + input.id,
+                inputName: capitalizeFirstLetter(input.id.replace(/_|-/, ' ')),
+                rules    : 'required',
+            };
+
+            if (input.id == 'nomer_handphone') {
+                validations['rules'] = 'required,numeric,min:9,max:15';
+            }
+
+            if (input.id == 'user-email') {
+                validations['rules'] = 'required,email';
+            }
+
+            return validations;
+        });
+
+        validator(validations, success => {
+            if (!success) event.preventDefault();
+        });
+    });
+    //#endregion User store
+
+
     // User Delete / Destroy
     $('.user-delete').on('click', function (e) {
         e.preventDefault();
@@ -1154,8 +1182,8 @@ $(document).ready(function () {
         let headerText   = $(this).text() == 'Edit Foto' ? 'Edit Foto' : 'Tambah Foto';
 
         let html         =
-        `<div class="text-center">
-            <img id="user-modal-image" class="profile-img" src="${profileImage}">
+        `<div class="user-modal">
+            <img id="user-modal-image" class="profile-img w-100" src="${profileImage}">
         </div>
         <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
             <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
@@ -1309,7 +1337,7 @@ $(document).ready(function () {
         bootStrapModal('Ubah Biodata Diri', 'modal-md', () => {
             let firstName         = $('#user-first-name').text();
             let lastName          = $('#user-last-name').text();
-            let userDateOfBirth   = $('#user-date-of-birth').text();
+            let userDateOfBirth   = $('#user-date-of-birth').data('date');
             let userMan           = $('#user-gender').text() == 'Laki-laki' ? 'selected' : '';
             let userWoman         = $('#user-gender').text() != 'Laki-laki' ? 'selected' : '';
             let userAddress       = $('#user-hidden-address').text() == '-' ? '' : $('#user-hidden-address').text();
@@ -1399,7 +1427,7 @@ $(document).ready(function () {
                             $('.navbar-user-first-name').text(user.first_name);
                             $('#user-first-name').text(user.first_name);
                             $('#user-last-name').text(user.last_name);
-                            $('#user-date-of-birth').text(user.date_of_birth);
+                            $('#user-date-of-birth').text(response.date_of_birth);
                             $('#user-gender').text(gender);
                             $('#user-hidden-address').text(user.address);
                             $('#user-email').text(user.email);

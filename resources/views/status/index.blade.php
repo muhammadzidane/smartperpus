@@ -2,7 +2,7 @@
 @section('content')
 
 @include('content-header', array(
-'title' => $status_title,
+'title' => 'Pembelian',
 'icon_html' => '<i class="fas fa-shopping-bag user-icon mr-2 text-green f-20"></i>',
 )
 )
@@ -13,7 +13,6 @@
         <div class="status-links">
             <a href="/status/all" class="status-link {{ request()->path() == 'status/all' ? 'status-link-active' : '' }}">
                 <span>Semua</span>
-
             </a>
             <a href="/status/unpaid" class="status-link {{ request()->path() == 'status/unpaid' ? 'status-link-active' : '' }}">
                 <span>Belum Dibayar</span>
@@ -44,6 +43,13 @@
                 <span>Dibatalkan</span>
             </a>
         </div>
+        @if (auth()->user()->role != 'guest')
+        <div class="mt-4">
+            <a href="/status/uploaded-payment" class="status-link {{ request()->path() == 'status/uploaded-payment' ? 'status-link-active' : '' }}">
+                <span>Bukti Pembayaran</span>
+            </a>
+        </div>
+        @endif
         <div class="row mt-4">
             <div class="col-12">
                 <form action="{{ url()->current() }}" method="get">

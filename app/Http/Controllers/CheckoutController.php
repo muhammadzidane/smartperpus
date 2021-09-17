@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, Cart, Checkout};
+use App\Models\{User, Book, Checkout};
 use Illuminate\Support\Facades\{Auth, Validator, Date, BookUser};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -175,5 +175,10 @@ class CheckoutController extends Controller
         }
 
         return redirect()->route('book.purchases.show', array('invoice' => $invoice));
+    }
+
+    public function changeMainAddress(Request $request)
+    {
+        dd(true);
     }
 }

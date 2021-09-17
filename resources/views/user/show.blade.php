@@ -65,7 +65,7 @@ array(
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>Tanggal Lahir</div>
-                                    <div id="user-date-of-birth" class="text-right">{{ $user->date_of_birth ?? '-' }}</div>
+                                    <div id="user-date-of-birth" data-date="{{ $user->date_of_birth->format('Y-m-d') }}" class="text-right">{{ $user->date_of_birth->isoFormat('D MMMM YYYY') ?? '-'  }}</div>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>Jenis Kelamin</div>
