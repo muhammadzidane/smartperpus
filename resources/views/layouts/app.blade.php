@@ -37,7 +37,7 @@
                             <i class="fas fa-search m-auto"></i>
                         </div>
                         <form id="search-books-form" action="{{ route('books.index') }}" method="GET">
-                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off">
+                            <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off" value="{{ request()->keywords }}">
                         </form>
                     </div>
                 </div>
@@ -63,12 +63,43 @@
                         <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
                         <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
                         <li>
-                            <div class="position-relative">
-                                <a href="{{ auth()->check() ? route('carts.index') : route('login') }}" class="text-body"><i class="fas fa-shopping-cart nav-cart"></i></a>
+                            <div class="nav-cart">
 
-                                @if (auth()->check() && auth()->user()->carts->count() != 0)
-                                <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
-                                @endif
+                                <div data-toggle="collapse" href="#nav-cart-collapse" role="button" aria-expanded="false" aria-controls="nav-cart-collapse">
+                                    <i class="fas fa-shopping-cart nav-cart"></i>
+
+                                    @if (auth()->check() && auth()->user()->carts->count() != 0)
+                                    <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
+                                    @endif
+                                </div>
+                                <div class="nav-cart-content collapse" id="nav-cart-collapse">
+                                    <div class="nav-cart-content-title">
+                                        <div>Keranjang Saya</div>
+                                        <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
+                                    </div>
+                                    <div>
+                                        @foreach (auth()->user()->carts()->take(3)->get() as $cart)
+                                        <div class="mt-4 nav-cart-link">
+                                            <a href="/books/{{ $cart->books()->first()->id }}">
+                                                <div class="row">
+                                                    <div class="col-3 pr-0">
+                                                        <div class="nav-cart-content-image">
+                                                            <div class="nav-cart-content-src">
+                                                                <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-9 pl-0">
+                                                        <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
+                                                        <div class="tred-bold mt-1">Rp20.000</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
+                                </div>
                             </div>
                         </li>
                     </div>
@@ -256,7 +287,7 @@
                                 <label for="password">Password</label>
                                 <div class="d-flex">
                                     <input type="password" name="password" id="password" class="form-control-custom login-form" autocomplete="off" required>
-                                    <button id="toggle-password" type="button" class="show-password btn-none bg-transparent">
+                                    <button id="toggle-password" type="button" class="show-password btn-none">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -372,7 +403,7 @@
                             </div>
 
                             @else
-                            <div class="p-2 testt bg-transparent">
+                            <div class="p-2 testt">
                                 <img class="w-100" src="{{ asset('img/admin.png') }}">
                             </div>
                             @endcan
@@ -390,7 +421,7 @@
                                     @else
                                     <i class="fa fa-info-circle"></i>
                                     <small class="tred">Pesan akan di balas pada jam kerja 09:00 - 22:00</small>
-                                    <div class="chat-delete" class="bg-dark">
+                                    <div class="chat-delete">
                                         <button id="chat-delete-button" class="btn-none" class="btn-none mr-4">
                                             <i class="fa fa-ellipsis-v"></i>
                                         </button>

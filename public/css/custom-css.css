@@ -1,3 +1,8 @@
+a, a:hover {
+    text-decoration: none;
+    color: #444444;
+}
+
 .cursor-disable {
     cursor: no-drop;
 }
@@ -146,6 +151,65 @@ label { cursor: pointer; }
 }
 
 /* Navbar */
+.nav-cart {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-cart-link:hover {
+    background-color: #e2d5d5;
+}
+
+.nav-cart-content {
+    position: absolute;
+    top: 41px;
+    right: -5px;
+    z-index: 1;
+    background-color: #fffdf6;
+    box-shadow: 0 0 2px #e2d5d5;
+    border: 1px solid #e2d5d5;
+    width: 350px;
+    border-radius: 4px;
+    padding: 0.50rem;
+}
+
+.nav-cart-content-title {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 0.50rem ;
+    border-bottom: 1px solid #e2d5d5;
+}
+
+.nav-cart-content-image {
+    overflow: hidden;
+    width: 75%;
+    padding-bottom: 82%;
+    height: 0;
+    border: 1px solid #e2d5d5;
+    box-shadow: 0 0 2px #e2d5d5;
+}
+
+.nav-cart-content-src {
+    margin: 0 auto;
+    max-width: 80%;
+    padding: 4px;
+}
+
+.nav-cart-content-src img {
+    width: 100%;
+}
+
+.nav-cart-content::before {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    display: block;
+    content: '';
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 12px solid #fffdf6;
+}
+
 .nav-book-search {
     display: none;
     position: absolute;

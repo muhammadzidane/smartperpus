@@ -61,7 +61,7 @@
                         <button class="status-search-icon btn-none p-0">
                             <i class="fa fa-search d-none d-md-block" aria-hidden="true"></i>
                         </button>
-                        <input name="keywords" class="status-search-input" type="text" placeholder="Cari berdasarkan nama produk, nama author dan nomer pesanan">
+                        <input name="status_keywords" class="status-search-input" type="text" placeholder="Cari berdasarkan nama produk, nama author dan nomer pesanan" value="{{ request()->status_keywords }}">
                     </div>
                 </form>
 

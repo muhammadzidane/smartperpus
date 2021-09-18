@@ -117,12 +117,12 @@ class StatusController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        if ($request->keywords) {
+        if ($request->status_keywords) {
             array_push(
                 $conditions,
-                array('books.name', 'LIKE', "%$request->keywords%"),
-                array('book_user.invoice', 'LIKE', "%$request->keywords%", 'OR'),
-                array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
+                array('books.name', 'LIKE', "%$request->status_keywords%"),
+                array('book_user.invoice', 'LIKE', "%$request->status_keywords%", 'OR'),
+                array('authors.name', 'LIKE', "%$request->status_keywords%", 'OR'),
             );
 
             $book_users = BookUser::join('books', 'book_user.book_id', '=', 'books.id')
