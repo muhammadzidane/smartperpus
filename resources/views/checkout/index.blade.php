@@ -11,6 +11,7 @@
 </div>
 
 <form id="checkout-form" action="{{ route('checkout.payment', array('user' => auth()->user()->id)) }}" method="POST">
+    @csrf
     <div class="row flex-md-row-reverse mt-4">
         <div class="col-md-3 mb-4">
             <div class="white-content pt-0 m-0">
@@ -91,14 +92,15 @@
                                             </div>
                                             <div class="modal-body pt-0 mt-4">
                                                 <form action="/checkouts/change-main-address" method="POST">
+
                                                     @forelse (auth()->user()->customers()->where('main', false)->get() as $customer)
                                                     <div class="container">
                                                         <div class="row mt-4 borbot-gray-0 pb-3">
                                                             <div class="col-4">
                                                                 <div class="d-flex">
                                                                     <div class="my-auto mr-3">
-                                                                        <label>
-                                                                            <input type="radio" name="customer">
+                                                                        <label class="my-auto">
+                                                                            <input form="deleteForm" type="radio" name="customer" value="{{ $customer->id }}">
                                                                             <span>Pilih</span>
                                                                         </label>
                                                                     </div>
@@ -118,11 +120,12 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                     @empty
                                                     <h3>Belum punya alamat</h3>
                                                     @endforelse
                                                     <div class="p-3 text-right">
-                                                        <button type="submit" class="btn btn-outline-danger">Ubah</button>
+                                                        <button form="deleteForm" type="submit" class="btn btn-outline-danger">Ubah</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -209,8 +212,12 @@
             @endforeach
         </div>
     </div>
-    @csrf
 </form>
+<!--
+<form id="deleteForm" action="/checkouts/change-main-address" method="post">
+    @method('PATCH')
+    @csrf
+</form> -->
 
 <div class="mt-5">
     <div class="w-maxc ml-auto">{{ $checkouts->links() }}</div>

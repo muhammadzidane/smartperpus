@@ -128,7 +128,7 @@ Route::prefix('book-purchases')->group(function () {
 Route::post('checkouts', array(CheckoutController::class, 'checkout'))->name('checkout');
 Route::get('checkouts', array(CheckoutController::class, 'index'))->name('checkout.index');
 Route::post('checkouts/{user}/payment', array(CheckoutController::class, 'checkoutPayment'))->name('checkout.payment');
-Route::get('checkouts/{user}/change-main-address', array(CheckoutController::class, 'changeMainAddress'));
+Route::patch('checkouts/change-main-address', array(CheckoutController::class, 'changeMainAddress'));
 
 // Chat dengan admin
 Route::resource('/user-chats', UserChatController::class)->except('index', 'edit');

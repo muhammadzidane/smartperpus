@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, Checkout};
+use App\Models\{User, Book, Checkout, Customer};
 use Illuminate\Support\Facades\{Auth, Validator, Date, BookUser};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -151,20 +151,20 @@ class CheckoutController extends Controller
             }
 
             $data = array(
-                'book_id' => $checkout->book_id,
-                'customer_id' => $request->customer,
-                'invoice' => $invoice,
-                'book_version' => $checkout->book_version,
-                'amount' => $checkout->amount,
-                'courier_name' => $request->courier_name,
-                'courier_service' => $courier_service,
-                'shipping_cost' => $shipping_cost,
-                'note' => $checkout->note,
-                'insurance' => 0,
-                'unique_code' => $unique_code,
-                'total_payment' => $total_payment,
-                'payment_method' => $payment_method,
-                'payment_status' => 'waiting_for_confirmation',
+                'book_id'          => $checkout->book_id,
+                'customer_id'      => $request->customer,
+                'invoice'          => $invoice,
+                'book_version'     => $checkout->book_version,
+                'amount'           => $checkout->amount,
+                'courier_name'     => $request->courier_name,
+                'courier_service'  => $courier_service,
+                'shipping_cost'    => $shipping_cost,
+                'note'             => $checkout->note,
+                'insurance'        => 0,
+                'unique_code'      => $unique_code,
+                'total_payment'    => $total_payment,
+                'payment_method'   => $payment_method,
+                'payment_status'   => 'waiting_for_confirmation',
                 'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
             );
 
@@ -179,6 +179,26 @@ class CheckoutController extends Controller
 
     public function changeMainAddress(Request $request)
     {
-        dd(true);
+        $customer = Customer::find($request->customer);
+
+        if ($customer) {
+            $user = User::find(auth()->user()->id);
+
+            $data = array(
+                'main' => false,
+            );
+
+            $user->customers()->update($data);
+
+            $data = array(
+                'main' => true,
+            );
+
+            $user->customers()->find($request->customer)->update($data);
+
+            return redirect()->back()->with('message', 'Berhasil mengubah alamat utama');
+        } else {
+            return redirect()->back()->with('message', 'Alamat tidak ditemukan');
+        }
     }
 }

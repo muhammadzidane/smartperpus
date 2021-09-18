@@ -10,7 +10,7 @@
 <div class="row flex-row-reverse mt-4">
     @include('profile-sidebar')
     <div class=" col-md-9">
-        @if (auth()->user()->role != 'guest' && request()->path() != 'status/uploaded-payment')
+        @if (request()->path() != 'status/uploaded-payment')
         <div class="status-links">
             <a href="/status/all" class="status-link {{ request()->path() == 'status/all' ? 'status-link-active' : '' }}">
                 <span>Semua</span>
@@ -181,9 +181,9 @@
                 <div class="text-right mb-3">
                     @if (auth()->user()->role == 'guest')
 
-                    @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null)
+                    @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null && $book_user['first']->payment_status != 'failed')
                     <div>
-                        <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Unggah Bukti Pembayaran</a>
+                        <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Kirim Bukti Pembayaran</a>
                     </div>
                     @endif
 

@@ -24,17 +24,21 @@
                     <div class="py-2 {{ preg_match('/status\/all|unpaid|on-process|on-delivery|completed|failed/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.all') }}">Daftar Transaksi</a>
                     </div>
+
+                    @if (auth()->user()->role != 'guest')
                     <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-actice' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.uploaded.payment') }}">Bukti Pembayaran</a>
                     </div>
+                    @endif
                 </div>
             </div>
 
             @if (auth()->user()->role == 'guest')
-            <div class="py-2 {{ preg_match('/users[\s\S]{0}/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+            <div class="py-2 {{ preg_match('/wishlists$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                 <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
             </div>
-            <div class="py-2 {{ preg_match('/status[\s\S]{0}/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+
+            <div class="py-2">
                 <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('carts.index') }}">Keranjang Saya</a>
             </div>
 
@@ -45,13 +49,13 @@
                     <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Daftar Penghasilan</a>
                     </div>
-                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Hari ini</a>
+                    <div class="py-2 {{ preg_match('/income\/detail\/today$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income.detail.today') }}">Penghasilan Hari ini</a>
                     </div>
-                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                    <div class="py-2 {{ preg_match('/income\/detail\/this-month$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Bulan Ini</a>
                     </div>
-                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                    <div class="py-2 {{ preg_match('/income\/detail\/all$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Penghasilan Tahun Ini</a>
                     </div>
                 </div>
