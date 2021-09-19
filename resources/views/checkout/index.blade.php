@@ -57,36 +57,42 @@
                         </span>
                         <h4 class="d-inline">Alamat Pengiriman</h4>
                     </div>
-                    @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button type="button" id="user-create-customer" class="btn-none tred-bold">Tambah</button>
-                        @endif
+                    <div>
+                        <a href="/users/{{ auth()->user()->id }}#user-customers" class="btn btn-outline-danger">Kelola Alamat</a>
+                        @if (auth()->user()->customers->count() < 5) <button type="button" class="btn-none tred-bold ml-2" data-toggle="modal" data-target="#customer-store-modal">Tambah</button>
+                            @endif
+                    </div>
                 </div>
+
+                @if ($main_customer)
                 <div id="user-customer-lists">
                     <div class="mt-4">
                         <div class="user-customer-main">Utama</div>
-                        <input type="hidden" name="customer" class="my-auto" value="{{ $main_customer->id }}">
+                        <input id="checkout-customer-main" type="hidden" name="customer" class="my-auto" value="{{ $main_customer->id }}">
                         <div class="h5 row mt-2">
-                            <div class="col-3">
+                            <div class="col-md-3 mt-1 mt-md-0">
                                 <div class="tbold">{{ $main_customer->name }}</div>
                                 <div class="text-grey">{{ $main_customer->phone_number }}</div>
                             </div>
-                            <div class="col-7 text-grey">
+                            <div class="col-md-6 mt-2 mt-md-0 text-grey">
                                 <div>{{ $main_customer->address }},</div>
                                 <span>{{ $main_customer->city->type }}</span>
                                 <span>{{ $main_customer->city->name }},</span>
                                 <span id="checkout-district" data-id="{{ $main_customer->district->id }}">Kec.{{ $main_customer->district->name }},</span>
                                 <span>{{ $main_customer->province->name }},</span>
                             </div>
-                            <div class="col-2">
+                            @if (auth()->user()->customers()->count() != 1)
+                            <div class="col-md-3 mt-2 mt-md-0">
                                 <div class="text-right">
-                                    <button type="button" class="btn btn-outline-danger text-right" data-toggle="modal" data-target="#checkout-address-modal">Ubah</button>
+                                    <button type="button" class="btn btn-outline-danger text-right" data-toggle="modal" data-target="#checkout-address-modal">Ubah Alamat Utama</button>
                                 </div>
 
-                                <div class="modal fade" id="checkout-address-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="checkout-address-modal" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="p-3 position-relative">
+                                            <div class="p-3 d-flex justify-content-between">
                                                 <h4 class="modal-title tred login-header">Ubah alamat utama</h4>
-                                                <button id="modal-exit-button" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
@@ -122,7 +128,7 @@
                                                     </div>
 
                                                     @empty
-                                                    <h3>Belum punya alamat</h3>
+                                                    <h3 class="tbold">Belum punya alamat</h3>
                                                     @endforelse
                                                     <div class="p-3 text-right">
                                                         <button form="deleteForm" type="submit" class="btn btn-outline-danger">Ubah</button>
@@ -133,9 +139,11 @@
                                     </div>
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
             <div class="white-content mt-4">
                 <div id="checkout-courier-choise">
@@ -213,11 +221,52 @@
         </div>
     </div>
 </form>
-<!--
+
 <form id="deleteForm" action="/checkouts/change-main-address" method="post">
     @method('PATCH')
     @csrf
-</form> -->
+</form>
+
+<form id="checkout-customer-store" action="/checkouts/customer-store" method="POST">
+    @csrf
+    <div class="modal fade" id="customer-store-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+                <div class="p-3 d-flex justify-content-between">
+                    <h5 class="modal-title tred login-header">Tambah Alamat Utama</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="mt-4 form-group mx-auto">
+                        <label for="nama_penerima">Nama Penerima</label>
+                        <input id="user-customer-name" type="text" name="nama_penerima" class="form-control-custom book-edit-inp">
+                    </div>
+                    <div class="form-group mx-auto mt-4">
+                        <label for="alamat_tujuan">Alamat Tujuan</label>
+                        <input id="user-customer-address" type="text" name="alamat_tujuan" class="form-control-custom book-edit-inp">
+                    </div>
+                    <div class="form-group mx-auto mt-4 position-relative">
+                        <label for="provinsi">Cari Kota / Kecamatan</label>
+                        <input id="user-city-district-search" type="text" class="form-control-custom book-edit-inp">
+                        <input id="user-city-or-district" type="hidden" name="kota_atau_kecamatan">
+                        <div id="user-hidden-address" class="user-address">
+                        </div>
+                    </div>
+                    <div class="form-group mx-auto mt-4">
+                        <label for="nomer_handphone">Nomer Handphone</label>
+                        <input id="user-customer-phone" type="text" name="nomer_handphone" class="form-control-custom book-edit-inp">
+                    </div>
+                    <div class="form-group mt-4 text-right asu">
+                        <button class="cursor-disabled btn btn-outline-danger" type="submit" disabled>Tambah</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 
 <div class="mt-5">
     <div class="w-maxc ml-auto">{{ $checkouts->links() }}</div>

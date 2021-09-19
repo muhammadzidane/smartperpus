@@ -68,7 +68,6 @@ class CustomerController extends Controller
             );
 
             $customer =  $user->customers()->create($create);
-
             $message  = 'Berhasil menambah alamat';
 
             $data = array(

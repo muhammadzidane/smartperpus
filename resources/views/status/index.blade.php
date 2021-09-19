@@ -214,6 +214,15 @@
                         <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     </div>
                     @endif
+                    @if (Auth::user()->role == 'guest')
+                    <div>
+                        <form action="/status/buy-again" method="POST">
+                            <button class="btn btn-outline-danger">Beli Lagi</button>
+                            <input type="hidden" name="invoice" value="{{ $book_user['first']->invoice }}">
+                            @csrf
+                        </form>
+                    </div>
+                    @endif
                 </div>
                 <div class="d-md-flex justify-content-between">
                     <div class="my-auto d-flex justify-content-between">

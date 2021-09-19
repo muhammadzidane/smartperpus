@@ -229,24 +229,17 @@
                     @endauth
 
                     <div>
-                        @if ($book->ebook == 0)
-                        <button type="button" class="btn btn-grey w-100" disabled>E-Book tidak tersedia</button>
-
-                        @else
-                        <a href="{{ route('books.buy', array('book' => $book->name)) }}" type="button" class="btn btn-yellow w-100 mt-2">Beli E-Book</a>
-                        @endif
-
                         @auth
                         <div>
                             <form action="{{ route('carts.bought.directly', array('book' => $book->id)) }}" method="POST">
-                                <button type="submit" class="btn btn-red w-100 mt-2">Beli Buku Cetak</button>
+                                <button type="submit" class="btn btn-red w-100 mt-2">Beli Langsung</button>
                                 @csrf
                             </form>
                         </div>
                         @endauth
 
                         @guest
-                        <a href="{{ route('login') }}" type="button" class="btn btn-red w-100 mt-2">Beli Buku Cetak</a>
+                        <a href="{{ route('login') }}" type="button" class="btn btn-red w-100 mt-2">Beli Langsung</a>
                         @endguest
                     </div>
                 </div>

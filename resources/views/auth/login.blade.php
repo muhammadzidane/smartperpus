@@ -26,45 +26,51 @@
 </head>
 
 <body>
-    <div class="register-user container py-4">
-        <div class="form-register">
-            <form id="form-login" action="{{ route('login') }}" method="POST">
-                <h5 class="tred-bold mb-4">Login</h5>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" name="email" id="email" class="form-control-custom">
+    <div class="center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <form id="form-login" action="{{ route('login') }}" method="POST">
+                        <h5 id="login-title" class="tred-bold mb-4">Login</h5>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" name="email" id="email" class="form-control-custom">
+                        </div>
+                        <div class="form-group position-relative">
+                            <div>
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" class="form-control-custom" aria-describedby="helpId" autocomplete="off">
+                            </div>
+                            <button id="toggle-password" type="button" class="show-password user-login">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="form-group mt-4">
+                            <button class="cursor-disabled btn btn-outline-danger w-100" type="submit" disabled>Login</button>
+                        </div>
+                        <div class="mb-3">
+                            <div class="login-atau tred">Atau login dengan</div>
+                        </div>
+                        <div class="form-group">
+                            <div class="another-login text-center">
+                                <span class="p-3"><a href="#"><i class="fab fa-facebook-f login-hover"></i></a></span>
+                                <span class="dot-login"></span>
+                                <span class="p-3"><a href="#"><i class="fab fa-google login-hover"></i></a></span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <h6 class="text-grey">Belum Memiliki Akun ?</h6>
+                            <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
+                        </div>
+                        @csrf
+                    </form>
                 </div>
-                <div class="form-group position-relative">
+                <div class="col-md-7 d-none d-md-block">
                     <div>
-                        <label for="password">Password</label>
-                        <input type="password" name="password" id="password" class="form-control-custom" aria-describedby="helpId" autocomplete="off">
-                    </div>
-                    <button id="toggle-password" type="button" class="show-password user-login">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                    </button>
-                </div>
-                <div class="form-group">
-                    <button id="button-login" class="button-submit" type="submit">Login</button>
-                </div>
-                <div class="mb-3">
-                    <div class="login-atau tred">Atau login dengan</div>
-                </div>
-                <div class="form-group">
-                    <div class="another-login text-center">
-                        <span class="p-3"><a href="#"><i class="fab fa-facebook-f login-hover"></i></a></span>
-                        <span class="dot-login"></span>
-                        <span class="p-3"><a href="#"><i class="fab fa-google login-hover"></i></a></span>
+                        <img class="w-100" src="{{ asset('img/form-register.jpg') }}">
                     </div>
                 </div>
-                <div class="text-center mt-4">
-                    <h6 class="text-grey">Belum Memiliki Akun ?</h6>
-                    <a href="{{ route('register') }}" class="text-decoration-none tred-bold">Daftar Sekarang</a>
-                </div>
-                @csrf
-            </form>
-        </div>
-        <div class="register-user-pict">
-            <img src="{{ asset('img/form-register.jpg') }}">
+            </div>
         </div>
     </div>
 

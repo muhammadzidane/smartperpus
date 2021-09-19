@@ -29,6 +29,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\{Route, Auth};
 
+
 Route::get('/', array(HomeController::class, 'index'))->name('home');
 
 // TEST
@@ -111,6 +112,7 @@ Route::prefix('status')->middleware('auth')->group(function () {
     Route::get('completed', array(StatusController::class, 'index'))->name('status.completed');
     Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
     Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
+    Route::post('/buy-again', array(StatusController::class, 'buyAgain'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
@@ -129,11 +131,11 @@ Route::post('checkouts', array(CheckoutController::class, 'checkout'))->name('ch
 Route::get('checkouts', array(CheckoutController::class, 'index'))->name('checkout.index');
 Route::post('checkouts/{user}/payment', array(CheckoutController::class, 'checkoutPayment'))->name('checkout.payment');
 Route::patch('checkouts/change-main-address', array(CheckoutController::class, 'changeMainAddress'));
+Route::post('checkouts/customer-store', array(CheckoutController::class, 'customerStore'));
 
 // Chat dengan admin
-Route::resource('/user-chats', UserChatController::class)->except('index', 'edit');
-Route::post('/user-chats/search', array(UserChatController::class, 'search'));
-Route::post('/user-chats/{user_chat}', array(UserChatController::class, 'destroyy'))->name('user-chats.destroy');
+Route::resource('user-chats', UserChatController::class)->except('index', 'edit');
+Route::post('user-chats/search', array(UserChatController::class, 'search'));
 
 // Ajax
 Route::prefix('/ajax/request')->group(function () {

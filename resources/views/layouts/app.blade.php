@@ -26,100 +26,123 @@
 
 <body>
     <div id="app" @auth data-user-id="{{ auth()->user()->id }}" @endauth>
-        <nav class="cus-navbar">
-            <div class="logo">
-                <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
-            </div>
-            <div class="circle-input">
-                <div>
+        <div class="cus-navbar py-1 px-4">
+            <div class="row">
+                <div class="col-3 d-flex align-items-center">
                     <div>
+                        <a href="{{ route('home') }}"><img class="logo-img" src="{{ asset('img/logo.png') }}"></a>
+                    </div>
+                </div>
+                <div class="col-5 pl-0">
+                    <div class="position-relative my-auto d-none d-lg-block">
                         <div class="search-icon">
                             <i class="fas fa-search m-auto"></i>
                         </div>
                         <form id="search-books-form" action="{{ route('books.index') }}" method="GET">
                             <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off" value="{{ request()->keywords }}">
                         </form>
+                        <div class="nav-book-search"></div>
                     </div>
                 </div>
-                <div class="nav-book-search"></div>
-            </div>
-            <div class="cus-nav">
-                <ul class="ul-nav h-100">
-                    <div id="nav-categories" class="d-flex h-100 align-items-center ml-3">
-                        <li id="categories" class="h-100 c-middle">
-                            <span class="mr-1">Kategori</span>
-                            <i class="fa fa-caret-down" aria-hidden="true"></i>
-                            <div>
-                                <div class="d-flex">
-                                    <div class="mr-5">
-                                        @foreach (App\Models\Category::has('books')->get() as $category)
-                                        <div><a href="{{ route('books.index', array('category' => array($category->id))) }}" class="text-decoration-none text-body">{{ $category->name }}</a></div>
-                                        @endforeach
+                <div class="col-4 pl-0 my-auto">
+                    <div class="d-none d-lg-block">
+                        <div class="d-flex justify-content-between">
+                            <div class="d-flex">
+                                <div id="nav-categories" class="my-auto btn-group d-flex h-100 align-items-center mx-3">
+                                    <div id="nav-categories-dropdown" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="mr-1">Kategori</span>
+                                        <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="nav-categories-content dropdown-menu dropdown-menu-right mt-3 ml-2" aria-labelledby="nav-categories-dropdown">
+                                        <div>
+                                            @foreach (App\Models\Category::has('books')->get() as $category)
+                                            <div class="nav-categories-link"><a href="{{ route('books.index', array('category' => array($category->id))) }}" class="text-decoration-none text-body d-block">{{ $category->name }}</a></div>
+                                            @endforeach
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                                <div class="btn-group my-auto c-p">
+                                    @auth
+                                    <div id="navCartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-shopping-cart"></i>
 
-                        <li><a href="#" class="text-decoration-none text-body">Best Seller</a></li>
-                        <li><a href="#" class="text-decoration-none text-body">Buku Diskon</a></li>
-                        <li>
-                            <div class="nav-cart">
-
-                                <div data-toggle="collapse" href="#nav-cart-collapse" role="button" aria-expanded="false" aria-controls="nav-cart-collapse">
-                                    <i class="fas fa-shopping-cart nav-cart"></i>
-
-                                    @if (auth()->check() && auth()->user()->carts->count() != 0)
-                                    <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
-                                    @endif
-                                </div>
-                                <div class="nav-cart-content collapse" id="nav-cart-collapse">
-                                    <div class="nav-cart-content-title">
-                                        <div>Keranjang Saya</div>
-                                        <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
+                                        @if (auth()->check() && auth()->user()->carts->count() != 0)
+                                        <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
+                                        @endif
                                     </div>
-                                    <div>
-                                        @foreach (auth()->user()->carts()->take(3)->get() as $cart)
-                                        <div class="mt-4 nav-cart-link">
-                                            <a href="/books/{{ $cart->books()->first()->id }}">
-                                                <div class="row">
-                                                    <div class="col-3 pr-0">
-                                                        <div class="nav-cart-content-image">
-                                                            <div class="nav-cart-content-src">
-                                                                <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+
+                                    <div class="nav-cart-content dropdown-menu dropdown-menu-right mt-3 ml-2" aria-labelledby="navCartDropdown">
+                                        @if (auth()->user()->carts()->count() != 0)
+                                        <div class="nav-cart-content-title">
+                                            <div>Keranjang Saya</div>
+
+                                            <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
+
+                                        </div>
+                                        <div>
+                                            @foreach (auth()->user()->carts()->orderByDesc('id')->take(3)->get() as $cart)
+                                            <div class="mt-4 nav-cart-link">
+                                                <a href="/books/{{ $cart->books()->first()->id }}">
+                                                    <div class="row">
+                                                        <div class="col-3 pr-0">
+                                                            <div class="nav-cart-content-image">
+                                                                <div class="nav-cart-content-src">
+                                                                    <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        <div class="col-9 pl-0">
+                                                            <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
+                                                            <div class="tred-bold mt-1">{{ rupiah_format($cart->books()->first()->price - $cart->books()->first()->discount) }}</div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-9 pl-0">
-                                                        <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
-                                                        <div class="tred-bold mt-1">Rp20.000</div>
-                                                    </div>
-                                                </div>
-                                            </a>
+                                                </a>
+                                            </div>
+                                            @endforeach
                                         </div>
-                                        @endforeach
+                                        <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
+
+                                        @else
+                                        <div class="text-center">
+                                            <div>Belum ada produk</div>
+                                            <div class="py-2">
+                                                <div class="w-50 mx-auto">
+                                                    <img class="w-100" src="{{ asset('img/no-data.png') }}" alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
-                                    <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
+                                    @endauth
+                                    @guest
+                                    <a href="{{ route('login') }}">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </a>
+                                    @endguest
                                 </div>
                             </div>
-                        </li>
-                    </div>
-                    <div id="nav-login" class="d-flex ml-auto align-items-center">
-                        @guest
-                        <li>
-                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                        </li>
-                        @endguest
+                            <div>
+                                <div id="nav-login" class="d-none d-lg-block ml-auto align-items-center">
+                                    @guest
+                                    <div>
+                                        <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                                    </div>
+                                    @endguest
 
-                        @auth
-                        @include('layouts.auth-nav-login')
-                        @endauth
+                                    @auth
+                                    @include('layouts.auth-nav-login')
+                                    @endauth
+                                </div>
+                            </div>
+                        </div>
+                        <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <i class="fas fa-grip-lines"></i>
+                        </div>
+                        </ul>
                     </div>
-                    <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        <i class="fas fa-grip-lines"></i>
-                    </div>
-                </ul>
+                </div>
             </div>
-        </nav>
+        </div>
 
         <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
             <div class="mt-3">
@@ -133,11 +156,6 @@
                         </div>
                     </form>
                     <div class="my-2">
-                        <div>
-                            Kategori <i class="fa fa-caret-down" aria-hidden="true"></i>
-                        </div>
-                        <div>Best Seller</div>
-                        <div>Buku Diskon</div>
                         @guest
                         <div>
                             <button class="btn-none text-danger tbold" data-toggle="modal" data-target="#modal-login">Masuk</button>
@@ -301,7 +319,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button id="button-submit" class="button-submit" type="submit">Login</button>
+                                <button class="btn btn-outline-danger w-100" type="submit" disabled>Login</button>
                             </div>
                             <div class="mb-3">
                                 <div class="login-atau tred">Atau login dengan</div>
@@ -327,7 +345,7 @@
 
     @auth
     <div class="chat" data-role="{{ Illuminate\Support\Facades\Auth::user()->role }}">
-        <div class="chat-content" aria-labelledby="triggerId">
+        <div class="chat-content" aria-labelledby="navCartDropdown">
             <div class="chat-with-admin">
                 <div class="borbot-gray-0 d-flex justify-content-between">
                     <h4 class="hd-16 p-1 ml-2 mt-1 c-middle">

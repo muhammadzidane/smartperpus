@@ -137,18 +137,29 @@ class CartController extends Controller
 
         $carts = Cart::where($conditions)->get();
 
-        // Buat cart baru
+        // Buat cart baru / Beli Langsung
         if ($carts->count() == 0) {
             $data = array(
                 'user_id' => auth()->user()->id,
                 'book_id' => $book->id,
+                'amount'  => 1,
             );
 
-            $cart = Cart::create($data);
-
-            return redirect()->route('carts.index')->with('bought_directly', $cart->book_id);
+            $cart            = Cart::create($data);
+            $bought_directly = $cart->books()->first()->id;
+            $total_payment   = ($book->price - $book->discount) * $cart->amount;
         } else {
-            return redirect()->route('carts.index')->with('bought_directly', $book->id);
+            $bought_directly = $book->id;
+            $cart            = $book->carts()->firstWhere('user_id', auth()->user()->id);
+            $total_payment   = ($book->price - $book->discount) * $cart->amount;
         }
+
+        $data = array(
+            'bought_directly' => $bought_directly,
+            'amount'          => $cart->amount,
+            'total_payment'   => number_format($total_payment, 0, 0, '.'),
+        );
+
+        return redirect()->route('carts.index')->with($data);
     }
 }

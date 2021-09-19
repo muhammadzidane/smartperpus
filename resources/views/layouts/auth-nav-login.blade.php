@@ -1,5 +1,5 @@
 <li class="nav-item dropdown self-middle">
-    <a id="navbarDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+    <a id="loginDrowndown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <div class="user">
             <div class="user-circle">
                 @isset (Illuminate\Support\Facades\Auth::user()->profile_image)
@@ -12,12 +12,12 @@
                 @endisset
             </div>
             <div class="tred-bold self-middle ml-2">
-                <div class="navbar-user-first-name">{{ Auth::user()->first_name }}</div>
+                <div class="navbar-user-first-name">{{ Str::limit(Auth::user()->first_name, 15, '...') }}</div>
             </div>
         </div>
     </a>
 
-    <div class="dropdown-user dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+    <div class="dropdown-user dropdown-menu dropdown-menu-right" aria-labelledby="loginDrowndown">
         <div>
             <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
         </div>

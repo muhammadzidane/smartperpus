@@ -1,15 +1,15 @@
 'use strict';
 // Disable form submit jika input value kosong
 const formDisableSubmit = (formSelector, events) => {
-    $(formSelector).on(events, function() {
-        let notNullValues = $(this).find('input, select').toArray().every((input) => input.value != "");
+    $(formSelector).on('keyup', function() {
+        let notNullValues = $(this).find(events).toArray().every((input) => input.value != "");
 
         if (notNullValues) {
             $(this).find('button[type=submit]').removeClass('cursor-disabled');
             $(this).find('button[type=submit]').removeAttr('disabled');
         } else {
             $(this).find('button[type=submit]').attr('disabled', 'disabled');
-            $(this).find('button[type=submit]').removeClass('cursor-disabled');
+            $(this).find('button[type=submit]').addClass('cursor-disabled');
         }
     });
 }
@@ -33,26 +33,6 @@ const requestMethodName = (methodName) => {
             _method: methodName
         }
     ];
-}
-
-// Cek apakah form input dengan class yg sama, ada valuenya atau tidak
-function checkFormRequiredInputs(classInputs) {
-    let flag = [];
-
-    for (const input of $(classInputs)) {
-        if ($(input).val() != '') {
-            flag.push(true);
-        }
-        else {
-            flag.push(false);
-        }
-    }
-
-    let check = flag.every(function booleanCheck(value) {
-        return value == true ? true : false;
-    });
-
-    return check == true ?  true : false;
 }
 
 // Mengambil value dari URL
@@ -465,7 +445,7 @@ const ajaxJson = (method, url, data, successResponse = '') => {
         dataType: "JSON",
         success: successResponse,
         error: error => {
-            console.log(error.responseJSON);
+            console.log(error.responseJSON.message);
         },
     });
 }

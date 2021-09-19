@@ -118,6 +118,7 @@ $(document).ready(function () {
     });
 
     // Login
+    formDisableSubmit('#form-login', 'input');
     $('#form-login').on('submit', function (event) {
         event.preventDefault();
 
@@ -138,21 +139,15 @@ $(document).ready(function () {
             if (success) {
                 ajaxForm('POST', this, this.action, response => {
                     if (response.status == 'fail') {
-                        let errorMessages =
-                        `<div class="alert-messages m-0 mb-3">
-                            <div class="alert-message">
-                                <div class="alert-message-text">${response.message}</div>
-                                <i class="alert-message-icon fas fa-exclamation-triangle"></i>
-                            </div>
-                        </div>`;
-
-                        if ($('.alert-messages').length == 0) $('#form-login').prepend(errorMessages);
+                        backendMessage($('#login-title'), [response.message]);
                     } else {
                         window.location.href = response.data.url;
                     }
                 });
             }
         });
+
+
     });
 
     // Menghapus pesan error dan input value login, saat men-click tombol exit pada modal login
@@ -1715,8 +1710,6 @@ $(document).ready(function () {
         $('#user-city-district-search').on('keyup', function() {
             let value = $(this).val();
 
-            console.log(value);
-
             let data  = {
                 keywords: value,
             };
@@ -1783,6 +1776,8 @@ $(document).ready(function () {
             }
         });
     };
+
+    formCityAndDistrictKeyup();
 
     const formCustomerValidations = () => {
         let validations = [
@@ -1931,8 +1926,6 @@ $(document).ready(function () {
                 $('input[name=courier_name]:checked').trigger('change');
                 $('input[name=customer]').attr('disabled', true);
             }
-
-            console.log(true);
         });
     }
 
@@ -2337,7 +2330,7 @@ $(document).ready(function () {
     $('.status-on-delivery').on('click', function() {
         let invoice = $(this).parents('.status-invoice');
         let html =
-        `<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        `<div class="modal fade" id="modal-ondelivery" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-confirm-content">
                     <div class="modal-confirm-body">
@@ -2356,11 +2349,11 @@ $(document).ready(function () {
             </div>
         </div>`;
 
-        let modalConfirmLength = $('#modal-confirm').length;
+        let modalConfirmLength = $('#modal-ondelivery').length;
 
         if (modalConfirmLength == 0) $('body').prepend(html);
 
-        $('#modal-confirm').modal('show');
+        $('#modal-ondelivery').modal('show');
 
         $('#status-on-delivery-form').on('click', function(event) {
             event.preventDefault();
@@ -2386,7 +2379,7 @@ $(document).ready(function () {
 
                     $.post(`/api/status/${invoice.attr('id')}`, datas, response => {
                         if (response.status == 'success') {
-                            $('#modal-confirm').modal('hide');
+                            $('#modal-ondelivery').modal('hide');
                             invoice.remove();
                             alertMessage(response.message);
                         }
@@ -2394,7 +2387,13 @@ $(document).ready(function () {
                 }
             });
         });
+
+        $('#modal-ondelivery').on('hidden.bs.modal', function(event) {
+            event.stopImmediatePropagation();
+            $(this).remove();
+        });
     });
+
 
     // #region Tracking packages - Lacak paket
     $('.tracking-packages').on('click', function() {
@@ -2515,89 +2514,92 @@ $(document).ready(function () {
                 $('#cart-amounts').val(parseInt(paymentAmount.val()) - parseInt(amount.val()));
             }
 
-            $('.cart-amount').on('click', function(event) {
-                event.stopImmediatePropagation();
-
-                let check           = $(this).parents('.white-content').find('.cart-check');
-                let isChecked       = check.is(':checked');
-
-                if (isChecked) {
-                    setTimeout(() => {
-                        let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
-                        let amount          = $(this).prev().find('.cart-amount-req');
-                        let totalStock      = $(this).prev().find('.cart-total-stock');
-                        let amountPlus      = parseInt(amount.val()) + 1;
-                        let amountSub       = parseInt(amount.val()) - 1;
-                        let paymentAmount   = $('#cart-amounts');
-                        let paymentPlus     = parseInt(paymentAmount.val()) + 1;
-                        let paymentSub      = parseInt(paymentAmount.val()) - 1;
-                        let paymentPrice    = $('#cart-total-payment').val().replace(/[^0-9]/g, '');
-                            paymentPrice    = parseInt(paymentPrice);
-                        let customerId      = $(this).parents('.white-content').find('.cart-delete').data('id');
-
-                        if (checkPlusButton && amount.val() >= 1) {
-                            if (totalStock.val() != 0) {
-                                totalStock.val(parseInt(totalStock.val()) - 1);
-
-                                let cartCheckValue = check.val().split('-');
-                                cartCheckValue[2]  = amountPlus;
-                                cartCheckValue     =  cartCheckValue.join('-');
-
-                                check.attr('value', cartCheckValue);
-                                amount.val(amountPlus);
-                                paymentAmount.val(paymentPlus);
-
-                                let datas = {
-                                    _token : csrfToken,
-                                    _method: 'PATCH',
-                                    amount : amountPlus
-                                };
-
-                                $.post(`/carts/${customerId}`, datas, function(response) {
-                                    console.log(response);
-                                });
-                            }
-                        } else if (amount.val() != 1){
-                            totalStock.val(parseInt(totalStock.val()) + 1);
-
-                            let cartCheckValue = check.val().split('-');
-                            cartCheckValue[2]  = amountSub;
-                            cartCheckValue     =  cartCheckValue.join('-');
-
-                            check.attr('value', cartCheckValue);
-                            amount.val(amountSub);
-                            paymentAmount.val(paymentSub);
-
-                            let datas = {
-                                _token : csrfToken,
-                                _method: 'PATCH',
-                                amount : amountSub
-                            };
-
-                            $.post(`/carts/${customerId}`, datas);
-                        }
-
-                        let checkedAll      = $('.cart-check').toArray();
-                            checkedAll      = checkedAll.filter(element => element.checked);
-
-                        let checkedPriceValue = checkedAll.map(element => {
-                            let elementParent = $(element).parents('.white-content');
-                            let price         = elementParent.find('.cart-book-price').data('price');
-                            let amount        = parseInt(elementParent.find('.cart-amount-req').val());
-
-                            let result = price * amount;
-
-                            return result;
-                        });
-
-                        let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
-
-                        $('#cart-total-payment').val(rupiahFormat(paymentTotal));
-                    }, 300);
-                }
-            });
         });
     };
+
+    $('.cart-amount').on('click', function(event) {
+        event.stopImmediatePropagation();
+
+        let check           = $(this).parents('.white-content').find('.cart-check');
+        let isChecked       = check.is(':checked');
+
+        $(this).parents('.white-content').find('.cart-stock').children('input').addClass('text-grey');
+
+        if (isChecked) {
+            setTimeout(() => {
+                let checkPlusButton = $(event.target).hasClass('fa-plus-circle');
+                let amount          = $(this).prev().find('.cart-amount-req');
+                let totalStock      = $(this).prev().find('.cart-total-stock');
+                let amountPlus      = parseInt(amount.val()) + 1;
+                let amountSub       = parseInt(amount.val()) - 1;
+                let paymentAmount   = $('#cart-amounts');
+                let paymentPlus     = parseInt(paymentAmount.val()) + 1;
+                let paymentSub      = parseInt(paymentAmount.val()) - 1;
+                let paymentPrice    = $('#cart-total-payment').val().replace(/[^0-9]/g, '');
+                paymentPrice    = parseInt(paymentPrice);
+                let customerId      = $(this).parents('.white-content').find('.cart-delete').data('id');
+
+                $(this).parents('.white-content').find('.cart-stock').children('input').removeClass('text-grey');
+
+                if (checkPlusButton && amount.val() >= 1) {
+                    if (totalStock.val() != 0) {
+                        totalStock.val(parseInt(totalStock.val()) - 1);
+
+                        let cartCheckValue = check.val().split('-');
+                        cartCheckValue[2]  = amountPlus;
+                        cartCheckValue     =  cartCheckValue.join('-');
+
+                        check.attr('value', cartCheckValue);
+                        amount.val(amountPlus);
+                        paymentAmount.val(paymentPlus);
+
+                        let datas = {
+                            _token : csrfToken,
+                            _method: 'PATCH',
+                            amount : amountPlus
+                        };
+
+                        $.post(`/carts/${customerId}`, datas);
+                    }
+                } else if (amount.val() != 1){
+                    totalStock.val(parseInt(totalStock.val()) + 1);
+
+                    let cartCheckValue = check.val().split('-');
+                    cartCheckValue[2]  = amountSub;
+                    cartCheckValue     =  cartCheckValue.join('-');
+
+                    check.attr('value', cartCheckValue);
+                    amount.val(amountSub);
+                    paymentAmount.val(paymentSub);
+
+                    let datas = {
+                        _token : csrfToken,
+                        _method: 'PATCH',
+                        amount : amountSub
+                    };
+
+                    $.post(`/carts/${customerId}`, datas);
+                }
+
+                let checkedAll      = $('.cart-check').toArray();
+                    checkedAll      = checkedAll.filter(element => element.checked);
+
+                let checkedPriceValue = checkedAll.map(element => {
+                    let elementParent = $(element).parents('.white-content');
+                    let price         = elementParent.find('.cart-book-price').data('price');
+                    let amount        = parseInt(elementParent.find('.cart-amount-req').val());
+
+                    let result = price * amount;
+
+                    return result;
+                });
+
+                let paymentTotal = checkedPriceValue.reduce((total, value) => total + value, 0);
+
+                $('#cart-total-payment').val(rupiahFormat(paymentTotal));
+            }, 300);
+        }
+    });
 
     cartCheck();
 
@@ -2739,54 +2741,50 @@ $(document).ready(function () {
 
     //#region Checkout
     $('input[name=courier_name]').on('change', function() {
-        $('#checkout-courier-service').remove();
-        $('#checkout-courier-choise-title').children(':nth-child(2)').remove();
+        let mainAddress = $('#checkout-customer-main').val();
 
-        let districtId    = $('#checkout-district').data('id');
-        let courierValue  = $('input[name=courier_name]:checked').val();
-        let spinnerHtml   = `<div id="spinner" class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
-            spinnerHtml  += `<div class="spin"></div>`;
-            spinnerHtml  += `</div>`;
-        let spinnerLength = $('#spinner').length;
+        if (mainAddress) {
+            $('#checkout-courier-service').remove();
+            $('#checkout-courier-choise-title').children(':nth-child(2)').remove();
 
-        let totalWeight = $('.customer-book').map(function() {
-            return $(this).find('.book-weight').text();
-        });
+            let districtId    = $('#checkout-district').data('id');
+            let courierValue  = $('input[name=courier_name]:checked').val();
+            let spinnerHtml   = `<div id="spinner" class="mr-4 pr-3 py-4 d-flex justify-content-center">`;
+                spinnerHtml  += `<div class="spin"></div>`;
+                spinnerHtml  += `</div>`;
+            let spinnerLength = $('#spinner').length;
 
-        totalWeight = totalWeight.toArray();
-        totalWeight = totalWeight.reduce((total, value) => {
-            return parseInt(total) + parseInt(value);
-        });
+            let totalWeight = $('.customer-book').map(function() {
+                return $(this).find('.book-weight').text();
+            });
 
-        if (spinnerLength == 0) $('#checkout-courier-choise').after(spinnerHtml);
+            totalWeight = totalWeight.toArray();
+            totalWeight = totalWeight.reduce((total, value) => {
+                return parseInt(total) + parseInt(value);
+            });
 
-        $('input[name=courier_name]').attr('disabled', true);
+            if (spinnerLength == 0) $('#checkout-courier-choise').after(spinnerHtml);
 
-        let datas = {
-            key: 'ce496165f4a20bc07d96b6fe3ab41ded',
-            origin: '317', // Cimenyan
-            originType: 'subdistrict',
-            destination: districtId,
-            destinationType: 'subdistrict',
-            weight: totalWeight,
-            courier: courierValue,
-        };
+            $('input[name=courier_name]').attr('disabled', true);
 
-        $.post('https://pro.rajaongkir.com/api/cost', datas, function(response) {
-            let costs = response.rajaongkir.results[0].costs;
-            let html  = ``;
+            let datas = {
+                key: 'ce496165f4a20bc07d96b6fe3ab41ded',
+                origin: '317', // Cimenyan
+                originType: 'subdistrict',
+                destination: districtId,
+                destinationType: 'subdistrict',
+                weight: totalWeight,
+                courier: courierValue,
+            };
 
-            $('#spinner').remove();
+            $.post('https://pro.rajaongkir.com/api/cost', datas, function(response) {
+                let costs = response.rajaongkir.results[0].costs;
 
-            if (costs.length == 0) {
-                html +=
-                `
-                <div id="checkout-courier-service" class="mt-2">
-                <div class="tbold">Ekspedisi tidak tersedia</div>
-                </div>
-                `;
-            } else {
-                html += '';
+                $('#spinner').remove();
+
+                let html  = ``;
+                    html += '';
+
                 costs.forEach(function(cost) {
                     let costValue        = cost.cost[0].value;
                     let patt             = new RegExp('hari', 'i');
@@ -2808,39 +2806,50 @@ $(document).ready(function () {
                         </select>
                     </div>
                 </div>`;
-            }
 
-            if ($('#checkout-courier-service').length == 0) {
-                $('#checkout-courier-choise').after(html);
+                if (costs.length == 0) {
+                    html =
+                    `
+                    <div id="checkout-courier-service" class="mt-2">
+                        <div class="tbold">Ekspedisi tidak tersedia</div>
+                    </div>
+                    `;
 
-                let courierOptions     = $('#select-courier-service');
-                let courierOptionFirst = courierOptions.first().val();
-                let costFirst          = courierOptionFirst.split('-')[0];
-                let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
-                let totalPaymentText   = $('#checkout-total-payment-text');
-                let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
+                    $('#checkout-courier-choise').after(html);
 
-                totalPaymentText.text(rupiahFormat(totalPayment));
-                courierOptions.after(courierPriceHtml);
-                $('#checkout-shipping-price').text(rupiahFormat(costFirst));
-                $('#checkout-shipping-cost').attr('value', costFirst);
+                } else if ($('#checkout-courier-service').length == 0){
+                    $('#checkout-courier-choise').after(html);
 
-                $('#select-courier-service').on('change', function() {
-                    let selectedValue      = $(this).children('option:selected').val();
-                    let selectedCost       = selectedValue.split('-')[0];
-                    let rupiahSelectedCost = rupiahFormat(selectedCost);
-                    let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
+                    let courierOptions     = $('#select-courier-service');
+                    let courierOptionFirst = courierOptions.first().val();
+                    let costFirst          = courierOptionFirst.split('-')[0];
+                    let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
+                    let totalPaymentText   = $('#checkout-total-payment-text');
+                    let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
 
                     totalPaymentText.text(rupiahFormat(totalPayment));
-                    $('#checkout-courier-price').text(rupiahSelectedCost);
-                    $('#checkout-shipping-price').text(rupiahSelectedCost);
-                    $('#checkout-shipping-cost').attr('value', selectedCost);
-                });
-            }
-        })
-        .done(function() {
-            $('input[name=courier_name]').attr('disabled', false);
-        });
+                    courierOptions.after(courierPriceHtml);
+                    $('#checkout-shipping-price').text(rupiahFormat(costFirst));
+                    $('#checkout-shipping-cost').attr('value', costFirst);
+
+                    $('#select-courier-service').on('change', function() {
+                        let selectedValue      = $(this).children('option:selected').val();
+                        let selectedCost       = selectedValue.split('-')[0];
+                        let rupiahSelectedCost = rupiahFormat(selectedCost);
+                        let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
+
+                        totalPaymentText.text(rupiahFormat(totalPayment));
+                        $('#checkout-courier-price').text(rupiahSelectedCost);
+                        $('#checkout-shipping-price').text(rupiahSelectedCost);
+                        $('#checkout-shipping-cost').attr('value', selectedCost);
+                    });
+                }
+
+
+                $('input[name=courier_name]').attr('disabled', false);
+            })
+        }
+
     });
 
     //#region Checkout Store
@@ -2871,5 +2880,40 @@ $(document).ready(function () {
         }
     })
     //#endregion Checkout Store
+
+    //#region Checkout - Customer store
+    $('#checkout-customer-store').on('submit', function(event) {
+        let validations = [
+            {
+                input    : '#user-customer-name',
+                inputName: 'Nama penerima',
+                rules    : 'required,min:3',
+            },
+            {
+                input    : '#user-customer-address',
+                inputName: 'Alamat Tujuan',
+                rules    : 'required,min:10',
+            },
+            {
+                input    : '#user-city-district-search',
+                inputName: 'Kota / kecamatan',
+                rules    : 'required',
+            },
+            {
+                input    : '#user-customer-phone',
+                inputName: 'Nomer handphone',
+                rules    : 'required,numeric,min:9,max:15',
+            },
+        ];
+
+        validator(validations, success => {
+            if (!success) event.preventDefault();
+        });
+    });
+
+
+    formDisableSubmit('#checkout-customer-store', 'input:not([type=hidden])');
+    //#endregion Checkout - Customer store
+
     //#endregion Checkout
 }); // End of onload Event

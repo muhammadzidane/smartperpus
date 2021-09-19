@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, BookUser, Customer};
+use App\Models\{User, Book, BookUser, Customer, Cart, City};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, DB};
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -342,5 +343,42 @@ class StatusController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function buyAgain(Request $request)
+    {
+        // Menghapus data yang ada, lalu menginsert kembali
+        $conditions = array(
+            array('users.id', auth()->user()->id),
+            array('book_user.invoice', $request->invoice),
+        );
+
+        $carts = Cart::join('book_user', 'carts.book_id', '=', 'book_user.book_id')
+            ->join('users', 'users.id', '=', 'carts.user_id')
+            ->select('carts.*')
+            ->where($conditions);
+
+        $carts->delete();
+
+        $get  = array(
+            'user_id',
+            'book_id',
+            'amount',
+        );
+        $book_user = BookUser::where('invoice', $request->invoice)->get($get);
+        $data      = $book_user->toArray();
+
+        $data      = array_map(function ($value) {
+            $now_format = date('Y-m-d H:i:s');
+
+            $value['created_at'] = $now_format;
+            $value['updated_at'] = $now_format;
+
+            return $value;
+        }, $data);
+
+        Cart::insert($data);
+
+        return redirect()->route('carts.index');
     }
 }

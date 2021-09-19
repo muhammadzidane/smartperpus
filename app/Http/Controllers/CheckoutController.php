@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, Checkout, Customer};
-use Illuminate\Support\Facades\{Auth, Validator, Date, BookUser};
+use App\Models\{User, Book, Checkout, Customer, Province, City, District};
+use Illuminate\Support\Facades\{Auth, Validator, Date};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -199,6 +199,48 @@ class CheckoutController extends Controller
             return redirect()->back()->with('message', 'Berhasil mengubah alamat utama');
         } else {
             return redirect()->back()->with('message', 'Alamat tidak ditemukan');
+        }
+    }
+
+    public function customerStore(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'nama_penerima'       => array('required', 'string'),
+                'alamat_tujuan'       => array('required', 'min:10'),
+                'nomer_handphone'     => array('required', 'numeric', 'digits_between:9,15'),
+                'kota_atau_kecamatan' => array('required'),
+            )
+        );
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        } else {
+            $request_address      = explode('-', $request->kota_atau_kecamatan);
+            $provinsi             = Province::find($request_address[0]);
+            $kota                 = City::find($request_address[1]);
+            $kecamatan            = District::find($request_address[2]);
+            $address              = ucwords($request->alamat_tujuan);
+            $user                 = User::find(Auth::id());
+
+            $create    = array(
+                'name'         => $request->nama_penerima,
+                'address'      => $address,
+                'phone_number' => $request->nomer_handphone,
+                'district_id'  => $kecamatan->id,
+                'city_id'      => $kota->id,
+                'province_id'  => $provinsi->id,
+            );
+
+            $exists_main_customer = $user->customers()->where('main', true)->exists();
+
+            if (!$exists_main_customer) $create['main'] = true;
+
+            // dump(true);
+            $user->customers()->create($create);
+
+            return redirect()->back()->with('message', 'Berhasil menambah alamat');
         }
     }
 }

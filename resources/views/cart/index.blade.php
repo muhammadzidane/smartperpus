@@ -17,13 +17,13 @@ array(
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>Jumlah Barang</div>
-                        <input id="cart-amounts" type="text" value="0" class="input-none text-right w-25" readonly>
+                        <input id="cart-amounts" type="text" value="{{ session('amount') ? session('amount') : 0 }}" class="input-none text-right w-25" readonly>
                     </div>
                 </div>
                 <div class="mt-2 text-grey">
                     <div class="d-flex justify-content-between">
                         <div>Total Pembayaran</div>
-                        <input id="cart-total-payment" type="text" value="Rp0" class="input-none text-right tred-bold w-50" readonly>
+                        <input id="cart-total-payment" type="text" value="Rp{{ session('total_payment') }}" class="input-none text-right tred-bold w-50" readonly>
                     </div>
                     <div class="mt-3">
                         <button type="submit" id="payment-button" class="btn btn-red w-100">
@@ -69,7 +69,6 @@ array(
                                 <select class="cart-book-version form-control-custom mt-2">
                                     <option disabled selected class="d-none"></option>
                                     <option value="hard_cover">Buku Cetak</option>
-                                    {{ dump($book->ebook) }}
                                     @if ($book->ebook == 0)
                                     <option disabled>E-Book</option>
 
@@ -93,7 +92,7 @@ array(
                                     <div class="mr-4">
                                         <div class="tbold">Jumlah</div>
                                         <div class="text-grey d-flex">
-                                            <div>
+                                            <div class="cart-stock">
                                                 <input type="text" value="{{ $book->carts()->where('user_id', auth()->id())->first()->amount }}" class="cart-amount-req input-none" readonly>
                                                 <span>/</span>
                                                 <input type="text" value="{{ $book->printed_book_stock - $book->carts()->where('user_id', auth()->id())->first()->amount }}" class="cart-total-stock input-none" readonly>

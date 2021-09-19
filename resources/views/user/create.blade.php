@@ -81,7 +81,7 @@ array(
                     </div>
 
                     <div class="form-group mt-4">
-                        <button id="user-edit-submit" class="cursor-disable btn btn-outline-danger w-100" type="submit" disabled>Tambah</button>
+                        <button id="user-edit-submit" class="cursor-disabled btn btn-outline-danger w-100" type="submit" disabled>Tambah</button>
                     </div>
                     @csrf
                 </form>
