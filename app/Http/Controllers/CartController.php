@@ -44,6 +44,15 @@ class CartController extends Controller
             $books->prepend($book_session);
         }
 
+
+        if (session('buy_again')) {
+            $books->map(function ($book) {
+                $book['buy_again'] = true;
+
+                return $book;
+            });
+        }
+
         $books = new LengthAwarePaginator($books->slice($slice_book, $data_perpage), $books->count(), $data_perpage, $request->page, [
             'path' => url()->current(),
             'pageName' => 'page',

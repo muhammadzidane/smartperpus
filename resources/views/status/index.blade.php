@@ -132,6 +132,12 @@
                                         <span>{{ rupiah_format($book->price - $book->discount) }}</span>
                                     </div>
                                     <div class="text-grey tbold">{{ rupiah_format(($book->price - $book->discount) * $book->pivot->amount) }}</div>
+
+                                    @if ($book_user['first']->payment_status == 'arrived')
+                                    <div class="mt-2">
+                                        <button class="status-add-rating btn btn-outline-danger">Beri Rating</button>
+                                    </div>
+                                    @endif
                                 </div>
                                 <div class="col-sm-6 col-lg-7 mt-2 mt-sm-0">
                                     <div class="d-flex">
@@ -245,5 +251,10 @@
         @endforelse
     </div>
 </div>
+
+<form id="status-rating-form" action="/status/add-rating" method="POST">
+    <!-- <input type="hidden" name=""> -->
+    @csrf
+</form>
 
 @endsection

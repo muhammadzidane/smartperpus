@@ -2199,6 +2199,16 @@ footer {
 }
 
 /* Status */
+.status-rating-icon {
+    font-size: 40px;
+    cursor: pointer;
+    color: #F7FD04;
+}
+
+.status-rating-star:not(:last-child) {
+    padding-right: 0.50rem;
+}
+
 .status-profile {
     border: 1px solid #e2d5d5;
     width: 100%;

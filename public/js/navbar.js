@@ -2192,7 +2192,8 @@ $(document).ready(function () {
         });
     })
 
-    // Lihat daftar tagihan
+    //#region Status
+    //#region Lihat daftar tagihan
     $('.status-detail').on('click', function() {
         let invoice = $(this).data('invoice');
 
@@ -2286,6 +2287,77 @@ $(document).ready(function () {
             }
         });
     });
+    //#endregion Lihat daftar tagihan
+
+    //#region Add rating
+    $('.status-add-rating').on('click', function(event) {
+        bootStrapModal('Beri Rating Untuk Buku Ini', 'modal-md', () => {
+            let starHtml = '';
+
+            for (let i = 1; i <= 5; i++) {
+                starHtml +=
+                `<label class="status-rating-star">
+                    <i class="status-rating-icon mx-auto far fa-star" aria-hidden="true"></i>
+                    <input form="status-rating-form" type="radio" name="rate" value="1" class="d-none">
+                </label>`;
+            }
+            let html =
+            `<div class="status-rating mt-4">
+                <div class="d-flex justify-content-center status-rating-stars mt-4">
+                    ${starHtml}
+                </div>
+                <div class="mt-4 text-center w-100 container">
+                    <div class="text-grey my-2 text-left">Berikan ulasan anda</div>
+                    <textarea form="status-rating-form" name="review" id="" rows="5" class="w-100"></textarea>
+                </div>
+                <div class="mt-4 text-right">
+                    <button form="status-rating-form" type="submit" class="btn btn-outline-danger">Kirim</button>
+                </div>
+            </div>`
+
+            return html;
+        });
+
+        $('.status-rating-star').on('click', function(event) {
+            let rate = $(this).find('input').val();
+            let ratingText;
+
+            if (rate == 5) {
+                $('.status-rating-star i').removeClass('far');
+                $('.status-rating-star i').addClass('fas');
+
+                ratingText = {
+                    5: 'Super Bagus',
+                };
+            } else {
+                $(this).find('i').removeClass('far');
+                $(this).find('i').addClass('fas');
+                $(this).prevAll().find('i')
+                    .removeClass('far')
+                    .addClass('fas');
+
+                $(this).nextAll().find('i')
+                    .removeClass('fas')
+                    .addClass('far');
+
+                ratingText = {
+                    4: 'Sangat Baik',
+                    3: 'Baik',
+                    2: 'Kurang Baik',
+                    1: 'Buruk',
+                };
+            }
+
+            let html = `<h5 id="status-rating-text" class="mt-3 text-center">${ratingText[rate]}</h5>`;
+
+            $('#status-rating-text').length == 0
+                ? $('.status-rating-stars').after(html)
+                : $('#status-rating-text').text(ratingText[rate]);
+        })
+    });
+
+    //#endregion Add rating
+    //#endregion Status
 
     //#region  Confirmed payment - Konfirmasi pembayaran
     $('.status-confirm-payment ,.status-cancel-upload, .status-complete').on('click', function() {

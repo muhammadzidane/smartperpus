@@ -365,6 +365,7 @@ class StatusController extends Controller
             'book_id',
             'amount',
         );
+
         $book_user = BookUser::where('invoice', $request->invoice)->get($get);
         $data      = $book_user->toArray();
 
@@ -377,8 +378,20 @@ class StatusController extends Controller
             return $value;
         }, $data);
 
+        $message = 'Berhasil menambah barang pada keranjang';
+
         Cart::insert($data);
 
-        return redirect()->route('carts.index');
+        $flash = array(
+            'message' => $message,
+            'buy_again' => true,
+        );
+
+        return redirect()->route('carts.index')->with($flash);
+    }
+
+    public function addRating(Request $request)
+    {
+        dd($request->all());
     }
 }

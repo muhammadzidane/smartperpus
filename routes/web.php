@@ -113,6 +113,7 @@ Route::prefix('status')->middleware('auth')->group(function () {
     Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
     Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
     Route::post('/buy-again', array(StatusController::class, 'buyAgain'));
+    Route::post('/add-rating', array(StatusController::class, 'addRating'));
 });
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));

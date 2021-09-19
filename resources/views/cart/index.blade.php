@@ -48,7 +48,7 @@ array(
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
                             <label>
-                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->id ?? session('bought_directly') }}" {{ session('bought_directly') == $book->id ? 'checked' : ''}}>
+                                <input type="checkbox" class="cart-check mr-2" name="carts[]" value="{{ $book->id ?? session('bought_directly') }}" {{ session('bought_directly') == $book->id || $book->buy_again == true ? 'checked' : '' }}>
                                 <span>Pilih</span>
                             </label>
                         </div>

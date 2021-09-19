@@ -11,52 +11,23 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/custom-css.css') }}">
 
     <style>
-        .books {
-            background-color: pink;
-            /* max-width: 100%; */
-            display: flex;
-            flex-wrap: wrap;
-        }
 
-        .book-image {
-            border: 2px solid red;
-            width: 160px;
-            height: auto;
-            padding: 5px 8px;
-            overflow: hidden;
-        }
-
-        .book-image img {
-            object-fit: contain;
-            height: 150px;
-            width: 100%;
-        }
     </style>
 </head>
 
 <body>
-    <div class="books">
-        <div class="book">
-            <div class="book-image">
-                <img src="{{ asset('img/no-data.png') }}" alt="">
-            </div>
-            <div class="book-info">
-                <div>dqmwlkmdwqlkmwqlkwqd</div>
-            </div>
-        </div>
-        <div class="book">
-            <div class="book-image">
-                <img src="{{ asset('img/books_test_image/haikyuu-21.jpg') }}" alt="">
-            </div>
-            <div class="book-info">
-                <div>dqmwlkmdwqlkmwqlkwqd</div>
-            </div>
-        </div>
+    <div>
 
     </div>
+
+    <script ty src="{{ asset('js/navbar.js') }}"></script>
+    <script src="{{ asset('js/helper-functions.js') }}"></script>
 </body>
 
 </html>
