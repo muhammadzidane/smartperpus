@@ -113,7 +113,7 @@
             </div>
             <div class="mt-3">
                 @foreach ($book_user['books'] as $book)
-                <div class="row d-flex borbot-gray-0 pb-3 mt-4">
+                <div id="{{ $book->id }}" class="status-book row d-flex borbot-gray-0 pb-3 mt-4">
                     <div class="col-12 col-md-2 mb-2 mb-md-2">
                         <img class="zoom-modal-image book-status-image" src="{{ asset('storage/books/' . $book->image ) }}">
                     </div>
@@ -124,16 +124,15 @@
                                 <a href="{{ route('authors.show', array('author' => $book->author->id)) }}" class="mt-2 text-grey">{{ $book->author->name }}</a>
                             </div>
                             <div class="row flex-row">
-                                @if (auth()->user()->role == 'guest')
                                 <div class="col-sm-6 col-lg-5">
-                                    <div class="tred-bold">{{ $book->pivot->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</div>
+                                    <div class="tred-bold">{{ $book->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</div>
                                     <div class="text-grey">
-                                        <span>{{ $book->pivot->amount }} x</span>
+                                        <span>{{ $book->amount }} x</span>
                                         <span>{{ rupiah_format($book->price - $book->discount) }}</span>
                                     </div>
-                                    <div class="text-grey tbold">{{ rupiah_format(($book->price - $book->discount) * $book->pivot->amount) }}</div>
+                                    <div class="text-grey tbold">{{ rupiah_format(($book->price - $book->discount) * $book->amount) }}</div>
 
-                                    @if ($book_user['first']->payment_status == 'arrived')
+                                    @if ($book_user['first']->payment_status == 'arrived' && Auth::user()->role == 'guest' && $book->book_rating == null)
                                     <div class="mt-2">
                                         <button class="status-add-rating btn btn-outline-danger">Beri Rating</button>
                                     </div>
@@ -143,34 +142,25 @@
                                     <div class="d-flex">
                                         <div><i class="fas fa-pencil-alt mr-1"></i> Catatan:</div>
                                         <div class="ml-2">
-                                            <div>{{ $book->pivot->note ?? $book->users->first()->note ?? '-' }}</div>
+                                            <div>{{ $book->note ?? '-' }}</div>
                                         </div>
                                     </div>
                                 </div>
-
-                                @else
-                                <div class="col-sm-6 col-lg-5">
-                                    <div class="tred-bold">{{ $book->book_version == 'hard_cover' ? 'Buku Cetak' : 'E-Book' }}</div>
-                                    <div class="text-grey">
-                                        <span>{{ $book->amount }} x</span>
-                                        <span>{{ rupiah_format($book->price - $book->discount) }}</span>
-                                    </div>
-                                    <div class="text-grey tbold">{{ rupiah_format(($book->price - $book->discount) * $book->amount) }}</div>
-                                </div>
-                                <div class="col-sm-6 col-lg-7 mt-2 mt-sm-0">
-                                    <div class="d-flex">
-                                        <div class="mr-2">
-                                            <span>
-                                                <i class="fas fa-pencil-alt mr-1"></i> Catatan:
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <div class="">{{ $book->note ?? $book->users->first()->note ?? '-' }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                @endif
                             </div>
+
+                            @if ($book->book_rating && $book_user['first']->payment_status == 'arrived')
+                            <div class="mt-4 row">
+                                <div class="col-5">
+                                    @for ($i = 1; $i <= $book->book_rating; $i++)
+                                        <i class="fas fa-star" aria-hidden="true"></i>
+                                        @endfor
+                                </div>
+                                <div class="col-7 text-grey">
+                                    <span>Ulasan: </span>
+                                    <span>{{ $book->review }}</span>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -220,7 +210,8 @@
                         <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     </div>
                     @endif
-                    @if (Auth::user()->role == 'guest')
+
+                    @if (Auth::user()->role == 'guest' && $book_user['first']->payment_status == 'arrived')
                     <div>
                         <form action="/status/buy-again" method="POST">
                             <button class="btn btn-outline-danger">Beli Lagi</button>
@@ -253,7 +244,6 @@
 </div>
 
 <form id="status-rating-form" action="/status/add-rating" method="POST">
-    <!-- <input type="hidden" name=""> -->
     @csrf
 </form>
 

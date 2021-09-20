@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{User, Book, BookUser, Customer, Cart, City};
+use App\Models\{User, Book, BookUser, Customer, Cart, City, Rating};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Database\Eloquent\Builder;
@@ -143,23 +143,43 @@ class StatusController extends Controller
             $total_payment = $book_user_invoice->get()->sum('total_payment') + $first_data->unique_code + $first_data->shipping_cost;
             $amount        = $book_user_invoice->get()->sum('amount');
 
+            $select_value = array(
+                'books.id',
+                'books.author_id',
+                'books.name',
+                'books.image',
+                'books.price',
+                'books.discount',
+                'books.ebook',
+                'book_user.amount',
+                'book_user.book_version',
+                'book_user.note',
+                'ratings.review',
+                'ratings.rating as book_rating',
+            );
 
             if (auth()->user()->role == 'guest') {
-                $books = auth()->user()->books->filter(fn ($book) => $book->pivot->invoice == $book_user->invoice);
-            } else {
-                $selected_book = array(
-                    'books.*',
-                    'book_user.book_version',
-                    'book_user.amount',
-                    'book_user.note'
+                $conditions = array(
+                    array('users.id', auth()->user()->id),
+                    array('book_user.invoice', $book_user->invoice),
                 );
 
                 $books = Book::join('book_user', 'books.id', '=', 'book_user.book_id')
-                    ->select($selected_book)
+                    ->join('users', 'book_user.user_id', '=', 'users.id')
+                    ->leftJoin('ratings', function ($join) {
+                        $join->on('book_user.invoice', '=', 'ratings.invoice');
+                        $join->on('book_user.book_id', '=', 'ratings.book_id');
+                    })
+                    ->select($select_value)
+                    ->where($conditions)
+                    ->get();
+            } else {
+                $books = Book::join('book_user', 'books.id', '=', 'book_user.book_id')
+                    ->leftJoin('ratings', 'book_user.invoice', '=', 'ratings.invoice')
+                    ->select($select_value)
                     ->where('book_user.invoice', $book_user->invoice)
                     ->get();
             }
-
             switch ($first_data->payment_status) {
                 case 'failed':
                     $status = 'DIBATALKAN';
@@ -202,7 +222,6 @@ class StatusController extends Controller
                 'pageName' => 'page',
             ]
         );
-
 
         $data = compact('book_users', 'status_title', 'counts');
 
@@ -392,6 +411,20 @@ class StatusController extends Controller
 
     public function addRating(Request $request)
     {
-        dd($request->all());
+        $rules = array(
+            'rating'  => 'required|digits_between:1,5',
+            'review'  => 'nullable|min:3',
+            'invoice' => 'required',
+            'book_id' => 'required',
+        );
+
+        $request->validate($rules);
+        $data            = $request->except('_token');
+        $data['user_id'] = auth()->user()->id;
+        $message         = 'Berhasil memberi rating / ulasan';
+
+        Rating::create($data);
+
+        return redirect()->back()->with('message', $message);
     }
 }

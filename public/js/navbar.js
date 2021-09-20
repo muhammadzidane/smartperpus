@@ -1716,6 +1716,7 @@ $(document).ready(function () {
 
             if (value.length >= 3) {
                 ajaxJson('GET', `/customers/city-or-district`, data, response => {
+                    console.log(response);
                     $('#user-hidden-address').html('');
                     $('#user-hidden-address').show();
 
@@ -2290,7 +2291,10 @@ $(document).ready(function () {
     //#endregion Lihat daftar tagihan
 
     //#region Add rating
-    $('.status-add-rating').on('click', function(event) {
+    $('.status-add-rating').on('click', function() {
+        let invoice = $(this).parents('.status-invoice').attr('id');
+        let bookId  = $(this).parents('.status-book').attr('id');
+
         bootStrapModal('Beri Rating Untuk Buku Ini', 'modal-md', () => {
             let starHtml = '';
 
@@ -2298,27 +2302,33 @@ $(document).ready(function () {
                 starHtml +=
                 `<label class="status-rating-star">
                     <i class="status-rating-icon mx-auto far fa-star" aria-hidden="true"></i>
-                    <input form="status-rating-form" type="radio" name="rate" value="1" class="d-none">
+                    <input form="status-rating-form" type="radio" name="rating" value="${i}" class="d-none">
                 </label>`;
             }
+
             let html =
             `<div class="status-rating mt-4">
                 <div class="d-flex justify-content-center status-rating-stars mt-4">
                     ${starHtml}
                 </div>
                 <div class="mt-4 text-center w-100 container">
-                    <div class="text-grey my-2 text-left">Berikan ulasan anda</div>
+                    <div class="text-grey my-2 text-left">Berikan ulasan anda (opsional)</div>
                     <textarea form="status-rating-form" name="review" id="" rows="5" class="w-100"></textarea>
                 </div>
                 <div class="mt-4 text-right">
-                    <button form="status-rating-form" type="submit" class="btn btn-outline-danger">Kirim</button>
+                    <input form="status-rating-form" type="hidden" name="invoice" value="${invoice}">
+                    <input form="status-rating-form" type="hidden" name="book_id" value="${bookId}">
+                    <button form="status-rating-form" type="submit" class="cursor-disabled btn btn-outline-danger" disabled>Kirim</button>
                 </div>
             </div>`
 
             return html;
         });
 
-        $('.status-rating-star').on('click', function(event) {
+        $('.status-rating-star').on('change', function() {
+            $('button[form=status-rating-form]').removeClass('cursor-disabled');
+            $('button[form=status-rating-form]').removeAttr('disabled');
+
             let rate = $(this).find('input').val();
             let ratingText;
 
