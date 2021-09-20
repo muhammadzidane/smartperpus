@@ -11,7 +11,7 @@
 
 <form action="{{ route('books.index') }}" method="GET">
     <div class="row flex-nowrap py-4">
-        <div class="search-filters-md d-md-block d-none">
+        <div class="search-filters-md d-lg-block d-none">
             <div class="d-flex justify-content-between">
                 <h5><i class="fas fa-filter"></i> Filter</h5>
                 <div>
@@ -71,7 +71,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="">
+                <div class="mt-4 mt-sm-0">
                     <span class="mr-1 text-grey">Ukutkan</span>
                     <select class="sort-books" name="sort" onchange="this.form.submit()">
                         <option value="relevan" {{ request()->sort == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
@@ -82,8 +82,8 @@
                     </select>
                 </div>
             </div>
-            <div class="d-md-none mt-4">
-                <button type="button" class="w-50 btn btn-outline-yellow" data-toggle="modal" data-target="#modal-filter">Filter</button>
+            <div class="d-lg-none mt-4">
+                <button type="button" class="w-100 btn btn-outline-danger" data-toggle="modal" data-target="#modal-filter">Filter</button>
             </div>
             <div class="mt-2">
                 @if($books->isEmpty())

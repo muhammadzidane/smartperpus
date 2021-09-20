@@ -450,7 +450,7 @@ body {
     /* display: none; */
 }
 
-dropdown-navbar {
+.dropdown-navbar {
     color: #212529;
     font-size: 20px;
 }
@@ -578,6 +578,8 @@ footer {
     position: relative;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: auto;
+    min-height: 360px;
 }
 
 
@@ -641,8 +643,8 @@ footer {
 }
 
 .rating-and-author {
-    padding: 0 10px;
-    margin: 5px 0;
+    /* padding: 0 10px; */
+    /* margin: 5px 0; */
 }
 
 .author-review {
@@ -916,9 +918,8 @@ footer {
     font-size: 13px;
     color: #ee6f57;
     width: max-content;
-    margin-left: auto;
-    padding: 0.50rem;
     transition: transform 130ms;
+    margin-top: auto;
 }
 
 .add-to-wishlist:hover {
@@ -2014,7 +2015,7 @@ footer {
 }
 
 /* Media Medium */
-@media screen and (min-width: 768px)  {
+@media screen and (min-width: 992px)  {
     /* Search */
     .search-filters-md {
         flex: 0 0 20.6666666667%;
@@ -2477,6 +2478,12 @@ footer {
 }
 
 /* Media Small */
+@media screen and (max-width: 564px)  {
+    .books {
+        grid-template-columns: repeat(auto-fit, 130px);
+    }
+}
+
 @media screen and (max-width: 564px)  {
     * {
         font-size: 12px;
