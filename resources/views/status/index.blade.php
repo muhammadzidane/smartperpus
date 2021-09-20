@@ -151,6 +151,11 @@
                             @if ($book->book_rating && $book_user['first']->payment_status == 'arrived')
                             <div class="mt-4 row">
                                 <div class="col-5">
+
+                                    @if (Auth::user()->role == 'guest')
+                                    <span class="mr-2 text-grey">Rating anda</span>
+                                    @endif
+
                                     @for ($i = 1; $i <= $book->book_rating; $i++)
                                         <i class="fas fa-star" aria-hidden="true"></i>
                                         @endfor

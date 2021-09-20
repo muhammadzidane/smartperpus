@@ -653,7 +653,6 @@ footer {
 
 .desk-book {
     background-color:transparent;
-    height: 100%;
     padding: 12px 10px 0 10px;
     font-size: 13px;
     overflow :hidden;
@@ -918,6 +917,7 @@ footer {
     color: #ee6f57;
     width: max-content;
     margin-left: auto;
+    padding: 0.50rem;
     transition: transform 130ms;
 }
 

@@ -13,7 +13,28 @@ class TestController extends Controller
 {
     public function test()
     {
-        return view('test');
+        $ratings = array();
+
+        for ($i = 0; $i < 100; $i++) {
+            array_push($ratings, rand(1, 5));
+        }
+
+        $ratings_sum          = array_sum($ratings);
+        $ratings_amount       = count($ratings);
+        $rating_average_value = $ratings_sum / $ratings_amount;
+
+        for ($i = 0; $i < $rating_average_value; $i++) {
+            $full_star = 'full';
+            $half      = 'half';
+
+            if ($rating_average_value) {
+                # code...
+            }
+
+            dump($rating_average_value);
+        }
+        // $book = Book::find(1);
+        // dump($book->ratings);
     }
 
     public function testPost(Request $request)

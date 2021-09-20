@@ -72,6 +72,11 @@ class Book extends Model
         return $this->hasMany(Cart::class);
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     // Accessors
     public function getReleaseDateAttribute($value)
     {

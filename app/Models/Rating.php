@@ -10,4 +10,9 @@ class Rating extends Model
     use HasFactory;
 
     protected $guarded = array();
+
+    public function books()
+    {
+        return $this->belongsTo(Book::class);
+    }
 }

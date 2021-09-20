@@ -2366,6 +2366,8 @@ $(document).ready(function () {
         })
     });
 
+    disableMultipleSubmitForm('#status-rating-form', 'button[form=status-rating-form]');
+
     //#endregion Add rating
     //#endregion Status
 

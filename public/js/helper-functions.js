@@ -1,4 +1,11 @@
 'use strict';
+// Disable button submit jika melalukan multiple klik pada form
+const disableMultipleSubmitForm = (formSelector, buttonSubmitSelector) => {
+    $(formSelector).on('submit', function() {
+        $(buttonSubmitSelector)[0].disabled = true;
+    });
+}
+
 // Disable form submit jika input value kosong
 const formDisableSubmit = (formSelector, events) => {
     $(formSelector).on('keyup', function() {

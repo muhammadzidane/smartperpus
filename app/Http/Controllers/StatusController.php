@@ -180,6 +180,7 @@ class StatusController extends Controller
                     ->where('book_user.invoice', $book_user->invoice)
                     ->get();
             }
+
             switch ($first_data->payment_status) {
                 case 'failed':
                     $status = 'DIBATALKAN';

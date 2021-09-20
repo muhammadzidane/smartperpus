@@ -29,8 +29,15 @@ class BookController extends Controller
             array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
         );
 
-        $books = Book::join('authors', 'books.author_id', '=', 'authors.id')
-            ->select('books.*')
+        $select_values = array(
+            'books.*',
+        );
+
+        $books = Book::leftJoin('ratings', 'books.id', '=', 'ratings.book_id')
+            ->join('authors', 'books.author_id', '=', 'authors.id')
+            ->distinct('books.id')
+            ->groupBy('books.id')
+            ->select($select_values)
             ->where($conditions);
 
         $authors = Author::join('books', 'authors.id', '=', 'books.author_id')
