@@ -708,7 +708,7 @@ $(document).ready(function () {
             $(this).find('i').addClass('far');
             datas['_method'] = 'DELETE';
 
-            ajaxJson('POST', `/wishlists/${dataId}`, datas);
+            $.post(`/wishlists/${dataId}`, datas);
         }
     });
 
@@ -973,6 +973,9 @@ $(document).ready(function () {
     });
     //#endregion Book add stock - Tambah stok buku
     //#endregion Cart - in Book Show
+
+
+    //#endregion Book Show
 
     // User Index - Daftar karyawan
     $('.user-block').on('click', function (event) {

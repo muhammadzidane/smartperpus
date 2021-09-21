@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, Author, Category, BookImage};
+use App\Models\{Book, Author, Category, BookImage, Rating};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Storage, Validator, Auth, File, DB};
 
@@ -154,10 +154,27 @@ class BookController extends Controller
      * @param  \App\Models\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function show(Book $book)
+    public function show(Book $book, Request $request)
     {
-        // dd($book->book_images);
-        return view('book.show', compact('book'));
+        $ratings = $book->ratings();
+
+        if ($request->filter && $request->filter != 'all') {
+            $conditions = array(
+                array('rating', $request->filter),
+                array('book_id', $book->id),
+            );
+
+            $ratings = Rating::where($conditions);
+        }
+
+        $ratings = $ratings
+            ->orderByDesc('created_at')
+            ->paginate(10)
+            ->fragment('rating');
+
+        $data = compact('book', 'ratings');
+
+        return view('book.show', $data);
     }
 
     /**

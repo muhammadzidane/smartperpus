@@ -1,3 +1,7 @@
+h1 {
+    font-family: 'Righteous', cursive;
+}
+
 a, a:hover {
     text-decoration: none;
     color: #444444;
@@ -41,6 +45,10 @@ ul li {
 
 label { cursor: pointer; }
 
+.star-icon-color {
+    color: #F7FD04;
+}
+
 /* Spinner */
 .spin {
     display: inline-block;
@@ -68,7 +76,6 @@ label { cursor: pointer; }
 .d-grid { display: grid; }
 .z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
-.fa-star { color: gold; }
 .mt-c, .kategori-pilihan { margin-top: 40px !important; }
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
@@ -317,10 +324,6 @@ label { cursor: pointer; }
 
 .text-righteous, li a, .book-deals > h2, h4, h5 , .btn-outline-yellow{
     font-family: 'Righteous', cursive;
-}
-
-.btn-outline-warning, .btn-outline-grey {
-    border: 2px solid #6E7C7C;
 }
 
 .f-20 { font-size: 20px !important;  }
@@ -660,6 +663,33 @@ footer {
 }
 
 /* Book Show */
+.filter-review input[type="radio"] {
+    display: none;
+}
+
+.filter-review label {
+    border: 1px solid #e84545;
+    border-radius: 4px;
+    width: 90px;
+    padding: 0.35rem 0;
+    text-align: center;
+    margin-right: 0.25rem;
+}
+
+.filter-review input[type="radio"]:checked+label {
+    background-color: #e2d5d5;
+}
+
+.filter-link {
+    flex: 1;
+    background-color: red;
+}
+
+.book-show-rating-icon {
+    font-size: 14px;
+    margin-right: 0.15rem;
+}
+
 .book-show {
     margin-top: 21px;
 }
@@ -723,9 +753,7 @@ footer {
 }
 
 .white-content {
-    border-radius: 5px;
-    padding: 15px;
-    margin: 15px 0;
+    padding: 0.75rem;
 }
 
 .book-show-click {
@@ -751,20 +779,6 @@ footer {
     box-shadow: 0 0 1px #444444;
 }
 
-.detail-and-buy {
-    display: flex;
-    height: 100%;
-}
-
-.book-show-detail {
-    width: 50%;
-}
-
-.purchase-date {
-    color: #8e7f7f;
-    margin-left: 5px;
-}
-
 .title-border-red {
     border-bottom: 3px solid #cc435f;
     width: max-content;
@@ -772,17 +786,19 @@ footer {
 
 .book-payment {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     border: 1px solid #f0a500;
     background-color: #fffdf6;
-    width: 50%;
-    padding: 15px;
+    padding: 0.75rem;
+    height: 100%;
     border-radius: 6px;
-    height: max-content;
 }
 
 .book-payment div:last-child {
-    display: flex;
-    flex-direction: column;
+    /* display: flex; */
+    /* flex-direction: column; */
 }
 
 .fa-info-circle { color: #94fc13; }
@@ -973,26 +989,10 @@ footer {
 }
 
 .rating-product-reviews {
-    display: flex;
-    width: max-content;
-}
-
-.rating-product-reviews div:first-child div i{
-    color: gold;
     font-size: 16px;
 }
 
-.rating-product-star {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-left: 8px;
-}
-
 /* Book Filters */
-.filter-star { margin: 17px 17px 30px 17px }
-.filter-star button i { color: gold; }
 .rating-product-star h5 { font-size: 45px; }
 
 
@@ -1047,10 +1047,17 @@ footer {
 }
 
 .customer-reviews-profile {
-    margin-right: 10px;
+    border: 1px solid #e2d5d5;
+    border-radius: 100%;
+    width: auto;
+    height: 100%;
+}
+
+.customer-reviews-profile img {
     border-radius: 100%;
     width: 52px;
-    height: 50px;
+    height: 52px;
+    object-fit: contain;
 }
 
 /* Share Sosmed dan Login Sosmed*/
@@ -2098,14 +2105,6 @@ footer {
         height: 220px;
     }
 
-    /* Book Show */
-    .detail-and-buy {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .book-show-detail, .form-register, .book-payment { width: 100%; }
-    .book-payment { margin-top: 30px; }
     .purchase-records { width: 60%; }
     .pay-for-the-book { width: 40%; }
 
@@ -2528,14 +2527,6 @@ footer {
     }
 
     /* Book Buy  */
-    #buying-content { flex-direction: column; }
-    #buying-img { width: 100%; }
-    #book-payment { display: flex; flex-direction: column; }
-    .purchase-records, .pay-for-the-book, .pay-for-the-book div { width: 100% !important; }
-    .pay-for-the-book div div:first-child { display: flex;}
-    .pay-for-the-book div div:first-child > div:first-child { width: 35% !important; }
-    .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
-    .pay-for-the-book div div:first-child > div:last-child { width: 65% !important; }
     .courier-choise { width: 110px; }
     .book-buy-desc > div:first-child {
         /* margin-bottom: 12px; */
@@ -2548,20 +2539,10 @@ footer {
     #book-search {
         width: 43.90% !important;
     }
-
-    /* Book Show */
-    .book-show > div:first-child, .book-show-sinopsis {
-        width: 100% !important;
-    }
-
-    .book-show-detail {
-        padding: 0 3px;
-
-    }
-
     .book-show > :nth-child(2) {
         padding: 0;
     }
+
     /* Footer */
     .footer-content:last-child {
         width: 33.40%;

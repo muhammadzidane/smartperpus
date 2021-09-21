@@ -12,7 +12,7 @@ array(
     <div class="col-md-9">
         <div class="row">
             <div class="col-12">
-                <form action="{{ url()->current() }}" method="get">
+                <form action="{{ url()->current() }}" method="GET">
                     <div class="status-search">
                         <button class="status-search-icon btn-none p-0">
                             <i class="fa fa-search d-none d-md-block" aria-hidden="true"></i>
@@ -21,11 +21,11 @@ array(
                     </div>
                 </form>
 
-                @if (true)
+                @if (request()->review_keywords)
                 <div class="text-grey mt-4">
                     <span>Hasil pencarian untuk</span>
-                    <span class="tbold">"{{ true }}"</span>
-                    <span>. Menampilkan <span class="tbold">{{ 0 }}</span> hasil </span>
+                    <span class="tbold">"{{ request()->review_keywords }}"</span>
+                    <span>. Menampilkan <span class="tbold">{{ $books->count() }}</span> hasil </span>
                 </div>
                 @endif
             </div>
@@ -50,10 +50,10 @@ array(
                                 <div class="mt-2 d-flex align-items-center">
                                     @for ($i=0; $i < 5; $i++)
                                         @if ($book->rating > $i)
-                                            <i class="review-star-icon fa fa-star"></i>
+                                            <i class="review-star-icon star-icon-color fa fa-star mr-1"></i>
 
                                         @else
-                                            <i class="review-star-icon far fa-star"></i>
+                                            <i class="review-star-icon star-icon-color far fa-star mr-1"></i>
                                         @endif
                                     @endfor
                                     <span class="ml-2">{{ $book->rating_date }}</span>
@@ -69,7 +69,9 @@ array(
                 @include('empty-image', array('title' => 'Belum ada ulasan'))
             @endforelse
         </div>
+        <div class="d-flex justify-content-end mt-4">{{ $books->links() }}</div>
     </div>
 </div>
+
 
 @endsection

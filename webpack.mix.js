@@ -11,6 +11,11 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.scripts([
+    'resources/js/book-show.js',
+    'resources/js/test.js',
+], 'public/js/new-app.js');
+
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css')
     .copy(

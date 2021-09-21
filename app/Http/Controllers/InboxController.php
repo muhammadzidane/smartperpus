@@ -32,20 +32,9 @@ class InboxController extends Controller
             ->join('ratings', 'books.id', 'ratings.book_id')
             ->join('book_user', 'ratings.invoice', 'book_user.invoice')
             ->select($select_value)
-            ->distinct('ratings.invoice')
+            ->distinct('ratings.id')
             ->where($conditions)
-            ->get();
-
-        // Mapping date values dari 'book_user.completed_date' menjadi tanggal yang berbahasa indonesia
-        $books = $books->map(function($book) {
-            $completed_date = Carbon::make($book->completed_date)->isoFormat('dddd, DD MMMM YYYY HH:mm');
-            $rating_date    = Carbon::make($book->rating_date)->isoFormat('dddd, DD MMMM YYYY HH:mm');
-
-            $book->completed_date = $completed_date;
-            $book->rating_date    = $rating_date;
-
-            return $book;
-        });
+            ->paginate(15);
 
         $rating_text = array(
             'BURUK',
@@ -54,6 +43,7 @@ class InboxController extends Controller
             'SANGAT BAIK',
             'SUPER BAIK',
         );
+
 
         $data = compact('books', 'rating_text');
 

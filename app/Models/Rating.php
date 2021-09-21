@@ -15,4 +15,8 @@ class Rating extends Model
     {
         return $this->belongsTo(Book::class);
     }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }
