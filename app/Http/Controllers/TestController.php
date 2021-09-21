@@ -21,20 +21,25 @@ class TestController extends Controller
 
         $ratings_sum          = array_sum($ratings);
         $ratings_amount       = count($ratings);
-        $rating_average_value = $ratings_sum / $ratings_amount;
+        $rating_average_value = 2.2;
 
-        for ($i = 0; $i < $rating_average_value; $i++) {
-            $full_star = 'full';
-            $half      = 'half';
+        for ($i = 1; $i <= 5; $i++) {
+            $full = 'full';
+            $half = 'half';
+            $empty = 'empty';
 
-            if ($rating_average_value) {
-                # code...
+            if ($rating_average_value >= $i) {
+                // dump($full);
+            } else if ($i >= $rating_average_value + 1) {
+                // dump($empty);
+            } else {
+                // dump($half);
             }
-
-            dump($rating_average_value);
         }
         // $book = Book::find(1);
         // dump($book->ratings);
+
+        return view('test');
     }
 
     public function testPost(Request $request)

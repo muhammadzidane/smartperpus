@@ -53,7 +53,7 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="d-flex btn btn-outline-primary mt-4 ml-auto w-100">
+                <button type="submit" class="d-flex btn btn-outline-danger mt-4 ml-auto w-100">
                     <span class="mx-auto">Terapkan</span>
                 </button>
             </div>

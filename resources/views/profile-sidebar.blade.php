@@ -42,6 +42,15 @@
                 <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('carts.index') }}">Keranjang Saya</a>
             </div>
 
+            <div>
+                <div class="px-2 pt-2 pb-0 tbold">Kotak Masuk</div>
+                <div>
+                    <div class="py-2 {{ preg_match('/inbox\/my-reviews$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="/inbox/my-reviews">Ulasan Saya</a>
+                    </div>
+                </div>
+            </div>
+
             @else
             <div>
                 <div class="px-2 pt-2 pb-0 tbold">Penghasilan</div>
@@ -79,6 +88,7 @@
                 </div>
             </div>
             @endif
+
         </div>
     </div>
 </div>

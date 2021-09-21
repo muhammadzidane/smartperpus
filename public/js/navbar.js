@@ -2199,6 +2199,7 @@ $(document).ready(function () {
         let invoice = $(this).data('invoice');
 
         $.get(`/status/${invoice}/detail`, response => {
+            console.log(response);
             let data       = response.data;
             let failedDate = data.status_date.failed_date;
 
@@ -2260,12 +2261,16 @@ $(document).ready(function () {
                     <table class="table table-bordered">
                     <tbody>
                     <tr>
+                        <td>Metode Pembayaran</td>
+                        <td>${data.book_user.payment_method} (dicek manual)</td>
+                    </tr>
+                    <tr>
                         <td>Kurir</td>
                         <td>${data.book_user.courier_name.toUpperCase()} (${data.book_user.courier_service})</td>
                     </tr>
                     <tr>
-                        <td>Metode Pembayaran</td>
-                        <td>${data.book_user.payment_method} (dicek manual)</td>
+                        <td>Biaya Pengiriman</td>
+                        <td>${rupiahFormat(data.book_user.shipping_cost)}</td>
                     </tr>
                     <tr>
                         <td>Kode Unik</td>

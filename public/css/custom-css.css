@@ -569,7 +569,7 @@ footer {
 
 .book {
     margin-bottom: 25px;
-    box-shadow: 0 0 1.2px black;
+    box-shadow: 0 0 1.5px #444444;
     display: flex;
     flex-direction: column;
     text-decoration: none;
@@ -578,8 +578,7 @@ footer {
     position: relative;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: auto;
-    min-height: 360px;
+    height: 350px;
 }
 
 
@@ -619,7 +618,7 @@ footer {
 .book-image {
     float: left;
     width:  100%;
-    height: 230px;
+    height: 200px;
     object-fit:contain;
 }
 
@@ -919,7 +918,7 @@ footer {
     color: #ee6f57;
     width: max-content;
     transition: transform 130ms;
-    margin-top: auto;
+    margin-left: auto;
 }
 
 .add-to-wishlist:hover {
@@ -952,6 +951,27 @@ footer {
 }
 
 /* Ulasan Produk */
+.review-image {
+    border: 1px solid #e2d5d5;
+    border-radius: 2px;
+    padding: 0.25rem;
+    height: fit-content;
+}
+
+.review-image img {
+    width: 70px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.review-star-icon {
+    font-size: 20px;
+}
+
+.wb-word {
+    word-wrap: break-word;
+}
+
 .rating-product-reviews {
     display: flex;
     width: max-content;

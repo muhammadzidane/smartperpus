@@ -22,6 +22,7 @@
 //     ValidatorController,
 //     CheckoutController,
 //     IncomeController,
+//     InboxController,
 // };
 
 namespace App\Http\Controllers;
@@ -115,6 +116,9 @@ Route::prefix('status')->middleware('auth')->group(function () {
     Route::post('/buy-again', array(StatusController::class, 'buyAgain'));
     Route::post('/add-rating', array(StatusController::class, 'addRating'));
 });
+
+// Review
+Route::middleware('auth')->get('inbox/my-reviews', array(InboxController::class, 'review'));
 
 Route::get('/book-users/search/{keywords}', array(BookUserController::class, 'search'));
 

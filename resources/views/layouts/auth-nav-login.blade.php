@@ -48,7 +48,7 @@
             <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
         </div>
         <div>
-            <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Akun</a>
+            <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Karyawan</a>
         </div>
         <div>
             <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>

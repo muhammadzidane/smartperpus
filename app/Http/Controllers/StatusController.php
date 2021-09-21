@@ -277,7 +277,6 @@ class StatusController extends Controller
             );
         }
 
-
         return response()->json($response);
     }
 
