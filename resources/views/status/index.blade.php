@@ -134,7 +134,7 @@
 
                                     @if ($book_user['first']->payment_status == 'arrived' && Auth::user()->role == 'guest' && $book->book_rating == null)
                                     <div class="mt-2">
-                                        <button class="status-add-rating btn btn-outline-danger">Beri Rating</button>
+                                        <button class="status-add-rating btn btn-outline-danger">Beri Ulasan</button>
                                     </div>
                                     @endif
                                 </div>

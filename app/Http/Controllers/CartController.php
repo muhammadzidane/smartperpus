@@ -21,21 +21,22 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
-        $user  = User::find(auth()->user()->id);
-        $carts = $user->carts->sortByDesc('created_at');
+        $selected_value = array(
+            'books.*',
+            'carts.amount as cart_amount',
+        );
 
-        $books = $carts->map(function ($cart) {
-            return Book::find($cart->book_id);
-        });
-
-        $data_perpage = 8;
-        $slice_book   = $request->page == 1 || $request->page == null ? 0 : $request->page * $data_perpage - $data_perpage;
+        $books = Book::join('carts', 'books.id', '=', 'carts.book_id')
+            ->join('users', 'carts.user_id', '=', 'users.id')
+            ->orderByDesc('created_at')
+            ->select($selected_value)
+            ->where('users.id', auth()->user()->id)
+            ->get();
 
         $book_id_session = session('bought_directly');
 
-        if ($book_id_session) { // Membuat session untuk checked buku pilihan, dan di taruh paling atas
-            $cart_session = $user->carts()->firstWhere('book_id', $book_id_session);
-            $book_session = Book::find($cart_session->book_id);
+        if ($book_id_session) { // Membuat session untuk checked fitur beli langsung, dan di taruh paling atas
+            $book_session = Book::find($book_id_session);
 
             $books = $books->filter(function ($book, $key) {
                 return $book->id != session('bought_directly');
@@ -44,21 +45,48 @@ class CartController extends Controller
             $books->prepend($book_session);
         }
 
-
         if (session('buy_again')) {
+            $sliced_books = $books->whereIn('id', session('buy_again'));
+            $filter_books = $books->filter(function($book) {
+                return in_array($book->id, session('buy_again')) == false;
+            });
+
+            $filter_books->all();
+
+            $books = $sliced_books->merge($filter_books);
+
+            $books->all();
+
             $books->map(function ($book) {
-                $book['buy_again'] = true;
+                $book['buy_again'] = session('buy_again');
 
                 return $book;
             });
+
+            $total_payment = $sliced_books->map(function($book) {
+                $result = ($book->price - $book->discount) * $book->cart_amount;
+
+                return $result;
+            });
+
+
+            $amount        = $sliced_books->reduce(fn ($carry, $item) => $carry + $item->cart_amount);
+            $total_payment = $total_payment->reduce(fn ($carry, $item) => $carry + $item);
         }
+
+        $data_perpage = 8;
+        $slice_book   = $request->page == 1 || $request->page == null ? 0 : $request->page * $data_perpage - $data_perpage;
 
         $books = new LengthAwarePaginator($books->slice($slice_book, $data_perpage), $books->count(), $data_perpage, $request->page, [
             'path' => url()->current(),
             'pageName' => 'page',
         ]);
 
-        return view('cart.index', compact('books'));
+        $total_payment = isset($total_payment) ? number_format($total_payment, 0, 0, '.') : null;
+        $amount        = isset($amount) ? $amount : null;
+        $data          = compact('books', 'total_payment', 'amount');
+
+        return view('cart.index', $data);
     }
 
     /**

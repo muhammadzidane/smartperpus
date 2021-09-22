@@ -1671,9 +1671,11 @@ $(document).ready(function () {
         });
     });
 
-    const formHtmlCustomer = (formId, action, method, buttonText,methodRequest = '') => {
-        let csrfToken = $('meta[name="csrf-token"]').attr('content');
-        methodRequest = methodRequest != '' ? `<input type="hidden" name="_method" value="${methodRequest}">` : '';
+    const formHtmlCustomer = (formId, action, method, buttonText, methodRequest = '') => {
+        let csrfToken           = $('meta[name="csrf-token"]').attr('content');
+        let attrDisabled        = buttonText == 'Tambah' ? 'disabled' : '';
+        let cursorDisabledClass = buttonText == 'Tambah' ? 'cursor-disabled' : '';
+        methodRequest           = methodRequest != '' ? `<input type="hidden" name="_method" value="${methodRequest}">` : '';
 
         let html =
         `
@@ -1697,8 +1699,8 @@ $(document).ready(function () {
                 <label for="nomer_handphone">Nomer Handphone</label>
                 <input id="user-customer-phone" type="text" name="nomer_handphone" class="form-control-custom book-edit-inp">
             </div>
-            <div class="form-group mt-5">
-                <button class="button-submit active-login" type="submit">${buttonText}</button>
+            <div class="form-group mt-4 text-right">
+                <button class="btn btn-outline-danger ${cursorDisabledClass}" type="submit" ${attrDisabled}>${buttonText}</button>
             </div>
             ${methodRequest}
             <input type="hidden" name="_token" value="${csrfToken}">
@@ -1712,16 +1714,13 @@ $(document).ready(function () {
         $('#user-city-district-search').on('keyup', function() {
             let value = $(this).val();
 
-            console.log(value);
-
             let data  = {
                 keywords: value,
             };
 
             if (value.length >= 3) {
                 setTimeout(() => {
-                    ajaxJson('GET', `/customers/city-or-district`, data, response => {
-                        console.log(response);
+                    $.get(`/customers/city-or-district`, data, response => {
                         $('#user-hidden-address').html('');
                         $('#user-hidden-address').show();
 
@@ -1730,6 +1729,8 @@ $(document).ready(function () {
 
                         if (requestAdressLength == 0) {
                             html = `<div class="px-2"><div>Data tidak valid</div></div>`;
+
+                            $(this).parents('form').find('button[type=submit]').attr('disabled', true);
                         } else {
                             html = response.request_address;
                             html = html.map(data => {
@@ -1775,6 +1776,7 @@ $(document).ready(function () {
                             $('.user-address').hide();
                             $('#user-city-district-search').val($(this).text());
                             $('#user-city-or-district').attr('value', addressValues);
+                            $(this).parents('form').find('button[type=submit]').attr('disabled', true);
 
                             addressValues = $('#user-city-or-district').attr('value');
                             addressValues = addressValues.split('-');
@@ -1833,12 +1835,14 @@ $(document).ready(function () {
         $('.user-customer-update').on('click', function(event) {
             event.stopImmediatePropagation();
 
-            bootStrapModal('Ubah Alamat Pengiriman', 'modal-md', () => {
+            bootStrapModal('Ubah Alamat Utama', 'modal-md', () => {
                 let dataId = $(this).data('id');
                 let html   = formHtmlCustomer('user-customer-update', `/customers/${dataId}`, 'POST', 'Edit', 'PATCH');
 
                 return html;
             });
+
+            formDisableSubmit('#user-customer-update', 'input:not([type=hidden])');
 
             let buttonUpdate         = $(this);
             let userCustomer         = $(this).parents('.user-customer');
@@ -2002,6 +2006,7 @@ $(document).ready(function () {
                 return html;
             });
 
+            formDisableSubmit('#user-customer-store', 'input:not([type=hidden])')
             formCityAndDistrictKeyup();
 
             $('#user-customer-store').on('submit', function(event) {
@@ -2035,7 +2040,7 @@ $(document).ready(function () {
                                                 </div>
                                             </div>
                                         </div>
-                                        </label>
+                                    </label>
                                     <div class="ml-auto text-right mt-auto">
                                         <div>
                                             <button class="user-customer-update btn-none tred-bold" type="button" data-id="${data.customer.id}">Ubah</button>

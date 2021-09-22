@@ -401,9 +401,14 @@ class StatusController extends Controller
 
         Cart::insert($data);
 
+        $buy_again = collect($data)->map(function($value) {
+            return $value['book_id'];
+
+        })->toArray();
+
         $flash = array(
-            'message' => $message,
-            'buy_again' => true,
+            'message'   => $message,
+            'buy_again' => $buy_again,
         );
 
         return redirect()->route('carts.index')->with($flash);
