@@ -252,7 +252,7 @@
 <div id="rating" class="white-content px-4 py-3 mt-4">
     <h4 class="tbold title-border-red my-3 pb-2">Penilaian Produk</h4>
 
-    @if ($ratings->total() != 0)
+    @if ($ratings->total() != 0 || (request()->filter == 5 || request()->filter == 4 || request()->filter == 3 || request()->filter == 2 || request()->filter == 1))
         <p class="tred-bold">{{ $book->name }}</p>
         <div class="d-flex">
             <div>
@@ -281,8 +281,8 @@
         <div class="mb-4">
             <div class="filter-review">
                 <input type="radio" id="filter-review-all" name="filter_rating" value="all" {{ request()->filter == 'all' ? 'checked' : '' }}>
-                <label for="filter-review-all">
-                    <a href="{{ url()->current() }}?filter=all#rating">
+                <label class="d-inline-flex" for="filter-review-all">
+                    <a class="flex-grow-1" href="{{ url()->current() }}?filter=all#rating">
                         <span>Semua</span>
                     </a>
                 </label>
@@ -335,7 +335,6 @@
                 @include('empty-image', array('title' => 'Belum ada penilaian'))
             </div>
     @endif
-
 </div>
 
 @include('layouts.book-deals',

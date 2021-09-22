@@ -107,4 +107,14 @@ class User extends Authenticatable
     public function users() {
         return $this->hasMany(User::class);
     }
+
+    public function setFirstNameAttribute($value)
+    {
+        $this->attributes['first_name'] = ucwords($value);
+    }
+
+    public function setLastNameAttribute($value)
+    {
+        $this->attributes['last_name'] = ucwords($value);
+    }
 }

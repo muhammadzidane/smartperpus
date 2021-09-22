@@ -468,6 +468,16 @@ body {
 }
 
 /* Checkout */
+.user-destination-input {
+    background-color: rgb(226, 213, 213, 0.33)  !important;
+}
+
+.user-destination-close {
+    position: absolute;
+    right: 5px;
+    top: 22px;
+}
+
 .radio-toolbar input[type="radio"] {
     display: none;
 }

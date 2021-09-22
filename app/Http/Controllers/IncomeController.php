@@ -48,8 +48,8 @@ class IncomeController extends Controller
         });
 
         $this_month = array(
-            'book_users' => $this_month_book_users,
-            'count' => $this_month_total_payments == 0 ? 0 : $this_month_book_users->count(),
+            'book_users'     => $this_month_book_users,
+            'count'          => $this_month_total_payments == 0 ? 0 : $this_month_book_users->count(),
             'total_payments' => $this_month_total_payments,
         );
 
@@ -99,6 +99,10 @@ class IncomeController extends Controller
         }
 
         return view('book_user.status.income', $data);
+    }
+
+    public function detail() {
+        dd(true);
     }
 
     public function incomeDetailToday()

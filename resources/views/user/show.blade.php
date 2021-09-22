@@ -54,7 +54,9 @@ array(
                             <div class="borbot-gray-0 pb-3">
                                 <div class="d-flex justify-content-between mb-2">
                                     <h5>Biodata diri</h5>
-                                    <button id="user-change-biodata" class="btn-none tred-bold" type="button" data-id="{{ $user->id }}">Ubah</button>
+                                    <button id="user-change-biodata" class="btn-none tred-bold" type="button" data-id="{{ $user->id }}">
+                                        <i class="far fa-edit text-danger"></i>
+                                    </button>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>Nama</div>
@@ -84,54 +86,56 @@ array(
                                     <div id="user-phone-number" class="text-right">{{ $user->phone_number ?? '-' }}</div>
                                 </div>
                             </div>
-                            <div id="user-customers" class="mt-4">
-                                <div class="d-flex justify-content-between">
-                                    <h5 id="user-customer-title">Daftar Alamat Pengiriman</h5>
-                                    @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
-                                        @endif
-                                </div>
-                                <div id="user-customer-lists">
-                                    @forelse (auth()->user()->customers->take(5) as $customer)
-                                    <div id="{{ $customer->id }}" class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
-                                        <div class="d-flex">
-                                            <div>
-                                                @if ($customer->main)
-                                                <div class="user-customer-main">Utama</div>
-
-                                                @else
-                                                <div class="user-customer-select-main c-p">Simpan sebagai utama</div>
-                                                @endif
-                                                <div>
-                                                    <span class="customer-name">{{ $customer->name }}</span> -
-                                                    <span class="customer-phone-number">{{ $customer->phone_number }}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="customer-address">{{ $customer->address }}</span>.
-                                                    <span class="customer-province" data-province="{{ $customer->province->id }}">{{ $customer->province->name }},</span>
-                                                    <span class="customer-city" data-city="{{ $customer->city->id }}">{{ $customer->city->type  . ' ' . $customer->city->name }},</span>
-                                                    <span class="customer-district" data-district="{{ $customer->district->id }}">{{ $customer->district->name }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="ml-auto text-right mt-auto">
-                                            <div>
-                                                <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
-                                            </div>
-                                            @if (!$customer->main)
-                                            <div>
-                                                <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
-                                            </div>
+                            @if (Auth::user()->role == 'guest')
+                                <div id="user-customers" class="mt-4">
+                                    <div class="d-flex justify-content-between">
+                                        <h5 id="user-customer-title">Daftar Alamat Pengiriman</h5>
+                                        @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
                                             @endif
+                                    </div>
+                                    <div id="user-customer-lists">
+                                        @forelse (auth()->user()->customers->take(5) as $customer)
+                                        <div id="{{ $customer->id }}" class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
+                                            <div class="d-flex">
+                                                <div>
+                                                    @if ($customer->main)
+                                                    <div class="user-customer-main">Utama</div>
+
+                                                    @else
+                                                    <div class="user-customer-select-main c-p">Simpan sebagai utama</div>
+                                                    @endif
+                                                    <div>
+                                                        <span class="customer-name">{{ $customer->name }}</span> -
+                                                        <span class="customer-phone-number">{{ $customer->phone_number }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="customer-address">{{ $customer->address }}</span>.
+                                                        <span class="customer-province" data-province="{{ $customer->province->id }}">{{ $customer->province->name }},</span>
+                                                        <span class="customer-city" data-city="{{ $customer->city->id }}">{{ $customer->city->type  . ' ' . $customer->city->name }},</span>
+                                                        <span class="customer-district" data-district="{{ $customer->district->id }}">{{ $customer->district->name }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ml-auto text-right mt-auto">
+                                                <div>
+                                                    <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
+                                                </div>
+                                                @if (!$customer->main)
+                                                <div>
+                                                    <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
+                                                </div>
+                                                @endif
+                                            </div>
                                         </div>
+                                        @empty
+                                        <div>
+                                            <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
+                                            <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                                        </div>
+                                        @endforelse
                                     </div>
-                                    @empty
-                                    <div>
-                                        <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
-                                        <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
-                                    </div>
-                                    @endforelse
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>

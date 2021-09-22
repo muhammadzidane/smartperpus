@@ -331,8 +331,13 @@ class UserController extends Controller
     public function changeEmail(Request $request, User $user)
     {
         $rules = array(
-            'email'    => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'required|password',
+            'email_lama' => array(
+                'required',
+                'email',
+                Rule::exists('users', 'email')->where('email', $user->email)
+            ),
+            'email'     => 'required|email|unique:users,email,' . $user->id,
+            'password'  => 'required|password',
         );
 
         $validator      = Validator::make($request->all(), $rules);

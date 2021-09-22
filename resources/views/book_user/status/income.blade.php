@@ -18,19 +18,17 @@ array(
                             <h5>Hari ini</h5>
                             <a href="{{ route('income.detail.today') }}" class="btn-none tred-bold">Lihat Detail</a>
                         </div>
-                        <div>{{ $now->isoFormat('dddd, D MMMM YYYY') }}</div>
                     </div>
                     <div class="row">
                         <div class="col-4">
                             <div class="text-center">
-                                <div class="income-book-amount">{{ $today['count'] }}</div>
-                                <div class="tbold">Buku Terjual</div>
+                                <h4>{{ $today['count'] }}</h4>
+                                <div class="tbold">Terjual</div>
                             </div>
                         </div>
                         <div class="col-8 m-auto text-center">
                             <h5>Total</h5>
                             <div class="income-money">
-                                <i class="fas fa-money-bill"></i>
                                 <span>{{ rupiah_format($today['total_payments']) }}</span>
                             </div>
                         </div>
@@ -50,14 +48,13 @@ array(
                     <div class="row mt-auto">
                         <div class="col-4">
                             <div class="text-center">
-                                <div class="income-book-amount">{{ $this_month['book_users']->count() }}</div>
-                                <div class="tbold">Buku Terjual</div>
+                                <h4>{{ $this_month['book_users']->count() }}</h4>
+                                <div class="tbold">Terjual</div>
                             </div>
                         </div>
                         <div class="col-8 m-auto text-center">
                             <h5>Total</h5>
                             <div class="income-money">
-                                <i class="fas fa-money-bill"></i>
                                 <span>{{ rupiah_format($this_month['total_payments']) }}</span>
                             </div>
                         </div>
@@ -75,14 +72,13 @@ array(
                     <div class="row mt-auto">
                         <div class="col-4">
                             <div class="text-center">
-                                <div class="income-book-amount">{{ $all['book_users']->count() }}</div>
-                                <div class="tbold">Buku Terjual</div>
+                                <h4>{{ $all['book_users']->count() }}</h4>
+                                <div class="tbold">Terjual</div>
                             </div>
                         </div>
                         <div class="col-8 m-auto text-center">
                             <h5>Total</h5>
                             <div class="income-money">
-                                <i class="fas fa-money-bill"></i>
                                 <span>{{ rupiah_format($all['total_payments']) }}</span>
                             </div>
                         </div>
@@ -91,7 +87,7 @@ array(
             </div>
         </div>
 
-        <div class="d-md-flex mt-4">
+        <div class="d-md-flex mt-3">
             <div class="income-box borbot-gray-bold">
                 <div class="mb-4">
                     <div class="d-flex justify-content-between">
@@ -111,7 +107,7 @@ array(
                     <div class="col-4">
                         <div class="text-center">
                             <div class="income-book-amount">{{ isset($search) ? $search['count'] : '-' }}</div>
-                            <div class="tbold">Buku Terjual</div>
+                            <div class="tbold">Terjual</div>
                         </div>
                     </div>
                     <div class="col-8 m-auto text-center">

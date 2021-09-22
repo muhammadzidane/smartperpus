@@ -1040,7 +1040,7 @@ $(document).ready(function () {
     });
 
     //#region User store
-    formDisableSubmit('#user-store-form', 'input select');
+    formDisableSubmit('#user-store-form', 'input, select');
 
     $('#user-store-form').on('submit', function(event) {
         let validations = $(this).children().find('input, select').toArray();
@@ -1178,7 +1178,7 @@ $(document).ready(function () {
     $('#user-add-photo').on('click', function() {
         let profileImage = $('#user-show-profile').attr('src');
         let dataId       = $(this).data('id');
-        let buttonText   = $(this).text() == 'Edit Foto' ? 'Edit' : 'Tambah';
+        let buttonText   = $(this).text() == 'Edit Foto' ? 'Ubah' : 'Tambah';
         let headerText   = $(this).text() == 'Edit Foto' ? 'Edit Foto' : 'Tambah Foto';
 
         let html         =
@@ -1188,10 +1188,7 @@ $(document).ready(function () {
         <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
             <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
             <div class="text-right mt-4">
-                <button type="button"
-                data-dismiss="modal" aria-label="Close"
-                class="btn-none tred-bold mr-3">Batal</button>
-                <button id="user-add-photo-form" class="btn btn-red">${buttonText}</button>
+                <button id="user-add-photo-form" class="btn btn-outline-danger">${buttonText}</button>
             </div>
             <input type="hidden" name="_method" value="PATCH">
             <input type="hidden" name="_token" value="${csrfToken}">
@@ -1284,9 +1281,7 @@ $(document).ready(function () {
                     <input id="password-baru" name="password_baru" type="password" class="form-control-custom" autocomplete="off">
                 </div>
                 <div class="text-right mt-4">
-                    <button class="btn-none tred-bold mr-3"
-                    data-dismiss="modal" aria-label="Close">Batal</button>
-                    <button class="btn btn-red" type="submit">Ubah</button>
+                    <button class="btn btn-outline-danger" type="submit">Ubah</button>
                 </div>
                 <input type="hidden" name="_method" value="PATCH">
                 <input type="hidden" name="_token" value="${csrfToken}">
@@ -1447,10 +1442,14 @@ $(document).ready(function () {
 
         bootStrapModal('Ubah Email', 'modal-md', () => {
             let html   =
-            `<form id="user-change-email" action="/users/${dataId}/change-email" method="POST">
+            `<form id="user-change-email-form" action="/users/${dataId}/change-email" method="POST">
                 <div class="form-group">
                     <label>Email Lama</label>
                     <input id="user-old-email" type="text" class="form-control-custom disb" value="${oldEmail}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email_lama">Masukan Email Lama</label>
+                    <input id="email_lama" name="email_lama" type="email" class="form-control-custom" autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="email">Email Baru</label>
@@ -1461,9 +1460,7 @@ $(document).ready(function () {
                     <input id="password" name="password" type="password" class="form-control-custom" autocomplete="off">
                 </div>
                 <div class="text-right mt-4">
-                    <button class="btn-none tred-bold mr-3"
-                    data-dismiss="modal" aria-label="Close">Batal</button>
-                    <button class="btn btn-red" type="submit">Ubah</button>
+                    <button class="cursor-disabled btn btn-outline-danger" type="submit" disabled>Ubah</button>
                 </div>
                 <input type="hidden" name="_method" value="PATCH">
                 <input type="hidden" name="_token" value="${csrfToken}">
@@ -1472,7 +1469,9 @@ $(document).ready(function () {
             return html;
         });
 
-        $('#user-change-email').on('submit', function(event) {
+        formDisableSubmit('#user-change-email-form', 'input:not([type=hidden])')
+
+        $('#user-change-email-form').on('submit', function(event) {
             event.preventDefault();
 
             let validations = [
@@ -1713,68 +1712,87 @@ $(document).ready(function () {
         $('#user-city-district-search').on('keyup', function() {
             let value = $(this).val();
 
+            console.log(value);
+
             let data  = {
                 keywords: value,
             };
 
             if (value.length >= 3) {
-                ajaxJson('GET', `/customers/city-or-district`, data, response => {
-                    console.log(response);
-                    $('#user-hidden-address').html('');
-                    $('#user-hidden-address').show();
+                setTimeout(() => {
+                    ajaxJson('GET', `/customers/city-or-district`, data, response => {
+                        console.log(response);
+                        $('#user-hidden-address').html('');
+                        $('#user-hidden-address').show();
 
-                    let html;
-                    let requestAdressLength  = response.request_address.length;
+                        let html;
+                        let requestAdressLength  = response.request_address.length;
 
-                    if (requestAdressLength == 0) {
-                        html = `<div class="px-2"><div>Data tidak valid</div></div>`;
-                    } else {
-                        html = response.request_address;
-                        html = html.map(data => {
-                            let province = data.province_name;
-                            let type     = data.type;
-                            let city     = data.city_name;
-                            let district = data.district_name;
-                            let address  = `${province}, ${type} ${city}, Kec. ${district}`;
+                        if (requestAdressLength == 0) {
+                            html = `<div class="px-2"><div>Data tidak valid</div></div>`;
+                        } else {
+                            html = response.request_address;
+                            html = html.map(data => {
+                                let province = data.province_name;
+                                let type     = data.type;
+                                let city     = data.city_name;
+                                let district = data.district_name;
+                                let address  = `${province}, ${type} ${city}, Kec. ${district}`;
 
-                            let dataProvince   = `data-province="${data.province_id}"`;
-                            let dataCity       = `data-city="${data.city_id}"`;
-                            let dataDistrict   = `data-district="${data.district_id}"`;
-                            let attributesData = [
-                                dataProvince,
-                                dataCity,
-                                dataDistrict,
-                            ];
+                                let dataProvince   = `data-province="${data.province_id}"`;
+                                let dataCity       = `data-city="${data.city_id}"`;
+                                let dataDistrict   = `data-district="${data.district_id}"`;
+                                let attributesData = [
+                                    dataProvince,
+                                    dataCity,
+                                    dataDistrict,
+                                ];
 
-                            attributesData = attributesData.join(' ');
+                                attributesData = attributesData.join(' ');
 
-                            let html = `<div class="user-address-data px-2" ${attributesData}><div>${address}</div></div>`;
+                                let html = `<div class="user-address-data px-2" ${attributesData}><div>${address}</div></div>`;
 
-                            return html;
+                                return html;
+                            });
+                        }
+
+                        $('#user-hidden-address').append(html);
+
+                        $('.user-address-data').on('click', function() {
+                            let province       = $(this).data('province');
+                            let city           = $(this).data('city');
+                            let district       = $(this).data('district');
+                            let addressValues  = `${province}-${city}-${district}`;
+                            let exitButtonHtml =
+                            `<button type="button" class="user-destination-close btn btn-none">
+                                <i class="fa fa-times text-grey"></i>
+                            </button>`;
+
+                            $('#user-city-district-search').addClass('user-destination-input');
+                            $('#user-city-district-search').after(exitButtonHtml);
+                            $('#user-city-district-search').attr('disabled', true);
+
+                            $('.user-address').hide();
+                            $('#user-city-district-search').val($(this).text());
+                            $('#user-city-or-district').attr('value', addressValues);
+
+                            addressValues = $('#user-city-or-district').attr('value');
+                            addressValues = addressValues.split('-');
+                            addressValues = {
+                                province_id: addressValues[0],
+                                city_id    : addressValues[1],
+                                district_id: addressValues[2],
+                            };
+
+                            $('.user-destination-close').on('click', function() {
+                                $(this).remove();
+                                $('#user-city-district-search').val('');
+                                $('#user-city-district-search').removeClass('user-destination-input');
+                                $('#user-city-district-search').attr('disabled', false);
+                            });
                         });
-                    }
-
-                    $('#user-hidden-address').append(html);
-
-                    $('.user-address-data').on('click', function() {
-                        let province      = $(this).data('province');
-                        let city          = $(this).data('city');
-                        let district      = $(this).data('district');
-                        let addressValues = `${province}-${city}-${district}`;
-
-                        $('.user-address').hide();
-                        $('#user-city-district-search').val($(this).text());
-                        $('#user-city-or-district').attr('value', addressValues);
-
-                        addressValues = $('#user-city-or-district').attr('value');
-                        addressValues = addressValues.split('-');
-                        addressValues = {
-                            province_id: addressValues[0],
-                            city_id    : addressValues[1],
-                            district_id: addressValues[2],
-                        };
-                    });
-                })
+                    })
+                }, 200);
             } else if (value.length < 3) {
                 $('#user-hidden-address').hide();
             }

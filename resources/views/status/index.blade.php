@@ -157,7 +157,7 @@
                                     @endif
 
                                     @for ($i = 1; $i <= $book->book_rating; $i++)
-                                        <i class="fas fa-star" aria-hidden="true"></i>
+                                        <i class="fas fa-star star-icon-color"></i>
                                         @endfor
                                 </div>
                                 <div class="col-7 text-grey">

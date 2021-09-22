@@ -286,7 +286,7 @@
         <div class="modal fade" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered p-5" role="document">
                 <div class="modal-content modal-content-login">
-                    <div class="px-3 mb-4 d-flex justify-content-between">
+                    <div id="login-title" class="px-3 mb-4 d-flex justify-content-between">
                         <h5 class="modal-title tred login-header">Login</h5>
                         <button id="login-exit" type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>

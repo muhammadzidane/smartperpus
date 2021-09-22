@@ -233,7 +233,7 @@
         <div class="modal-dialog modal-md modal-dialog-centered">
             <div class="modal-content">
                 <div class="p-3 d-flex justify-content-between">
-                    <h5 class="modal-title tred login-header">Tambah Alamat Utama</h5>
+                    <h5 class="modal-title tred login-header">Tambah Alamat Pengiriman</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
