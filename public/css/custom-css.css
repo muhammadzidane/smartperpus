@@ -550,6 +550,10 @@ footer {
     text-align: center;
 }
 
+.wqdwqwdq {
+    /* position: ; */
+}
+
 .book-deals > div:first-child, .kategori-pilihan > h3 {
     display: flex;
     padding: 5px 10px;
@@ -576,7 +580,7 @@ footer {
 .books {
     padding: 0.75rem 0;
     display: grid;
-    gap: 10px;
+    gap: 12px;
     grid-template-columns: repeat(auto-fit, 165px);
 }
 
@@ -958,7 +962,6 @@ footer {
 .fa-share-alt { color: #e4d3cf; }
 
 .wishlist-search-input {
-    width: 50%;
     height: 34px;
     margin: 2px 0;
     border: 2px solid #E7E7DE;

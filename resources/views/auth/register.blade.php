@@ -70,7 +70,7 @@
                                 <input type="password" name="konfirmasi_password" id="konfirmasi_password" class="form-control-custom register-form" autocomplete="off">
                             </div>
                             <div class="form-group">
-                                <button class="button-submit" type="submit">Daftar</button>
+                                <button class="cursor-disabled btn btn-outline-danger w-100" type="submit" disabled>Daftar</button>
                             </div>
                             <div>
                                 Dengan mendaftarkan akun, anda menyetujui <span class="tred">Syarat & Ketentuan</span> dan
@@ -88,6 +88,7 @@
             </div>
         </div>
     </div>
+
     <script src="{{ asset('js/helper-functions.js') }}"></script>
     <script src="{{ asset('js/register.js') }}"></script>
 </body>

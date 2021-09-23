@@ -582,6 +582,7 @@
 
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
+    @yield('script')
 </body>
 
 </html>

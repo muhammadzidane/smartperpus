@@ -34,3 +34,5 @@ $('#form-register').on('submit', function(event) {
         };
     });
 });
+
+formDisableSubmit('#form-register', 'input:not([type=hidden])');

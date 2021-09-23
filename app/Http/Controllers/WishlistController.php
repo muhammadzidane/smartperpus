@@ -15,10 +15,9 @@ class WishlistController extends Controller
      */
     public function index()
     {
-        $wishlists = Auth::user()->wishlists;
-        $books     = $wishlists->map(function ($wishlist) {
-            return Book::find($wishlist->book_id);
-        });
+        $books = Book::join('wishlists', 'books.id', '=', 'wishlists.book_id')
+            ->where('user_id', auth()->user()->id)
+            ->get('books.*');
 
         return view('book/wishlist', compact('books'));
     }

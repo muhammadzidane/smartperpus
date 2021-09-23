@@ -100,35 +100,34 @@
                                                 <form action="/checkouts/change-main-address" method="POST">
 
                                                     @forelse (auth()->user()->customers()->where('main', false)->get() as $customer)
-                                                    <div class="container">
-                                                        <div class="row mt-4 borbot-gray-0 pb-3">
-                                                            <div class="col-4">
-                                                                <div class="d-flex">
-                                                                    <div class="my-auto mr-3">
-                                                                        <label class="my-auto">
-                                                                            <input form="deleteForm" type="radio" name="customer" value="{{ $customer->id }}">
-                                                                            <span>Pilih</span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <div>
-                                                                        <div class=" tbold">{{ $customer->name }}
+                                                        <label class="d-block m-0 mt-4">
+                                                            <div class="container">
+                                                                <div class="row borbot-gray-0 pb-3">
+                                                                    <div class="col-4">
+                                                                        <div class="d-flex">
+                                                                            <div class="my-auto mr-3">
+                                                                                <input form="deleteForm" type="radio" name="customer" value="{{ $customer->id }}" class="custom-radio">
+                                                                            </div>
+                                                                            <div>
+                                                                                <div class=" tbold">{{ $customer->name }}
+                                                                                </div>
+                                                                                <div class="text-grey">{{ $customer->phone_number }}</div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="text-grey">{{ $customer->phone_number }}</div>
+                                                                    </div>
+                                                                    <div class="col-8 text-grey">
+                                                                        <div>{{ $customer->address }},</div>
+                                                                        <span>{{ $customer->city->type }}</span>
+                                                                        <span>{{ $customer->city->name }},</span>
+                                                                        <span id="checkout-district" data-id="{{ $customer->district->id }}">Kec.{{ $customer->district->name }},</span>
+                                                                        <span>{{ $customer->province->name }},</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-8 text-right text-grey">
-                                                                <div>{{ $customer->address }},</div>
-                                                                <span>{{ $customer->city->type }}</span>
-                                                                <span>{{ $customer->city->name }},</span>
-                                                                <span id="checkout-district" data-id="{{ $customer->district->id }}">Kec.{{ $customer->district->name }},</span>
-                                                                <span>{{ $customer->province->name }},</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                        </label>
 
-                                                    @empty
-                                                    <h3 class="tbold">Belum punya alamat</h3>
+                                                        @empty
+                                                        <h3 class="tbold">Belum punya alamat</h3>
                                                     @endforelse
                                                     <div class="p-3 text-right">
                                                         <button form="deleteForm" type="submit" class="btn btn-outline-danger">Ubah</button>

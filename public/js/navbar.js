@@ -1764,10 +1764,20 @@ $(document).ready(function () {
                             let city           = $(this).data('city');
                             let district       = $(this).data('district');
                             let addressValues  = `${province}-${city}-${district}`;
+                            let parentForm     = $(this).parents('form');
+                            let inputValues    = parentForm.find('input:not([type=hidden])');
+                                inputValues    = inputValues.map((key, input) => input.value).toArray();
                             let exitButtonHtml =
                             `<button type="button" class="user-destination-close btn btn-none">
                                 <i class="fa fa-times text-grey"></i>
                             </button>`;
+
+                            let inputValuesIsNotEmpty = inputValues.every((input) => input != '');
+
+                            if (inputValuesIsNotEmpty) {
+                                parentForm.find('button[type=submit]').removeClass('cursor-disabled');
+                                parentForm.find('button[type=submit]').removeAttr('disabled');
+                            }
 
                             $('#user-city-district-search').addClass('user-destination-input');
                             $('#user-city-district-search').after(exitButtonHtml);
@@ -1776,18 +1786,11 @@ $(document).ready(function () {
                             $('.user-address').hide();
                             $('#user-city-district-search').val($(this).text());
                             $('#user-city-or-district').attr('value', addressValues);
-                            $(this).parents('form').find('button[type=submit]').attr('disabled', true);
-
-                            addressValues = $('#user-city-or-district').attr('value');
-                            addressValues = addressValues.split('-');
-                            addressValues = {
-                                province_id: addressValues[0],
-                                city_id    : addressValues[1],
-                                district_id: addressValues[2],
-                            };
 
                             $('.user-destination-close').on('click', function() {
                                 $(this).remove();
+                                parentForm.find('button[type=submit]').addClass('cursor-disabled');
+                                parentForm.find('button[type=submit]').attr('disabled', true);
                                 $('#user-city-district-search').val('');
                                 $('#user-city-district-search').removeClass('user-destination-input');
                                 $('#user-city-district-search').attr('disabled', false);

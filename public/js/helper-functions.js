@@ -9,6 +9,7 @@ const disableMultipleSubmitForm = (formSelector, buttonSubmitSelector) => {
 // Disable form submit jika input value kosong
 const formDisableSubmit = (formSelector, events) => {
     $(formSelector).on('keyup', function() {
+        console.log(true);
         let notNullValues  = $(this).find(events).toArray().every((input) => input.value != "");
 
         if (notNullValues) {
@@ -579,8 +580,6 @@ const bootStrapModal = (modalHeader, modalSizeClass, callback) => {
 
 // Modal zoom image - Click untuk menampilkan modal gambar yang lebih besar
 $('.zoom-modal-image').on('click', function() {
-    console.log(true);
-
     let html =
     `<div class="modal fade" id="zoom-modal-image" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
