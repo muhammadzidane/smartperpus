@@ -34,11 +34,11 @@ array(
             @forelse ($books as $book)
                 <div class="white-content-0 mt-4">
                     <div class="p-3">
-                        <div class="text-grey d-flex justify-content-between borbot-gray-0 pb-2">
+                        <div class="text-grey d-flex justify-content-between borbot-gray-0 pb-3">
                             <div>No Pesanan: {{ $book->invoice }}</div>
                             <div>
-                                <span class="tred-bold">SELESAI </span>-
-                                <span>{{ $book->completed_date }}</span>
+                                <span class="mr-2">{{ \Carbon\Carbon::make($book->completed_date)->isoFormat('dddd, D MMMM YYYY HH:mm') }}</span>
+                                <span class="current-status">SELESAI</span>
                             </div>
                         </div>
                         <div class="d-flex mt-3">
@@ -56,7 +56,7 @@ array(
                                             <i class="review-star-icon star-icon-color far fa-star mr-1"></i>
                                         @endif
                                     @endfor
-                                    <span class="ml-2">{{ $book->rating_date }}</span>
+                                    <span class="ml-2">{{ \Carbon\Carbon::make($book->rating_date)->isoFormat('dddd, D MMMM YYYY HH:mm') }}</span>
                                 </div>
                                 <div class="mt-1 tred-bold">{{ $rating_text[$book->rating - 1] }}</div>
                                 <div class="mt-1">Ulasan :</div>

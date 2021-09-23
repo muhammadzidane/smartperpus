@@ -28,8 +28,7 @@ class InboxController extends Controller
             array_push($conditions, array('ratings.invoice', 'LIKE', "%$request->review_keywords%", 'OR'));
         }
 
-        $books = DB::table('books')
-            ->join('ratings', 'books.id', 'ratings.book_id')
+        $books = Book::join('ratings', 'books.id', 'ratings.book_id')
             ->join('book_user', 'ratings.invoice', 'book_user.invoice')
             ->select($select_value)
             ->distinct('ratings.id')
@@ -43,7 +42,6 @@ class InboxController extends Controller
             'SANGAT BAIK',
             'SUPER BAIK',
         );
-
 
         $data = compact('books', 'rating_text');
 

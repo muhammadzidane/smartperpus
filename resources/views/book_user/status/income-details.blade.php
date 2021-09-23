@@ -16,8 +16,9 @@ array(
         ))
 
         <div class="mt-4">
-            <div>Memek janda</div>
-            <div>Memek janda</div>
+            <div class="white-content">
+                <div>wew</div>
+            </div>
         </div>
     </div>
 </div>

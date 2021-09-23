@@ -80,7 +80,7 @@
             <div class="borbot-gray-0 pb-3">
                 <div class="d-flex justify-content-between text-grey tbold">
                     <div>
-                        <i class="fas fa-shopping-bag mr-1"></i>
+                        <i class="fas fa-shopping-bag mr-1 text-success"></i>
                         <span>No. Pesanan: {{ $book_user['first']->invoice }}</span>
                         @if (auth()->user()->role != 'guest')
                         <span>/ {{ $book_user['user_fullname'] }}</span>
@@ -88,26 +88,26 @@
                     </div>
                     <div class="text-right">
                         @if (request()->path() == 'status/unpaid')
-                        <span>Bayar sebelum tanggal, {{ $book_user['first']->created_at->isoFormat('dddd, D MMMM Y H:mm:ss') }} WIB -</span>
+                            <span class="mr-2">Bayar Sebelum {{ $book_user['first']->created_at->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
                         @endif
 
                         @if (request()->path() == 'status/failed')
-                        <span>{{ $book_user['first']->failed_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                            <span class="mr-2">{{ $book_user['first']->failed_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
                         @endif
 
                         @if (request()->path() == 'status/on-process')
-                        <span>{{ $book_user['first']->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                            <span class="mr-2">{{ $book_user['first']->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
                         @endif
 
                         @if (request()->path() == 'status/on-delivery')
-                        <span>{{ $book_user['first']->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss') }} -</span>
+                            <span class="mr-2">{{ $book_user['first']->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
                         @endif
 
                         @if ((request()->path() == 'status/completed' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'arrived')
-                        <span>{{ $book_user['first']->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss') }} -</span>
+                            <span class="mr-2">{{ $book_user['first']->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss') }}</span>
                         @endif
 
-                        <span class="tred">{{ $book_user['status'] }}</span>
+                        <span class="current-status">{{ $book_user['status'] }}</span>
                     </div>
                 </div>
             </div>
@@ -242,7 +242,7 @@
 
         @empty
         <div class="mt-4">
-            @include('book_user.status.empty-values', array('text' => 'Belum ada pesanan'))
+            @include('empty-image', array('title' => 'Belum ada pesanan'))
         </div>
         @endforelse
     </div>

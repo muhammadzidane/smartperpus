@@ -76,7 +76,7 @@ class StatusController extends Controller
 
             $uploaded_payment_count = $counts
                 ->where('payment_status', 'waiting_for_confirmation')
-                ->where('upload_payment_image', '!=', null)
+                ->where('upload_payment_image', '!=', '')
                 ->count();
 
             $unpaid_count = $counts

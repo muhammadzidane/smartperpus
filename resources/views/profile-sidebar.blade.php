@@ -26,9 +26,17 @@
                     </div>
 
                     @if (auth()->user()->role != 'guest')
-                    <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.uploaded.payment') }}">Bukti Pembayaran</a>
-                    </div>
+                        <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.uploaded.payment') }}">
+                                <span>Bukti Pembayaran</span>
+
+                                @isset($counts['uploaded_payment'])
+                                    @if ($counts['uploaded_payment'] != 0)
+                                        <span class="tbold">({{ $counts['uploaded_payment'] }})</span>
+                                    @endif
+                                @endisset
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>

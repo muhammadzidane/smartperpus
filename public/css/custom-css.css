@@ -2235,6 +2235,15 @@ footer {
 }
 
 /* Status */
+.current-status {
+    font-weight: 700;
+    padding: 2px 8px;
+    background-color: #e2d5d5;
+    color: #ea5455;
+    border-radius: 4px;
+    box-shadow: 0 0 1px #444444;
+}
+
 .status-rating-icon {
     font-size: 40px;
     cursor: pointer;
