@@ -103,9 +103,9 @@ class BookPurchaseController extends Controller
         $customer               = Customer::find($first_book_user->customer_id);
         $now                    = Carbon::now();
         $deadline               = $first_book_user->payment_deadline;
-        $reached_has_deadline   = $now->greaterThan($deadline);
+        $deadline_has_reached   = $now->greaterThan($deadline);
 
-        if ($reached_has_deadline) {
+        if ($deadline_has_reached) {
             $hours   = '00';
             $minutes = '00';
             $seconds = '00';
@@ -138,6 +138,157 @@ class BookPurchaseController extends Controller
                 break;
         }
 
+        switch ($first_book_user->payment_method) {
+            case 'Transfer Bank BNI':
+                $atm = array(
+                    'lists' => array(
+                        'Pilih “MENU LAIN”',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSAKSI LAINNYA”',
+                        'Pilih ke “REKENING BNI”',
+                        'Masukkan Nomor Account Virtual, lalu tekan “BENAR”',
+                        'Masukkan NOMINAL, lalu tekan “YA”',
+                        'Konfirmasi transaksi selesai, tekan “TIDAK” untuk menyelesaikan transaksi',
+                    ),
+                    'title' => 'BNI - ATM'
+                );
+
+                $internet_banking = array(
+                    'lists' => array(
+                        'Pilih “TRANSAKSI”',
+                        'Pilih “INFO & ADMINISTRASI TRANSFER”',
+                        'Pilih “ATUR REKENING TUJUAN”',
+                        'Tambahkan rekening tujuan Kemudian klik “OK”',
+                        'Isi data rekening dan tekan “LANJUTKAN”',
+                        'Rincian konfirmasi akan muncul, jika benar dan sesuai, ukkan 8-digit angka yang dihasilkan dari APPLI 2 pada token BNI Anda lalu klik “PROSES”',
+                        'Akun tujuan berhasil ditambahkan',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSFER KE REKENING BNI”, lalu lengkapi semua data rekening penerima, lalu klik "LANJUTKAN"',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BNI - Internet Banking'
+                );
+
+                $mobile_banking = array(
+                    'lists' => array(
+                        'Log in BNI Mobile Banking (unduh versi terbaru)',
+                        'Pilih menu “TRANSFER”',
+                        'Pilih “SESAMA BANK BNI”',
+                        'Isi kolom “REKENING DEBET” lalu klik menu “KE REKENING',
+                        'Lengkapi data dengan mengisi, NAMA, NO VIRTUAL ACCOUNT DAN ALAMAT EMAIL BENEFICIARY',
+                        'Konfirmasi akan muncul kemudian klik “LANJUTKAN”',
+                        'Isi semua form yang ada lalu klik “LANJUTKAN”',
+                        'Rincian konfirmasi muncul dengan meminta password transaksi, setelah selesai klik “LANJUTKAN”',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BNI - Mobile Banking'
+
+                );
+
+                $payment_instructions = compact('atm', 'internet_banking', 'mobile_banking');
+                break;
+            case 'Transfer Bank BRI':
+                $atm = array(
+                    'lists' => array(
+                        'Pilih “MENU LAIN”',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSAKSI LAINNYA”',
+                        'Pilih ke “REKENING BRI”',
+                        'Masukkan Nomor Account Virtual, lalu tekan “BENAR”',
+                        'Masukkan NOMINAL, lalu tekan “YA”',
+                        'Konfirmasi transaksi selesai, tekan “TIDAK” untuk menyelesaikan transaksi',
+                    ),
+                    'title' => 'BRI - ATM'
+                );
+
+                $internet_banking = array(
+                    'lists' => array(
+                        'Pilih “TRANSAKSI”',
+                        'Pilih “INFO & ADMINISTRASI TRANSFER”',
+                        'Pilih “ATUR REKENING TUJUAN”',
+                        'Tambahkan rekening tujuan Kemudian klik “OK”',
+                        'Isi data rekening dan tekan “LANJUTKAN”',
+                        'Rincian konfirmasi akan muncul, jika benar dan sesuai, ukkan 8-digit angka yang dihasilkan dari APPLI 2 pada token BRI Anda lalu klik “PROSES”',
+                        'Akun tujuan berhasil ditambahkan',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSFER KE REKENING BRI”, lalu lengkapi semua data rekening penerima, lalu klik "LANJUTKAN"',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BRI - Internet Banking'
+                );
+
+                $mobile_banking = array(
+                    'lists' => array(
+                        'Log in BRI Mobile Banking (unduh versi terbaru)',
+                        'Pilih menu “TRANSFER”',
+                        'Pilih “SESAMA BANK BRI”',
+                        'Isi kolom “REKENING DEBET” lalu klik menu “KE REKENING',
+                        'Lengkapi data dengan mengisi, NAMA, NO VIRTUAL ACCOUNT DAN ALAMAT EMAIL BENEFICIARY',
+                        'Konfirmasi akan muncul kemudian klik “LANJUTKAN”',
+                        'Isi semua form yang ada lalu klik “LANJUTKAN”',
+                        'Rincian konfirmasi muncul dengan meminta password transaksi, setelah selesai klik “LANJUTKAN”',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BRI - Mobile Banking'
+
+                );
+
+                $payment_instructions = compact('atm', 'internet_banking', 'mobile_banking');
+                break;
+            case 'Transfer Bank BCA':
+                $atm = array(
+                    'lists' => array(
+                        'Pilih “MENU LAIN”',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSAKSI LAINNYA”',
+                        'Pilih ke “REKENING BCA”',
+                        'Masukkan Nomor Account Virtual, lalu tekan “BENAR”',
+                        'Masukkan NOMINAL, lalu tekan “YA”',
+                        'Konfirmasi transaksi selesai, tekan “TIDAK” untuk menyelesaikan transaksi',
+                    ),
+                    'title' => 'BCA - ATM'
+                );
+
+                $internet_banking = array(
+                    'lists' => array(
+                        'Pilih “TRANSAKSI”',
+                        'Pilih “INFO & ADMINISTRASI TRANSFER”',
+                        'Pilih “ATUR REKENING TUJUAN”',
+                        'Tambahkan rekening tujuan Kemudian klik “OK”',
+                        'Isi data rekening dan tekan “LANJUTKAN”',
+                        'Rincian konfirmasi akan muncul, jika benar dan sesuai, ukkan 8-digit angka yang dihasilkan dari APPLI 2 pada token BCA Anda lalu klik “PROSES”',
+                        'Akun tujuan berhasil ditambahkan',
+                        'Pilih “TRANSFER”',
+                        'Pilih “TRANSFER KE REKENING BCA”, lalu lengkapi semua data rekening penerima, lalu klik "LANJUTKAN"',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BCA - Internet Banking'
+                );
+
+                $mobile_banking = array(
+                    'lists' => array(
+                        'Log in BCA Mobile Banking (unduh versi terbaru)',
+                        'Pilih menu “TRANSFER”',
+                        'Pilih “SESAMA BANK BCA”',
+                        'Isi kolom “REKENING DEBET” lalu klik menu “KE REKENING',
+                        'Lengkapi data dengan mengisi, NAMA, NO VIRTUAL ACCOUNT DAN ALAMAT EMAIL BENEFICIARY',
+                        'Konfirmasi akan muncul kemudian klik “LANJUTKAN”',
+                        'Isi semua form yang ada lalu klik “LANJUTKAN”',
+                        'Rincian konfirmasi muncul dengan meminta password transaksi, setelah selesai klik “LANJUTKAN”',
+                        'Transaksi Anda telah berhasil',
+                    ),
+                    'title' => 'BCA - Mobile Banking'
+
+                );
+
+                $payment_instructions = compact('atm', 'internet_banking', 'mobile_banking');
+                break;
+
+            default:
+                $payment_instructions = array();
+                break;
+        }
+
         $data = compact(
             'first_book_user',
             'customer',
@@ -145,6 +296,8 @@ class BookPurchaseController extends Controller
             'total_payment_sub_last',
             'courier_name',
             'deadline_time',
+            'deadline_has_reached',
+            'payment_instructions',
         );
 
         return view('book.book-payment', $data);

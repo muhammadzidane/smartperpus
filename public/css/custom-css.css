@@ -1,3 +1,7 @@
+h5 {
+    margin: 0;
+}
+
 h1 {
     font-family: 'Righteous', cursive;
 }
@@ -1030,7 +1034,6 @@ footer {
 
 .borbot-gray {
     border-bottom: 1px solid #e2d5d5;
-    margin-bottom: 40px;
 }
 
 .borbot-gray-0 { border-bottom: 1px solid #e2d5d5; }

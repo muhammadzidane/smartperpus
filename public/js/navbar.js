@@ -313,29 +313,6 @@ $(document).ready(function () {
 
     // ajaxBookPurchaseDeadlineDestroy();
 
-    // Petunjuk Pembayaran
-    $('.payment-instructions > div:last-child').hide();
-    $('.payment-instructions').on('click', function () {
-        let caretRight = $(this).children('div:first-child').children().children();
-
-        briMobileBankingPaymentInstructions += `<div>`;
-        briMobileBankingPaymentInstructions += `<ul class="text-grey">`;
-        briMobileBankingPaymentInstructions += `<li>1. Log in BRI Mobile Banking (unduh versi terbaru)</li>`;
-        briMobileBankingPaymentInstructions += `<li>2. Pilih menu “PEMBAYARAN”</li>`;
-        briMobileBankingPaymentInstructions += `<li>3. Pilih “BRIVA”</li>`;
-        briMobileBankingPaymentInstructions += `<li>4. Masukan nomor BRI Virtual Account Anda dan jumlah pembayaran</li>`;
-        briMobileBankingPaymentInstructions += `<li>5. Masukan Nomor Pin Anda</li>`;
-        briMobileBankingPaymentInstructions += `<li>6. Tekan “OK” untuk melanjutkan transaksi Anda</li>`;
-        briMobileBankingPaymentInstructions += `<li>7. Transaksi berhasil</li>`;
-        briMobileBankingPaymentInstructions += `<li>8. Konfirmasi sms akan masuk ke nomor telepon Anda</li>`;
-        briMobileBankingPaymentInstructions += '</div>';
-        briMobileBankingPaymentInstructions += `</div>`;
-
-        $(this).children().first().toggleClass('bg-grey');
-        $(this).children().last().slideToggle('slow');
-        caretRight.removeClass('fa-caret-right').addClass('fa-caret-down');
-    });
-
     // Buku
     $('.book').on('click', function () {
         window.location.href = $(this).find('.book-show-link').attr('href');

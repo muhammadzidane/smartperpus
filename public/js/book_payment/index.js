@@ -36,3 +36,13 @@ setInterval(() => {
         }
     }
 }, 1000);
+
+$('.payment-intro').on('hide.bs.collapse', function () {
+    $(this).siblings('.collapse-intro').find('i').removeClass('fa-caret-down');
+    $(this).siblings('.collapse-intro').find('i').addClass('fa-caret-right');
+})
+
+$('.payment-intro').on('hide.bs.collapse', function () {
+    $(this).siblings('.collapse-intro').find('i').removeClass('fa-caret-down');
+    $(this).siblings('.collapse-intro').find('i').addClass('fa-caret-right');
+})
