@@ -673,8 +673,9 @@ $(document).ready(function () {
         $('.book-show-click').on('click', function() {
             let clickedSrc =  $(this).find('img').attr('src');
 
-            $(this).siblings('.book-show-image-active').removeClass('book-show-image-active');
+            $('.book-show-image-active').removeClass('book-show-image-active');
             $(this).addClass('book-show-image-active');
+
             $('#primary-book-image').attr('src', clickedSrc);
         });
     }
@@ -696,24 +697,25 @@ $(document).ready(function () {
 
         validator(validation, success => {
             if (success) {
-                ajaxForm('POST', this, `/books/add-book-images/${$('#book-show').data('id')}`, response => {
+                ajaxForm('POST', this, `/book_images/${$('#book-show').data('id')}`, response => {
                     if (!response.errors) {
                         $(this).trigger('reset');
 
                         let messageText         = 'Berhasil menambah gambar buku';
                         let src                 = `${window.location.origin}/storage/books/book_images/${response.image}`;
                         let html                =
-                        `<div class="book-show-click" data-id="${response.book_image.id}">
-                            <img src="${src}" class="book-show-image">
-                            <button class="book-image-delete btn-none"><i class="fa fa-times" aria-hidden="true"></i></button>
+                        `<div class="col-3">
+                            <div class="book-show-click" data-id="${response.book_image.id}">
+                                <img class="book-show-image-click" src="${src}">
+                                <button class="book-image-delete btn-none"><i class="fa fa-times"></i></button>
+                            </div>
                         </div>`;
+
                         let bookShowImageLength = $('.book-show-click').length + 1;
 
                         $('#custom-modal').modal('hide');
                         alertMessage(messageText);
                         $('.book-show-images').append(html);
-
-                        console.log(bookShowImageLength);
 
                         if (bookShowImageLength > 3) {
                             $('#add-book-image-form').parent().remove();
@@ -755,6 +757,7 @@ $(document).ready(function () {
                             alertMessage(message);
                             $(this).trigger('reset');
                             $('.book-show-image-active').find('img').attr('src', src);
+                            $('#primary-book-image').attr('src', src);
                         } else {
                             let afterMessage = $('.book-show-images');
 
@@ -773,18 +776,20 @@ $(document).ready(function () {
     const bookImageDelete = () => {
         $('.book-image-delete').on('click', function() {
             let dataId  = $(this).parent().data('id');
-            let message = 'Apakah anda yakin ingin menghapus gambar buku?';
+            let message = 'Apakah anda yakin ingin menghapus gambar buku tersebut ?';
 
             modalConfirm(message, accepted => {
                 if (accepted) {
-                    ajaxJson('POST', `/book_images/${dataId}/delete`, requestMethodName('DELETE')[0], response => {
+                    $.post(`/book_images/${dataId}/delete`, requestMethodName('DELETE')[0], response => {
                         if (response.delete) {
-                            let message = 'Berhasil menghapus gambar buku';
+                            let prevParentImage = $(this).parents('.book-show-click').parent().prev();
+                            let prevImageSrc    = prevParentImage.find('img').attr('src');
+                            let message         = 'Berhasil menghapus gambar buku';
 
                             alertMessage(message);
-                            $(this).parent().siblings().removeClass('book-show-image-active');
-                            $(this).parent().prev().addClass('book-show-image-active');
-                            $(this).parent().remove();
+                            $('#primary-book-image').attr('src', prevImageSrc);
+                            prevParentImage.find('.book-show-click').addClass('book-show-image-active');
+                            $(this).parents('.book-show-click').parent().remove();
                         }
                     });
                 }

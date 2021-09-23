@@ -9,22 +9,24 @@
 </div>
 
 <div class="row mt-4">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div>
-            <div class="primary-book">
+            <div class="text-center mb-5">
                 <img id="primary-book-image" class="zoom-modal-image" src="{{ asset('storage/books/' . $book->image) }}">
             </div>
-            <div class="book-show-images">
-                <div class="book-show-click book-show-image-active" data-id="{{ $book->id }}">
-                    <img src="{{ asset('storage/books/' . $book->image) }}" class="book-show-image">
+            <div class="row book-show-images">
+                <div class="col-3">
+                    <div class="book-show-click book-show-image-active" data-id="{{ $book->id }}">
+                        <img class="book-show-image-click" src="{{ asset('storage/books/' . $book->image) }}">
+                    </div>
                 </div>
 
                 @foreach ($book->book_images as $image)
-                    <div class="book-show-click" data-id="{{ $image->id }}">
-                        <img src="{{ asset('storage/books/book_images/' . $image->image) }}" class="book-show-image">
-                        @can('viewAny', 'App\\Models\User')
-                        <button class="book-image-delete btn-none"><i class="fa fa-times"></i></button>
-                        @endcan
+                    <div class="col-3">
+                        <div class="book-show-click" data-id="{{ $image->id }}">
+                            <img class="book-show-image-click" src="{{ asset('storage/books/book_images/' . $image->image) }}">
+                            <button class="book-image-delete btn-none"><i class="fa fa-times"></i></button>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -42,7 +44,7 @@
                     </div>
                     @if ($book->book_images->count() < 3)
                         <div class="mt-3">
-                            <form id="add-book-image-form" action="{{ route('add.book.images', array('book' => $book->id)) }}" enctype="multipart/form-data" method="POST">
+                            <form id="add-book-image-form" action="/book_images/{{ $book->id }}" enctype="multipart/form-data" method="POST">
                                 <div class="form-group">
                                     <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
                                 </div>
@@ -55,17 +57,19 @@
             @endcan
         </div>
     </div>
-    <div id="book-show" data-id="{{ $book->id }}" class="col-md-9">
-        <div class="white-content mt-5 mt-md-0">
+    <div id="book-show" data-id="{{ $book->id }}" class="col-md-8">
+        <div class="white-content mt-5 mt-md-0 px-4">
             @can('view', $book)
             <div class="d-flex justify-content-end">
-                <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn-none tred-bold">Tambah Stok</button>
+                <div>
+                    <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn btn-outline-danger">Tambah Stok</button>
+                </div>
                 <div class="mr-2">
-                    <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-success">Edit</a>
+                    <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-outline-success">Edit</a>
                 </div>
                 <div>
                     <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
-                        <button id="book-delete-modal" type="submit" class="btn btn-danger">Hapus</button>
+                        <button id="book-delete-modal" type="submit" class="btn btn-outline-danger">Hapus</button>
                         @method('DELETE')
                         @csrf
                     </form>
@@ -129,7 +133,7 @@
         <div class="row mt-4">
             <div class="col-md-6">
                 <h5 class="title-border-red">Detail</h5>
-                <div>
+                <div class="mt-3">
                     <div class="d-flex justify-content-between">
                         <div>ISBN</div>
                         <div class="text-right">{{ $book->isbn }}</div>

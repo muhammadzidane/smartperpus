@@ -3,18 +3,13 @@
 
 @include('content-header',
 array(
-'title' => isset($book) ? 'Edit Buku' : 'Tambah Buku',
-'icon_html' => '<i class="user-icon fas fa-book text-green mr-2"></i></i>'
+    'title' => isset($book) ? 'Edit Buku' : 'Tambah Buku',
+    'icon_html' => '<i class="user-icon fas fa-book text-green mr-2"></i></i>'
 ))
-
-@if (session('pesan'))
-<div class="alert alert-primary" role="alert">
-    <strong>{{ session('pesan') }}</strong>
-</div>
-@endif
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
     @include('profile-sidebar')
+
     <div class="col-md-9">
         <div class="register-user">
             <div id="book-create" class="form-register">
@@ -48,10 +43,6 @@ array(
                         <div class="form-group w-50">
                             <label for="price">Harga <small>( tanpa diskon )</small></label>
                             <input type="number" name="price" id="price" class="form-control-custom w-90 book-edit-inp" value="{{ old('price') ?? (isset($book) ? $book->price : '') ?? '' }}">
-                        </div>
-                        <div class="form-group w-50">
-                            <label for="diskon">Diskon</label>
-                            <input type="number" name="diskon" id="diskon" class="form-control-custom w-90 book-edit-inp" value="{{ isset($book) ? $book->discount : ''}}">
                         </div>
                         <div class="form-group w-50">
                             <label for="kategori">Kategori</label>

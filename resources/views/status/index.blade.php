@@ -2,9 +2,9 @@
 @section('content')
 
 @include('content-header', array(
-'title' => 'Pembelian',
-'icon_html' => '<i class="fas fa-shopping-bag user-icon mr-2 text-green f-20"></i>',
-)
+    'title' => 'Pembelian',
+    'icon_html' => '<i class="fas fa-shopping-bag user-icon mr-2 text-green f-20"></i>',
+    )
 )
 
 <div class="row flex-row-reverse mt-4">

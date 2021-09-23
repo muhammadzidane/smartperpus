@@ -70,7 +70,6 @@ Route::prefix('books')->group(function () {
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
     Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
     Route::get('search', array(BookController::class, 'search'));
-    Route::post('add-book-images/{book}', array(BookController::class, 'addBookImages'))->name('add.book.images');
 });
 
 // Cart
@@ -79,6 +78,7 @@ Route::post('carts/{book}/bought-directly', array(CartController::class, 'bought
 
 Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
 Route::delete('book_images/{book_image}/delete', array(BookImageController::class, 'destroy'))->name('book.images.destroy');
+Route::post('book_images/{book}', array(BookImageController::class, 'store'));
 
 // Ajax search Filter
 Route::prefix('search')->group(function () {

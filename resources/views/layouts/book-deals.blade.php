@@ -1,7 +1,10 @@
-<div class="book-deals white-content-0 mt-5">
-    <div class="position-relative">
-        <h3 class="book-deals-title mr-3">{{ $title }}</h3>
-        <a class="show-all" href="{{ isset($search_url) ? $search_url : '#' }}">Lihat Semua</a>
+<div class="white-content mt-5">
+    <div class="d-flex justify-content-between position-relative borbot-gray p-2">
+        <h4 class="mr-3">{{ $title }}</h4>
+        <div class="tbold">
+            <a href="{{ isset($search_url) ? $search_url : '#' }}">Lihat Semua</a>
+            <i class="ml-1 fa fa-caret-right"></i>
+        </div>
     </div>
 
     <div class="mt-4">
