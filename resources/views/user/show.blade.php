@@ -9,6 +9,7 @@ array(
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
     @include('profile-sidebar')
+
     <div class="col-md-9">
         <div class="white-content-0 borbot-gray-bold">
             <div class="container">
@@ -16,14 +17,14 @@ array(
                     <div class="d-md-flex py-4">
                         <div class="col-md-4 text-center mb-5">
                             @if ($user->profile_image)
-                            <div class="user-profile-image">
-                                <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}">
-                            </div>
+                                <div class="user-profile-image">
+                                    <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('storage/users/profiles/' . $user->profile_image) }}">
+                                </div>
 
-                            @else
-                            <div class="user-profile-image">
-                                <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('img/avatar-icon.png') }}">
-                            </div>
+                                @else
+                                <div class="user-profile-image">
+                                    <img id="user-show-profile" class="profile-img zoom-modal-image w-100" src="{{ asset('img/avatar-icon.png') }}">
+                                </div>
                             @endif
 
                             <div class="mt-5 text-grey">
@@ -40,14 +41,15 @@ array(
                             <div class="mt-3">
                                 <button id="user-change-password" type="button" class="btn btn-outline-yellow w-100" data-id="{{ $user->id }}">Ubah Password</button>
                             </div>
+
                             @isset ($user->profile_image)
-                            <div class="mt-2">
-                                <form id="user-delete-photo-form" action="/users/{{ $user->id }}/destroy-photo" method="post">
-                                    <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
-                                    @method('PATCH')
-                                    @csrf
-                                </form>
-                            </div>
+                                <div class="mt-2">
+                                    <form id="user-delete-photo-form" action="/users/{{ $user->id }}/destroy-photo" method="post">
+                                        <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
+                                        @method('PATCH')
+                                        @csrf
+                                    </form>
+                                </div>
                             @endisset
                         </div>
                         <div class="col-md-8 mt-3">
@@ -67,7 +69,7 @@ array(
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>Tanggal Lahir</div>
-                                    <div id="user-date-of-birth" data-date="{{$user->date_of_birth->format('Y-m-d')}}" class="text-right">{{ $user->date_of_birth->isoFormat('D MMMM YYYY') }}</div>
+                                    <div id="user-date-of-birth" data-date="{{ isset($user->date_of_birth) ? $user->date_of_birth->format('Y-m-d') : '-' }}" class="text-right">{{ isset($user->date_of_birth) ? $user->date_of_birth->isoFormat('D MMMM YYYY') : '-' }}</div>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <div>Jenis Kelamin</div>
@@ -86,6 +88,7 @@ array(
                                     <div id="user-phone-number" class="text-right">{{ $user->phone_number ?? '-' }}</div>
                                 </div>
                             </div>
+
                             @if (Auth::user()->role == 'guest')
                                 <div id="user-customers" class="mt-4">
                                     <div class="d-flex justify-content-between">
@@ -99,11 +102,12 @@ array(
                                             <div class="d-flex">
                                                 <div>
                                                     @if ($customer->main)
-                                                    <div class="user-customer-main">Utama</div>
+                                                        <div class="user-customer-main">Utama</div>
 
-                                                    @else
-                                                    <div class="user-customer-select-main c-p">Simpan sebagai utama</div>
+                                                        @else
+                                                        <div class="user-customer-select-main c-p">Simpan sebagai utama</div>
                                                     @endif
+
                                                     <div>
                                                         <span class="customer-name">{{ $customer->name }}</span> -
                                                         <span class="customer-phone-number">{{ $customer->phone_number }}</span>
@@ -120,6 +124,7 @@ array(
                                                 <div>
                                                     <button class="user-customer-update btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Ubah</button>
                                                 </div>
+
                                                 @if (!$customer->main)
                                                 <div>
                                                     <button class="user-customer-delete btn-none tred-bold" type="button" data-id="{{ $customer->id }}">Hapus</butt>
@@ -127,11 +132,12 @@ array(
                                                 @endif
                                             </div>
                                         </div>
+
                                         @empty
-                                        <div>
-                                            <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
-                                            <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
-                                        </div>
+                                            <div>
+                                                <span id="user-customer-message">Anda belum memiliki alamat pengiriman.</span>
+                                                <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                                            </div>
                                         @endforelse
                                     </div>
                                 </div>
@@ -142,7 +148,5 @@ array(
             </div>
         </div>
     </div>
-</div>
-</div>
 </div>
 @endsection

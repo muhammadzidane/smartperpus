@@ -87,10 +87,10 @@ class BookPurchaseController extends Controller
     public function show($invoice, Request $request)
     {
         $user       = User::find(auth()->user()->id);
-        $conditions = [
-            ['user_id', $user->id],
-            ['invoice', $invoice],
-        ];
+        $conditions = array(
+            array('user_id', $user->id),
+            array('invoice', $invoice),
+        );
 
         $book_users             = BookUser::where($conditions)->get();
         $total_payment          = $book_users->sum('total_payment');
@@ -101,7 +101,24 @@ class BookPurchaseController extends Controller
         $first_book_user        = $book_users->first();
         $courier_name           = $book_users->first()->courier_name;
         $customer               = Customer::find($first_book_user->customer_id);
+        $now                    = Carbon::now();
+        $deadline               = $first_book_user->payment_deadline;
+        $reached_has_deadline   = $now->greaterThan($deadline);
 
+        if ($reached_has_deadline) {
+            $hours   = '00';
+            $minutes = '00';
+            $seconds = '00';
+        } else {
+            $diff_deadline = $now->diffAsCarbonInterval($deadline);
+            $hours         = strlen($diff_deadline->h) > 1 ? $diff_deadline->h : str_pad($diff_deadline->h, 2, '0', STR_PAD_LEFT);
+            $minutes       = strlen($diff_deadline->i) > 1 ? $diff_deadline->i : str_pad($diff_deadline->i, 2, '0', STR_PAD_LEFT);
+            $seconds       = strlen($diff_deadline->s) > 1 ? $diff_deadline->s : str_pad($diff_deadline->s, 2, '0', STR_PAD_LEFT);
+        }
+
+        $deadline_time = compact('hours', 'minutes', 'seconds');
+
+        // redirect -> '/status/unpaid' . Jika bukti pembayaran sudah di proses
         if ($first_book_user->upload_payment_image != null) {
             return redirect('/status/unpaid#' . $first_book_user->invoice);
         }
@@ -121,7 +138,14 @@ class BookPurchaseController extends Controller
                 break;
         }
 
-        $data = compact('first_book_user', 'customer', 'total_payment', 'total_payment_sub_last', 'courier_name');
+        $data = compact(
+            'first_book_user',
+            'customer',
+            'total_payment',
+            'total_payment_sub_last',
+            'courier_name',
+            'deadline_time',
+        );
 
         return view('book.book-payment', $data);
     }
@@ -167,44 +191,6 @@ class BookPurchaseController extends Controller
         $url    = route('home');
 
         return response()->json(compact('delete', 'url'));
-    }
-
-    public function cartStore(Request $request)
-    {
-        $carts = $request->all()['carts'];
-        $datas = collect($carts)->map(function ($cart) {
-            $isbn    = '978' . substr(time(), 0, 10);
-            $cart    = explode('-', $cart);
-            $book    = Book::find($cart[1]);
-            $results = array(
-                'invoice' => $isbn,
-                'amount'  => $cart[2],
-                'note'    => $cart[3] ?? null,
-
-                // 'invoice'          => $faker->unique()->numerify('##########'),
-                // 'book_version'     => $request->book_version,
-                // 'amount'           => $request->amount,
-                // 'courier_name'     => $request->courier_name,
-                // 'courier_service'  => $request->pilihan_kurir,
-                // 'shipping_cost'    => $request->shipping_cost,
-                // 'note'             => $request->note,
-                // 'insurance'        => $request->insurance,
-                // 'unique_code'      => $request->unique_code,
-                // 'total_payment'    => $request->total_pembayaran + $request->unique_code,
-                // 'payment_method'   => $request->metode_pembayaran,
-                // 'payment_deadline' => Date::now()->addDays(1)->format('Y-m-d H:i:s'),
-                // 'payment_status'   => 'waiting_for_confirmation',
-            );
-
-            return $results;
-        });
-
-        foreach ($datas as $data) {
-            dump($data);
-        }
-
-        // $user          = User::find(Auth::id());
-        // $book_user     = $book->users()->attach($user, $data);
     }
 
     public function uploadPayment(Request $request, $invoice)

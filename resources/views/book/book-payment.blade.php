@@ -3,7 +3,11 @@
 
 <div class="text-center">
     <h4>Lakukan pembayaran dalam</h4>
-    <h1 id="payment-limit-time" class="text-righteous my-4"></h1>
+    <h1 id="payment-limit-time" class="text-righteous my-4">
+        <span id="deadline-hours">{{ $deadline_time['hours'] }}</span> :
+        <span id="deadline-minutes">{{ $deadline_time['minutes'] }}</span> :
+        <span id="deadline-seconds">{{ $deadline_time['seconds'] }}</span>
+    </h1>
     <div>Batas waktu pembayaran : <span id="payment-limit-date" data-id="{{ $first_book_user->id }}" class="tbold"></span></div>
 </div>
 
@@ -376,4 +380,9 @@
         @endswitch
     </div>
 </div>
+
+@section('script')
+    <script src="{{ asset('js/book_payment/index.js') }}"></script>
+@endsection
+
 @endsection
