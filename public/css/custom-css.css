@@ -80,7 +80,6 @@ label { cursor: pointer; }
 .d-grid { display: grid; }
 .z-0 { z-index: 0 !important; }
 .c-p { cursor: pointer; }
-.mt-c, .kategori-pilihan { margin-top: 40px !important; }
 .tred, .tred-bold { color: #ee6f57; }
 .tred-bold { font-weight: 900; }
 .tbold { font-weight: 900; }
@@ -501,8 +500,11 @@ body {
 }
 
 /* Caraousel IMG */
-.carousel-item img {
-    height: 360px;
+.carousel-image img {
+    display: block;
+    width: 100%;
+    height: 390px;
+    object-fit: contain;
 }
 
 /* Footer */
@@ -768,7 +770,7 @@ footer {
 
 .book-show-image-click {
     width: 100%;
-    /* height: 90px; */
+    height: 90px;
     object-fit: contain;
 }
 
@@ -1119,14 +1121,6 @@ footer {
     border-bottom: 3px solid #ea5455;
     box-shadow: 0 0 1.2px gray;
     border-radius: 7px;
-}
-
-.kategori-pilihan > div {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 27px 0;
-    flex-direction: row;
 }
 
 .kp-2, .kp-1 {
@@ -2006,20 +2000,6 @@ footer {
 /* Media Large */
 @media screen and (max-width: 992px) {
     /* Halaman Home */
-    .carousel-item img {
-        height: 280px;
-    }
-
-    .kategori-pilihan > div {
-        margin: 20px 0;
-    }
-
-    /* Navbar */
-    /* .navbar-grip-line { display: block !important; } */
-    .cus-navbar {
-        padding: 10px 20px;
-    }
-
     .responsive-navbar {
         background-color: #f6f6f6;
         padding: 0 10px;
@@ -2536,10 +2516,6 @@ footer {
     h4, .hd-18 { font-size: 14px !important; }
 
     .hd-14 { font-size: 12.50px !important; }
-
-    .carousel-item img {
-        height: 100px;
-    }
 
     .ul-nav li:not(.ul-nav li:last-child) {
         margin-right: 12px;

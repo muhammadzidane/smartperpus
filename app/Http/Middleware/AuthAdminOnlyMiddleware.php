@@ -22,7 +22,6 @@ class AuthAdminOnlyMiddleware
         if ($authrole == 'guest' || $authrole == null) {
 
             return abort(404);
-            dump(true);
         } else {
             return $next($request);
         }

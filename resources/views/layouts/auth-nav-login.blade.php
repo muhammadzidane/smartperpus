@@ -23,36 +23,39 @@
         </div>
 
         @cannot('viewAny', App\Models\User::class)
-        <div>
-            <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
-        </div>
+            <div>
+                <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
+            </div>
         @endcannot
 
         @cannot('viewAny', App\Models\User::class)
-        <div>
-            <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
-        </div>
-        <div>
-            <a class=" dropdown-item" href="{{ route('carts.index') }}">Keranjang Saya</a>
-        </div>
+            <div>
+                <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
+            </div>
+            <div>
+                <a class=" dropdown-item" href="{{ route('carts.index') }}">Keranjang Saya</a>
+            </div>
         @endcannot
 
         @can('viewAny', App\Models\User::class)
-        <div>
-            <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
-        </div>
-        <div>
-            <a class="dropdown-item" href="{{ route('income') }}">Penghasilan</a>
-        </div>
-        <div>
-            <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
-        </div>
-        <div>
-            <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Karyawan</a>
-        </div>
-        <div>
-            <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>
-        </div>
+            <div>
+                <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
+            </div>
+            <div>
+                <a class="dropdown-item" href="{{ route('income') }}">Penghasilan</a>
+            </div>
+            <div>
+                <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
+            </div>
+
+            @can ('isAllAdmin')
+                <div>
+                    <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Karyawan</a>
+                </div>
+                <div>
+                    <a class="dropdown-item" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                </div>
+            @endif
         @endcan
 
         <div>

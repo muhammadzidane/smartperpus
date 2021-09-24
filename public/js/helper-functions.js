@@ -7,9 +7,9 @@ const disableMultipleSubmitForm = (formSelector, buttonSubmitSelector) => {
 }
 
 // Disable form submit jika input value kosong
-const formDisableSubmit = (formSelector, events) => {
+const formDisableSubmit = (formSelector, formFinds) => {
     $(formSelector).on('keyup change', function() {
-        let notNullValues  = $(this).find(events).toArray().every((input) => input.value != "");
+        let notNullValues  = $(this).find(formFinds).toArray().every((input) => input.value != "");
 
         if (notNullValues) {
             $(this).find('button[type=submit]').removeClass('cursor-disabled');

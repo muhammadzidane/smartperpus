@@ -16,44 +16,50 @@ array(
                     <th>Nama Lengkap</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Blokir</th>
-                    <th>Hapus</th>
+
+                    @can('isSuperAdmin')
+                        <th>Blokir</th>
+                        <th>Hapus</th>
+                    @endcan
                 </tr>
             </thead>
             <tbody>
                 @foreach ($users as $user)
-                <tr>
-                    <td>
-                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">
-                            {{ $user->first_name . ' ' . $user->last_name  }}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ $user->email }}</span>
-                    </td>
-                    <td>
-                        <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
-                    </td>
-                    <td>
-                        <form data-id="{{ $user->id }}" action="{{ route('users.block', array('user' => $user->id)) }}" method="post">
-                            @if ($user->deleted_at == null)
-                            <button type="button" class="user-block btn btn-warning">Blokir</button>
+                    <tr>
+                        <td>
+                            <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">
+                                {{ $user->first_name . ' ' . $user->last_name  }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ $user->email }}</span>
+                        </td>
+                        <td>
+                            <span class="{{ $user->deleted_at !== null ? 'text-grey tbold' : '' }}">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
+                        </td>
 
-                            @else
-                            <button type="button" class="user-block btn btn-warning">Lepas Blokir</button>
-                            @method('DELETE')
-                            @endif
-                            @csrf
-                        </form>
-                    </td>
-                    <td>
-                        <form data-id="{{ $user->id }}" action="{{ route('users.destroy', array('user' => $user->id)) }}" method="post">
-                            <button type="submit" class="user-delete btn btn-danger">Hapus</button>
-                            @method('DELETE')
-                            @csrf
-                        </form>
-                    </td>
-                </tr>
+                        @can('isSuperAdmin')
+                            <td>
+                                <form data-id="{{ $user->id }}" action="{{ route('users.block', array('user' => $user->id)) }}" method="post">
+                                    @if ($user->deleted_at == null)
+                                    <button type="button" class="user-block btn btn-warning">Blokir</button>
+
+                                    @else
+                                    <button type="button" class="user-block btn btn-warning">Lepas Blokir</button>
+                                    @method('DELETE')
+                                    @endif
+                                    @csrf
+                                </form>
+                            </td>
+                            <td>
+                                <form data-id="{{ $user->id }}" action="{{ route('users.destroy', array('user' => $user->id)) }}" method="post">
+                                    <button type="submit" class="user-delete btn btn-danger">Hapus</button>
+                                    @method('DELETE')
+                                    @csrf
+                                </form>
+                            </td>
+                        @endcan
+                    </tr>
                 @endforeach
             </tbody>
         </table>

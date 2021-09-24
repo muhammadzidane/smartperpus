@@ -878,86 +878,8 @@ $(document).ready(function () {
 
     cartStore();
     //#endregion Cart Store
-    //#endregion Cart
-    //#endregion Book Show
 
-    //#region Book add stock - Tambah stok buku
-    $('#book-add-stock').on('click', function() {
-        let html =
-        `<div class="modal fade" id="book-add-stock-modal" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered p-5" role="document">
-                <div class="modal-content modal-content-login">
-                    <div class="px-3 mb-4 d-flex justify-content-between">
-                        <h5 class="modal-title tred login-header">Tambah Stok</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body pb-0">
-                        <form id="book-add-stock-form" method="post">
-                            <input id="book-add-stock-input" class="form-control-custom"
-                            type="number" name="stock" min="1" placeholder="Jumlah" autocomplete="off">
-                            <div class="text-right mt-4">
-                                <button class="btn-none tred-bold" data-dismiss="modal" aria-label="Close">Batal</button>
-                                <button class="btn btn-red">Tambah</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-
-        let modalLength = $('#book-add-stock-modal').length;
-
-        if (modalLength == 0) {
-            $(this).after(html);
-        }
-
-        let validations = [
-            {
-                input: '#book-add-stock-input',
-                inputName: 'Jumlah',
-                rules: 'required,numeric',
-            },
-        ];
-
-        $('#book-add-stock-input').on('keyup', () => validator(validations));
-        $('#book-add-stock-form').on('submit', function(event) {
-            event.stopImmediatePropagation();
-            event.preventDefault();
-
-            validator(validations, success => {
-                if (success) {
-                    let datas = [{
-                        _token: csrfToken,
-                        _method: 'PATCH',
-                    }];
-                    let dataId = $('#book-show').data('id');
-
-                    ajaxForm('POST', '#book-add-stock-form', `/books/${dataId}/add-stock`, response => {
-                        if (response.errors) {
-                            let errors = response.errors.stock;
-
-                            alert(errors);
-                        } else {
-                            $('.close').trigger('click');
-                            $("#book-add-stock-form")[0].reset();
-
-                            let messageText     = `Berhasil menambah ${response.stock} stock buku`;
-                            let stockBookText   = $('#book-stock').text();
-                            stockBookText       = parseInt(stockBookText) + parseInt(response.stock);
-
-                            alertMessage(messageText);
-                            $('#book-stock').text(stockBookText);
-                        }
-                    }, datas);
-                };
-            });
-        });
-    });
-    //#endregion Book add stock - Tambah stok buku
-    //#endregion Cart - in Book Show
-
+    formDisableSubmit('#book-add-discount-modal-form, #book-add-stock-modal-form', 'input');
 
     //#endregion Book Show
 
@@ -1027,8 +949,11 @@ $(document).ready(function () {
     formDisableSubmit('#user-store-form', 'input, select');
 
     $('#user-store-form').on('submit', function(event) {
+        event.preventDefault();
+
         let validations = $(this).children().find('input, select').toArray();
-        validations     = validations.map(input => {
+
+        validations  = validations.map(input => {
             let validations  = {
                 input    : '#' + input.id,
                 inputName: capitalizeFirstLetter(input.id.replace(/_|-/, ' ')),
@@ -1047,7 +972,7 @@ $(document).ready(function () {
         });
 
         validator(validations, success => {
-            if (!success) event.preventDefault();
+            if (success) this.submit();
         });
     });
     //#endregion User store

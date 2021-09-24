@@ -58,9 +58,6 @@ Route::post('customers/{customer}/ajax/request/edit-submit-get-data', array(Cust
 Route::get('customers/city-or-district', array(CustomerController::class, 'ajaxCityOrDistrict'));
 Route::resource('/customers', CustomerController::class);
 
-// Search
-Route::get('/search/books', array(BookController::class, 'searchBooks'))->name('search.books');
-
 Route::resource('authors', AuthorController::class)->except('index', 'edit');
 Route::get('authors', array(AuthorController::class, 'index'))->name('authors.index');
 
@@ -68,9 +65,13 @@ Route::get('authors', array(AuthorController::class, 'index'))->name('authors.in
 Route::prefix('books')->group(function () {
     Route::get('buy/{book}', array(BookController::class, 'booksBuy'))->name('books.buy');
     Route::post('add-discount/{book}', array(BookController::class, 'addDiscount'))->name('book.add.discount');
-    Route::patch('{book}/add-stock', array(BookController::class, 'addStock'))->middleware('auth.admin.only');
+    Route::patch('{book}/add-stock', array(BookController::class, 'addStock'));
+    Route::patch('{book}/add-discount', array(BookController::class, 'addDiscount'));
     Route::get('search', array(BookController::class, 'search'));
 });
+
+Route::get('search/books', array(BookController::class, 'searchBooks'))->name('search.books');
+Route::resource('books', BookController::class);
 
 // Cart
 Route::resource('carts', CartController::class);
@@ -85,8 +86,6 @@ Route::patch('book_images/{book}/update-main', array(BookImageController::class,
 Route::prefix('search')->group(function () {
     Route::get('book-filter', array(ContentSearchFilterController::class, 'bookFilter'));
 });
-
-Route::resource('books', BookController::class);
 
 // Wishlist
 Route::prefix('wishlists')->middleware('auth')->group(function () {

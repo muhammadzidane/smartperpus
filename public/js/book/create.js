@@ -49,19 +49,25 @@ $('#nama_penulis').on('keyup', function() {
         author_name: $(this).val(),
     };
 
-    $.get(`/api/books/get-authors`, data, response => {
-        if (response.status == 'success') {
-            let html = response.data.authors.map((author) => `<div class="p-2">${author.name}</div>`);
-                html = `<div class="form-search-content">${html}</div>`;
+    setTimeout(() => {
+        $.get(`/api/books/get-authors`, data, response => {
+            if (response.status == 'success') {
+                let html = response.data.authors.map((author) => `<div class="p-2">${author.name}</div>`);
+                    html = `<div class="form-search-content">${html}</div>`;
 
-            $('.form-search-content').remove();
-            $(this).after(html);
-
-            $('.form-search-content').on('click', event => {
-                $(this).val($(event.target).text());
-                $(this).attr('value', $(event.target).text());
                 $('.form-search-content').remove();
-            });
-        }
-    });
+                $(this).after(html);
+
+                $('.form-search-content div').on('click', event => {
+                    $(this).val($(event.target).text());
+                    $(this).attr('value', $(event.target).text());
+                    $('.form-search-content').remove();
+                });
+            }
+        });
+    }, 200);
+
+    if ($(this).val().length == 0) {
+        $('.form-search-content').remove();
+    }
 });

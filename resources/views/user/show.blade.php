@@ -89,11 +89,11 @@ array(
                                 </div>
                             </div>
 
-                            @if (Auth::user()->role == 'guest')
+                            @can ('isGuest')
                                 <div id="user-customers" class="mt-4">
                                     <div class="d-flex justify-content-between">
                                         <h5 id="user-customer-title">Daftar Alamat Pengiriman</h5>
-                                        @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn-none tred-bold">Tambah</button>
+                                        @if (auth()->user()->customers->count() != 0 && auth()->user()->customers->count() < 5) <button id="user-create-customer" class="btn btn-outline-danger">Tambah</button>
                                             @endif
                                     </div>
                                     <div id="user-customer-lists">
@@ -141,7 +141,7 @@ array(
                                         @endforelse
                                     </div>
                                 </div>
-                            @endif
+                            @endcan
                         </div>
                     </div>
                 </div>

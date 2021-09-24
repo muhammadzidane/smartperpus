@@ -60,22 +60,39 @@
     </div>
     <div id="book-show" data-id="{{ $book->id }}" class="col-md-8">
         <div class="white-content mt-5 mt-md-0 px-4">
-            @can('view', $book)
-            <div class="d-flex justify-content-end">
-                <div>
-                    <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn btn-outline-danger">Tambah Stok</button>
+            @can('isAllAdmin')
+                <div class="d-flex justify-content-end">
+                    <div>
+                        <button id="book-add-discount" data-target="#book-add-discount-modal" data-toggle="modal" class="mr-2 btn btn-outline-danger">Kelola Diskon</button>
+
+                        @include('book.modal-discount-stock', array(
+                            'target_id'   => 'book-add-discount-modal',
+                            'title'       => 'Kelola Diskon',
+                            'form_action' => "/books/$book->id/add-discount",
+                            'method'      => 'PATCH'
+                        ))
+                    </div>
+                    <div>
+                        <button id="book-add-stock" data-target="#book-add-stock-modal" data-toggle="modal" class="mr-2 btn btn-outline-danger">Tambah Stok</button>
+
+                        @include('book.modal-discount-stock', array(
+                            'target_id'   => 'book-add-stock-modal',
+                            'title'       => 'Tambah Stok',
+                            'form_action' => "/books/$book->id/add-stock",
+                            'method'      => 'PATCH'
+                        ))
+                    </div>
+                    <div class="mr-2">
+                        <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-outline-success">Edit</a>
+                    </div>
+                    <div>
+                        <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
+                            <button id="book-delete-modal" type="submit" class="btn btn-outline-danger">Hapus</button>
+                            @method('DELETE')
+                            @csrf
+                        </form>
+                    </div>
                 </div>
-                <div class="mr-2">
-                    <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-outline-success">Edit</a>
-                </div>
-                <div>
-                    <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
-                        <button id="book-delete-modal" type="submit" class="btn btn-outline-danger">Hapus</button>
-                        @method('DELETE')
-                        @csrf
-                    </form>
-                </div>
-            </div>
             @endcan
 
             <h5>{{ $book->name }}</h5>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{User, BookUser};
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, File};
+use Illuminate\Support\Facades\{Validator, Storage, Auth, Hash, File, Gate};
 
 class UserController extends Controller
 {
@@ -29,8 +29,12 @@ class UserController extends Controller
      */
     public function index()
     {
+        $conditions = array(
+            array('role', '!=', 'guest'),
+        );
+
         $users = User::withTrashed()->where('id', '!=', Auth::id())
-            ->where('role', '!=', 'guest')
+            ->where($conditions)
             ->paginate(20);
 
         return view('user.index', compact('users'));

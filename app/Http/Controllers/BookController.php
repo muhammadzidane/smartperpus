@@ -135,12 +135,13 @@ class BookController extends Controller
             'height'             => $request->lebar,
         );
 
-        $book = Book::create($create);
-        $data = array('text' => $request->sinopsis);
+        $book    = Book::create($create);
+        $data    = array('text' => $request->sinopsis);
+        $message = 'Berhasil menambah buku';
 
         $book->synopsis()->create($data);
 
-        return response()->json()->status();
+        return redirect()->back()->with('message', $message);
     }
 
     /**
@@ -286,11 +287,6 @@ class BookController extends Controller
         return view('book/shopping-cart');
     }
 
-    public function addDiscount()
-    {
-        return 'diskon diambahkan';
-    }
-
     public function showRegistrationForm()
     {
         return view('auth.register');
@@ -299,25 +295,19 @@ class BookController extends Controller
     public function addStock(Request $request, Book $book)
     {
         $rules = array(
-            'stock' => array('required', 'numeric'),
+            'amount' => array('required', 'numeric'),
         );
 
-        $validator = Validator::make($request->all(), $rules);
+        $request->validate($rules);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
+        $stock  = $book->printed_book_stock + $request->amount;
+        $update = array('printed_book_stock' => $stock);
 
-            return response()->json(compact('errors'));
-        } else {
-            $stock  = $book->printed_book_stock + $request->stock;
-            $update = array('printed_book_stock' => $stock);
+        $book->update($update);
 
-            $book->update($update);
+        $message = 'Berhasil menambah ' . $request->amount . ' stok buku';
 
-            $stock  = $request->stock;
-
-            return response()->json(compact('stock'));
-        }
+        return redirect()->back()->with('message', $message);
     }
 
     public function search(Request $request)
@@ -376,5 +366,21 @@ class BookController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function addDiscount(Request $request, Book $book) {
+        $price = $book->price - $book->discount;
+        $rules = array(
+            'amount' => 'required|numeric|lt:' . $price,
+        );
+
+        $request->validate($rules);
+
+        $data    = array('discount' => $request->amount);
+        $message = 'Berhasil menambah / update diskon buku';
+
+        $book->update($data);
+
+        return redirect()->back()->with('message', $message);
     }
 }

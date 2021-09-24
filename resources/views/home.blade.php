@@ -7,10 +7,10 @@
 
 @section('content')
 
-<div class="kategori-pilihan px-3">
-    <h3 class="text-righteous p-2">Kategori Pilihan</h3>
+<div class="kategori-pilihan mt-3 p-3">
+    <h4 class="mb-4">Kategori Pilihan</h4>
 
-    <div class="text-righteous overflow-auto">
+    <div class="d-flex justify-content-center">
         <a href="{{ route('books.index', array('category' => array(1))) }}" class="kp-1">
             <h5>Komik</h5>
             <img src="{{ asset('img/kategori-pilihan/komik.jpg') }}">

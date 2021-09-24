@@ -78,17 +78,20 @@
                 </div>
             </div>
 
-            <div>
-                <div class="px-2 pt-2 pb-0 tbold">Karyawan</div>
+            @if (Auth::user()->role == 'super_admin')
                 <div>
-                    <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
-                    </div>
-                    <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                    <div class="px-2 pt-2 pb-0 tbold">Karyawan</div>
+                    <div>
+                        <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
+                        </div>
+                        <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
+
             <div>
                 <div class="px-2 pt-2 pb-0 tbold">Buku</div>
                 <div class="py-2 {{ preg_match('/books\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
