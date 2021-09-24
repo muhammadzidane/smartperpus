@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\{CustomerController, BookController};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatusController;
@@ -25,3 +25,6 @@ Route::patch('status/{invoice}', array(StatusController::class, 'update'));
 
 // Customer
 Route::patch('customers/{customer}/change-main-address', array(CustomerController::class, 'changeMainAddress'));
+
+// Book
+Route::get('books/get-authors', array(BookController::class, 'getAuthors'));

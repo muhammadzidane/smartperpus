@@ -16,75 +16,57 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <style>
-        .books {
+        .slider {
             display: flex;
-            flex-wrap: wrap;
-            background-color: pink;
+            padding: 10px 0;
+            /* overflow: hidden; */
+        }
+
+        .slider:hover {
+            transition: transform 500ms;
+            transform: translate(-20px);
         }
 
         .book {
-            width: 175px;
-            height: 335px;
-            border: 2px solid black;
-            word-break: break-all;
-        }
-
-        .book:not(:last-child) {
-            margin-right: 1rem;
-        }
-
-        .book-image {
-            background-color: red;
-            height: 60%;
-        }
-
-        .book-image img {
-            width: auto;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .book-description {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            background-color: blueviolet;
-            height: 40%;
+            padding: 4px 5px;
+            width: 70px;
+            margin-right: 0.75rem;
+            border: 2px solid black;
+            flex-shrink: 0;
         }
 
-        .book-rating-icon {
-            font-size: 10px;
-            color: gold;
+        .book img {
+            margin: auto;
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="books">
-            <div class="book">
-                <div class="book-image">
-                    <img class="w-100" src="{{ asset('storage/books/' . 'jujutsu-kaisen-01.jpg') }}" alt="" srcset="">
+    <div class="bg-info">
+        <div class="w-25 bg-success">
+            <div class="slider">
+                <div class="book">
+                    <img src="{{ asset('img/books_test_image/haikyuu-21.jpg') }}">
                 </div>
-                <div class="book-description px-2">
-                    <div class="py-2">
-                        <div class="bg-info">{{ Str::limit('Judul buku ', '25', ) }}</div>
-                        <div><small>Nama Author</small></div>
-                    </div>
-                    <div>
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <i class="fa fa-star book-rating-icon" aria-hidden="true"></i>
-                                <i class="fa fa-star book-rating-icon" aria-hidden="true"></i>
-                                <i class="fa fa-star book-rating-icon" aria-hidden="true"></i>
-                                <i class="fa fa-star book-rating-icon" aria-hidden="true"></i>
-                                <i class="fa fa-star book-rating-icon" aria-hidden="true"></i>
-                                <small>10 Terjual</small>
-                            </div>
-                            <div>LO</div>
-                        </div>
-                        <div class="bg-success">Rp20.000</div>
-                    </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
+                </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
+                </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
+                </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
+                </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
+                </div>
+                <div class="book">
+                    <img src="{{ asset('img/form-register.jpg') }}">
                 </div>
             </div>
         </div>

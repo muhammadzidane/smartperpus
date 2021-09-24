@@ -16,7 +16,7 @@
             </div>
             <div class="row book-show-images">
                 <div class="col-3">
-                    <div class="book-show-click book-show-image-active" data-id="{{ $book->id }}">
+                    <div id="primary-book" class="book-show-click book-show-image-active" data-id="{{ $book->id }}">
                         <img class="book-show-image-click" src="{{ asset('storage/books/' . $book->image) }}">
                     </div>
                 </div>
@@ -44,6 +44,7 @@
                     </div>
                     @if ($book->book_images->count() < 3)
                         <div class="mt-3">
+                            <div class="text-grey mb-2">Jumlah gambar maksimal 4</div>
                             <form id="add-book-image-form" action="/book_images/{{ $book->id }}" enctype="multipart/form-data" method="POST">
                                 <div class="form-group">
                                     <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg">
@@ -243,7 +244,7 @@
                             @endauth
 
                             @guest
-                            <a href="{{ route('login') }}" type="button" class="btn btn-red w-">Beli Langsung</a>
+                            <a href="{{ route('login') }}" type="button" class="btn btn-red w-100">Beli Langsung</a>
                             @endguest
                         </div>
                     </div>

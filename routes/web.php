@@ -76,16 +76,17 @@ Route::prefix('books')->group(function () {
 Route::resource('carts', CartController::class);
 Route::post('carts/{book}/bought-directly', array(CartController::class, 'boughtDirectly'))->name('carts.bought.directly');
 
-Route::patch('book_images/{book_image}/edit', array(BookImageController::class, 'edit'))->name('book.images.edit');
+Route::patch('book_images/{book_image}/update', array(BookImageController::class, 'update'))->name('book.images.edit');
 Route::delete('book_images/{book_image}/delete', array(BookImageController::class, 'destroy'))->name('book.images.destroy');
 Route::post('book_images/{book}', array(BookImageController::class, 'store'));
+Route::patch('book_images/{book}/update-main', array(BookImageController::class, 'updateMainImage'));
 
 // Ajax search Filter
 Route::prefix('search')->group(function () {
     Route::get('book-filter', array(ContentSearchFilterController::class, 'bookFilter'));
 });
 
-Route::resource('/books', BookController::class);
+Route::resource('books', BookController::class);
 
 // Wishlist
 Route::prefix('wishlists')->middleware('auth')->group(function () {

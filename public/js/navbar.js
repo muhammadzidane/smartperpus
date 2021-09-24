@@ -749,21 +749,39 @@ $(document).ready(function () {
 
             validator(validations, success => {
                 if (success) {
-                    ajaxForm('POST', this, `/book_images/${clickedDataId()}/edit`, response => {
-                        if (response.update) {
-                            let message = 'Berhasil mengedit gambar buku';
-                            let src     = `${window.location.origin}/storage/books/book_images/${response.src}`;
+                    if ($('.book-show-image-active').attr('id') == undefined) {
+                        ajaxForm('POST', this, `/book_images/${clickedDataId()}/update`, response => {
+                            if (response.update) {
+                                let message = 'Berhasil mengedit gambar buku';
+                                let src     = `${window.location.origin}/storage/books/book_images/${response.src}`;
 
-                            alertMessage(message);
-                            $(this).trigger('reset');
-                            $('.book-show-image-active').find('img').attr('src', src);
-                            $('#primary-book-image').attr('src', src);
-                        } else {
-                            let afterMessage = $('.book-show-images');
+                                alertMessage(message);
+                                $(this).trigger('reset');
+                                $('.book-show-image-active').find('img').attr('src', src);
+                                $('#primary-book-image').attr('src', src);
+                            } else {
+                                let afterMessage = $('.book-show-images');
 
-                            backendMessage(afterMessage, response.errors)
-                        }
-                    });
+                                backendMessage(afterMessage, response.errors)
+                            }
+                        });
+                    } else {
+                        let confirmText = 'Apakah anda yakin ingin mengubah gambar utama ?';
+
+                        modalConfirm(confirmText, accepted => {
+                            if (accepted) {
+                                let bookId = $('#primary-book').data('id');
+
+                                ajaxForm('POST', this, `/book_images/${bookId}/update-main`, response => {
+                                    console.log(response);
+                                    if (response.status == 'success') {
+                                        alertMessage(response.message);
+                                        $('#primary-book-image').attr('src', response.data.image);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             });
         } else {
@@ -780,7 +798,12 @@ $(document).ready(function () {
 
             modalConfirm(message, accepted => {
                 if (accepted) {
-                    $.post(`/book_images/${dataId}/delete`, requestMethodName('DELETE')[0], response => {
+                    let data = {
+                        _token : csrfToken,
+                        _method: 'DELETE',
+                    }
+
+                    $.post(`/book_images/${dataId}/delete`, data, response => {
                         if (response.delete) {
                             let prevParentImage = $(this).parents('.book-show-click').parent().prev();
                             let prevImageSrc    = prevParentImage.find('img').attr('src');
@@ -1474,116 +1497,9 @@ $(document).ready(function () {
     });
     //#endregion User change email
 
-    // Book Edit
-    // Keyup input
-    const bookEditCustomValidationCondition = (inputId, data, formAction = '') => {
-        if (inputId == '#isbn') {
-            data['rules'] = 'required,digits:13';
-        }
-
-        if (inputId == '#tersedia_dalam_ebook') {
-            data['rules'] = 'nullable';
-        }
-
-        if (inputId == '#diskon') {
-            data['rules'] = 'nullable';
-        }
-
-        if (inputId == '#gambar_sampul_buku') {
-            if (formAction == 'EDIT') {
-                data['rules'] = 'nullable,mimes:png|jpg|jpeg';
-            } else {
-                data['rules'] = 'required,mimes:png|jpg|jpeg';
-            }
-        }
-    }
-
-    // Submit
-    $('#book-edit-form, #book-store-form').on('submit', function (e) {
-        e.preventDefault();
-        let dataId        = $(this).data('id');
-        let validations   = [];
-        let finds         = 'input[type=number], input[type=text], input[type=date], input[type=file], textarea';
-        let inputs        = $(this).find(finds);
-        let bookStoreForm = $(this).attr('id') == 'book-store-form';
-
-        inputs.map((key, input) => {
-            let inputId   = $(input).attr('id');
-            let inputName = capitalizeFirstLetter(inputId.replaceAll('_', ' '));
-            inputId       = `#${inputId}`;
-            let data      = {
-                input    : inputId,
-                inputName: inputName,
-                rules    : 'required',
-            }
-
-            if (bookStoreForm) {
-                bookEditCustomValidationCondition(inputId, data);
-            } else {
-                bookEditCustomValidationCondition(inputId, data, 'EDIT');
-            }
-
-            validations.push(data);
-        });
-
-        validator(validations, success => {
-            if (success) {
-                if (bookStoreForm) {
-                    ajaxForm('POST', this , `/books`, response => {
-                        if (!response.errors) {
-                            let message = 'Berhasil menambah buku';
-
-                            $(this)[0].reset();
-                            $('#book-show-image').attr('src', '')
-                            $('.alert-messages').remove();
-                            alertMessage(message);
-                        } else {
-                            let addMessage    = $('#book-edit-form, #book-store-form').children().first();
-
-                            backendMessage(addMessage, response.errors);
-                            $('#click-to-the-top').trigger('click');
-                        }
-                    });
-                } else {
-                    ajaxForm('POST', this, `/books/${dataId}`, response => {
-                        if (!response.errors) {
-                            let message = 'Berhasil mengedit buku';
-
-                            $('.alert-messages').remove();
-                            alertMessage(message);
-                        } else {
-                            console.log(false);
-                            let addMessage    = $('#book-edit-form, #book-store-form').children().first();
-
-                            backendMessage(addMessage, response.errors);
-                            $('#click-to-the-top').trigger('click');
-                        }
-                    }, requestMethodName('PATCH'));
-                }
-            }
-        });
-    })
-
-    $('#gambar_sampul_buku').on('change', function() {
-        let dataHref = $(this).data('href');
-        let data = [
-            {
-                input    : this,
-                inputName: 'Gambar sampul buku',
-                rules    : 'nullable,mimes:png|jpg|jpeg',
-            }
-        ];
-
-        validator(data,
-            success => {
-                if (success) {
-                    changeInputPhoto('book-show-image', 'gambar_sampul_buku');
-                } else {
-                    $('#book-show-image').attr('src', dataHref);
-                    $(this).val('');
-                }
-            }
-        );
+    $('#gambar_sampul_buku').on('change', function(event) {
+        $('#example-book-text').remove();
+        changeInputPhoto('book-show-image', 'gambar_sampul_buku');
     });
 
     $('#tanggal_rilis').on('change', function() {
@@ -1673,14 +1589,12 @@ $(document).ready(function () {
 
     const formCityAndDistrictKeyup = () => {
         $('#user-city-district-search').on('keyup', function() {
-            let value = $(this).val();
-
-            let data  = {
-                keywords: value,
-            };
-
-            if (value.length >= 3) {
+            if ($(this).val().length >= 3) {
                 setTimeout(() => {
+                    let data  = {
+                        keywords: $(this).val(),
+                    };
+
                     $.get(`/customers/city-or-district`, data, response => {
                         $('#user-hidden-address').html('');
                         $('#user-hidden-address').show();
@@ -1759,7 +1673,7 @@ $(document).ready(function () {
                         });
                     })
                 }, 200);
-            } else if (value.length < 3) {
+            } else if ($(this).val().length < 3) {
                 $('#user-hidden-address').hide();
             }
         });

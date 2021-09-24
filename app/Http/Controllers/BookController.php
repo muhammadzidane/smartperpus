@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\{Book, Author, Category, BookImage, Rating};
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\{Storage, Validator, Auth, File, DB};
 
 class BookController extends Controller
@@ -108,44 +109,38 @@ class BookController extends Controller
             'gambar_sampul_buku' => array('required', 'mimes:png,jpg,jpeg', 'max:2000'),
         );
 
+        $request->validate($rules);
+
         $book_image_name = $request->gambar_sampul_buku->getClientOriginalName();
-        $validator       = Validator::make($request->all(), $rules);
+        $request->gambar_sampul_buku->storeAs('public/books', $book_image_name);
+        $create = array('name' => $request->nama_penulis);
+        $author = Author::firstWhere('name', $request->nama_penulis) ?? Author::create($create);
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
+        $create = array(
+            'isbn'               => $request->isbn,
+            'category_id'        => $request->kategori,
+            'printed_book_stock' => $request->jumlah_barang,
+            'name'               => $request->judul_buku,
+            'price'              => $request->price,
+            'image'              => $book_image_name,
+            'author_id'          => $author->id,
+            'discount'           => $request->diskon ?? 0,
+            'ebook'              => $request->tersedia_dalam_ebook,
+            'pages'              => $request->jumlah_halaman,
+            'release_date'       => $request->tanggal_rilis,
+            'publisher'          => $request->penerbit,
+            'subtitle'           => $request->subtitle,
+            'weight'             => $request->berat,
+            'width'              => $request->panjang,
+            'height'             => $request->lebar,
+        );
 
-            return response()->json(compact('errors'));
-        } else {
-            $request->gambar_sampul_buku->storeAs('public/books', $book_image_name);
-            $create = array('name' => $request->nama_penulis);
-            $author = Author::firstWhere('name', $request->nama_penulis) ?? Author::create($create);
+        $book = Book::create($create);
+        $data = array('text' => $request->sinopsis);
 
-            $create = array(
-                'isbn'               => $request->isbn,
-                'category_id'        => $request->kategori,
-                'printed_book_stock' => $request->jumlah_barang,
-                'name'               => $request->judul_buku,
-                'price'              => $request->price,
-                'image'              => $book_image_name,
-                'author_id'          => $author->id,
-                'discount'           => $request->diskon ?? 0,
-                'ebook'              => $request->tersedia_dalam_ebook,
-                'pages'              => $request->jumlah_halaman,
-                'release_date'       => $request->tanggal_rilis,
-                'publisher'          => $request->penerbit,
-                'subtitle'           => $request->subtitle,
-                'weight'             => $request->berat,
-                'width'              => $request->panjang,
-                'height'             => $request->lebar,
-            );
+        $book->synopsis()->create($data);
 
-            $book = Book::create($create);
-            $data = array('text' => $request->sinopsis);
-
-            $book->synopsis()->create($data);
-
-            return response()->json()->status();
-        }
+        return response()->json()->status();
     }
 
     /**
@@ -218,49 +213,36 @@ class BookController extends Controller
             'gambar_sampul_buku' => array('nullable', 'mimes:jpg,jpeg,png', 'max:2000'),
         );
 
-        $book_image_name = $request->gambar_sampul_buku != null ? $request->gambar_sampul_buku->getClientOriginalName() : $book->image;
+        $request->validate($rules);
 
-        $validator = Validator::make($request->all(), $rules);
+        $create = array('name' => $request->nama_penulis);
+        $author = Author::firstWhere('name', $request->nama_penulis) ?? Author::create($create);
+        $update = array(
+            'isbn'               => $request->isbn,
+            'category_id'        => $request->kategori,
+            'printed_book_stock' => $request->jumlah_barang,
+            'name'               => $request->judul_buku,
+            'price'              => $request->price,
+            'author_id'          => $author->id,
+            'discount'           => $request->diskon ?? 0,
+            'ebook'              => $request->tersedia_dalam_ebook,
+            'pages'              => $request->jumlah_halaman,
+            'release_date'       => $request->tanggal_rilis,
+            'publisher'          => $request->penerbit,
+            'subtitle'           => $request->subtitle,
+            'weight'             => $request->berat,
+            'width'              => $request->panjang,
+            'height'             => $request->lebar,
+        );
 
-        if ($validator->fails()) {
-            $errors = $validator->errors();
+        $data = array('text' => $request->sinopsis);
 
-            return response()->json(compact('errors'));
-        } else {
-            if ($request->gambar_sampul_buku) {
-                $filename = 'storage/books/' . $book->image;
-                File::delete($filename);
-                $request->gambar_sampul_buku->storeAs('public/books', $book_image_name);
-            }
+        $book->update($update);
+        $book->synopsis()->update($data);
 
-            $create = array('name' => $request->nama_penulis);
-            $author = Author::firstWhere('name', $request->nama_penulis) ?? Author::create($create);
-            $update = array(
-                'isbn'               => $request->isbn,
-                'category_id'        => $request->kategori,
-                'printed_book_stock' => $request->jumlah_barang,
-                'name'               => $request->judul_buku,
-                'price'              => $request->price,
-                'image'              => $book_image_name,
-                'author_id'          => $author->id,
-                'discount'           => $request->diskon ?? 0,
-                'ebook'              => $request->tersedia_dalam_ebook,
-                'pages'              => $request->jumlah_halaman,
-                'release_date'       => $request->tanggal_rilis,
-                'publisher'          => $request->penerbit,
-                'subtitle'           => $request->subtitle,
-                'weight'             => $request->berat,
-                'width'              => $request->panjang,
-                'height'             => $request->lebar,
-            );
+        $message = 'Berhasil mengedit buku';
 
-            $book->update($update);
-            $data = array('text' => $request->sinopsis);
-
-            $book->synopsis()->update($data);
-
-            return response()->json()->status();
-        }
+        return redirect()->back()->with('message', $message);
     }
 
     /**
@@ -354,6 +336,44 @@ class BookController extends Controller
             'code' => 200,
             'data' => $data,
         );
+
+        return response()->json($response);
+    }
+
+    public function getAuthors(Request $request) {
+        $rules       = array(
+            'author_name' => [
+                'required',
+                function ($attr, $value, $fail) {
+                    $existsAuthors = fn () => Author::where('name', 'LIKE', "%$value%")->exists();
+
+                    if (! $existsAuthors()) {
+                        $fail($attr . ' tidak valid');
+                    }
+                }
+            ],
+        );
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            $response = array(
+                'status'  => 'fail',
+                'code'    => 400,
+                'data'    => null ,
+                'message' => $validator->errors(),
+            );
+        } else {
+            $authors = Author::where('name', 'LIKE', "%$request->author_name%")->get();
+            $data    = compact('authors');
+
+            $response = array(
+                'status' => 'success',
+                'code' => 200,
+                'data' => $data,
+                'message' => 'Hasil pencarian berhasil',
+            );
+        }
 
         return response()->json($response);
     }

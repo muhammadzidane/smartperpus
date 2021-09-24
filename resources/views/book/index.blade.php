@@ -18,7 +18,7 @@
                     <button type="submit" class="form-reset">Reset</button>
                 </div>
             </div>
-            <div class="white-content">
+            <div class="white-content mt-4">
                 <h6 class="tbold borbot-gray-0 pb-3">Berdasarkan Kategori</h6>
 
                 @forelse ($categories as $category)
@@ -116,7 +116,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content modal-content-login">
             <div class="px-3 mb-3 d-flex justify-content-between">
-                <h5 class="modal-title tred login-header">Filter</h5>
+                <h5 class="modal-title tred login-header mb">Filter</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

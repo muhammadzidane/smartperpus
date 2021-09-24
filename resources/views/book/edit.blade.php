@@ -24,7 +24,10 @@ array(
                     <div class="d-flex flex-wrap">
                         <div class="form-group w-50">
                             <label for="nama_penulis">Nama Penulis</label>
-                            <input type="text" name="nama_penulis" id="nama_penulis" class="form-control-custom w-90 book-edit-inp" value="{{ old('nama_penulis') ?? (isset($book) ? $book->author->name : '') ?? '' }}">
+                            <div class="position-relative">
+                                <input type="text" name="nama_penulis" id="nama_penulis" class="form-control-custom w-90 book-edit-inp" value="{{ old('nama_penulis') ?? (isset($book) ? $book->author->name : '') ?? '' }}">
+                            </div>
+
                         </div>
                         <div class="form-group w-50">
                             <label for="isbn">ISBN</label>
@@ -37,12 +40,16 @@ array(
                         <div class="form-group w-50">
                             <label class="d-block mr-2">
                                 <span>Sinopsis</span>
-                                <textarea class="w-100" name="sinopsis" id="sinopsis">{{ old('sinopsis') ?? $book->synopsis->text ?? '' }}</textarea>
+                                <textarea class="w-100" rows="5" name="sinopsis" id="sinopsis">{{ old('sinopsis') ?? $book->synopsis->text ?? '' }}</textarea>
                             </label>
                         </div>
                         <div class="form-group w-50">
                             <label for="price">Harga <small>( tanpa diskon )</small></label>
                             <input type="number" name="price" id="price" class="form-control-custom w-90 book-edit-inp" value="{{ old('price') ?? (isset($book) ? $book->price : '') ?? '' }}">
+                        </div>
+                        <div class="form-group w-50">
+                            <label for="diskon">Diskon <small>(boleh kosong)</small></label>
+                            <input type="number" name="diskon" id="diskon" class="form-control-custom w-90 book-edit-inp" value="{{ isset($book) ? $book->discount : ''}}">
                         </div>
                         <div class="form-group w-50">
                             <label for="kategori">Kategori</label>
@@ -108,24 +115,21 @@ array(
                             <label for="lebar">Lebar (cm)</label>
                             <input type="number" min="0.0" step="0.01" name="lebar" id="lebar" class="form-control-custom w-90 book-edit-inp" value="{{ old('lebar') ?? $book->height ?? '' }}">
                         </div>
-                        <div class="form-group w-50">
-                            <label for="gambar_sampul_buku">Gambar Sampul Buku (jpg, png) <small class="tred-bold">(Boleh kosong)</small></label>
 
-                            @if (Route::has('books.edit'))
-                            @isset($book)
-                            <div class="w-50 mb-3">
-                                <img id="book-show-image" class="zoom-modal-image w-100" src="{{ asset('storage/books/' . $book->image )  }}">
+                        @if (Route::has('books.create'))
+                            <div class="form-group w-50">
+                                <div for="gambar_sampul_buku">Gambar Sampul Buku (jpg, png, jpeg)</div>
+                                <div class="w-50">
+                                    <div class="book-create-img">
+                                        <img id="book-show-image" src="{{ asset('img/books_test_image/andins-kitchen-masak-tanpa-mumet.jpg') }}">
+                                    </div>
+                                </div>
+                                <div id="example-book-text" class="tred">Contoh*</div>
+
+
+                                <input class="mt-4" type="file" data-href="{{ isset($book) ? asset('storage/books/' . $book->image) : '' }}" name="gambar_sampul_buku" max="2000" id="gambar_sampul_buku" class="form-control-custom w-90" accept="image/png, image/jpeg, image/jpg">
                             </div>
-
-                            @else
-                            <div class="w-50">
-                                <img id="book-show-image" class="zoom-modal-image w-100" src="">
-                            </div>
-                            @endisset
-                            @endif
-
-                            <input type="file" data-href="{{ isset($book) ? asset('storage/books/' . $book->image) : '' }}" name="gambar_sampul_buku" id="gambar_sampul_buku" class="form-control-custom w-90" accept="image/png, image/jpeg, image/jpg">
-                        </div>
+                        @endif
                     </div>
 
                     <div class="form-group mt-4">
@@ -143,4 +147,9 @@ array(
         </div>
     </div>
 </div>
+
+@section('script')
+    <script src="{{ asset('js/book/create.js') }}"></script>
+@endsection
+
 @endsection

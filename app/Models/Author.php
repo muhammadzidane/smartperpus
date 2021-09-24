@@ -13,7 +13,7 @@ class Author extends Model
 
     public function books()
     {
-        return $this->hasMany('App\Models\Book');
+        return $this->hasMany(Book::class);
     }
 
     // Mutators

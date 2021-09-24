@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class BookImageController extends Controller
 {
-    public function edit(Request $request, BookImage $bookImage)
+    public function update(Request $request, BookImage $bookImage)
     {
         $rules = array(
             'image' => 'required|mimes:jpg,jpeg,png|max:2000',
@@ -71,5 +71,27 @@ class BookImageController extends Controller
 
             return response()->json(compact('errors'));
         }
+    }
+
+    public function updateMainImage(Request $request, Book $book) {
+        $time          = time();
+        $image         = $time . '.' . $request->image->getClientOriginalExtension();
+        $deleted_image = 'storage/books/' . $book->image;
+        $data          = array('image' => $image);
+
+        File::delete($deleted_image);
+        $request->image->storeAs('public/books', $image);
+        $book->update($data);
+
+        $data['image'] = asset('storage/books/' . $image);
+
+        $response = array(
+            'status'  => 'success',
+            'code'    => 200,
+            'data'    => $data,
+            'message' => 'Berhasil mengupdate gambar utama',
+        );
+
+        return response()->json($response);
     }
 }

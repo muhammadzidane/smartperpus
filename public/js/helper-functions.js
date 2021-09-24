@@ -8,8 +8,7 @@ const disableMultipleSubmitForm = (formSelector, buttonSubmitSelector) => {
 
 // Disable form submit jika input value kosong
 const formDisableSubmit = (formSelector, events) => {
-    $(formSelector).on('keyup', function() {
-        console.log(true);
+    $(formSelector).on('keyup change', function() {
         let notNullValues  = $(this).find(events).toArray().every((input) => input.value != "");
 
         if (notNullValues) {
@@ -875,7 +874,7 @@ const validator = (validations, success = '') => {
 
 //#region Change photo - Mengubah foto
 
-const changeInputPhoto = (imageId, inputFileId) => {
+const changeInputPhoto = (imageId, inputFileId, canceledImage = '') => {
     let preview = document.getElementById(imageId);
     let file    = document.getElementById(inputFileId).files[0];
     let reader  = new FileReader();
@@ -886,8 +885,6 @@ const changeInputPhoto = (imageId, inputFileId) => {
 
     if (file) {
         reader.readAsDataURL(file);
-    } else {
-        preview.src = "";
     }
 };
 //#endregion Change photo
