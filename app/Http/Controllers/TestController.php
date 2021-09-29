@@ -13,36 +13,24 @@ class TestController extends Controller
 {
     public function test()
     {
-        $ratings = array();
+        foreach (BookUser::get() as $bookUser) {
+            $now           = Carbon::now();
+            $deadline      = $bookUser->payment_deadline;
 
-        for ($i = 0; $i < 100; $i++) {
-            array_push($ratings, rand(1, 5));
-        }
+            if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation') {
+                $update     = array(
+                    'payment_status' => 'failed',
+                    'failed_date'    => $deadline->format('Y-m-d H:i:s'),
+                );
 
-        $ratings_sum          = array_sum($ratings);
-        $ratings_amount       = count($ratings);
-        $rating_average_value = 2.2;
-
-        for ($i = 1; $i <= 5; $i++) {
-            $full = 'full';
-            $half = 'half';
-            $empty = 'empty';
-
-            if ($rating_average_value >= $i) {
-                // dump($full);
-            } else if ($i >= $rating_average_value + 1) {
-                // dump($empty);
-            } else {
-                // dump($half);
+                dump($bookUser);
             }
-        }
-        // $book = Book::find(1);
-        // dump($book->ratings);
 
-        return view('test');
+            dump($now->greaterThan($deadline));
+        }
     }
 
-    public function testPost(Request $request)
+    protected function testPost(Request $request)
     {
         $test = Carbon::now();
 

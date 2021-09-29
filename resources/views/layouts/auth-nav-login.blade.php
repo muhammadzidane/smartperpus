@@ -2,8 +2,8 @@
     <a id="loginDrowndown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
         <div class="user">
             <div class="user-circle">
-                @isset (Illuminate\Support\Facades\Auth::user()->profile_image)
-                <img id="user-circle-fit" class="w-100" src="{{ asset('storage/users/profiles/' . auth()->user()->profile_image) }}">
+                @isset (Auth::user()->profile_image)
+                <img id="user-circle-fit" class="w-100" src="{{ asset('storage/users/profiles/' . Auth::user()->profile_image) }}">
 
                 @else
                 <div class="h-100 d-flex justify-content-center align-items-center">
@@ -22,22 +22,20 @@
             <a class="dropdown-item" href="{{ route('users.show', array('user' => Auth::user()->id)) }}">Akun Saya</a>
         </div>
 
-        @cannot('viewAny', App\Models\User::class)
-            <div>
-                <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
-            </div>
-        @endcannot
+        <div>
+            <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
+        </div>
 
-        @cannot('viewAny', App\Models\User::class)
+        @can('isGuest')
             <div>
                 <a class="dropdown-item" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
             </div>
             <div>
                 <a class=" dropdown-item" href="{{ route('carts.index') }}">Keranjang Saya</a>
             </div>
-        @endcannot
+        @endcan
 
-        @can('viewAny', App\Models\User::class)
+        @can('isAllAdmin')
             <div>
                 <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
             </div>
@@ -48,7 +46,7 @@
                 <a class="dropdown-item" href="{{ route('books.create') }}">Tambahkan Buku</a>
             </div>
 
-            @can ('isAllAdmin')
+            @can ('isSuperAdmin')
                 <div>
                     <a class="dropdown-item" href="{{ route('users.create') }}">Tambahkan Karyawan</a>
                 </div>
@@ -59,7 +57,7 @@
         @endcan
 
         <div>
-            <form action="{{ route('logout') }}" method="post">
+            <form action="{{ route('logout') }}" method="post" class="m-0 p-0">
                 @csrf
                 <button type="submit" class="btn dropdown-item text-right text-righteous">
                     Logout

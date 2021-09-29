@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Cart, Book, User};
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\{Cart, Book};
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -21,6 +20,8 @@ class CartController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('isGuest');
+
         $selected_value = array(
             'books.*',
             'carts.amount as cart_amount',
@@ -69,7 +70,6 @@ class CartController extends Controller
                 return $result;
             });
 
-
             $amount        = $sliced_books->reduce(fn ($carry, $item) => $carry + $item->cart_amount);
             $total_payment = $total_payment->reduce(fn ($carry, $item) => $carry + $item);
         }
@@ -106,6 +106,8 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('isGuest');
+
         $datas = $request->except('_token');
         $cart  = Cart::create($datas);
 
@@ -150,7 +152,7 @@ class CartController extends Controller
             'data' => null,
         );
 
-        return response()->json($request->all());
+        return response()->json($response);
     }
 
     /**

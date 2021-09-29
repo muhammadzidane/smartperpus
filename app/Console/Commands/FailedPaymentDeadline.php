@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Support\Facades\DB;
+use App\Models\BookUser;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 
@@ -39,12 +39,15 @@ class FailedPaymentDeadline extends Command
      */
     public function handle()
     {
-        foreach (DB::table('book_user')->get() as $bookUser) {
+        foreach (BookUser::get() as $bookUser) {
             $now           = Carbon::now();
             $deadline      = $bookUser->payment_deadline;
 
             if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation') {
-                $update     = array('payment_status' => 'failed');
+                $update     = array(
+                    'payment_status' => 'failed',
+                    'failed_date'    => $deadline->format('Y-m-d H:i:s'),
+                );
 
                 $bookUser->update($update);
             }

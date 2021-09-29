@@ -38,7 +38,7 @@
                         <div class="search-icon">
                             <i class="fas fa-search m-auto"></i>
                         </div>
-                        <form id="search-books-form" action="{{ route('books.index') }}" method="GET">
+                        <form id="search-books-form" action="{{ route('books.index') }}" method="GET" class="m-0 p-0">
                             <input type="text" name="keywords" class="keywords search-text" placeholder="Judul Buku, Nama Author" autocomplete="off" value="{{ request()->keywords }}">
                         </form>
                         <div class="nav-book-search"></div>
@@ -73,34 +73,34 @@
 
                                     <div class="nav-cart-content dropdown-menu dropdown-menu-right mt-3 ml-2" aria-labelledby="navCartDropdown">
                                         @if (auth()->user()->carts()->count() != 0)
-                                        <div class="nav-cart-content-title">
-                                            <div>Keranjang Saya</div>
+                                            <div class="nav-cart-content-title">
+                                                <div>Keranjang Saya</div>
 
-                                            <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
+                                                <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
 
-                                        </div>
-                                        <div>
-                                            @foreach (auth()->user()->carts()->orderByDesc('id')->take(3)->get() as $cart)
-                                            <div class="mt-4 nav-cart-link">
-                                                <a href="/books/{{ $cart->books()->first()->id }}">
-                                                    <div class="row">
-                                                        <div class="col-3 pr-0">
-                                                            <div class="nav-cart-content-image">
-                                                                <div class="nav-cart-content-src">
-                                                                    <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                            </div>
+                                            <div>
+                                                @foreach (auth()->user()->carts()->orderByDesc('id')->take(3)->get() as $cart)
+                                                    <div class="mt-4 nav-cart-link">
+                                                        <a href="/books/{{ $cart->books()->first()->id }}">
+                                                            <div class="row">
+                                                                <div class="col-3 pr-0">
+                                                                    <div class="nav-cart-content-image">
+                                                                        <div class="nav-cart-content-src">
+                                                                            <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-9 pl-0">
+                                                                    <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
+                                                                    <div class="tred-bold mt-1">{{ rupiah_format($cart->books()->first()->price - $cart->books()->first()->discount) }}</div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-9 pl-0">
-                                                            <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
-                                                            <div class="tred-bold mt-1">{{ rupiah_format($cart->books()->first()->price - $cart->books()->first()->discount) }}</div>
-                                                        </div>
+                                                        </a>
                                                     </div>
-                                                </a>
+                                                @endforeach
                                             </div>
-                                            @endforeach
-                                        </div>
-                                        <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
+                                            <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
 
                                         @else
                                         <div class="text-center">
@@ -114,10 +114,11 @@
                                         @endif
                                     </div>
                                     @endauth
+
                                     @guest
-                                    <a href="{{ route('login') }}">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </a>
+                                        <a href="{{ route('login') }}">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </a>
                                     @endguest
                                 </div>
                             </div>

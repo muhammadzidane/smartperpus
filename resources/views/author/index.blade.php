@@ -18,9 +18,9 @@
             </div>
         </div>
     </div>
-    <div class="row mt-2">
+    <div class="row mt-4">
         @forelse ($authors as $author)
-        <div class="col-lg-3 col-sm-6">
+        <div class="col-lg-3 col-sm-6 mr-2">
             <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
                 <div class="row white-content author-review">
                     <div class="col px-0">

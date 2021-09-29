@@ -15,6 +15,8 @@ class WishlistController extends Controller
      */
     public function index()
     {
+        $this->authorize('isGuest');
+
         $books = Book::join('wishlists', 'books.id', '=', 'wishlists.book_id')
             ->where('user_id', auth()->user()->id)
             ->get('books.*');
@@ -40,6 +42,8 @@ class WishlistController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('isGuest');
+
         $book      = Book::find($request->bookId);
         $user      = Auth::user();
         $data      = array(
@@ -93,6 +97,8 @@ class WishlistController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('isGuest');
+
         $user      = Auth::user();
         $book      = Book::find($id);
         $wishlists = Wishlist::where('user_id', $user->id)->where('book_id', $book->id)->delete();
@@ -102,6 +108,8 @@ class WishlistController extends Controller
 
     public function search(Request $request)
     {
+        $this->authorize('isGuest');
+
         $wishlists = Auth::user()->wishlists;
         $books     = $wishlists->map(function ($wishlist) {
             global $request;
