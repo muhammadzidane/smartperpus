@@ -8,46 +8,41 @@ use App\Models\{Author, Book, Province, City, User, BookUser, UserChat, AdminCha
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class TestController extends Controller
 {
     public function test()
     {
-        $curl = curl_init();
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "origin=501&originType=city&destination=574&destinationType=subdistrict&weight=1700&courier=jne",
-            CURLOPT_HTTPHEADER => array(
-                "content-type: application/x-www-form-urlencoded",
-                "key: ce496165f4a20bc07d96b6fe3ab41ded"
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            echo $response;
-        }
     }
 
-    protected function testPost(Request $request)
+    public function testPost(Request $request)
     {
-        $test = Carbon::now();
+        $client = new Client([
+            'base_uri' => 'https://pro.rajaongkir.com',
+        ]);
 
-        dump($test);
-        // dd(true);
+        $options = [
+            'json' => [
+                'key' => 'ce496165f4a20bc07d96b6fe3ab41ded',
+                'origin' => 317,
+                'originType' => 'subdistrict',
+                'destination' => 1416,
+                'destinationType' => 'subdistrict',
+                'weight' => 300,
+                'courier' => 'jne',
+            ],
+            'verify' => false,
+        ];
+
+        $response = $client->request('POST', '/api/cost', $options);
+
+        $body = $response->getBody();
+        $body = json_decode($body);
+
+        return response()->json($body);
     }
 
     public function pagination()
@@ -68,9 +63,6 @@ class TestController extends Controller
 
     public function testCurl()
     {
-        // $curlopt_postfield  = 'origin=' . $request->origin_id . '&originType=' . $request->origin_type;
-        // $curlopt_postfield .= '&destination=' . $request->destination_id . '&destinationType=' . $request->destination_type;
-        // $curlopt_postfield .= '&weight=' . $request->weight . '&courier=' . $request->courier;
         $curlopt_postfield =
 
             $curl = curl_init();

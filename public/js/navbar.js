@@ -1996,8 +1996,6 @@ $(document).ready(function () {
             let data       = response.data;
             let failedDate = data.status_date.failed_date;
 
-            console.log(data);
-
             const statusCircleHtml = (status, iconHtml, statusName) => {
                 return `<div class="status-modal-detail">
                     <div class="status-modal-detail-circle ${status ? 'status-modal-detail-active' : ''}">
@@ -2289,14 +2287,15 @@ $(document).ready(function () {
             waybill: $(this).data('resi'),
             courier: $(this).data('courier'),
             key    : 'ce496165f4a20bc07d96b6fe3ab41ded',
+            _token : csrfToken,
         };
 
         bootStrapModal('Informasi Pengiriman', 'modal-lg', () => {
             return `<div id="tracking-modal-content">${spinnerHtml}</div>`;
         });
 
-        $.post('https://pro.rajaongkir.com/api/waybill', datas)
-        .done(response => {
+        $.post('/cekcek', datas)
+         .done(response => {
             let result = response.rajaongkir.result;
             let trackingPackagesBody =
             `<div class="mb-3">
@@ -2329,13 +2328,50 @@ $(document).ready(function () {
 
             $('#tracking-package-manifest').html(manifestHtml.join(''));
             $('.manifes-circle').last().addClass('manifes-circle-last');
-        })
-        .fail(function(xhr) {
-            let message = xhr.responseJSON.rajaongkir.status.description;
-            let html    = `<div><h5 class="text-grey tbold">${message}</h5></div>`;
-
-            $('#tracking-modal-content').html(html);
         });
+
+
+        // $.post('https://pro.rajaongkir.com/api/waybill', datas)
+        // .done(response => {
+        //     let result = response.rajaongkir.result;
+        //     let trackingPackagesBody =
+        //     `<div class="mb-3">
+        //         <h5>Alamat Pengiriman</h5>
+        //         <div>
+        //             <div class="tbold">${result.details.receiver_name}</div>
+        //             <div>${result.details.receiver_address1}</div>
+        //             <div>${result.details.receiver_address2}</div>
+        //             <div>${result.details.receiver_address3}</div>
+        //         </div>
+        //     </div>
+        //     <div class="mt-4">
+        //         <h5>Manifes</h5>
+        //         <div id="tracking-package-manifest" class="text-grey mt-3">
+        //         </div>
+        //     </div>`;
+
+        //     let contentLength = $('#tracking-modal-content').children().length; // Default 1
+
+        //     if (contentLength == 1) {
+        //         $('#tracking-modal-content').html(trackingPackagesBody);
+        //     }
+
+        //     let manifestHtml        = result.manifest.map(manifest => {
+        //         return `<div class="manifest-circle">
+        //             <div>${manifest.manifest_date} ${manifest.manifest_time}</div>
+        //             <div class="text-right">${manifest.manifest_description}</div>
+        //         </div>`;
+        //     });
+
+        //     $('#tracking-package-manifest').html(manifestHtml.join(''));
+        //     $('.manifes-circle').last().addClass('manifes-circle-last');
+        // })
+        // .fail(function(xhr) {
+        //     let message = xhr.responseJSON.rajaongkir.status.description;
+        //     let html    = `<div><h5 class="text-grey tbold">${message}</h5></div>`;
+
+        //     $('#tracking-modal-content').html(html);
+        // });
 
         const removeModal = () => {
             setTimeout(() => {

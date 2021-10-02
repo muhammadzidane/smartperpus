@@ -208,11 +208,11 @@
                         @endif
                     @endif
 
-                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->arrived)
+                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'arrived')
                             <button type="button" class="status-complete btn btn-outline-danger mr-2">Selesai</button>
                     @endif
 
-                    @if (request()->path() == 'status/completed' && $book_user['first']->arrived)
+                    @if (request()->path() == 'status/completed' && $book_user['first']->payment_status == 'arrived')
                         <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     @endif
 

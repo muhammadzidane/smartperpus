@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\{User, Book, BookUser, Customer, Cart, City, Rating};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, DB};
-use Illuminate\Database\Eloquent\Builder;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -432,5 +432,27 @@ class StatusController extends Controller
         Rating::create($data);
 
         return redirect()->back()->with('message', $message);
+    }
+
+    public function cekcek(Request $request) {
+        $client = new Client([
+            'base_uri' => 'https://pro.rajaongkir.com',
+        ]);
+
+        $options = [
+            'json' => [
+                'key'     => $request->key,
+                'waybill' => $request->waybill,
+                'courier' => $request->courier,
+            ],
+            'verify' => false,
+        ];
+
+        $response = $client->request('POST', '/api/waybill', $options);
+
+        $body = $response->getBody();
+        $body = json_decode($body);
+
+        return response()->json($body);
     }
 }
