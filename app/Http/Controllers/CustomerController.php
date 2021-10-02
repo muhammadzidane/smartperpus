@@ -47,9 +47,7 @@ class CustomerController extends Controller
         );
 
         if ($validator->fails()) {
-            $errors = array('errors' => $validator->errors());
-
-            return response()->json($errors);
+            return redirect()->back()->withErrors($validator->errors());
         } else {
             $request_address = explode('-', $request->kota_atau_kecamatan);
             $provinsi        = Province::find($request_address[0]);
@@ -66,25 +64,12 @@ class CustomerController extends Controller
                 'city_id'      => $kota->id,
                 'province_id'  => $provinsi->id,
             );
-
-            $customer =  $user->customers()->create($create);
             $message  = 'Berhasil menambah alamat';
 
-            $data = array(
-                'customer' => $customer,
-                'address'  => $address,
-                'province' => $provinsi,
-                'city'     => $kota,
-                'district' => $kecamatan,
-            );
 
-            $response = array(
-                'success' => 200,
-                'message' => $message,
-                'data'    => $data,
-            );
+            $user->customers()->create($create);
 
-            return response()->json($response);
+            return redirect()->back()->with('message', $message);
         }
     }
 
@@ -129,13 +114,7 @@ class CustomerController extends Controller
         );
 
         if ($validator->fails()) {
-            $response = array(
-                'status' => 'fail',
-                'code'   => 400,
-                'data'   => $validator->errors(),
-            );
-
-            return response()->json($response);
+            return redirect()->back()->withErrors($validator->errors());
         } else {
             $request_address = explode('-', $request->kota_atau_kecamatan);
             $provinsi        = Province::find($request_address[0]);
@@ -156,22 +135,7 @@ class CustomerController extends Controller
 
             $message = 'Berhasil mengedit alamat';
 
-            $data = array(
-                'customer' => $customer,
-                'address'  => $address,
-                'province' => $provinsi,
-                'city'     => $kota,
-                'district' => $kecamatan,
-            );
-
-            $response = array(
-                'status'  => 'success',
-                'code'    => 200,
-                'message' => $message,
-                'data'    => $data,
-            );
-
-            return response()->json($response);
+            return redirect()->back()->with('message', $message);
         }
     }
 

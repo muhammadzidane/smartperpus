@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\{User, Book, Checkout, Customer, Province, City, District};
 use Illuminate\Support\Facades\{Auth, Validator, Date};
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Validation\Rule;
 
 class CheckoutController extends Controller
@@ -237,10 +239,54 @@ class CheckoutController extends Controller
 
             if (!$exists_main_customer) $create['main'] = true;
 
-            // dump(true);
             $user->customers()->create($create);
 
             return redirect()->back()->with('message', 'Berhasil menambah alamat');
+        }
+    }
+
+    public function test() {
+        return response()->json()->status();
+    }
+
+    // Lacak pengiriman
+    public function cost(Request $request) {
+        try {
+            $client = new Client([
+                'base_uri' => 'https://pro.rajaongkir.com',
+            ]);
+
+            $options = [
+                'json' => [
+                    'key'             => $request->key,
+                    'origin'          => $request->origin,
+                    'originType'      => $request->originType,
+                    'destination'     => $request->destination,
+                    'destinationType' => $request->destinationType,
+                    'weight'          => $request->weight,
+                    'courier'         => $request->courier,
+                ],
+                'verify' => false,
+            ];
+
+            $response = $client->request('POST', '/api/cost', $options);
+            $body     = $response->getBody();
+            $body     = json_decode($body);
+
+            return response()->json($body);
+        } catch (RequestException $th) {
+            if ($th->hasResponse()){
+                if ($th->getResponse()->getStatusCode() == '400') {
+                    $response = array(
+                        'status' => 'fail',
+                        'code'   => 400,
+                        'data'   => null,
+                        'message' => 'Layanan tidak tersedia',
+                    );
+
+                    return response()->json($response);
+                }
+            }
         }
     }
 }

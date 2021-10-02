@@ -6,6 +6,7 @@ use App\Models\{User, Book, BookUser, Customer, Cart, City, Rating};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\{Auth, DB};
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -434,25 +435,42 @@ class StatusController extends Controller
         return redirect()->back()->with('message', $message);
     }
 
-    public function cekcek(Request $request) {
-        $client = new Client([
-            'base_uri' => 'https://pro.rajaongkir.com',
-        ]);
+    // Lacak pengiriman
+    public function shippingInformation(Request $request) {
+        try {
+            $client = new Client([
+                'base_uri' => 'https://pro.rajaongkir.com',
+            ]);
 
-        $options = [
-            'json' => [
-                'key'     => $request->key,
-                'waybill' => $request->waybill,
-                'courier' => $request->courier,
-            ],
-            'verify' => false,
-        ];
+            $options = [
+                'json' => [
+                    'key'     => $request->key,
+                    'waybill' => $request->waybill,
+                    'courier' => $request->courier,
+                ],
+                'verify' => false,
+            ];
 
-        $response = $client->request('POST', '/api/waybill', $options);
+            $response = $client->request('POST', '/api/waybill', $options);
 
-        $body = $response->getBody();
-        $body = json_decode($body);
+            $body = $response->getBody();
+            $body = json_decode($body);
 
-        return response()->json($body);
+            return response()->json($body);
+        } catch (RequestException $th) {
+            if ($th->hasResponse()){
+                if ($th->getResponse()->getStatusCode() == '400') {
+                    $response = array(
+                        'status' => 'fail',
+                        'code'   => 400,
+                        'data'   => null,
+                        'message' => '400 Bad Request . Resi yang di
+                        masukan tidak terdaftar',
+                    );
+
+                    return response()->json($response);
+                }
+            }
+        }
     }
 }

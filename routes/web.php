@@ -1,31 +1,28 @@
 <?php
 
-// use App\Http\Controllers\{
-//     AjaxController,
-//     BookController,
-//     AuthorController,
-//     BookImageController,
-//     CategoryController,
-//     HomeController,
-//     TestController,
-//     BookPurchaseController,
-//     BookUserController,
-//     CartController,
-//     CityController,
-//     CustomerController,
-//     ContentSearchFilterController,
-//     UserController,
-//     ProvinceController,
-//     UserChatController,
-//     StatusController,
-//     WishlistController,
-//     ValidatorController,
-//     CheckoutController,
-//     IncomeController,
-//     InboxController,
-// };
-
-namespace App\Http\Controllers;
+use App\Http\Controllers\{
+    BookController,
+    AuthorController,
+    BookImageController,
+    CategoryController,
+    HomeController,
+    TestController,
+    BookPurchaseController,
+    BookUserController,
+    CartController,
+    CityController,
+    CustomerController,
+    ContentSearchFilterController,
+    UserController,
+    ProvinceController,
+    UserChatController,
+    StatusController,
+    WishlistController,
+    ValidatorController,
+    CheckoutController,
+    IncomeController,
+    InboxController,
+};
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\{Route, Auth};
@@ -36,7 +33,6 @@ Route::get('/', array(HomeController::class, 'index'))->name('home');
 // TEST
 Route::get('test', array(TestController::class, 'testPost'));
 Route::post('test', array(TestController::class, 'test'));
-Route::post('cekcek', array(StatusController::class, 'cekcek'));
 
 // User
 Route::prefix('users')->group(function () {
@@ -114,8 +110,9 @@ Route::prefix('status')->middleware('auth')->group(function () {
     Route::get('completed', array(StatusController::class, 'index'))->name('status.completed');
     Route::get('{invoice}/detail', array(StatusController::class, 'detail'));
     Route::get('uploaded-payment', array(StatusController::class, 'index'))->name('status.uploaded.payment');
-    Route::post('/buy-again', array(StatusController::class, 'buyAgain'));
-    Route::post('/add-rating', array(StatusController::class, 'addRating'));
+    Route::post('buy-again', array(StatusController::class, 'buyAgain'));
+    Route::post('add-rating', array(StatusController::class, 'addRating'));
+    Route::post('shipping-information', array(StatusController::class, 'shippingInformation'));
 });
 
 // Review
@@ -138,6 +135,7 @@ Route::get('checkouts', array(CheckoutController::class, 'index'))->name('checko
 Route::post('checkouts/{user}/payment', array(CheckoutController::class, 'checkoutPayment'))->name('checkout.payment');
 Route::patch('checkouts/change-main-address', array(CheckoutController::class, 'changeMainAddress'));
 Route::post('checkouts/customer-store', array(CheckoutController::class, 'customerStore'));
+Route::post('checkouts/cost', array(CheckoutController::class, 'cost'));
 
 // Chat dengan admin
 Route::resource('user-chats', UserChatController::class)->except('index', 'edit');

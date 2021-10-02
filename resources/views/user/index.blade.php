@@ -55,6 +55,7 @@ array(
                                 <!-- <button type="button" class="user-delete btn btn-danger" url="{{ route('users.destroy', array('user' => $user->id)) }}" token="{{ csrf_token() }}" onclick="hapusUser(this)">
                                     HAPUS
                                 </button> -->
+
                                 <form data-id="{{ $user->id }}" action="{{ route('users.destroy', array('user' => $user->id)) }}" method="post">
                                     <button type="submit" class="user-delete btn btn-danger">Hapus </button>
                                     @method('DELETE')

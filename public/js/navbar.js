@@ -1221,7 +1221,7 @@ $(document).ready(function () {
             let userDateOfBirth   = $('#user-date-of-birth').data('date');
             let userMan           = $('#user-gender').text() == 'Laki-laki' ? 'selected' : '';
             let userWoman         = $('#user-gender').text() != 'Laki-laki' ? 'selected' : '';
-            let userAddress       = $('#user-hidden-address').text() == '-' ? '' : $('#user-hidden-address').text();
+            let userAddress       = $('#user-address').text() == '-' ? '' : $('#user-address').text();
             let userPhoneNumber   = $('#user-phone-number').text();
             let dataId            = $(this).data('id');
 
@@ -1236,7 +1236,7 @@ $(document).ready(function () {
                     <input id="nama-akhir" name="last_name" type="text" class="form-control-custom" value="${lastName}">
                 </div>
                 <div class="form-group">
-                    <label for="tanggal-lahir">Tanggal Lahir</label>
+                    <label for="tanggal-lahir">Tanggal Lahir <small class="text-grey">(boleh kosong)</small></label>
                     <input id="tanggal-lahir" name="date_of_birth" type="date" class="form-control-custom" value="${userDateOfBirth}">
                 </div>
                 <div class="form-group">
@@ -1279,16 +1279,6 @@ $(document).ready(function () {
                     input    : '#nama-akhir',
                     inputName: 'Nama akhir',
                     rules    : 'required,min:3',
-                },
-                {
-                    input    : '#tanggal-lahir',
-                    inputName: 'Tanggal lahir',
-                    rules    : 'required',
-                },
-                {
-                    input    : '#tanggal-lahir',
-                    inputName: 'Tanggal lahir',
-                    rules    : 'required',
                 },
                 {
                     input    : '#jenis-kelamin',
@@ -1611,16 +1601,13 @@ $(document).ready(function () {
 
             formDisableSubmit('#user-customer-update', 'input:not([type=hidden])');
 
-            let buttonUpdate         = $(this);
             let userCustomer         = $(this).parents('.user-customer');
             let userCustomerName     = userCustomer.find('.customer-name').text();
             let userCustomerAddress  = userCustomer.find('.customer-address').text();
             let userCustomerPhone    = userCustomer.find('.customer-phone-number').text();
             let userCustomerProvince = userCustomer.find('.customer-province');
             let userCustomerCity     = userCustomer.find('.customer-city');
-            let userCustomerDistrict = userCustomer.find('.customer-district');
-
-            console.log(userCustomer);
+            let userCustomerDistrict = userCustomer.find('.customer-district')
 
             let cityOrDistrictSearchValue  = `${userCustomerProvince.text()} ${userCustomerCity.text()} Kec. ${userCustomerDistrict.text()}`;
             let cityOrDistrictValue        = `${userCustomerProvince.data('province')}`;
@@ -1638,32 +1625,7 @@ $(document).ready(function () {
                 event.preventDefault();
 
                 validator(formCustomerValidations(), success => {
-                    if (success) {
-                        $('#custom-modal').modal('hide');
-
-                        ajaxForm('POST', this, this.action, response => {
-                            if (response.status == 'success') {
-                                let data         = response.data;
-                                let message      = 'Berhasil mengedit alamat';
-                                let userCustomer = buttonUpdate.parents('.user-customer');
-
-                                userCustomer.find('.customer-name').text(data.customer.name);
-                                userCustomer.find('.customer-phone-number').text(data.customer.phone_number);
-                                userCustomer.find('.customer-address').text(data.address);
-                                userCustomer.find('.customer-province').text(data.province.name);
-                                userCustomer.find('.customer-province').attr('data-province', data.province.id);
-                                userCustomer.find('.customer-city').text(data.city.name);
-                                userCustomer.find('.customer-city').attr('data-city', data.city.id);
-                                userCustomer.find('.customer-district').text(data.district.name);
-                                userCustomer.find('.customer-district').attr('data-district', data.district.id);
-
-                                $('#checkout-courier-service').remove();
-                                alertMessage(message);
-                            } else if (response.status == 'fail') {
-                                backendMessage($('.modal-title'), response.data);
-                            }
-                        })
-                    }
+                    if (success) this.submit();
                 });
             });
         })
@@ -1709,20 +1671,6 @@ $(document).ready(function () {
     userCustomerDelete();
     //#endregion User - Customer Delete
 
-    const onChangeAddress = () => {
-        $('input[name=customer]').on('change', function() {
-            let customerAddressIsChecked = $('input[name=courier_name]').is(':checked');
-
-            $('#checkout-courier-service').remove();
-
-            if (customerAddressIsChecked) {
-                $('input[name=courier_name]:checked').trigger('change');
-                $('input[name=customer]').attr('disabled', true);
-            }
-        });
-    }
-
-    onChangeAddress();
     //#region Customer change main address
     const customerChangeMain = () => {
         $('.user-customer-select-main, .user-customer-main').on('click', function(event) {
@@ -1780,68 +1728,7 @@ $(document).ready(function () {
                 event.preventDefault();
 
                 validator(formCustomerValidations(), success => {
-                    if (success) {
-                        $('#custom-modal').modal('hide');
-
-                        ajaxForm('POST', this, this.action, response => {
-                            if (response.success) {
-                                let data    = response.data;
-                                let message = 'Berhasil menambah alamat';
-
-                                let html =
-                                `
-                                <div id="${data.customer.id}" class="user-customer mt-3 d-flex borbot-gray-0 pb-2">
-                                    <label>
-                                        <div class="d-flex">
-                                            <div>
-                                                <div class="user-customer-select-main">Simpan sebagai utama</div>
-                                                <div>
-                                                    <span class="customer-name">${data.customer.name}</span> -
-                                                    <span class="customer-phone-number">${data.customer.phone_number}</span>
-                                                </div>
-                                                <div>
-                                                    <span class="customer-address">${data.address}</span>.
-                                                    <span class="customer-province" data-province="${data.province.id}">${data.province.name},</span>
-                                                    <span class="customer-city" data-city="${data.city.id}">${data.city.type} ${data.city.name},</span>
-                                                    <span class="customer-district" data-district="${data.district.id}">${data.district.name}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </label>
-                                    <div class="ml-auto text-right mt-auto">
-                                        <div>
-                                            <button class="user-customer-update btn-none tred-bold" type="button" data-id="${data.customer.id}">Ubah</button>
-                                        </div>
-                                        <div>
-                                            <button class="user-customer-delete btn-none tred-bold" type="button" data-id="${data.customer.id}">Hapus</butt>
-                                        </div>
-                                    </div>
-                                </div>
-                                `;
-
-                                let userAddressLength = $('.user-customer').length;
-
-                                if (userAddressLength == 0) {
-                                    $('#user-create-customer').appendTo($('#user-customer-title').parent());
-                                    $('#user-customer-lists').html(html);
-                                } else if (userAddressLength == 4) {
-                                    $('#user-customer-lists').append(html);
-                                    $('#user-create-customer').remove();
-                                }
-                                else {
-                                    $('#user-customer-lists').append(html);
-                                }
-
-                                alertMessage(message);
-                                userCustomerUpdate();
-                                userCustomerDelete();
-                                onChangeAddress();
-                                customerChangeMain();
-                            } else {
-                                backendMessage($('.modal-title'), response.errors)
-                            }
-                        });
-                    }
+                    if (success) this.submit();
                 });
             });
         });
@@ -2294,84 +2181,48 @@ $(document).ready(function () {
             return `<div id="tracking-modal-content">${spinnerHtml}</div>`;
         });
 
-        $.post('/cekcek', datas)
-         .done(response => {
-            let result = response.rajaongkir.result;
-            let trackingPackagesBody =
-            `<div class="mb-3">
-                <h5>Alamat Pengiriman</h5>
-                <div>
-                    <div class="tbold">${result.details.receiver_name}</div>
-                    <div>${result.details.receiver_address1}</div>
-                    <div>${result.details.receiver_address2}</div>
-                    <div>${result.details.receiver_address3}</div>
+        $.post('/status/shipping-information', datas)
+        .done(response => {
+            console.log(response)
+            if (response.status == 'fail') {
+                let html    = `<div><h5 class="text-grey tbold">${response.message}</h5></div>`;
+
+                $('#tracking-modal-content').html(html);
+            } else {
+                let result = response.rajaongkir.result;
+                let trackingPackagesBody =
+                `<div class="mb-3">
+                    <h5>Alamat Pengiriman</h5>
+                    <div>
+                        <div class="tbold">${result.details.receiver_name}</div>
+                        <div>${result.details.receiver_address1}</div>
+                        <div>${result.details.receiver_address2}</div>
+                        <div>${result.details.receiver_address3}</div>
+                    </div>
                 </div>
-            </div>
-            <div class="mt-4">
-                <h5>Manifes</h5>
-                <div id="tracking-package-manifest" class="text-grey mt-3">
-                </div>
-            </div>`;
-
-            let contentLength = $('#tracking-modal-content').children().length; // Default 1
-
-            if (contentLength == 1) {
-                $('#tracking-modal-content').html(trackingPackagesBody);
-            }
-
-            let manifestHtml        = result.manifest.map(manifest => {
-                return `<div class="manifest-circle">
-                    <div>${manifest.manifest_date} ${manifest.manifest_time}</div>
-                    <div class="text-right">${manifest.manifest_description}</div>
+                <div class="mt-4">
+                    <h5>Manifes</h5>
+                    <div id="tracking-package-manifest" class="text-grey mt-3">
+                    </div>
                 </div>`;
-            });
 
-            $('#tracking-package-manifest').html(manifestHtml.join(''));
-            $('.manifes-circle').last().addClass('manifes-circle-last');
-        });
+                let contentLength = $('#tracking-modal-content').children().length; // Default 1
 
+                if (contentLength == 1) {
+                    $('#tracking-modal-content').html(trackingPackagesBody);
+                }
 
-        // $.post('https://pro.rajaongkir.com/api/waybill', datas)
-        // .done(response => {
-        //     let result = response.rajaongkir.result;
-        //     let trackingPackagesBody =
-        //     `<div class="mb-3">
-        //         <h5>Alamat Pengiriman</h5>
-        //         <div>
-        //             <div class="tbold">${result.details.receiver_name}</div>
-        //             <div>${result.details.receiver_address1}</div>
-        //             <div>${result.details.receiver_address2}</div>
-        //             <div>${result.details.receiver_address3}</div>
-        //         </div>
-        //     </div>
-        //     <div class="mt-4">
-        //         <h5>Manifes</h5>
-        //         <div id="tracking-package-manifest" class="text-grey mt-3">
-        //         </div>
-        //     </div>`;
+                let manifestHtml        = result.manifest.map(manifest => {
+                    return `<div class="manifest-circle">
+                        <div>${manifest.manifest_date} ${manifest.manifest_time}</div>
+                        <div class="text-right">${manifest.manifest_description}</div>
+                    </div>`;
+                });
 
-        //     let contentLength = $('#tracking-modal-content').children().length; // Default 1
-
-        //     if (contentLength == 1) {
-        //         $('#tracking-modal-content').html(trackingPackagesBody);
-        //     }
-
-        //     let manifestHtml        = result.manifest.map(manifest => {
-        //         return `<div class="manifest-circle">
-        //             <div>${manifest.manifest_date} ${manifest.manifest_time}</div>
-        //             <div class="text-right">${manifest.manifest_description}</div>
-        //         </div>`;
-        //     });
-
-        //     $('#tracking-package-manifest').html(manifestHtml.join(''));
-        //     $('.manifes-circle').last().addClass('manifes-circle-last');
-        // })
-        // .fail(function(xhr) {
-        //     let message = xhr.responseJSON.rajaongkir.status.description;
-        //     let html    = `<div><h5 class="text-grey tbold">${message}</h5></div>`;
-
-        //     $('#tracking-modal-content').html(html);
-        // });
+                $('#tracking-package-manifest').html(manifestHtml.join(''));
+                $('.manifes-circle').last().addClass('manifes-circle-last');
+            }
+        })
 
         const removeModal = () => {
             setTimeout(() => {
@@ -2688,95 +2539,87 @@ $(document).ready(function () {
             $('input[name=courier_name]').attr('disabled', true);
 
             let datas = {
-                key: 'ce496165f4a20bc07d96b6fe3ab41ded',
-                origin: '317', // Cimenyan
-                originType: 'subdistrict',
-                destination: districtId,
+                _token         : csrfToken,
+                key            : 'ce496165f4a20bc07d96b6fe3ab41ded',
+                origin         : '317', // Cimenyan
+                originType     : 'subdistrict',
+                destination    : districtId,
                 destinationType: 'subdistrict',
-                weight: totalWeight,
-                courier: courierValue,
+                weight         : totalWeight,
+                courier        : courierValue,
             };
 
-            $.ajax({
-                url: `https://pro.rajaongkir.com/api/cost`,
-                type: 'POST',
-                dataType: 'json',
-                data: datas,
-                success: function(response) {
-                    let costs = response.rajaongkir.results[0].costs;
+            $.post('/checkouts/cost', datas)
+            .done(response => {
+                let costs = response.rajaongkir.results[0].costs;
 
-                    $('#spinner').remove();
+                $('#spinner').remove();
 
-                    let html  = ``;
-                        html += '';
+                let html  = ``;
+                    html += '';
 
-                    costs.forEach(function(cost) {
-                        let costValue        = cost.cost[0].value;
-                        let patt             = new RegExp('hari', 'i');
-                        let estimatedArrival = cost.cost[0].etd;
-                        let textHari         = patt.test(estimatedArrival);
+                costs.forEach(function(cost) {
+                    let costValue        = cost.cost[0].value;
+                    let patt             = new RegExp('hari', 'i');
+                    let estimatedArrival = cost.cost[0].etd;
+                    let textHari         = patt.test(estimatedArrival);
 
-                        estimatedArrival = textHari ? estimatedArrival.toLowerCase() : `${estimatedArrival} Hari`;
+                    estimatedArrival = textHari ? estimatedArrival.toLowerCase() : `${estimatedArrival} Hari`;
 
-                        html += `<option value="${costValue}-${cost.service}">${cost.description} - ${estimatedArrival}</option>`;
-                    });
+                    html += `<option value="${costValue}-${cost.service}">${cost.description} - ${estimatedArrival}</option>`;
+                });
 
+                html =
+                `
+                <div id="checkout-courier-service" class="mt-2">
+                    <div class="tbold">Pilih Pengiriman</div>
+                    <div class="mt-2">
+                        <select id="select-courier-service" class="custom-select w-25" name="courier_service">
+                            ${html}
+                        </select>
+                    </div>
+                </div>`;
+
+                if (costs.length == 0) {
                     html =
                     `
                     <div id="checkout-courier-service" class="mt-2">
-                        <div class="tbold">Pilih Pengiriman</div>
-                        <div class="mt-2">
-                            <select id="select-courier-service" class="custom-select w-25" name="courier_service">
-                                ${html}
-                            </select>
-                        </div>
-                    </div>`;
+                        <div class="tbold">Ekspedisi tidak tersedia</div>
+                    </div>
+                    `;
 
-                    if (costs.length == 0) {
-                        html =
-                        `
-                        <div id="checkout-courier-service" class="mt-2">
-                            <div class="tbold">Ekspedisi tidak tersedia</div>
-                        </div>
-                        `;
+                    $('#checkout-courier-choise').after(html);
 
-                        $('#checkout-courier-choise').after(html);
+                } else if ($('#checkout-courier-service').length == 0){
+                    $('#checkout-courier-choise').after(html);
 
-                    } else if ($('#checkout-courier-service').length == 0){
-                        $('#checkout-courier-choise').after(html);
+                    let courierOptions     = $('#select-courier-service');
+                    let courierOptionFirst = courierOptions.first().val();
+                    let costFirst          = courierOptionFirst.split('-')[0];
+                    let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
+                    let totalPaymentText   = $('#checkout-total-payment-text');
+                    let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
 
-                        let courierOptions     = $('#select-courier-service');
-                        let courierOptionFirst = courierOptions.first().val();
-                        let costFirst          = courierOptionFirst.split('-')[0];
-                        let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
-                        let totalPaymentText   = $('#checkout-total-payment-text');
-                        let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
+                    totalPaymentText.text(rupiahFormat(totalPayment));
+                    courierOptions.after(courierPriceHtml);
+                    $('#checkout-shipping-price').text(rupiahFormat(costFirst));
+                    $('#checkout-shipping-cost').attr('value', costFirst);
+
+                    $('#select-courier-service').on('change', function() {
+                        let selectedValue      = $(this).children('option:selected').val();
+                        let selectedCost       = selectedValue.split('-')[0];
+                        let rupiahSelectedCost = rupiahFormat(selectedCost);
+                        let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
 
                         totalPaymentText.text(rupiahFormat(totalPayment));
-                        courierOptions.after(courierPriceHtml);
-                        $('#checkout-shipping-price').text(rupiahFormat(costFirst));
-                        $('#checkout-shipping-cost').attr('value', costFirst);
-
-                        $('#select-courier-service').on('change', function() {
-                            let selectedValue      = $(this).children('option:selected').val();
-                            let selectedCost       = selectedValue.split('-')[0];
-                            let rupiahSelectedCost = rupiahFormat(selectedCost);
-                            let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
-
-                            totalPaymentText.text(rupiahFormat(totalPayment));
-                            $('#checkout-courier-price').text(rupiahSelectedCost);
-                            $('#checkout-shipping-price').text(rupiahSelectedCost);
-                            $('#checkout-shipping-cost').attr('value', selectedCost);
-                        });
-                    }
-
-
-                    $('input[name=courier_name]').attr('disabled', false);
-                },
-                error: function(error) {
-                    console.log(error);
+                        $('#checkout-courier-price').text(rupiahSelectedCost);
+                        $('#checkout-shipping-price').text(rupiahSelectedCost);
+                        $('#checkout-shipping-cost').attr('value', selectedCost);
+                    });
                 }
-            });
+
+                $('input[name=courier_name]').attr('disabled', false);
+            })
         }
 
     });
