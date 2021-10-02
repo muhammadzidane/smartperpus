@@ -140,6 +140,8 @@ $(document).ready(function () {
                 ajaxForm('POST', this, this.action, response => {
                     if (response.status == 'fail') {
                         backendMessage($('#login-title'), [response.message]);
+                        $('.alert-messages').addClass('m-0');
+                        $('.alert-messages').parent().css('padding', '1rem');
                     } else {
                         window.location.href = response.data.url;
                     }
@@ -1158,16 +1160,13 @@ $(document).ready(function () {
             validator(validations, success => {
                 if (success) {
                     ajaxForm('POST', this, this.action, response => {
-                        if (response.errors) {
+                        if (response.status == 'fail') {
                             let element = $(this).parent().prev();
 
-                            backendMessage(element, response.errors);
+                            backendMessage(element, response.message);
                             $('.alert-messages').addClass('mx-auto w-90');
-                        } else if (response.updated){
-                            let message = `Berhasil mengubah password`;
-
-                            $('#custom-modal').modal('hide');
-                            alertMessage(message);
+                        } else {
+                            window.location.href = '/users/success-changed?value=password';
                         }
                     });
                 }
@@ -1328,14 +1327,12 @@ $(document).ready(function () {
                             backendMessage(parentPrev, response.message);
                             $('.alert-messages').addClass('w-90 mx-auto');
                         } else {
-                            $('#custom-modal').modal('hide');
-                            alertMessage(response.message)
+                            window.location.href  = '/users/success-changed?value=email';
                         }
                     });
                 }
             });
         });
-
     });
     //#endregion User change email
 
@@ -1346,48 +1343,6 @@ $(document).ready(function () {
 
     $('#tanggal_rilis').on('change', function() {
         $(this).next().length != 0 ? $(this).next().remove() : '';
-    });
-
-    // User Change Password
-    $('#user-change-password-form').on('submit', function (e) {
-        e.preventDefault();
-
-        let userId = $(this).data('id');
-        let form = $(this)[0];
-        let formData = new FormData(form);
-
-        $.ajax({
-            type: 'POST',
-            url: `/users/${userId}/change-password`,
-            data: formData,
-            processData: false,
-            cache: false,
-            contentType: false,
-            dataType: "JSON",
-            success: function (response) {
-                $('#click-to-the-top').trigger('click');
-
-                if (response.status === 'fail') {
-                    let pesan = '';
-
-                    $('#pesan').removeClass('d-none');
-
-                    for (const key in response.pesan) {
-                        if (response.pesan.hasOwnProperty.call(response.pesan, key)) {
-                            const element = response.pesan[key];
-
-                            pesan += `<div><i class="fas fa-exclamation-triangle"></i> ${element[0]}</div>`;
-                        }
-                    }
-
-                    $('#pesan strong').html(pesan);
-                } else {
-                    sessionStorage.setItem('pesan', 'Berhasil mengubah password');
-                    history.back();
-                }
-
-            }
-        });
     });
 
     const formHtmlCustomer = (formId, action, method, buttonText, methodRequest = '') => {

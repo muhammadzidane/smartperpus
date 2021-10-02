@@ -44,7 +44,7 @@
         array(
             'title' => 'Buku Diskon',
             'books' => \App\Models\Book::where('discount', '!=', 0)->get()->take(12),
-            'search_url' => '',
+            'search_url' => '/books?keywords=&discount=all',
         )
     )
 </div>

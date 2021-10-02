@@ -9,7 +9,7 @@
     <span id="search-text" class="tbold">"{{ request()->keywords ?? 'Semua Buku' }}"</span>
 </div>
 
-<form action="{{ route('books.index') }}" method="GET">
+<form action="/books" method="GET">
     <div class="row flex-nowrap py-4">
         <div class="search-filters-md d-lg-block d-none">
             <div class="d-flex justify-content-between">
@@ -17,6 +17,12 @@
                 <div>
                     <button type="submit" class="form-reset">Reset</button>
                 </div>
+            </div>
+            <div class="filter-sort mt-3 d-flex">
+                <input type="checkbox" name="discount" id="discount" value="all" class="my-auto mr-2" {{ request()->discount == 'all' ? 'checked' : '' }}>
+                <label for="discount" class="m-0 w-100">
+                    <div class="text-left btn-none tbold pt-1">Diskon</div>
+                </label>
             </div>
             <div class="white-content mt-4">
                 <h6 class="tbold borbot-gray-0 pb-3">Berdasarkan Kategori</h6>
@@ -67,12 +73,11 @@
                         </div>
                         <div class="m-0 mr-2">
                             <a href="/authors?{{ preg_replace('/&page=[0-9]/i', '', request()->getQueryString()) }}" class="text-decoration-none text-grey">PENULIS ({{ $authors->count() }})</a>
-
                         </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-4 mt-sm-0">
-                    <div class="my-auto mr-1 text-grey">Ukutkan</div>
+                    <div class="my-auto mr-1 text-grey">Ukutkan :</div>
                     <select class="sort-books" name="sort" onchange="this.form.submit()">
                         <option value="relevan" {{ request()->sort == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
                         <option value="highest-rating" {{ request()->sort == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>

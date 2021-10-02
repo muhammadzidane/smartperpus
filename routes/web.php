@@ -43,6 +43,7 @@ Route::prefix('users')->group(function () {
     Route::patch('{user}/change-password', array(UserController::class, 'changePassword'));
     Route::patch('{user}/change-biodata', array(UserController::class, 'changeBiodata'));
     Route::patch('{user}/change-email', array(UserController::class, 'changeEmail'));
+    Route::get('success-changed', array(UserController::class, 'successChanged'));
 });
 Route::resource('users', UserController::class)->except('edit');
 

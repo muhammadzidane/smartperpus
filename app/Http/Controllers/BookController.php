@@ -63,9 +63,14 @@ class BookController extends Controller
         }
 
         if ($request->sort == 'highest-price') $books = $books->orderByDesc('price');
-        if ($request->sort == 'highest-rating') $books = $books->orderByDesc('rating');
-        if ($request->sort == 'lowest-rating') $books = $books->orderBy('rating');
         if ($request->sort == 'lowest-price') $books = $books->orderBy('price');
+
+        if ($request->sort == 'highest-rating')
+            $books = $books->orderByDesc('rating');
+        if ($request->sort == 'lowest-rating')
+            $books = $books->orderBy('rating');
+
+        if ($request->discount == 'all') $books = $books->where('books.discount', '!=', 0);
 
         $books      = $books->paginate(40)->withQueryString();
         $categories = $categories->get();

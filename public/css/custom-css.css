@@ -1163,6 +1163,12 @@ footer {
 }
 
 /* Book Search */
+.filter-sort {
+    background-color: #ffffff;
+    padding: 4px 10px;
+    border-left: 4px solid #ea5455;
+}
+
 .book-sort {
     border: 2px solid #6E7C7C;
     border-radius: 4px;

@@ -241,7 +241,7 @@ class UserController extends Controller
             }
 
             $data = array('profile_image' => $path_store);
-            $message = 'Berhasil menambah foto profile';
+            $message = 'Berhasil menambah / update foto profile';
 
             $request->image->storeAs('public/users/profiles', $path_store);
             $user->update($data);
@@ -280,21 +280,28 @@ class UserController extends Controller
         $validator = Validator::make(
             $request->all(),
             array(
-                'password_lama'        => array(
+                'password_lama' => array(
                     'required', function ($attribute, $value, $fail) use ($user) {
                         if (!Hash::check($value, $user->password)) {
                             return $fail(__('Password lama anda salah.'));
                         }
                     }
                 ),
-                'password_baru'        => array('required', 'min:8'),
+                'password_baru' => array('required', 'min:8'),
             ),
         );
 
         $update = array('password' => Hash::make($request->password_baru));
 
         if ($validator->fails()) {
-            return response()->json(array('errors' => $validator->errors()));
+            $response = array(
+                'status'  => 'fail',
+                'code'    => 401,
+                'data'    => null,
+                'message' => $validator->errors(),
+            );
+
+            return response()->json($response);
         } else {
             $updated =  $user->update($update);
 
@@ -363,6 +370,16 @@ class UserController extends Controller
             $user->update($data);
 
             return response()->json($response);
+        }
+    }
+
+    public function successChanged(Request $request) {
+        $message = "Berhasil mengupdate $request->value";
+
+        if ($request->value == null) {
+            abort(404);
+        } else {
+            return redirect()->route('users.show', array('user' => auth()->user()->id))->with('message', $message);
         }
     }
 }

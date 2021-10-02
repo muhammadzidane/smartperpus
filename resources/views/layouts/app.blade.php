@@ -290,10 +290,6 @@
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" id="email" name="email" class="form-control-custom login-form" value="{{ old('email') }}" required>
-
-                                @error('email')
-                                    <div class="error-backend"></div>
-                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
@@ -303,9 +299,6 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </div>
-                                @error('password')
-                                    <div class="error-backend"></div>
-                                @enderror
                                 <div>
                                     <div class="text-right">
                                         <a href="{{ route('forgot.password') }}"><small>Lupa Kata Sandi ?</small></a>
@@ -313,7 +306,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-outline-danger w-100" type="submit" disabled>Login</button>
+                                <button class="cursor-disabled btn btn-outline-danger w-100" type="submit" disabled>Login</button>
                             </div>
                             <div class="mb-3">
                                 <div class="login-atau tred">Atau login dengan</div>
