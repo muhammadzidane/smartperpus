@@ -24,6 +24,7 @@ class CreateCustomersTable extends Migration
             $table->string('province_id')->constrained();
             $table->string('phone_number', 15);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

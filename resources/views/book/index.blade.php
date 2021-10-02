@@ -71,8 +71,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-4 mt-sm-0">
-                    <span class="mr-1 text-grey">Ukutkan</span>
+                <div class="d-flex justify-content-between mt-4 mt-sm-0">
+                    <div class="my-auto mr-1 text-grey">Ukutkan</div>
                     <select class="sort-books" name="sort" onchange="this.form.submit()">
                         <option value="relevan" {{ request()->sort == 'relevan' ? 'selected' : '' }}>Paling Relevan</option>
                         <option value="highest-rating" {{ request()->sort == 'highest-rating' ? 'selected' : '' }}>Rating Tertinggi</option>
@@ -135,20 +135,17 @@
                         <div class="collapse" id="categories-filter">
 
                             @forelse ($categories as $category)
-
-                            @if ($category['book_count'] != 0)
-                            <div id="filter-categories">
-                                <label>
-                                    <div class="d-flex">
-                                        <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
-                                        <span class="tbold">{{ $category['name'] }} ({{ $category['book_count'] }})</span>
-                                    </div>
-                                </label>
-                            </div>
-                            @endif
+                                <div id="filter-categories">
+                                    <label>
+                                        <div class="d-flex">
+                                            <input type="checkbox" name="category[]" value="{{ $category['id'] }}" class="mr-2 d-block my-auto" {{ (is_array(old('category')) && in_array($category['id'], old('category'))) ? 'checked' : '' }}>
+                                            <span class="tbold">{{ $category['name'] }} ({{ $category['book_count'] }})</span>
+                                        </div>
+                                    </label>
+                                </div>
 
                             @empty
-                            <button class="btn-none text-grey tbold">Pencarian kosong</button>
+                                <button class="btn-none text-grey tbold">Pencarian kosong</button>
                             @endforelse
                         </div>
                     </div>
@@ -170,10 +167,10 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <button type="submit" class="d-flex btn btn-outline-primary mt-4 ml-auto w-100">
+                        <button type="submit" class="d-flex btn btn-outline-danger mt-4 ml-auto w-100">
                             <span class="mx-auto">Terapkan</span>
                         </button>
-                        <input type="hidden" name="keywords" value="{{ '$keywords' }}">
+                        <input type="hidden" name="keywords" value="{{ request()->keywords }}">
                         <input type="hidden" name="page" value="1">
                     </div>
                 </form>

@@ -38,7 +38,6 @@
             </a>
             <a href="/status/completed" class="status-link {{ request()->path() == 'status/completed' ? 'status-link-active' : '' }}">
                 <span>Selesai</span>
-
             </a>
             <a href="/status/failed" class="status-link {{ request()->path() == 'status/failed' ? 'status-link-active' : '' }}">
                 <span>Dibatalkan</span>
@@ -209,12 +208,12 @@
                         @endif
                     @endif
 
-                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all'))
+                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->arrived)
                             <button type="button" class="status-complete btn btn-outline-danger mr-2">Selesai</button>
                     @endif
 
-                    @if (request()->path() == 'status/completed')
-                            <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
+                    @if (request()->path() == 'status/completed' && $book_user['first']->arrived)
+                        <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     @endif
 
                     @if (Auth::user()->role == 'guest' && $book_user['first']->payment_status == 'arrived')

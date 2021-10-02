@@ -234,7 +234,7 @@ class StatusController extends Controller
         $book_user     = BookUser::firstWhere('invoice', $invoice);
 
         if ($book_user->exists()) {
-            $customer      = Customer::find($book_user->customer_id);
+            $customer      = Customer::withTrashed()->find($book_user->customer_id);
             $total_payment = BookUser::where('invoice', $invoice)->sum('total_payment');
             $total_payment = $total_payment + $book_user->unique_code + $book_user->shipping_cost;
 
@@ -244,6 +244,7 @@ class StatusController extends Controller
             $shipped_date   = $book_user->shipped_date ? $book_user->shipped_date->format('Y-m-d H:i:s') : null;
             $completed_date = $book_user->completed_date ? $book_user->completed_date->format('Y-m-d H:i:s') : null;
             $failed_date    = $book_user->failed_date ? $book_user->failed_date->format('Y-m-d H:i:s') : null;
+
 
             $status_date = compact('order_date', 'failed_date', 'payment_date', 'shipped_date', 'completed_date');
 

@@ -30,9 +30,13 @@ class BookController extends Controller
             array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
         );
 
+        $rating = $request->sort == 'lowest-rating'
+            ? DB::raw('IFNULL(ratings.rating, 999) as rating')
+            : 'ratings.rating as rating'; // highest-rating
+
         $select_values = array(
             'books.*',
-            DB::raw('IFNULL(ratings.rating, 999) as rating'),
+            $rating,
         );
 
         $books = Book::leftJoin('ratings', 'books.id', '=', 'ratings.book_id')
@@ -56,10 +60,6 @@ class BookController extends Controller
         if ($request->min_price || $request->max_price) {
             $between = array($request->min_price ?? 0, $request->max_price ?? Book::max('price'));
             $books   = $books->whereBetween('books.price', $between);
-        }
-
-        foreach ($books->orderBy('rating')->get() as $key => $book) {
-            dump($book->rating);
         }
 
         if ($request->sort == 'highest-price') $books = $books->orderByDesc('price');

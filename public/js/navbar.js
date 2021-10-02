@@ -1996,6 +1996,8 @@ $(document).ready(function () {
             let data       = response.data;
             let failedDate = data.status_date.failed_date;
 
+            console.log(data);
+
             const statusCircleHtml = (status, iconHtml, statusName) => {
                 return `<div class="status-modal-detail">
                     <div class="status-modal-detail-circle ${status ? 'status-modal-detail-active' : ''}">
