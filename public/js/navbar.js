@@ -1077,7 +1077,7 @@ $(document).ready(function () {
         `<div class="user-modal">
             <img id="user-modal-image" class="profile-img w-100" src="${profileImage}">
         </div>
-        <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post">
+        <form id="user-add-photo-profile-form" action="/users/${dataId}/add-photo-profile" method="post" enctype="multipart/form-data">
             <input id="user-image" class="mt-5" name="image" type="file" accept="image/png, image/jpeg, image/jpg">
             <div class="text-right mt-4">
                 <button id="user-add-photo-form" class="btn btn-outline-danger">${buttonText}</button>
@@ -1105,44 +1105,7 @@ $(document).ready(function () {
             ];
 
             validator(validation, success => {
-                if (success) {
-                    ajaxForm('POST', this, this.action, response => {
-                        // Backend validation
-                        if (response.errors) {
-                            let addMessage = $('#custom-modal').find('.modal-content').children().first();
-
-                            backendMessage(addMessage, response.errors);
-                            $('.alert-messages').addClass('m-auto w-90');
-                        } else {
-                            let message                = 'Berhasil menambah foto profile';
-
-                            let dataId = $('#user-add-photo').data('id');
-                            let addFormDestroyPhoto =
-                            `<div class="mt-2">
-                                <form id="user-delete-photo-form" action="/users/${dataId}/destroy-photo" method="post">
-                                    <button type="submit" class="btn-none tred-bold">Hapus Foto</button>
-                                    <input type="hidden" name="_method" value="PATCH">
-                                    <input type="hidden" name="_token" value="${csrfToken}">
-                                </form>
-                            </div>`;
-
-                            let userDeleteFormLength = $('#user-delete-photo-form').length;
-
-                            if (userDeleteFormLength == 0) {
-                                $('#user-change-password').parent().append(addFormDestroyPhoto);
-                            }
-
-                            changeInputPhoto('user-show-profile', 'user-image');
-
-                            $('#custom-modal').modal('hide');
-                            $('#user-image').val('');
-                            $('#user-add-photo').text('Edit Foto')
-                            alertMessage(message);
-
-                            userDeletePhoto();
-                        }
-                    });
-                }
+                if (success) this.submit();
             });
         });
 

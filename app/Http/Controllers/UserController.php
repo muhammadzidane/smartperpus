@@ -227,12 +227,10 @@ class UserController extends Controller
             'image' => 'required|mimes:jpg,jpeg,png|max:2000',
         );
         $validator = Validator::make($request->all(), $rules);
-        $errors    = $validator->errors();
 
         if ($validator->fails()) {
-            return response()->json(compact('errors'));
+            return redirect()->back()->withErrors($validator->errors());
         } else {
-            $photo_profile = $request->image != null ? $request->image->getClientOriginalName() : null;
             $path_store    = "$user->first_name-$user->last_name-$user->email-";
             $path_store   .= time() . '.' . $request->image->getClientOriginalExtension();
             $user          = User::find(Auth::id());
@@ -243,11 +241,12 @@ class UserController extends Controller
             }
 
             $data = array('profile_image' => $path_store);
+            $message = 'Berhasil menambah foto profile';
 
             $request->image->storeAs('public/users/profiles', $path_store);
             $user->update($data);
 
-            return response()->json(compact('path_store'));
+            return redirect()->back()->with('message', $message);
         }
     }
 
