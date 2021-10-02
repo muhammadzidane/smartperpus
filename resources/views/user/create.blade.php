@@ -3,9 +3,9 @@
 
 
 @include('content-header',
-array(
-'icon_html' => '<i class="fas fa-user-plus user-icon fas fa-user-circle text-grey"></i>',
-'title' => 'Tambah Karyawan'
+    array(
+    'icon_html' => '<i class="fas fa-user-plus user-icon fas fa-user-circle text-grey"></i>',
+    'title' => 'Tambah Karyawan'
 ))
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">

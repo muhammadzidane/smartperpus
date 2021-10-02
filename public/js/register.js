@@ -30,7 +30,7 @@ $('#form-register').on('submit', function(event) {
 
     validator(validations, success => {
         if (success) {
-            $(this).trigger('submit');
+            this.submit();
         };
     });
 });

@@ -12,8 +12,7 @@
     <title>Smartperpus</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-    <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -32,20 +31,22 @@
                 <div class="col-md-5">
                     <div>
                         <form id="form-register" action="{{ route('register') }}" method="POST">
-                            <div class="text-right p-0"><a href="{{ route('home') }}"><i class="fas fa-long-arrow-alt-left text-body"></i></a></div>
                             <div class="mb-4">
                                 <h5 class="tred-bold">Buat Akun Anda Sekarang</h5>
                                 <div class="mt-4">Sudah Memiliki akun? <a href="{{ route('login') }}" class="text-decoration-none tred-bold">Masuk</a></div>
                             </div>
 
-
-                            @if ($errors->any())
-                            <div class="alert-message">
-                                @foreach ($errors->all() as $error)
-                                <div class="alert-message-text">Email sudah ada sebelumnya</div>
-                                @endforeach
-                            </div>
-                            @endif
+                            @isset($errors)
+                                @if ($errors->any())
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    @foreach ($errors->all() as $error)
+                                    <div>
+                                        <strong>{{ $error }}</strong>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @endif
+                            @endisset
 
                             <div id="error-register"></div>
 

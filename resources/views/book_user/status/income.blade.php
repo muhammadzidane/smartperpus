@@ -16,7 +16,6 @@ array(
                     <div class="mb-4">
                         <div class="d-flex justify-content-between">
                             <h5>Hari ini</h5>
-                            <a href="{{ route('income.detail.today') }}" class="btn-none tred-bold">Lihat Detail</a>
                         </div>
                     </div>
                     <div class="row">
@@ -66,7 +65,6 @@ array(
                     <div class="mb-4">
                         <div class="d-flex justify-content-between">
                             <h5>Semua</h5>
-                            <div id="income-all" class="btn-none tred-bold">Lihat Detail</div>
                         </div>
                     </div>
                     <div class="row mt-auto">
@@ -92,7 +90,6 @@ array(
                 <div class="mb-4">
                     <div class="d-flex justify-content-between">
                         <h5>Cari berdasarkan bulan</h5>
-                        <div class="btn-none tred-bold">Lihat Detail</div>
                     </div>
                     <div class="mt-4">
                         <form method="GET">

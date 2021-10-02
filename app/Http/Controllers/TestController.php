@@ -13,20 +13,32 @@ class TestController extends Controller
 {
     public function test()
     {
-        foreach (BookUser::get() as $bookUser) {
-            $now           = Carbon::now();
-            $deadline      = $bookUser->payment_deadline;
+        $curl = curl_init();
 
-            if ($now->greaterThan($deadline) && $bookUser->payment_status == 'waiting_for_confirmation') {
-                $update     = array(
-                    'payment_status' => 'failed',
-                    'failed_date'    => $deadline->format('Y-m-d H:i:s'),
-                );
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "https://pro.rajaongkir.com/api/cost",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "origin=501&originType=city&destination=574&destinationType=subdistrict&weight=1700&courier=jne",
+            CURLOPT_HTTPHEADER => array(
+                "content-type: application/x-www-form-urlencoded",
+                "key: ce496165f4a20bc07d96b6fe3ab41ded"
+            ),
+        ));
 
-                dump($bookUser);
-            }
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-            dump($now->greaterThan($deadline));
+        curl_close($curl);
+
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            echo $response;
         }
     }
 

@@ -2,10 +2,11 @@
 @section('content')
 
 @include('content-header',
-array(
-    'title' => isset($book) ? 'Edit Buku' : 'Tambah Buku',
-    'icon_html' => '<i class="user-icon fas fa-book text-green mr-2"></i></i>'
-))
+    array(
+        'title' => isset($book) ? 'Edit Buku' : 'Tambah Buku',
+        'icon_html' => '<i class="user-icon fas fa-book text-green mr-2"></i></i>'
+    )
+)
 
 <div class="row d-md-flex flex-md-row-reverse mt-md-4">
     @include('profile-sidebar')
@@ -140,9 +141,5 @@ array(
         </div>
     </div>
 </div>
-
-@section('script')
-    <script src="{{ asset('js/book/create.js') }}"></script>
-@endsection
 
 @endsection

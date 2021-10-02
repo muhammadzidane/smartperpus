@@ -226,7 +226,7 @@ label { cursor: pointer; }
     display: none;
     position: absolute;
     top: 100%;
-    z-index: 1;
+    z-index: 100;
     background-color: #fffdf6 !important;
     width: 95%;
     box-shadow: 0 0 0.23rem #bbbbbb;
@@ -1123,29 +1123,7 @@ footer {
     border-radius: 7px;
 }
 
-.kp-2, .kp-1 {
-    text-decoration: none;
-    cursor: pointer;
-    width: 250px;
-    text-align: center;
-    padding: 0 9px;
-}
-
-.kp-2:hover, .kp-1:hover {
-    color: #444444;
-    text-decoration: none;
-}
-
-.kp-1 {
-    background-color: #f6f5f5;
-    color: #444444;
-}
-.kp-2 {
-    background-color: #ee6f57;
-    color: white;
-}
-
-.kp-2 > img, .kp-1 > img {
+.kp-img {
     width: 100%;
     height: 145px;
 }
@@ -1944,6 +1922,8 @@ footer {
 }
 
 .alert-messages {
+    position: relative;
+    z-index: 1000;
     border: 1px solid rgb(255, 246, 0, 0.3);
     border-radius: 4px;
     margin: 1.50rem 0;

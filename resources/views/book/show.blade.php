@@ -85,13 +85,13 @@
                     <div class="mr-2">
                         <a id="book-edit" href="{{ route('books.edit', array('book' => $book->id)) }}" type="button" class="btn btn-outline-success">Edit</a>
                     </div>
-                    <div>
+                    <!-- <div>
                         <form id="book-delete-form" action="{{ route('books.destroy', array('book' => $book->id)) }}" method="post">
                             <button id="book-delete-modal" type="submit" class="btn btn-outline-danger">Hapus</button>
                             @method('DELETE')
                             @csrf
                         </form>
-                    </div>
+                    </div> -->
                 </div>
             @endcan
 

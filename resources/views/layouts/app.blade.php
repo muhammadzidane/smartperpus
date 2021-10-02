@@ -6,9 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>Smartperpus</title>
 
     <!-- Scripts -->
@@ -63,56 +60,56 @@
                                 </div>
                                 <div class="btn-group my-auto c-p">
                                     @auth
-                                    <div id="navCartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fas fa-shopping-cart"></i>
+                                        <div id="navCartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-shopping-cart"></i>
 
-                                        @if (auth()->check() && auth()->user()->carts->count() != 0)
-                                        <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
-                                        @endif
-                                    </div>
+                                            @if (auth()->check() && auth()->user()->carts->count() != 0)
+                                                <div class="nav-cart-count">{{ Str::limit(auth()->user()->carts->count(), 3, '+') }}</div>
+                                            @endif
+                                        </div>
 
-                                    <div class="nav-cart-content dropdown-menu dropdown-menu-right mt-3 ml-2" aria-labelledby="navCartDropdown">
-                                        @if (auth()->user()->carts()->count() != 0)
-                                            <div class="nav-cart-content-title">
-                                                <div>Keranjang Saya</div>
+                                        <div class="nav-cart-content dropdown-menu dropdown-menu-right mt-3 ml-2" aria-labelledby="navCartDropdown">
+                                            @if (auth()->user()->carts()->count() != 0)
+                                                <div class="nav-cart-content-title">
+                                                    <div>Keranjang Saya</div>
 
-                                                <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
+                                                    <div class="text-grey tbold">{{ auth()->user()->carts()->count() }} produk</div>
 
-                                            </div>
-                                            <div>
-                                                @foreach (auth()->user()->carts()->orderByDesc('id')->take(3)->get() as $cart)
-                                                    <div class="mt-4 nav-cart-link">
-                                                        <a href="/books/{{ $cart->books()->first()->id }}">
-                                                            <div class="row">
-                                                                <div class="col-3 pr-0">
-                                                                    <div class="nav-cart-content-image">
-                                                                        <div class="nav-cart-content-src">
-                                                                            <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                                </div>
+                                                <div>
+                                                    @foreach (auth()->user()->carts()->orderByDesc('id')->take(3)->get() as $cart)
+                                                        <div class="mt-4 nav-cart-link">
+                                                            <a href="/books/{{ $cart->books()->first()->id }}">
+                                                                <div class="row">
+                                                                    <div class="col-3 pr-0">
+                                                                        <div class="nav-cart-content-image">
+                                                                            <div class="nav-cart-content-src">
+                                                                                <img src="{{ asset('storage/books/' . $cart->books()->first()->image) }}" alt="">
+                                                                            </div>
                                                                         </div>
                                                                     </div>
+                                                                    <div class="col-9 pl-0">
+                                                                        <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
+                                                                        <div class="tred-bold mt-1">{{ rupiah_format($cart->books()->first()->price - $cart->books()->first()->discount) }}</div>
+                                                                    </div>
                                                                 </div>
-                                                                <div class="col-9 pl-0">
-                                                                    <div>{{ Str::limit($cart->books()->first()->name, 35, '...') }}</div>
-                                                                    <div class="tred-bold mt-1">{{ rupiah_format($cart->books()->first()->price - $cart->books()->first()->discount) }}</div>
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                            <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
-
-                                        @else
-                                        <div class="text-center">
-                                            <div>Belum ada produk</div>
-                                            <div class="py-2">
-                                                <div class="w-50 mx-auto">
-                                                    <img class="w-100" src="{{ asset('img/no-data.png') }}" alt="">
+                                                            </a>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
-                                            </div>
+                                                <div class="text-right pb-1"><a href="/carts" class="text-decoration-none tred-bold">Lihat lainnya</a></div>
+
+                                            @else
+                                                <div class="text-center">
+                                                    <div>Belum ada produk</div>
+                                                    <div class="py-2">
+                                                        <div class="w-50 mx-auto">
+                                                            <img class="w-100" src="{{ asset('img/no-data.png') }}" alt="">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         </div>
-                                        @endif
-                                    </div>
                                     @endauth
 
                                     @guest
@@ -125,13 +122,14 @@
                             <div>
                                 <div id="nav-login" class="d-none d-lg-block ml-auto align-items-center">
                                     @guest
-                                    <div>
-                                        <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
-                                    </div>
+                                        <a href="/register" class="tred-bold mr-3">Daftar</a>
+                                        <span>
+                                            <button id="login" class="btn btn-red" data-toggle="modal" data-target="#modal-login">Masuk</button>
+                                        </span>
                                     @endguest
 
                                     @auth
-                                    @include('layouts.auth-nav-login')
+                                        @include('layouts.auth-nav-login')
                                     @endauth
                                 </div>
                             </div>
@@ -163,7 +161,7 @@
                         </div>
 
                         @else
-                        @include('layouts.auth-nav-login')
+                            @include('layouts.auth-nav-login')
                         @endguest
                     </div>
                 </div>
@@ -172,19 +170,14 @@
 
         <!-- Error messages from backend -->
         @isset($errors)
-        @if ($errors->any())
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @foreach ($errors->all() as $error)
-            <div class="mt-2">
-                <strong>{{ $error }}</strong>
+            @if ($errors->any())
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @foreach ($errors->all() as $error)
+                    <strong>{{ $error }}</strong>
+                </div>
+                @endforeach
             </div>
-            @endforeach
-
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endif
+            @endif
         @endisset
 
         @if (session()->has('message'))
@@ -299,7 +292,7 @@
                                 <input type="email" id="email" name="email" class="form-control-custom login-form" value="{{ old('email') }}" required>
 
                                 @error('email')
-                                <div class="error-backend"></div>
+                                    <div class="error-backend"></div>
                                 @enderror
                             </div>
                             <div class="form-group">
@@ -311,7 +304,7 @@
                                     </button>
                                 </div>
                                 @error('password')
-                                <div class="error-backend"></div>
+                                    <div class="error-backend"></div>
                                 @enderror
                                 <div>
                                     <div class="text-right">
@@ -581,9 +574,9 @@
         </div>
     </div>
 
+    @yield('script')
     <script src="{{ asset('js/navbar.js') }}"></script>
     <script src="{{ asset('js/helper-functions.js') }}"></script>
-    @yield('script')
 </body>
 
 </html>

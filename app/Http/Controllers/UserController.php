@@ -235,7 +235,7 @@ class UserController extends Controller
             $photo_profile = $request->image != null ? $request->image->getClientOriginalName() : null;
             $path_store    = "$user->first_name-$user->last_name-$user->email-";
             $path_store   .= time() . '.' . $request->image->getClientOriginalExtension();
-            $user          = Auth::user();
+            $user          = User::find(Auth::id());
 
             if ($user->profile_image) {
                 $filename = 'storage/users/profiles/' . $user->profile_image;
@@ -262,9 +262,11 @@ class UserController extends Controller
             File::delete($filename);
         }
 
-        $update = $user->update($update);
+        $message = 'Berhasil menghapus foto';
 
-        return response()->json(compact('update'));
+        $user->update($update);
+
+        return redirect()->back()->with('message', $message);
     }
 
     public function showChangePassword(User $user)
@@ -304,10 +306,10 @@ class UserController extends Controller
     public function changeBiodata(Request $request, User $user)
     {
         $rules     = array(
-            'first_name'    => 'required',
-            'last_name'     => 'required',
+            'first_name'    => 'required|min:3',
+            'last_name'     => 'required|min:3',
             'gender'        => 'required',
-            'address'       => 'nullable',
+            'address'       => 'nullable|min:10',
             'date_of_birth' => 'nullable|date',
             'phone_number'  => 'nullable|min:9|max:15',
         );
@@ -315,20 +317,13 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            $errors = $validator->errors();
-            $test   = $request->except('_method', '_token');
-
-            return response()->json(compact('errors', 'test'));
+            return redirect()->back()->withErrors($validator);
         } else {
-            $data = $request->except('_token', '_method');
-
+            $data    = $request->except('_token', '_method');
+            $message = 'Berhasil mengupdate user';
             $user->update($data);
 
-            $date_of_birth = $user->date_of_birth->isoFormat('D MMMM YYYY');
-
-            $data = compact('user', 'date_of_birth');
-
-            return response()->json($data);
+            return redirect()->back()->with('message', $message);
         }
     }
 
@@ -345,16 +340,30 @@ class UserController extends Controller
         );
 
         $validator      = Validator::make($request->all(), $rules);
-        $errors         = $validator->errors();
-        $check_password =  Hash::check($request->password, $user->password);
 
-        if ($validator->fails()) {
-            return response()->json(compact('errors'));
+        if ($validator->fails() ) {
+            $errors = $validator->errors();
+
+            $response = array(
+                'status'  => 'fail',
+                'code'    => 404,
+                'data'    => null,
+                'message' => $errors,
+            );
+
+            return response()->json($response);
         } else {
-            $data    = array('email' => $request->email);
-            $updated = $user->update($data);
+            $data     = array('email' => $request->email);
+            $response = array(
+                'status'  => 'success',
+                'code'    => 200,
+                'data'    => null,
+                'message' => 'Berhasil mengupdate email',
+            );
 
-            return response()->json(compact('updated', 'user'));
+            $user->update($data);
+
+            return response()->json($response);
         }
     }
 }

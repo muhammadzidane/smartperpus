@@ -34,8 +34,7 @@ use Illuminate\Support\Facades\{Route, Auth};
 Route::get('/', array(HomeController::class, 'index'))->name('home');
 
 // TEST
-Route::get('test', abort(404));
-Route::post('test', array(TestController::class, 'testPost'))->name('test.post');
+Route::post('test', array(TestController::class, 'test'));
 
 // User
 Route::prefix('users')->group(function () {

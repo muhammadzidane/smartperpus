@@ -1053,36 +1053,19 @@ $(document).ready(function () {
     });
 
     //#region User create / update photo profile
-    const deletePhotoProfile = () => {
+    const userDeletePhoto = () => {
         $('#user-delete-photo-form').on('submit', function (e) {
             e.preventDefault();
 
             let message = 'Apakah anda yakin ingin menghapus foto profile ?';
 
             modalConfirm(message, accepted => {
-                if (accepted) {
-                    ajaxForm('POST', this, this.action, response => {
-                        if (response.update) {
-                            let origin      = window.location.origin;
-                            let avatarImage = `${origin}/img/avatar-icon.png`;
-                            let html        = '<i class="fas fa-user"></i>';
-                            let message     = 'Berhasil menghapus foto profile';
-                            let userPhoto   = $('#user-circle-fit').length
-
-                            if (userPhoto != 0 && $('.user-circle').find('i').length ==0 ) {
-                                $('#user-circle-fit').remove();
-                                $('#user-add-photo').text('Tambah Foto');
-                                $('#user-show-profile').attr('src', avatarImage );
-                                $('.user-circle').append(html);
-                                alertMessage(message);
-                                $(this).remove();
-                            }
-                        }
-                    });
-                }
+                if (accepted) this.submit();
             });
         });
     }
+
+    userDeletePhoto();
 
     $('#user-add-photo').on('click', function() {
         let profileImage = $('#user-show-profile').attr('src');
@@ -1132,12 +1115,6 @@ $(document).ready(function () {
                             $('.alert-messages').addClass('m-auto w-90');
                         } else {
                             let message                = 'Berhasil menambah foto profile';
-                            let navbarProfileImageText = `<img id="user-circle-fit" src=""></img>`;
-
-                            if ($('.user-circle').find('i').length != 0) {
-                                $('.user-circle').find('i').remove();
-                                $('.user-circle').append(navbarProfileImageText);
-                            }
 
                             let dataId = $('#user-add-photo').data('id');
                             let addFormDestroyPhoto =
@@ -1155,7 +1132,6 @@ $(document).ready(function () {
                                 $('#user-change-password').parent().append(addFormDestroyPhoto);
                             }
 
-                            changeInputPhoto('user-circle-fit', 'user-image');
                             changeInputPhoto('user-show-profile', 'user-image');
 
                             $('#custom-modal').modal('hide');
@@ -1163,7 +1139,7 @@ $(document).ready(function () {
                             $('#user-add-photo').text('Edit Foto')
                             alertMessage(message);
 
-                            deletePhotoProfile();
+                            userDeletePhoto();
                         }
                     });
                 }
@@ -1171,7 +1147,6 @@ $(document).ready(function () {
         });
 
     });
-    deletePhotoProfile();
     //#endregion User create / update photo profile
 
     //#region User change password
@@ -1190,7 +1165,7 @@ $(document).ready(function () {
                     <input id="password-baru" name="password_baru" type="password" class="form-control-custom" autocomplete="off">
                 </div>
                 <div class="text-right mt-4">
-                    <button class="btn btn-outline-danger" type="submit">Ubah</button>
+                    <button class="cursor-disabled btn btn-outline-danger" type="submit" disabled>Ubah</button>
                 </div>
                 <input type="hidden" name="_method" value="PATCH">
                 <input type="hidden" name="_token" value="${csrfToken}">
@@ -1198,6 +1173,8 @@ $(document).ready(function () {
 
             return html;
         })
+
+        formDisableSubmit('#user-change-password', 'input:not([type=hidden])')
 
         $('#user-change-password').on('submit', function(event) {
             event.preventDefault();
@@ -1292,53 +1269,46 @@ $(document).ready(function () {
         $('#user-change-biodata-form').on('submit', function(event) {
             event.preventDefault();
 
-            let formInputs = $(this).find('input:not([type=hidden])').toArray();
-            let validations = formInputs.map(input => {
-                let inputId    = '#' + input.id;
-                let inputName  = capitalizeFirstLetter(input.id.replace(/_|-/, ' '));
-                let validation = {
-                    input    : inputId,
-                    inputName: inputName,
+            let validations = [
+                {
+                    input    : '#nama-awal',
+                    inputName: 'Nama awal',
+                    rules    : 'required,min:3',
+                },
+                {
+                    input    : '#nama-akhir',
+                    inputName: 'Nama akhir',
+                    rules    : 'required,min:3',
+                },
+                {
+                    input    : '#tanggal-lahir',
+                    inputName: 'Tanggal lahir',
                     rules    : 'required',
-                };
-
-                if (inputId == '#tanggal-lahir') {
-                    validation['rules'] = 'nullable';
-                }
-
-                if (inputId == '#nomer-handphone') {
-                    validation['rules'] = 'nullable,numeric,min:9,max:15';
-                }
-
-                return validation;
-            });
+                },
+                {
+                    input    : '#tanggal-lahir',
+                    inputName: 'Tanggal lahir',
+                    rules    : 'required',
+                },
+                {
+                    input    : '#jenis-kelamin',
+                    inputName: 'Jenis kelamin',
+                    rules    : 'required',
+                },
+                {
+                    input    : '#alamat',
+                    inputName: 'alamat',
+                    rules    : 'nullable,min:10',
+                },
+                {
+                    input    : '#nomer-handphone',
+                    inputName: 'Nomer handphone',
+                    rules    : 'nullable,min:9,max:15',
+                },
+            ];
 
             validator(validations, success => {
-                if (success) {
-                    ajaxForm('POST', this, this.action, response => {
-                        if (response.errors) {
-                            let parentPrev = $(this).parent().prev();
-
-                            backendMessage(parentPrev, response.errors);
-                            $('.alert-messages').addClass('w-90 mx-auto')
-                        } else {
-                            let message = 'Berhasil mengedit biodata';
-                            let user    = response.user;
-                            let gender  = user.gender == 'L' ? 'Laki-laki' : 'Perempuan';
-
-                            alertMessage(message);
-                            $('#custom-modal').modal('hide');
-                            $('.navbar-user-first-name').text(user.first_name);
-                            $('#user-first-name').text(user.first_name);
-                            $('#user-last-name').text(user.last_name);
-                            $('#user-date-of-birth').text(response.date_of_birth);
-                            $('#user-gender').text(gender);
-                            $('#user-hidden-address').text(user.address);
-                            $('#user-email').text(user.email);
-                            $('#user-phone-number').text(user.phone_number);
-                        }
-                    });
-                }
+                if (success) this.submit();
             });
         });
     });
@@ -1399,20 +1369,14 @@ $(document).ready(function () {
             validator(validations, success => {
                 if (success) {
                     ajaxForm('POST', this, this.action, response => {
-                        if (response.errors) {
+                        if (response.status == 'fail') {
                             let parentPrev = $(this).parent().prev();
 
-                            backendMessage(parentPrev, response.errors);
+                            backendMessage(parentPrev, response.message);
                             $('.alert-messages').addClass('w-90 mx-auto');
-                        } else if (response.updated) {
-                            let user    = response.user;
-                            let message = 'Berhasil mengubah email';
-
-                            $('#user-old-email').val(user.email);
-                            $('#user-email').text(user.email);
-                            $('.alert-messages').remove();
+                        } else {
                             $('#custom-modal').modal('hide');
-                            alertMessage(message);
+                            alertMessage(response.message)
                         }
                     });
                 }
@@ -1492,7 +1456,7 @@ $(document).ready(function () {
             </div>
             <div class="form-group mx-auto mt-4 position-relative">
                 <label for="provinsi">Cari Kota / Kecamatan</label>
-                <input id="user-city-district-search" type="text" class="form-control-custom book-edit-inp">
+                <input id="user-city-district-search" type="text" class="form-control-custom book-edit-inp" autocomplete="off">
                 <input id="user-city-or-district" type="hidden" name="kota_atau_kecamatan">
                 <div id="user-hidden-address" class="user-address">
                 </div>
@@ -2672,6 +2636,8 @@ $(document).ready(function () {
                 spinnerHtml  += `</div>`;
             let spinnerLength = $('#spinner').length;
 
+            if (spinnerLength == 0) $('#checkout-courier-choise').after(spinnerHtml);
+
             let totalWeight = $('.customer-book').map(function() {
                 return $(this).find('.book-weight').text();
             });
@@ -2680,8 +2646,6 @@ $(document).ready(function () {
             totalWeight = totalWeight.reduce((total, value) => {
                 return parseInt(total) + parseInt(value);
             });
-
-            if (spinnerLength == 0) $('#checkout-courier-choise').after(spinnerHtml);
 
             $('input[name=courier_name]').attr('disabled', true);
 
@@ -2695,77 +2659,86 @@ $(document).ready(function () {
                 courier: courierValue,
             };
 
-            $.post('https://pro.rajaongkir.com/api/cost', datas, function(response) {
-                let costs = response.rajaongkir.results[0].costs;
+            $.ajax({
+                url: `https://pro.rajaongkir.com/api/cost`,
+                type: 'POST',
+                dataType: 'json',
+                data: datas,
+                success: function(response) {
+                    let costs = response.rajaongkir.results[0].costs;
 
-                $('#spinner').remove();
+                    $('#spinner').remove();
 
-                let html  = ``;
-                    html += '';
+                    let html  = ``;
+                        html += '';
 
-                costs.forEach(function(cost) {
-                    let costValue        = cost.cost[0].value;
-                    let patt             = new RegExp('hari', 'i');
-                    let estimatedArrival = cost.cost[0].etd;
-                    let textHari         = patt.test(estimatedArrival);
+                    costs.forEach(function(cost) {
+                        let costValue        = cost.cost[0].value;
+                        let patt             = new RegExp('hari', 'i');
+                        let estimatedArrival = cost.cost[0].etd;
+                        let textHari         = patt.test(estimatedArrival);
 
-                    estimatedArrival = textHari ? estimatedArrival.toLowerCase() : `${estimatedArrival} Hari`;
+                        estimatedArrival = textHari ? estimatedArrival.toLowerCase() : `${estimatedArrival} Hari`;
 
-                    html += `<option value="${costValue}-${cost.service}">${cost.description} - ${estimatedArrival}</option>`;
-                });
+                        html += `<option value="${costValue}-${cost.service}">${cost.description} - ${estimatedArrival}</option>`;
+                    });
 
-                html =
-                `
-                <div id="checkout-courier-service" class="mt-2">
-                    <div class="tbold">Pilih Pengiriman</div>
-                    <div class="mt-2">
-                        <select id="select-courier-service" class="custom-select w-25" name="courier_service">
-                            ${html}
-                        </select>
-                    </div>
-                </div>`;
-
-                if (costs.length == 0) {
                     html =
                     `
                     <div id="checkout-courier-service" class="mt-2">
-                        <div class="tbold">Ekspedisi tidak tersedia</div>
-                    </div>
-                    `;
+                        <div class="tbold">Pilih Pengiriman</div>
+                        <div class="mt-2">
+                            <select id="select-courier-service" class="custom-select w-25" name="courier_service">
+                                ${html}
+                            </select>
+                        </div>
+                    </div>`;
 
-                    $('#checkout-courier-choise').after(html);
+                    if (costs.length == 0) {
+                        html =
+                        `
+                        <div id="checkout-courier-service" class="mt-2">
+                            <div class="tbold">Ekspedisi tidak tersedia</div>
+                        </div>
+                        `;
 
-                } else if ($('#checkout-courier-service').length == 0){
-                    $('#checkout-courier-choise').after(html);
+                        $('#checkout-courier-choise').after(html);
 
-                    let courierOptions     = $('#select-courier-service');
-                    let courierOptionFirst = courierOptions.first().val();
-                    let costFirst          = courierOptionFirst.split('-')[0];
-                    let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
-                    let totalPaymentText   = $('#checkout-total-payment-text');
-                    let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
+                    } else if ($('#checkout-courier-service').length == 0){
+                        $('#checkout-courier-choise').after(html);
 
-                    totalPaymentText.text(rupiahFormat(totalPayment));
-                    courierOptions.after(courierPriceHtml);
-                    $('#checkout-shipping-price').text(rupiahFormat(costFirst));
-                    $('#checkout-shipping-cost').attr('value', costFirst);
-
-                    $('#select-courier-service').on('change', function() {
-                        let selectedValue      = $(this).children('option:selected').val();
-                        let selectedCost       = selectedValue.split('-')[0];
-                        let rupiahSelectedCost = rupiahFormat(selectedCost);
-                        let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
+                        let courierOptions     = $('#select-courier-service');
+                        let courierOptionFirst = courierOptions.first().val();
+                        let costFirst          = courierOptionFirst.split('-')[0];
+                        let courierPriceHtml   = `<span id="checkout-courier-price" class="ml-2 text-grey">${rupiahFormat(costFirst)}</span>`;
+                        let totalPaymentText   = $('#checkout-total-payment-text');
+                        let totalPayment       = parseInt(totalPaymentText.data('price')) + parseInt(costFirst);
 
                         totalPaymentText.text(rupiahFormat(totalPayment));
-                        $('#checkout-courier-price').text(rupiahSelectedCost);
-                        $('#checkout-shipping-price').text(rupiahSelectedCost);
-                        $('#checkout-shipping-cost').attr('value', selectedCost);
-                    });
+                        courierOptions.after(courierPriceHtml);
+                        $('#checkout-shipping-price').text(rupiahFormat(costFirst));
+                        $('#checkout-shipping-cost').attr('value', costFirst);
+
+                        $('#select-courier-service').on('change', function() {
+                            let selectedValue      = $(this).children('option:selected').val();
+                            let selectedCost       = selectedValue.split('-')[0];
+                            let rupiahSelectedCost = rupiahFormat(selectedCost);
+                            let totalPayment       = parseInt(selectedCost) + parseInt(totalPaymentText.data('price'));
+
+                            totalPaymentText.text(rupiahFormat(totalPayment));
+                            $('#checkout-courier-price').text(rupiahSelectedCost);
+                            $('#checkout-shipping-price').text(rupiahSelectedCost);
+                            $('#checkout-shipping-cost').attr('value', selectedCost);
+                        });
+                    }
+
+
+                    $('input[name=courier_name]').attr('disabled', false);
+                },
+                error: function(error) {
+                    console.log(error);
                 }
-
-
-                $('input[name=courier_name]').attr('disabled', false);
-            })
+            });
         }
 
     });
@@ -2829,9 +2802,108 @@ $(document).ready(function () {
         });
     });
 
-
     formDisableSubmit('#checkout-customer-store', 'input:not([type=hidden])');
     //#endregion Checkout - Customer store
-
     //#endregion Checkout
+
+    //#region Book create
+    const bookEditCustomValidationCondition = (inputId, data, formAction = '') => {
+        if (inputId == '#isbn') {
+            data['rules'] = 'required,digits:13';
+        }
+
+        if (inputId == '#tersedia_dalam_ebook') {
+            data['rules'] = 'nullable';
+        }
+
+        if (inputId == '#diskon') {
+            data['rules'] = 'nullable';
+        }
+
+        if (inputId == '#gambar_sampul_buku') {
+            data['rules'] = 'required,mimes:png|jpg|jpeg,maxSize:2000';
+        }
+    }
+
+    formDisableSubmit('#book-edit-form, #book-store-form', 'input:not([type=hidden]):not([name=diskon]');
+
+    $('#book-edit-form, #book-store-form').on('submit', function (e) {
+        e.preventDefault();
+
+        let validations   = [];
+        let finds         = 'input[type=number], input[type=text], input[type=date], input[type=file], textarea';
+        let inputs        = $(this).find(finds);
+
+        inputs.map((key, input) => {
+            let inputId   = $(input).attr('id');
+            let inputName = capitalizeFirstLetter(inputId.replaceAll('_', ' '));
+            inputId       = `#${inputId}`;
+            let data      = {
+                input    : inputId,
+                inputName: inputName,
+                rules    : 'required',
+            }
+
+            bookEditCustomValidationCondition(inputId, data);
+            validations.push(data);
+        });
+
+        validator(validations, success => {
+            if (success) this.submit();
+        });
+    })
+
+    $('#nama_penulis').on('keyup', function() {
+        let data = {
+            author_name: $(this).val(),
+        };
+
+        setTimeout(() => {
+            $.get(`/api/books/get-authors`, data, response => {
+                if (response.status == 'success') {
+                    console.log(response.data.authors);
+                    let html = response.data.authors.map((author) => `<div class="p-2">${author.name}</div>`);
+                        html = `<div class="form-search-content">${html.join('')}</div>`;
+
+                    $('.form-search-content').remove();
+                    $(this).after(html);
+
+                    $('.form-search-content div').on('click', event => {
+                        $(this).val($(event.target).text());
+                        $(this).attr('value', $(event.target).text());
+                        $('.form-search-content').remove();
+                    });
+                }
+            });
+        }, 200);
+
+        if ($(this).val().length == 0) {
+            $('.form-search-content').remove();
+        }
+    });
+
+    //#endregion
+
 }); // End of onload Event
+
+
+const hapusUser = (myObject) => {
+    myObject = $(myObject);
+    const token = myObject.attr("token");
+    const backendUrl = myObject.attr("url");
+    let formData = {
+        _method: "DELETE",
+        _token: token,
+        userDelete: true,
+    }
+    $.ajax({
+        type: "POST",
+        url: backendUrl,
+        data: formData,
+        dataType: "JSON",
+        success: function (response) {
+            console.log("RESPONSE ====>", response);
+        },
+    })
+
+}

@@ -37,7 +37,7 @@
 
         @can('isAllAdmin')
             <div>
-                <a class="dropdown-item" href="{{ route('status.all') }}">Pembelian</a>
+                <a class="dropdown-item" href="/status/uploaded-payment">Bukti Pembayaran</a>
             </div>
             <div>
                 <a class="dropdown-item" href="{{ route('income') }}">Penghasilan</a>
