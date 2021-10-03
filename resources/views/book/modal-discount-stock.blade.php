@@ -11,10 +11,10 @@
                 <form id="{{ $target_id }}-form" action="{{ $form_action }}" method="POST">
                     <div class="form-group">
                         <input class="form-control-custom"
-                        type="number" name="amount" min="1" placeholder="Jumlah" autocomplete="off" value="{{ $target_id == 'book-add-discount-modal' ? $book->discount : '' }}">
+                        type="number" name="amount" placeholder="Jumlah" autocomplete="off" value="{{ $target_id == 'book-add-discount-modal' ? $book->discount : '' }}">
                     </div>
                     <div class="text-right mt-4">
-                        <button type="submit" class="cursor-disabled btn btn-outline-danger" disabled>Tambah</button>
+                        <button type="submit" class="{{ $target_id == 'book-add-stock-modal' ? 'cursor-disabled' : '' }} btn btn-outline-danger" {{ $target_id == 'book-add-stock-modal' ? 'disabled' : '' }}>Tambah</button>
                     </div>
 
                     @isset($method)

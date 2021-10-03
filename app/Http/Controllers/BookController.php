@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\{Book, Author, Category, BookImage, Rating};
+use App\Models\{Book, Author, Category, Rating};
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\{Storage, Validator, Auth, File, DB};

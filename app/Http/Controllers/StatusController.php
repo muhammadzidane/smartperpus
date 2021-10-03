@@ -139,10 +139,9 @@ class StatusController extends Controller
 
         $book_users = $book_users->map(function ($book_user) {
             $book_user_invoice = BookUser::where('invoice', $book_user->invoice);
-
-            $first_data    = $book_user_invoice->get()->first();
-            $total_payment = $book_user_invoice->get()->sum('total_payment') + $first_data->unique_code + $first_data->shipping_cost;
-            $amount        = $book_user_invoice->get()->sum('amount');
+            $first_data        = $book_user_invoice->get()->first();
+            $total_payment     = $book_user_invoice->get()->sum('total_payment') + $first_data->unique_code + $first_data->shipping_cost;
+            $amount            = $book_user_invoice->get()->sum('amount');
 
             $select_value = array(
                 'books.id',
@@ -202,9 +201,31 @@ class StatusController extends Controller
                     break;
             }
 
+            if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all' || request()->path() == 'status/uploaded-payment' && $first_data->payment_status == 'waiting_for_confirmation')) {
+                $status_date = 'Bayar Sebelum - ' . $first_data->created_at->isoFormat('dddd, D MMMM Y H:mm:ss');
+            }
+
+            if ((request()->path() == 'status/failed' || request()->path() == 'status/all') && $first_data->payment_status == 'failed') {
+                $status_date = $first_data->failed_date->isoFormat('dddd, D MMMM Y H:mm:ss');
+            }
+
+            if ((request()->path() == 'status/on-process' || request()->path() == 'status/all') && $first_data->payment_status == 'order_in_process')
+            {
+                $status_date = $first_data->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss');
+            }
+
+            if (request()->path() == 'status/on-delivery') {
+                $status_date = $first_data->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss');
+            }
+
+            if ((request()->path() == 'status/completed' || request()->path() == 'status/all') && $first_data->payment_status == 'arrived') {
+                $status_date = $first_data->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss');
+            }
+
             return array(
                 'first'         => $first_data,
                 'status'        => $status,
+                'status_date'   => $status_date,
                 'user_fullname' => User::find($first_data->user_id)->first_name . ' ' . User::find($first_data->user_id)->last_name,
                 'books'         => $books,
                 'amount'        => $amount,

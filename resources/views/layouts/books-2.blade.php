@@ -56,7 +56,7 @@
             <div class="book-price">
                 @if(isset($book->discount) && $book->discount != 0)
                     <div>
-                        <small class="discount-line-through text-success">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
+                        <small class="discount-line-through">Rp{{ number_format($book->price, 0, 0, '.') }}</small>
                         <span>Rp{{ number_format(($book->price - $book->discount), 0, 0, '.') }}</span>
                     </div>
 

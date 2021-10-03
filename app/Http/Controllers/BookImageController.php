@@ -16,7 +16,9 @@ class BookImageController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
 
-        if (!$validator->fails()) {
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator);
+        } else {
             $time     = time();
             $image    = $time . '.' . $request->image->getClientOriginalExtension();
             $filename = 'storage/books/book_images/' . $bookImage->image;
@@ -24,15 +26,11 @@ class BookImageController extends Controller
 
             File::delete($filename);
             $request->image->storeAs('public/books/book_images', $image);
+            $bookImage->update($data);
 
-            $update = $bookImage->update($data);
-            $src    = $image;
+            $message = 'Berhasil mengupdate foto buku';
 
-            return response()->json(compact('update', 'src'));
-        } else {
-            $errors = $validator->errors();
-
-            return response()->json(compact('errors'));
+            return redirect()->back()->with('message', $message);
         }
     }
 
@@ -61,15 +59,14 @@ class BookImageController extends Controller
             $time       = time();
             $image      = $time . '.' . $request->image->getClientOriginalExtension();
             $create     = array('image' => $image);
-            $book_image = $book->book_images()->create($create);
+            $message    = 'Berhasil menambah foto buku';
 
+            $book->book_images()->create($create);
             $request->image->storeAs('public/books/book_images', $image);
 
-            return response()->json(compact('image', 'book_image'));
+            return redirect()->back()->with('message', $message);
         } else {
-            $errors = $validator->errors();
-
-            return response()->json(compact('errors'));
+            return redirect()->back()->withErrors($validator);
         }
     }
 
@@ -83,15 +80,8 @@ class BookImageController extends Controller
         $request->image->storeAs('public/books', $image);
         $book->update($data);
 
-        $data['image'] = asset('storage/books/' . $image);
+        $message = 'Berhasil mengupdate gambar utama';
 
-        $response = array(
-            'status'  => 'success',
-            'code'    => 200,
-            'data'    => $data,
-            'message' => 'Berhasil mengupdate gambar utama',
-        );
-
-        return response()->json($response);
+        return redirect()->back()->with('message', $message);
     }
 }

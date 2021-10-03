@@ -31,11 +31,11 @@
                 @endforeach
             </div>
 
-            @can('viewAny', 'App\\Models\User')
+            @can('isAllAdmin')
                 <div class="mb-5 mt-4">
                     <div class="mb-2 mt-3">
                         <div class="text-grey mb-2">Klik pada gambar untuk mengedit</div>
-                        <form id="book-image-edit-form" method="post" enctype="multipart/form-data">
+                        <form action="/book_images/update" id="book-image-edit-form" method="post" enctype="multipart/form-data">
                             <input id="book-image-edit-file" type="file" name="image" accept="image/png, image/jpeg, image/jpg">
                             <button id="book-image-edit" type="submit" class="btn btn-success w-100 mt-2">Edit</button>
                             @method('PATCH')
@@ -226,42 +226,42 @@
 
                     <div>
                         @auth
-                            @cannot('authAdminOnly', 'App/Models/User')
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <button id="book-show-wishlist" class="btn-none">
-                                        @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', auth()->user()->id)->first())
-                                        <i class="fas fa-heart text-danger"></i>
-                                        @else
-                                        <i class="far fa-heart text-danger"></i>
+                            @cannot('isAllAdmin')
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <button id="book-show-wishlist" class="btn-none">
+                                            @if (App\Models\Wishlist::where('book_id', $book->id)->where('user_id', auth()->user()->id)->first())
+                                            <i class="fas fa-heart text-danger"></i>
+                                            @else
+                                            <i class="far fa-heart text-danger"></i>
 
+                                            @endif
+                                            <span>Wishlist</span>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        @if (auth()->user()->carts->where('book_id', $book->id)->isNotEmpty())
+                                        <button id="cart-delete" class="btn-none tred" data-id="{{ auth()->user()->carts->where('book_id', $book->id)->first()->id }}">Hapus dari keranjang</button>
+                                        @else
+                                        <button id="cart-store" class="btn-none"><i class="add-shop fa fa-plus"></i> Keranjang</button>
                                         @endif
-                                        <span>Wishlist</span>
-                                    </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    @if (auth()->user()->carts->where('book_id', $book->id)->isNotEmpty())
-                                    <button id="cart-delete" class="btn-none tred" data-id="{{ auth()->user()->carts->where('book_id', $book->id)->first()->id }}">Hapus dari keranjang</button>
-                                    @else
-                                    <button id="cart-store" class="btn-none"><i class="add-shop fa fa-plus"></i> Keranjang</button>
-                                    @endif
-                                </div>
-                            </div>
                             @endcannot
                         @endauth
 
                         <div>
                             @auth
-                            <div>
-                                <form action="{{ route('carts.bought.directly', array('book' => $book->id)) }}" class="m-0" method="POST">
-                                    <button type="submit" class="btn btn-red w-100">Beli Langsung</button>
-                                    @csrf
-                                </form>
-                            </div>
+                                <div>
+                                    <form action="{{ route('carts.bought.directly', array('book' => $book->id)) }}" class="m-0" method="POST">
+                                        <button type="submit" class="btn btn-red w-100">Beli Langsung</button>
+                                        @csrf
+                                    </form>
+                                </div>
                             @endauth
 
                             @guest
-                            <a href="{{ route('login') }}" type="button" class="btn btn-red w-100">Beli Langsung</a>
+                                <a href="{{ route('login') }}" type="button" class="btn btn-red w-100">Beli Langsung</a>
                             @endguest
                         </div>
                     </div>

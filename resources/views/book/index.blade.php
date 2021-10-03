@@ -38,7 +38,7 @@
                 </div>
 
                 @empty
-                <button class="btn-none text-grey tbold">Pencarian kosong</button>
+                    <button class="btn-none text-grey tbold">Pencarian kosong</button>
                 @endforelse
             </div>
             <div class="white-content mt-4">

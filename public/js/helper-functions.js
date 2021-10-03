@@ -583,6 +583,35 @@ const bootStrapModal = (modalHeader, modalSizeClass, callback) => {
 };
 //#region Modal
 
+const spinnerModal = () => {
+    let html =
+    `<div class="modal fade" id="spinner-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-image position-relative">
+                <div class="modal-body">
+                    <div class="w-100 mx-auto">
+                    <div class="d-flex justify-content-center py-4">
+                        <div class="spin-modal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    let modalLength = $('#spinner-modal').length;
+
+    if (modalLength == 0) $('body').prepend(html);
+
+    $('#spinner-modal').modal('show');
+
+    $('#spinner-modal').on('hidden.bs.modal', function(event) {
+        event.stopImmediatePropagation();
+
+        $(this).remove();
+    });
+}
+
 // Modal zoom image - Click untuk menampilkan modal gambar yang lebih besar
 $('.zoom-modal-image').on('click', function() {
     let html =

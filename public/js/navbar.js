@@ -1,6 +1,6 @@
 "use strict";
 
-$(document).ready(function () {
+window.onload = function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
     $('.form-reset').on('click', function() {
@@ -140,8 +140,9 @@ $(document).ready(function () {
                 ajaxForm('POST', this, this.action, response => {
                     if (response.status == 'fail') {
                         backendMessage($('#login-title'), [response.message]);
-                        $('.alert-messages').addClass('m-0');
-                        $('.alert-messages').parent().css('padding', '1rem');
+                        // console.log($(this));
+                        // $('.alert-messages').addClass('m-0');
+                        // $('.alert-messages').parent().css('padding', '1rem');
                     } else {
                         window.location.href = response.data.url;
                     }
@@ -699,35 +700,9 @@ $(document).ready(function () {
 
         validator(validation, success => {
             if (success) {
-                ajaxForm('POST', this, `/book_images/${$('#book-show').data('id')}`, response => {
-                    if (!response.errors) {
-                        $(this).trigger('reset');
-
-                        let messageText         = 'Berhasil menambah gambar buku';
-                        let src                 = `${window.location.origin}/storage/books/book_images/${response.image}`;
-                        let html                =
-                        `<div class="col-3">
-                            <div class="book-show-click" data-id="${response.book_image.id}">
-                                <img class="book-show-image-click" src="${src}">
-                                <button class="book-image-delete btn-none"><i class="fa fa-times"></i></button>
-                            </div>
-                        </div>`;
-
-                        let bookShowImageLength = $('.book-show-click').length + 1;
-
-                        $('#custom-modal').modal('hide');
-                        alertMessage(messageText);
-                        $('.book-show-images').append(html);
-
-                        if (bookShowImageLength > 3) {
-                            $('#add-book-image-form').parent().remove();
-                        }
-
-                        bookShowClick();
-                        bookImageDelete();
-                    }
-                })
-            }
+                $(this).find('button[type=submit]').attr('disabled', true);
+                this.submit();
+            };
         });
     });
     //#endregion Tambah gambar buku
@@ -751,39 +726,23 @@ $(document).ready(function () {
 
             validator(validations, success => {
                 if (success) {
-                    if ($('.book-show-image-active').attr('id') == undefined) {
-                        ajaxForm('POST', this, `/book_images/${clickedDataId()}/update`, response => {
-                            if (response.update) {
-                                let message = 'Berhasil mengedit gambar buku';
-                                let src     = `${window.location.origin}/storage/books/book_images/${response.src}`;
+                    let confirmText = 'Apakah anda yakin ingin mengubah gambar buku tersebut ?';
 
-                                alertMessage(message);
-                                $(this).trigger('reset');
-                                $('.book-show-image-active').find('img').attr('src', src);
-                                $('#primary-book-image').attr('src', src);
-                            } else {
-                                let afterMessage = $('.book-show-images');
+                    modalConfirm(confirmText, accepted => {
+                        if (accepted) {
+                            let updateType;
 
-                                backendMessage(afterMessage, response.errors)
-                            }
-                        });
-                    } else {
-                        let confirmText = 'Apakah anda yakin ingin mengubah gambar utama ?';
+                            $('.book-show-image-active').attr('id') != undefined
+                                ? updateType = 'update-main'
+                                : updateType = 'update';
 
-                        modalConfirm(confirmText, accepted => {
-                            if (accepted) {
-                                let bookId = $('#primary-book').data('id');
 
-                                ajaxForm('POST', this, `/book_images/${bookId}/update-main`, response => {
-                                    console.log(response);
-                                    if (response.status == 'success') {
-                                        alertMessage(response.message);
-                                        $('#primary-book-image').attr('src', response.data.image);
-                                    }
-                                });
-                            }
-                        });
-                    }
+                            $(this).attr('action', `/book_images/${clickedDataId()}/${updateType}`);
+                            $(this).find('button[type=submit]').attr('disabled', true);
+                            this.submit();
+                        }
+                    });
+
                 }
             });
         } else {
@@ -2683,7 +2642,56 @@ $(document).ready(function () {
 
     //#endregion
 
-}); // End of onload Event
+    //#region Book payment
+    setInterval(() => {
+        let hours                  = $('#deadline-hours');
+        let minutes                = $('#deadline-minutes');
+        let seconds                = $('#deadline-seconds');
+        let deadlineHours          = parseInt(hours.text());
+        let deadlineMinutes        = parseInt(minutes.text());
+        let deadlineSeconds        = parseInt(seconds.text());
+        let newDeadlineSeconds     = seconds.text(deadlineSeconds - 1);
+        let padZeroDeadlineSeconds = newDeadlineSeconds.text().padStart(2, '0');
+
+        newDeadlineSeconds.text(padZeroDeadlineSeconds);
+
+        if (deadlineSeconds == 0) {
+            minutes.text(deadlineMinutes - 1);
+
+            let padZeroDeadlineMinutes = minutes.text().padStart(2, '0');
+
+            minutes.text(padZeroDeadlineMinutes);
+            seconds.text(59);
+
+            if (deadlineMinutes == 0) {
+                hours.text(deadlineHours - 1);
+
+                let padZeroDeadlineHours = hours.text().padStart(2, '0');
+
+                hours.text(padZeroDeadlineHours);
+                minutes.text(59);
+
+                if (deadlineHours == 0) {
+                    hours.text('00');
+                    minutes.text('00');
+                    seconds.text('00');
+                }
+            }
+        }
+    }, 1000);
+
+    $('.payment-intro').on('show.bs.collapse', function () {
+        $(this).siblings('.collapse-intro').find('i').removeClass('fa-caret-down');
+        $(this).siblings('.collapse-intro').find('i').addClass('fa-caret-right');
+    })
+
+    $('.payment-intro').on('hide.bs.collapse', function () {
+        $(this).siblings('.collapse-intro').find('i').removeClass('fa-caret-right');
+        $(this).siblings('.collapse-intro').find('i').addClass('fa-caret-down');
+    })
+    //#endregion Book Payment
+
+}; // End of onload Event
 
 
 const hapusUser = (myObject) => {
@@ -2704,5 +2712,4 @@ const hapusUser = (myObject) => {
             console.log("RESPONSE ====>", response);
         },
     })
-
 }

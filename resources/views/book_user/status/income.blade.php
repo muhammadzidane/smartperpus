@@ -41,7 +41,6 @@ array(
                             <div>
                                 <h5>Bulan ini</h5>
                             </div>
-                            <a href="{{ route('income.detail.this.month') }}" id="income-this-month" class="btn-none tred-bold">Lihat Detail</a>
                         </div>
                     </div>
                     <div class="row mt-auto">

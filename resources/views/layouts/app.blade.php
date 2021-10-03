@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="btn-group my-auto c-p">
-                                    @auth
+                                    @can('isGuest')
                                         <div id="navCartDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-shopping-cart"></i>
 
@@ -110,7 +110,7 @@
                                                 </div>
                                             @endif
                                         </div>
-                                    @endauth
+                                    @endcan
 
                                     @guest
                                         <a href="{{ route('login') }}">
@@ -134,16 +134,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="navbar-grip-line d-lg-none ml-auto" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                            <i class="fas fa-grip-lines"></i>
-                        </div>
-                        </ul>
+                    </div>
+                    <div class="text-right navbar-grip-line d-block d-lg-none ml-auto" data-toggle="collapse" data-target="#responsiveNavLoginCollapse" aria-expanded="false" aria-controls="responsiveNavLoginCollapse">
+                        <i class="fas fa-grip-lines"></i>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="collapse d-lg-none borbot-gray-bold" id="collapseExample">
+        <div class="collapse d-lg-none borbot-gray-bold" id="responsiveNavLoginCollapse">
             <div class="mt-3">
                 <div class="text-center">
                     <form class="" action="{{ route('books.index') }}" method="GET">
@@ -237,7 +236,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mt-c">
+                                <div class="mt-4">
                                     <h4 class="hd-18">Pengiriman</h4>
                                 </div>
                                 <div class="mt-4">

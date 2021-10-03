@@ -21,12 +21,12 @@
             <div>
                 <div class="px-2 pt-2 pb-0 tbold">Pembelian</div>
                 <div>
-                    <div class="py-2 {{ preg_match('/status\/all|unpaid|on-process|on-delivery|completed|failed/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                    <div class="py-2 {{ preg_match('/status\/all|unpaid|on-process|on-delivery|completed|failed/i', request()->path()) ? 'status-sidebar-active' : '' }}">
                         <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.all') }}">Daftar Transaksi</a>
                     </div>
 
                     @if (auth()->user()->role != 'guest')
-                        <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-actice' : '' }}">
+                        <div class="py-2 {{ preg_match('/status\/uploaded-payment$/', request()->path()) ? 'status-sidebar-active' : '' }}">
                             <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('status.uploaded.payment') }}">
                                 <span>Bukti Pembayaran</span>
 
@@ -42,55 +42,54 @@
             </div>
 
             @if (auth()->user()->role == 'guest')
-            <div class="py-2 {{ preg_match('/wishlists$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
-            </div>
+                <div class="py-2 {{ preg_match('/wishlists$/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                    <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('wishlists.index') }}">Daftar Wishlist</a>
+                </div>
 
-            <div class="py-2">
-                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('carts.index') }}">Keranjang Saya</a>
-            </div>
+                <div class="py-2">
+                    <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('carts.index') }}">Keranjang Saya</a>
+                </div>
 
-            <div>
-                <div class="px-2 pt-2 pb-0 tbold">Kotak Masuk</div>
                 <div>
-                    <div class="py-2 {{ preg_match('/inbox\/my-reviews$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="/inbox/my-reviews">Ulasan Saya</a>
+                    <div class="px-2 pt-2 pb-0 tbold">Kotak Masuk</div>
+                    <div>
+                        <div class="py-2 {{ preg_match('/inbox\/my-reviews$/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="/inbox/my-reviews">Ulasan Saya</a>
+                        </div>
                     </div>
                 </div>
-            </div>
 
             @else
-            <div>
-                <div class="px-2 pt-2 pb-0 tbold">Penghasilan</div>
                 <div>
-                    <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Daftar Penghasilan</a>
-                    </div>
-                </div>
-            </div>
-
-            @if (Auth::user()->role == 'super_admin')
-                <div>
-                    <div class="px-2 pt-2 pb-0 tbold">Karyawan</div>
+                    <div class="px-2 pt-2 pb-0 tbold">Penghasilan</div>
                     <div>
-                        <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
-                        </div>
-                        <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                        <div class="py-2 {{ preg_match('/income$/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                            <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('income') }}">Daftar Penghasilan</a>
                         </div>
                     </div>
                 </div>
-            @endif
 
-            <div>
-                <div class="px-2 pt-2 pb-0 tbold">Buku</div>
-                <div class="py-2 {{ preg_match('/books\/create/i', request()->path()) ? 'status-sidebar-actice' : '' }}">
-                    <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('books.create') }}">Tambah Buku</a>
+                @if (Auth::user()->role == 'super_admin')
+                    <div>
+                        <div class="px-2 pt-2 pb-0 tbold">Karyawan</div>
+                        <div>
+                            <div class="py-2 {{ preg_match('/users\/create/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.create') }}">Tambah Karyaran</a>
+                            </div>
+                            <div class="py-2 {{ preg_match('/users$/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                                <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('users.index') }}">Daftar Karyawan</a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div>
+                    <div class="px-2 pt-2 pb-0 tbold">Buku</div>
+                    <div class="py-2 {{ preg_match('/books\/create/i', request()->path()) ? 'status-sidebar-active' : '' }}">
+                        <a class="px-3 d-block my-auto text-decoration-none mt-2 text-grey" href="{{ route('books.create') }}">Tambah Buku</a>
+                    </div>
                 </div>
-            </div>
             @endif
-
         </div>
     </div>
 </div>

@@ -213,8 +213,4 @@
     </div>
 </div>
 
-@section('script')
-    <script src="{{ asset('js/book_payment/index.js') }}"></script>
-@endsection
-
 @endsection

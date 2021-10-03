@@ -86,26 +86,7 @@
                         @endif
                     </div>
                     <div class="text-right">
-                        @if (request()->path() == 'status/unpaid')
-                            <span class="mr-2">Bayar Sebelum {{ $book_user['first']->created_at->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
-                        @endif
-
-                        @if (request()->path() == 'status/failed')
-                            <span class="mr-2">{{ $book_user['first']->failed_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
-                        @endif
-
-                        @if (request()->path() == 'status/on-process')
-                            <span class="mr-2">{{ $book_user['first']->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
-                        @endif
-
-                        @if (request()->path() == 'status/on-delivery')
-                            <span class="mr-2">{{ $book_user['first']->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss') }}</span>
-                        @endif
-
-                        @if ((request()->path() == 'status/completed' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'arrived')
-                            <span class="mr-2">{{ $book_user['first']->completed_date->isoFormat('dddd, D MMMM Y HH:mm:ss') }}</span>
-                        @endif
-
+                        <span class="mr-2">{{ $book_user['status_date'] }}</span>
                         <span class="current-status">{{ $book_user['status'] }}</span>
                     </div>
                 </div>
@@ -172,19 +153,19 @@
             </div>
             <div class="mt-3">
                 @if ($book_user['first']->failed_message != null)
-                <div class="mb-3"><i class="fas fa-info-circle mr-1"></i>
-                    <span class="text-grey">{{ $book_user['first']->failed_message }}</span>
-                </div>
+                    <div class="mb-3"><i class="fas fa-info-circle mr-1"></i>
+                        <span class="text-grey">{{ $book_user['first']->failed_message }}</span>
+                    </div>
                 @endif
 
 
                 <div class="text-right mb-3">
                     @if (auth()->user()->role == 'guest')
 
-                    @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null && $book_user['first']->payment_status != 'failed')
-                        <div>
-                            <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Kirim Bukti Pembayaran</a>
-                        </div>
+                        @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null && $book_user['first']->payment_status != 'failed')
+                            <div>
+                                <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Kirim Bukti Pembayaran</a>
+                            </div>
                         @endif
 
                         @if (request()->path() == 'status/unpaid' && $book_user['first']->upload_payment_image != null)
@@ -194,13 +175,14 @@
                             </div>
                         @endif
 
+                    <!-- All Admin -->
                     @else
                         @if ((request()->path() == 'status/uploaded-payment' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image != null && $book_user['first']->payment_status == 'waiting_for_confirmation')
-                        <div>
-                            <button class="zoom-modal-image btn btn-outline-red mr-1" data-src="{{ asset('storage/uploaded_payment/' . $book_user['first']->upload_payment_image) }}">Lihat Bukti</button>
-                            <button class="status-confirm-payment btn btn-outline-red">Proses Bukti</button>
-                            <button class="status-cancel-upload btn btn-outline-red">Batalkan</button>
-                        </div>
+                            <div>
+                                <button class="zoom-modal-image btn btn-outline-red mr-1" data-src="{{ asset('storage/uploaded_payment/' . $book_user['first']->upload_payment_image) }}">Lihat Bukti</button>
+                                <button class="status-confirm-payment btn btn-outline-red">Proses Bukti</button>
+                                <button class="status-cancel-upload btn btn-outline-red">Batalkan</button>
+                            </div>
                         @elseif ($book_user['first']->upload_payment_image != null && $book_user['first']->payment_status == 'order_in_process')
                             <div>
                                 <button type="button" class="status-on-delivery btn btn-outline-danger">Kirim</button>
@@ -208,11 +190,11 @@
                         @endif
                     @endif
 
-                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'arrived')
-                            <button type="button" class="status-complete btn btn-outline-danger mr-2">Selesai</button>
+                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $book_user['first']->payment_status == 'being_shipped')
+                        <button type="button" class="status-complete btn btn-outline-danger mr-2">Selesai</button>
                     @endif
 
-                    @if (request()->path() == 'status/completed' && $book_user['first']->payment_status == 'arrived')
+                    @if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/completed' || request()->path() == 'status/all') && ($book_user['first']->payment_status == 'being_shipped' || $book_user['first']->payment_status == 'arrived'))
                         <button type="button" class="tracking-packages btn btn-outline-danger" data-courier="{{ $book_user['first']->courier_name }}" data-resi="{{ $book_user['first']->resi_number }}">Informasi Pengiriman</button>
                     @endif
 
