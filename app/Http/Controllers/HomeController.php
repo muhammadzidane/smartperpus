@@ -33,9 +33,10 @@ class HomeController extends Controller
                     'data' => Category::find(1),
                     'search_url' => route('books.index', array('category' => array(Category::find(1)->id))),
                 ),
-            )
+            ),
+            'modal_content' => view('home.modal-content')->render(),
         );
 
-        return view('home', $data);
+        return view('home.index', $data);
     }
 }

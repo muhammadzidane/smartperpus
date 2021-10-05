@@ -202,7 +202,7 @@ class StatusController extends Controller
             }
 
             if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all' || request()->path() == 'status/uploaded-payment' && $first_data->payment_status == 'waiting_for_confirmation')) {
-                $status_date = 'Bayar Sebelum - ' . $first_data->created_at->isoFormat('dddd, D MMMM Y H:mm:ss');
+                $status_date = isset($first_data->payment_deadline) ? 'Bayar Sebelum - ' . $first_data->payment_deadline->isoFormat('dddd, D MMMM Y H:mm:ss') : '';
             }
 
             if ((request()->path() == 'status/failed' || request()->path() == 'status/all') && $first_data->payment_status == 'failed') {
@@ -214,7 +214,7 @@ class StatusController extends Controller
                 $status_date = $first_data->payment_date->isoFormat('dddd, D MMMM Y H:mm:ss');
             }
 
-            if (request()->path() == 'status/on-delivery') {
+            if ((request()->path() == 'status/on-delivery' || request()->path() == 'status/all') && $first_data->payment_status == 'being_shipped') {
                 $status_date = $first_data->shipped_date->isoFormat('dddd, D MMMM Y H:mm:ss');
             }
 

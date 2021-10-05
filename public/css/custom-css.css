@@ -1132,6 +1132,62 @@ footer {
     border-radius: 7px;
 }
 
+.kp-edit, .kp-edit-active {
+    cursor: pointer;
+    padding: 0.3rem;
+    border: 2px dashed #6E7C7C;
+    border-radius: 4px;
+}
+
+.kp-edit-active, .urutan {
+    border: 3px solid #444444;
+    box-shadow: 0 0 3px #444444;
+}
+
+.urutan {
+    position: relative;
+}
+
+.nomer-urutan {
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 0 3px #444444;
+    font-size: 20px;
+    font-family: 'Righteous', cursive;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.nomer-urutan::-webkit-outer-spin-button,
+.nomer-urutan::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.nomer-urutan[type=number] {
+  -moz-appearance: textfield;
+}
+
+.nomer-urutan div {
+    background-color: pink;
+}
+
+.kp-img-modal {
+    width: 100%;
+    height: 120px;
+}
+
 .kp-img {
     width: 100%;
     height: 145px;
@@ -1981,7 +2037,7 @@ footer {
     top: 100px;
     left: 25%;
     right: 25%;
-    z-index: 1;
+    z-index: 1000;
 }
 
 .message-check {

@@ -25,8 +25,17 @@ class AuthorController extends Controller
             array('authors.name', 'LIKE', "%$request->keywords%", 'OR'),
         );
 
+        $rating = $request->sort == 'lowest-rating'
+            ? DB::raw('IFNULL(ratings.rating, 999) as rating')
+            : 'ratings.rating as rating'; // highest-rating
+
+        $select_values = array(
+            'books.*', 'authors.name as author_name',
+            $rating,
+        );
+
         $books = Book::join('authors', 'books.author_id', '=', 'authors.id')
-            ->select('books.*', 'authors.name as author_name')
+            ->select($select_values)
             ->where($conditions);
 
         if ($request->category) $books = $books->whereIn('category_id', $request->category);
@@ -40,6 +49,13 @@ class AuthorController extends Controller
         if ($request->sort == 'highest-rating') $books = $books->orderByDesc('rating');
         if ($request->sort == 'lowest-rating') $books = $books->orderBy('rating');
         if ($request->sort == 'lowest-price') $books = $books->orderBy('price');
+
+        if ($request->sort == 'highest-rating')
+            $books = $books->orderByDesc('rating');
+        if ($request->sort == 'lowest-rating')
+            $books = $books->orderBy('rating');
+
+        if ($request->discount == 'all') $books = $books->where('books.discount', '!=', 0);
 
         $total_books = $books->count();
 

@@ -20,22 +20,24 @@
     </div>
     <div class="row mt-4">
         @forelse ($authors as $author)
-        <div class="col-lg-3 col-sm-6 mr-2">
-            <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
-                <div class="row white-content author-review">
-                    <div class="col px-0">
-                        <div>
-                            <div class="w-50 mx-auto">
-                                <img src="{{ asset('img/avatar-icon.png') }}" class="w-100">
+        <div class="col-lg-3 col-sm-6 mb-4">
+            <div class="container">
+                <a href="{{ route('authors.show', array('author' => $author->id)) }}" class="text-decoration-none text-body">
+                    <div class="row white-content author-review">
+                        <div class="col px-0">
+                            <div>
+                                <div class="w-50 mx-auto">
+                                    <img src="{{ asset('img/avatar-icon.png') }}" class="w-100">
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <div>Nama : <span class="text-grey">{{ $author->name }}</span></div>
+                                <div>Jumlah Buku : <span class="text-grey">{{ $author->books->count() }}</span></div>
                             </div>
                         </div>
-                        <div class="mt-3">
-                            <div>Nama : <span class="text-grey">{{ $author->name }}</span></div>
-                            <div>Jumlah Buku : <span class="text-grey">{{ $author->books->count() }}</span></div>
-                        </div>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
         @empty
         <div class="w-50 mx-auto mt-4 text-center">

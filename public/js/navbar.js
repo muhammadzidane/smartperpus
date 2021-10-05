@@ -3,6 +3,20 @@
 window.onload = function () {
     let csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+    //#region Home
+    $('.nomer-urutan').on('change', function() {
+        let id            = $(this).data('id');
+        let changedOption = $(`#category-sort-${this.value}`);
+        let newValue      = parseInt(id) - 1;
+
+        changedOption.attr('data-id', id);
+        $(this).attr('data-id', this.value);
+        changedOption[0].selectedIndex = newValue;
+
+        console.log(changedOption);
+    });
+    //#endregion Home
+
     $('.form-reset').on('click', function() {
         $(this).parents('form').trigger('reset');
         $(this).parents('form').find('input[type=number]').val('');

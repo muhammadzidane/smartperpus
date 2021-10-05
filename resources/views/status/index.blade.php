@@ -161,7 +161,6 @@
 
                 <div class="text-right mb-3">
                     @if (auth()->user()->role == 'guest')
-
                         @if ((request()->path() == 'status/unpaid' || request()->path() == 'status/all') && $book_user['first']->upload_payment_image == null && $book_user['first']->payment_status != 'failed')
                             <div>
                                 <a href="{{ route('book.purchases.show', array('invoice' => $book_user['first']->invoice)) }}" class="btn btn-outline-danger">Kirim Bukti Pembayaran</a>
